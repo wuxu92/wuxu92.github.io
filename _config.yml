@@ -12,11 +12,11 @@ theme:
 
   # Header and footer text
   header_text: >
-     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+     <p>wuxu的文字记录</p>
 
-     <p>Remove all header text in <code>_config.yml</code> to disable this feature.</p>
+     <p>文字，图片，笔记</p>
   footer_text: >
-   Powered by <a href="http://jekyllrb.com">Jekyll</a> with <a href="https://rohanchandra.github.io/project/type/">Type Theme</a>
+   Powered by <a href="http://wuxu92.github.io">wuxu92</a> with <a href="https://rohanchandra.github.io/project/type/">Type Theme</a>
 
   # Icons
   rss: false
@@ -24,7 +24,7 @@ theme:
   behance:
   bitbucket:
   dribbble:
-  facebook:
+  facebook: "wuxu92"
   flickr:
   github: "wuxu92"
   google_plus:
@@ -38,7 +38,7 @@ theme:
   tumblr:
   twitter: "wuxu92"
   wordpress:
-  youtube:
+  youtube: "wuxu92"
 
   # Scripts
   google_analytics: # Tracking ID, e.g. "UA-000000-01"
