@@ -1,9 +1,9 @@
 ---
 layout: post
-title: 移动Visual Studio 的Package Cache节省系统盘空间
+title: 移动Visual Studio的Package Cache文件夹
 ---
 
-最近有个项目需要用到VS，只好忍痛安装了VS3012 community update 4.说实话 **VS是个好东西**，虽然我选择安装在D盘，但是安装完后还是让我的C盘减少了近11G的空间。前几天好不容易才腾出来的一下C盘又变空了。
+最近有个项目需要用到VS，只好忍痛安装了VS3012 community update 4.说实话 **VS是个好东西**，虽然我选择安装在D盘，但是安装完后还是让我的C盘减少了近11G的空间。前几天好不容易才腾出来的一下C盘又变红了。
 
 下面找到一个方法可以节省一习C盘的空间。通过乱点发现，在 C:\ProgramData\Package Cache 这个文件夹有好几个G，并且看起来很可疑，就是安装VS当天生成的。
 
@@ -15,7 +15,7 @@ title: 移动Visual Studio 的Package Cache节省系统盘空间
 2. 执行 ```mklink /J "C:\ProgramData\Package Cache" "F:\AppData\Package Cache"```
 3. Done.这样C盘终于又留出来一些空间了。
 
-其实有不少程序的缓存文件夹可以这样处理来从系统盘腾空间，比如Chrome，这些可以自己去摸索了
+其实有不少程序的缓存文件夹可以这样处理来从系统盘腾空间，比如Chrome，但是由于我只是系统盘使用了SSD，这样处理可能享受不到SSD带来的速度优势了，这些可以自己去摸索与权衡了
 
 [参考](http://superuser.com/questions/455853/can-i-delete-the-the-folder-c-programdata-package-cache)
 
