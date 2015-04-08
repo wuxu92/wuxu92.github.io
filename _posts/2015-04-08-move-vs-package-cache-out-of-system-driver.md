@@ -19,4 +19,4 @@ title: 移动Visual Studio的Package Cache文件夹
 
 [参考](http://superuser.com/questions/455853/can-i-delete-the-the-folder-c-programdata-package-cache)
 
-
+更详细的参考:[Moving Package Cache](http://flightsimeindhoven.nl/?page_id=10371)
