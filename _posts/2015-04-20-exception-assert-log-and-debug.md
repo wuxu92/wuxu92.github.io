@@ -43,7 +43,9 @@ Java语言规范将所有派生于Error或者RE的异常称为未检查（unchec
 
 子类覆盖超类的方法时不能抛出比超类中声明的更通用的异常。
 
-从Java SE 7开始可以在一个catch语句中捕获多个异常类型 catch(EType | Etype2 exception) {}
+从Java SE 7开始可以在一个catch语句中捕获多个异常类型 
+    
+    catch(EType | Etype2 exception) {}
 
 > try catch finally结构中，不管什么情况下，finally中的代码都会执行，即使在try中break/return了。
 > 如果在try代码块中return了然后在finally中又return一次，finally中的return会覆盖之前的return的值。
@@ -53,10 +55,10 @@ Java语言规范将所有派生于Error或者RE的异常称为未检查（unchec
 ## 断言 ##
 断言机制允许在测试期间向代码中插入一些检查语句，当代码发布时，这些插入的检测语句会被自动的移除。
 Java中断言的形式为：
-```java
-assert condition;
-assert condition:string; // add report string in the end
-```
+
+    assert condition;
+    assert condition:string; // add report string in the end
+
 可以在程序运行时通过参数设置启动或者关闭断言，启动或者禁用断言是类加载器的功能。当断言被禁用时类加载器会自动跳过断言代码。
 
 > 断言失败是致命的、不可恢复的错误

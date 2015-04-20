@@ -18,28 +18,28 @@ title: Java接口与内部类
 
 直观地，接口中的所有方法都是自动地属于public，因此，在接口声明中方法时，不需要提供关键字public。当然接口本身是需要权限修饰符关键字的。一个常用的定义类似于：
 
-```java
-public interface SomeAble<T> {
-	int someFunction(T t); // do not add {} here
-}
 
-class someClass implements SomeAble { 
-	public int someFunction(Type t) {
-		... // implements
-	}
- }
-```
+    public interface SomeAble<T> {
+    	int someFunction(T t); // do not add {} here
+    }
+
+    class someClass implements SomeAble { 
+    	public int someFunction(Type t) {
+    		... // implements
+    	}
+     }
+
 
 虽然接口中定义的方法不需要public修饰，但是在具体类中实现时需要加上public修饰，否则编译器认为这个方法的访问属性是包可见性。
 
 > 你当然不能使用new去实例化一个接口，但是可以声明接口的变量，我们经常这么做。
 > 接口也是可以继承的，虽然在接口中不能提供实例域或者静态方法，但是**可以**包含常量。且它们自动是public的
 
-```java 
-public interface A extends BAble {
-	double PI=3.14;
-}
-```
+
+    public interface A extends BAble {
+    	double PI=3.14;
+    }
+
 ### 对象克隆 ###
 变量拷贝是一个经常需要考虑的操作。直接拷贝一个变量时，由于一切都是对象，实际上两个变量都是引用同一个对象。这样改变一个变量所引用的对象将会对另一个变量产生影响。
 如果需要他们从此各自改变自己的状态，需要使用clone方法。clone中需要考虑，对象中包含了自对象的引用时，拷贝的结果似乎不太符合我们的需求。这种叫做“浅克隆”，我们要实现一个“深克隆”，一个从头到尾的新对象。
@@ -57,17 +57,17 @@ public interface A extends BAble {
 
 参与回调的类需要实现java.awt.event包中的ActionListener接口。实现接口的actionPerformed方法。
 
-```java
-class T implements ActionListener {
-	public void actionPerformed(ActionEvent event) {
-		do something here
-	}
-}
 
-ActionListener listener = new T();
-javax.swing.Timer t = new Timer(1000, listener);
-t.start();
-```
+    class T implements ActionListener {
+    	public void actionPerformed(ActionEvent event) {
+    		do something here
+    	}
+    }
+
+    ActionListener listener = new T();
+    javax.swing.Timer t = new Timer(1000, listener);
+    t.start();
+
 
 ## 内部类 ##
 内部类是定义在一个类中的类。它有以下性质：
@@ -83,9 +83,9 @@ t.start();
 OuterClassName.this.propertyName;
 ```
 可以使用外围类的实例去实例化一个内部类：
-```java
-outerObject.new InnerClass();
-```
+
+    outerObject.new InnerClass();
+
 看起来很奇怪的语法吧。
 >内部类是一种编译器现象与虚拟机无关，编译器会将内部类编译成用$符号分隔外部类与内部类的常规类文件。
 >甚至可以在一个方法内定义局部内部类。这样它对外部完全隐藏起来了。
@@ -95,19 +95,17 @@ outerObject.new InnerClass();
 ### 匿名内部类 ###
 如果只创建类的一个对象，就不需要命名这个类了，这种类称为匿名内部类，其代和实例化一个接口有点相似，直接new一个接口，在后面接一个花括号编写方法的实现代码。
 
-```java
-ActionListener listener = new ActionListener() {
-	public void actionPerformed(AcionEvent event) {
-		do something here
-	}
-};
-```
+    ActionListener listener = new ActionListener() {
+    	public void actionPerformed(AcionEvent event) {
+    		do something here
+    	}
+    };
+
 
 一种实例化List的“双括号初始化”方法利用内部内的语法：
 
-```java
-new ArrayList<String>() {{ add("string1"); add(string2); }}
-```
+    new ArrayList<String>() {{ add("string1"); add(string2); }}
+
 外层括号建立了一个ArrayList的一个匿名子类，内层括号则是一个对象构造块。
 
 静态内部类：
