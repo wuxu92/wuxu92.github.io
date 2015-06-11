@@ -89,18 +89,21 @@
 		ul.proj-info { margin-top: 0.6em;}
 		.proj-time { display: inline-block;}
 		.proj-name { display: inline-block; }
-		#other-version { position: fixed; top: 22px; right: 60px; width: 240px; height: 32px; padding-left: 0px; font-size: 24px;
-			font-family: "Microsoft YaHei", sans-serif; border-left: solid 1px #aaa; border-right: solid 1px #aaa;
+		#other-version { position: fixed; top: 22px; right: 60px; width: 260px; height: 32px; padding-left: 0.2em; font-size: 24px;
+			font-family: "Microsoft YaHei", sans-serif; /*border-left: solid 1px #aaa; border-right: solid 1px #aaa;*/
 		}
-		#other-version>div { display: inline-block; padding: 0 20px;}
-		#other-version>div:first-child { border-right: solid 1px #aaa;}
+		#other-version>div.version { display: inline-block; padding: 0 0.6em; border-radius: 0.23em; border-left: solid 1px #aaa;border-right: solid 1px #aaa;}
+		#other-version>div:first-child { }
+		.divider { display: inline-block; border-left: solid 1px #000; width: 1px; padding: 0px;}
+		#other-version>div.version:hover { background-color: #efefef; }
 	</style>
 </head>
 <body>
 
 	<div id="other-version">
-		<div><a href="http://wuxu92.github.io/简历-吴煦-北理工-硕士-计算机科学与技术.pdf" target="_blank">pdf版</a></div>
-		<div><a href="http://wuxu92.github.io/简历-吴煦-北理工-硕士-计算机科学与技术.doc" target="_blank">word版</a></div>
+		<div class="version"><a href="http://wuxu92.github.io/简历-吴煦-北理工-硕士-计算机科学与技术.pdf" target="_blank">PDF版</a></div>
+		<span class="divider"> </span>
+		<div class="version"><a href="http://wuxu92.github.io/简历-吴煦-北理工-硕士-计算机科学与技术.doc" target="_blank">Word版</a></div>
 	</div>
 	<div id="main-body">
 		<div id="titleBar">
