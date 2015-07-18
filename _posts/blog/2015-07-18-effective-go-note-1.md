@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Effective Go笔记：函数，数据，初始化
-description: 
+description: effective go 中的部分笔记，这是idiyibufen
 category: blog
 tags: golang effective
 publish: true
@@ -13,7 +13,7 @@ publish: true
 部分笔记摘要,参考： https://go-zh.org/doc/effective_go.html
 
 
-### 函数 ###
+## 函数 ##
 Go的函数有一个很特别的性质那就是多值返回，这样做有一个很方便的地方是可以把错误值返回，这样做和后面会讲到的取消异常也是有关的。
 
 
