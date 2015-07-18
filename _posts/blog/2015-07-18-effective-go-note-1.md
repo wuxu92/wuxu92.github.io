@@ -1,7 +1,14 @@
 ---
 layout: post
 title: Effective Go笔记：函数，数据，初始化
+description: 
+category: blog
+tags: golang effective
+publish: true
 ---
+
+{{ page.description }} 
+
 
 部分笔记摘要,参考： https://go-zh.org/doc/effective_go.html
 
@@ -16,6 +23,7 @@ Go的函数有一个很特别的性质那就是多值返回，这样做有一个
 func (file *File) Write(b []byte) (n int, err error)
 ```
 这是一个典型的Go函数签名，初看起来比较复杂，一点点分析：
+
 1. func关键字，类似php中的function
 2. (file *File) 表示这是一个添加到*File接口上的方法。这也是Go比较有意思的地方，通过*附着*接口方法的方式实现接口
 3. Write 很简单就是方法名了，大写开头的方法表示共有的导出方法，如果是小写的方法名是不能导出的
@@ -62,6 +70,7 @@ make([]int, 0, 10)
 注意：make只适用于映射，切片和信道，并且不返回指针，，若要获取明确的指针需要使用new分配内存。
 ### 数组 ###
 数组作为切片的基础构件，要理解切片的工作机制必须对数组非常熟悉。Go的数组和C的数组有很大的区别：
+
 1. 数组是一个值，而不是引用。将一个数组赋予另一个数组会复制其所有元素
 2. 若将某个数组传入某个函数，将会收到数组的一份副本而不是指针
 3. 数组的大小是其类型的一部分，即[10]int 和 [11]int 是两种类型
