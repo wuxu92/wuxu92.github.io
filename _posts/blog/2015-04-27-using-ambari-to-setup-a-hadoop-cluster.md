@@ -1,7 +1,12 @@
 ---
 layout: post
 title: 使用ambari搭建并管理一个hadoop集群
+description: 
+category: blog
+tags: bigdata hadoop
+publish: true
 ---
+
 这部分包含的内容：
 
 1. 什么是ambari
