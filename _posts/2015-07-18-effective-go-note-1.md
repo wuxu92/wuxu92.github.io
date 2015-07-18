@@ -45,13 +45,14 @@ me := person{"wuxu", 22}
 可以在函数中返回一个局部变量的引用/地址。局部变量的数据在返回后仍然有效。如果类型不包含字段，则new(Person)和&person{}是等价的
 
 ```
-a := [...]string   {Enone: "no error", Eio: "Eio", Einval: "invalid argument"}  // array
-s := []string      {Enone: "no error", Eio: "Eio", Einval: "invalid argument"}  // slice
-m := map[int]string{Enone: "no error", Eio: "Eio", Einval: "invalid argument"}  // map
+a := [...]string   {"no error", "Eio", "invalid argument"}  // array
+s := []string      { "no error", "Eio", "invalid argument"}  // slice
+m := map[int]string{Enone: "no error", Eio: "Eio"}  // map
 ```
 
 ### make ###
 内建函数make可以用来创建切片，映射和信道（channel），并返回类型为T（不是*T）的一个已经初始化（而非置零）的值。make 用于初始化其内部的数据结构并准备好将要使用的值
+
 ```
 make([]int, 10, 100) //不要这样用，因为会看不懂。。。
 make([]int, 0, 10) 
@@ -74,6 +75,7 @@ make([]int, 0, 10)
 
 #### 二维切片 ####
 二维切片有两种方法进行初始化，一种是先初始化顶层切片，再分别对每一行分配切片，一种是一次性分配(make)所有空间，再使用分片操作切分到各个行
+
 ```
 picture := make([][]int8, 10)
 for i := range picture {
@@ -89,6 +91,7 @@ for i:= range picture2 {
 ### 映射/map ###
 映射是非常强大的内建数据结构，可以用来关联不同的数据类型，键可以是任何支持相等性操作的类型，比如int, float, string, pointer,interface, struct, araay。不过**切片和映射不能用作键**，因为他们不支持相等性操作。
 映射的定义语法：
+
 ```
 var weekDay = map[int]string {
 	1: "monday",
@@ -99,6 +102,7 @@ var weekDay = map[int]string {
 }
 ```
 对映射的访问类似于动态语言，使用键作为下标访问
+
 ```
 weekDay[1]
 // 判断某一项是否存在,使用‘逗号ok’惯用法
@@ -108,12 +112,14 @@ if ok {
 }
 ```
 可以使用内建函数delete删除映射的键值对
+
 ```
 delete(weekDay, 1)
 ```
 
 ### 打印/print ###
 Go提供和C语言类似的格式化打印函数printf族，不过功能更加丰富。这些函数在fmt包中，fmt也是最常用的包之一。
+
 ```
 // 一下输出等价
 fmt.Printf("Hello %d\n", 23)
@@ -124,6 +130,7 @@ fmt.Println(fmt.Sprint("Hello ", 23))
 常用的占位符： %d, %x, %v, $f, %q ; %v是通用格式，v代表value。*改进的格式 %+v 会为结构体的每个字段添上字段名，而另一种格式 %#v 将完全按照Go的语法打印值*
 
 **若你想控制自定义类型的默认格式，只需为该类型定义一个具有 String() string 签名的方法。**这和java中的toString()功能相似。
+
 ```
 // 下面的String方法会导致递归， 需要对m使用类型转换
 type MyString string
@@ -133,6 +140,7 @@ func (m MyString) String() string {
 ```
 ### 关于append的补充 ###
 append函数的签名是：
+
 ```
 func append(slice []T, item ...T) []T
 ```
@@ -142,6 +150,7 @@ append 会在切片末尾追加元素并返回结果。我们必须返回结果�
 ### 常量/constants ###
 Go中常量也是不变量，在编译时创建，即便他们是函数中定义的局部变量也是这样。常量只能是数字，字符，字符串，布尔值。常量定义中不能有函数调用。
 枚举常量使用枚举器**iota**创建。使用它很容易创建复杂的值的集合。一个官方示例：
+
 ```
 type ByteSize float64
 
@@ -161,6 +170,7 @@ const (
 ```
 ### 变量/vaiables ###
 可以使用var()声明多个变量：
+
 ```
 var (
  home = os.Getenv("HOME")
@@ -169,9 +179,9 @@ var (
 ```
 ### init函数 ###
 每一个源文件可以定义一个无参数的init函数来设置一些状态。甚至每个文件可以有多个init函数。init执行完才是初始化(包/文件)的结束。常用init函数来检查或者校正程序的状态。
+
 ```
 func init() {
 	// do some thing here
 }
-
-
+```
