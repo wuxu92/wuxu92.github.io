@@ -9,7 +9,7 @@ pygments: true
 paginate: 6
 paginate_path: /page:num
 permalink: /:title
-baseurl: /blog/
+baseurl: /
 #lsi: true
 
 # Disqus Comments
