@@ -61,8 +61,14 @@ paginate: 10
 paginate_path: "blog/page:num"
 
 # BUILD SETTINGS
-markdown: kramdown
+markdown: rdiscount
 highlighter: pygments
+highlight: light
+pygments: true
 sass:
   sass_dir: _sass
   style: :compressed
+# author
+author_name: wuxu
+author_email: wuxu92@gmail.com
+author_info: <a href="http://wuxu92.github.com">Wuxu</a>
