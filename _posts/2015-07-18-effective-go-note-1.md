@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Effective笔记：函数，数据，初始化
+title: Effective Go笔记：函数，数据，初始化
 ---
 
 部分笔记摘要,参考： https://go-zh.org/doc/effective_go.html
