@@ -2,8 +2,8 @@
 layout: post
 title: vim 常用的命令模式
 description: vim中常用的命令，日常更新
-category: blog
-tags: vim
+category: tool
+tags: vim tool
 publish: true
 ---
 
