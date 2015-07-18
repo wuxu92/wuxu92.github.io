@@ -47,7 +47,7 @@ $(document).ready(function(){
         var href = $(this).attr('href');
         if(href){
             if(href.indexOf('#') == 0){
-            }else if ( href.indexOf('/') == 0 || href.toLowerCase().indexOf('hahaya.github.io')>-1 || href.toLowerCase().indexOf('hahaya')>-1 ){
+            }else if ( href.indexOf('/') == 0 || href.toLowerCase().indexOf('wuxu92.github.io')>-1 || href.toLowerCase().indexOf('wuxu92')>-1 ){
             }else if ($(element).has('img').length){
             }else{
                 $(this).attr('target','_blank');
@@ -87,7 +87,7 @@ $(document).ready(function(){
     })
     */
     
-    // by hahaya
+    // by wuxu92
    /* $("pre.prettyprint").each(function(){
         var $this = $(this);
 
@@ -148,7 +148,7 @@ $(document).ready(function(){
         }
     });
 
-    // 代码长度问题 by hahaya
+    // 代码长度问题 by wuxu92
     isMobile.any() || $("pre.prettyprint").on("mouseover", function(){
         var $this = $(this), origin, acture;
 
