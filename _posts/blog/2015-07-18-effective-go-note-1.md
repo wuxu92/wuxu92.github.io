@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Effective Go笔记：函数，数据，初始化
-description: effective go 中的部分笔记，这是idiyibufen
+description: effective go 中的部分笔记，这是第一部分
 category: blog
 tags: golang effective
 publish: true
