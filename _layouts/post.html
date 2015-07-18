@@ -6,8 +6,7 @@ layout: page
 <form class="page-loc" method="GET" action="/search">
 	<span style="float:right"><input type="text" class="web-search" name="q" value="站内搜索" /><a href="/about.html">关于</a><a href="/atom.xml" class="page-rss" style="margin-left: 20px;">订阅</a></span>
  	
- 	{% capture s %}{{ page.category }}{% endcapture %}
-  	wuxu's blog » <a href="/categories/#{{ s }}">{% if s == 'blog' %}Blog{% elsif s == 'life' %}Life{% else %}Project{% endif %}</a> » {{ page.category }}
+ 	{% capture s %}{{ page.category }}{% endcapture %}<a href="/categories/#{{ s }}">{% if s == 'blog' %}Blog{% elsif s == 'life' %}Life{% else %}Project{% endif %}</a> » {{ page.category }}
 </form>
 <div class="page-top-nav clearfix">
 	<div class="categoryList">
