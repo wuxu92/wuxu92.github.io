@@ -1,14 +1,11 @@
-# Type Theme
+##hahaya's blog
 
-![Default Type Theme blog](https://cloud.githubusercontent.com/assets/816965/5142407/19742e48-71d6-11e4-8d9d-fdfe010784f0.png)
+欢迎踩点我的博客：[http://hahaya.github.com](http://hahaya.github.com "hahaya's Blog")，Hack in code...
 
-A free and open-source [Jekyll](http://jekyllrb.com) theme. Great for blogs and easy to customize.
 
-## Get Started
+##Contact me
+__Gmail:__ [hahayacoder@gmail.com](mailto:hahayacoder@gmail.com)
 
-[Demo](https://rohanchandra.github.io/type-theme/)
 
-[Using Type](https://rohanchandra.github.io/project/type/)
 
-## License
-The MIT License (MIT)
+

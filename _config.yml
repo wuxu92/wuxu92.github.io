@@ -1,74 +1,30 @@
-# SITE CONFIGURATION
-baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://wuxu92.github.io" # the base hostname & protocol for your site
+#
+# Blog Settings
+#
 
-# THEME-SPECIFIC CONFIGURATION
-theme:
-  # Meta
-  title: wuxu92
-  avatar: avatar2.jpg
-  gravatar: # Email MD5 hash
-  description: "wuux's blog on github.io" # used by search engines
 
-  # Header and footer text
-  header_text: >
-     <p>wuxu的文字记录</p>
-
-     <p>一些组织的杂乱无章，估计只有我自己能看得懂了笔记<br/><small>对于Jekyll解析错误导致的排版错误没有再修改</small></p>
-  footer_text: >
-   Powered by <a href="http://wuxu92.github.io">wuxu92</a> with <a href="https://rohanchandra.github.io/project/type/">Type Theme</a>
-
-  # Icons
-  rss: false
-  email_address: "wuxu92@gmail.com"
-  behance:
-  bitbucket:
-  dribbble:
-  facebook: "wuuxuu"
-  flickr:
-  github: "wuxu92"
-  google_plus:
-  instagram:
-  linkedin:  # Full URL
-  pinterest:
-  reddit:
-  soundcloud:
-  stack_exchange:  # Full URL
-  steam:
-  tumblr:
-  twitter: "wuxu92"
-  wordpress:
-  youtube: "wuxu92"
-
-  # Scripts
-  google_analytics: # Tracking ID, e.g. "UA-000000-01"
-  disqus_shortname:
-  katex: true # Enable if using math markup
-
-  # Localization strings
-  str_follow_on: "Follow on"
-  str_rss_follow: "Follow RSS feed"
-  str_email: "Email"
-  str_next: "Next"
-  str_prev: "Prev"
-  str_continue_reading: "Continue reading"
-
-  # Colours, typography and padding
-  # Open the "_sass > base" folder, and open "_variables.scss"
-
-# PAGINATION
-paginate: 10
-paginate_path: "blog/page:num"
-
-# BUILD SETTINGS
+# Jekyll Settings
 markdown: rdiscount
-highlighter: pygments
-highlight: light
 pygments: true
-sass:
-  sass_dir: _sass
-  style: :compressed
+paginate: 6
+paginate_path: /page:num
+permalink: /:title
+baseurl: /blog/
+#lsi: true
+
+# Disqus Comments
+disqus_short_name: wuxu
+disqus_show_comment_count: true
+
+# site
+title: wuxu's blog
+url: http://wuxu.github.com
+feed: /atom.xml
+
+# color scheme
+highlight: light
+
 # author
 author_name: wuxu
 author_email: wuxu92@gmail.com
-author_info: <a href="http://wuxu92.github.com">Wuxu</a>
+author_info: <a href="http://wuxu92.github.com">wuxu92</a>
