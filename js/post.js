@@ -296,7 +296,7 @@ $(document).ready(function(){
 
     $(window).on("load", function(){
         
-        //评论自动展开  by hahaya
+        //评论自动展开
         isMobile.any() || $(".comment").trigger("click");
 
         // 添加百度分享
