@@ -1,6 +1,6 @@
 ---
 layout: post
-title: hahaya-vim
+title: vim
 description: 有没有觉得管理vim插件很麻烦，那么你需要它。
 category: project
 tags: vim
