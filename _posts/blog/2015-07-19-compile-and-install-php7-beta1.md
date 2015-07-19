@@ -11,7 +11,7 @@ publish: true
 
 之前在鸟哥的博客里看到了他们做的PHP的性能测试，相对于PHP5.6都是有很大的提升的，并且PHP的主版本号已经是2004年发布PHP5后，11年来首次更新，肯定PHP７是有很大的改变的，下面那就来试试PHP7的beta版吧，正式版大概在今年年底会发布。
 
-### 下载源码 ###
+## 下载源码 ##
 测试版本的PHP下载页面： https://downloads.php.net/~ab/
 php7 beta1: https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz
 
@@ -27,7 +27,7 @@ tar xzvf php-7.0.0beta1.tar.gz
 cd php-7.0.0beta1/
 ```
 
-### 安装必要的工具 ###
+## 安装必要的工具 ##
 
 ```
 sudo yum install -y gcc gcc-c++  make zlib zlib-devel pcre pcre-devel  libjpeg libjpeg-devel \
@@ -39,7 +39,7 @@ sudo yum install -y gcc gcc-c++  make zlib zlib-devel pcre pcre-devel  libjpeg l
 ```
 这里面可能有一些已经安装过了，或者其实不是不需要的，因为一些功能我们可能会在编译时排除掉，但是像libxml2, zlib, freetype, bzip2, curl,curl-devel, openssl这些常用的包还是装上比较好，
 
-### 配置编译选项 ###
+## 配置编译选项 ##
 configure脚本参数，使用下面的配置，编译的php基本就满足使用了：
 
 ```
@@ -90,7 +90,7 @@ configure脚本参数，使用下面的配置，编译的php基本就满足使�
 2. mysql相关的配置加上
 3. curl, fpm相关的要enable
 
-### 编译安装 ###
+## 编译安装 ##
 这步非常简单
 
 ```
@@ -99,7 +99,7 @@ sudo make install
 ```
 如果安装路径是root权限的话，需要```sudo make install```， 因为安装需要创建新的文件
 
-### 配置文件 ###
+## 配置文件 ##
 机器不是很旧的话，编译和安装都是比较快的，安装完后需要设置一下配置文件，假设我们的安装路径是```/data/php7/```，在php7源码的解压目录运行下面的命令:
 
 ```
@@ -115,4 +115,4 @@ sudo cp /data/php7/etc/php-fpm.d/www.conf.default /data/php7/etc/php-fpm.d/www.c
 sudo chmod +x  /etc/init.d/php7-fpm
 ```
 
-### 完 ###
+## 完 ##
