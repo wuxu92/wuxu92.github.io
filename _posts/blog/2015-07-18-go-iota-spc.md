@@ -11,6 +11,8 @@ publish: true
 
 Within a constant declaration, the predeclared identifier iota represents successive untyped integer constants. It is reset to 0 whenever the reserved word const appears in the source and increments after each ConstSpec. It can be used to construct a set of related constants:
 
+## 示例1 ##
+
 ```
 const (  // iota is reset to 0
 	c0 = iota  // c0 == 0
@@ -35,6 +37,8 @@ const y = iota  // y == 0 (iota has been reset)
 ```
 
 Within an ExpressionList, the value of each iota is the same because it is only incremented after each ConstSpec:
+
+## 示例2 ##
 
 ```
 const (
