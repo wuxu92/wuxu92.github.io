@@ -1,10 +1,10 @@
-##hahaya's blog
+##wuxu's blog
 
-欢迎踩点我的博客：[http://hahaya.github.com](http://hahaya.github.com "hahaya's Blog")，Hack in code...
+Blog from hahaya ...
 
 
 ##Contact me
-__Gmail:__ [hahayacoder@gmail.com](mailto:hahayacoder@gmail.com)
+__Gmail:__ [wuxu92@gmail.com](mailto:wuxu92@gmail.com)
 
 
 
