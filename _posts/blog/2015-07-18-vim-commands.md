@@ -30,7 +30,6 @@ publish: true
 ```
 :args 列出参数列表或者设置参数列表
 :args **/*.postfix
-
 :write :w
 :edit! :e!放弃修改重新载入文件
 :qall :qa
