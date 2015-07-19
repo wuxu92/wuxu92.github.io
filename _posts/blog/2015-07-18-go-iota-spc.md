@@ -3,7 +3,7 @@ layout: post
 title: Golang 中iota的用法
 description:  Golang中可以使用iota方便的定义复杂的常量结构，下面是golang spec中的说明
 category: blog
-tags: golang
+tags: golang lang
 publish: true
 ---
 
