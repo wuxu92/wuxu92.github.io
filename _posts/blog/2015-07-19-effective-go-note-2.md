@@ -130,4 +130,3 @@ func (c Chan) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(w, "request received")
 }
 ```
-
