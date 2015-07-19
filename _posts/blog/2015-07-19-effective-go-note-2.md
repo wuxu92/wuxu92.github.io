@@ -1,12 +1,13 @@
 ---
 layout: post
 title: Effective Go笔记: 方法，接口与其他类型
-description:  Effective Go笔记第二部分
+description:  effective go 中的部分笔记，这是第二部分
 category: blog
 tags: golang effective
 publish: true
-
 ---
+
+{{ page.description }} 
 
 部分笔记摘要,参考： https://go-zh.org/doc/effective_go.html
 
