@@ -37,7 +37,7 @@ sudo yum install -y gcc gcc-c++  make zlib zlib-devel pcre pcre-devel  libjpeg l
 	openldap openldap-devel nss_ldap openldap-clients openldap-servers \
 	php-mysqlnd libmcrypt-devel  libtidy libtidy-devel recode recode-devel
 ```
-这里面可能有一些已经安装过了，或者其实不是不需要的，因为一些功能我们可能会在编译时排除掉，但是想libxml2, zlib, freetype, bzip2, curl,curl-devel, openssl这些常用的包还是装上比较好，
+这里面可能有一些已经安装过了，或者其实不是不需要的，因为一些功能我们可能会在编译时排除掉，但是像libxml2, zlib, freetype, bzip2, curl,curl-devel, openssl这些常用的包还是装上比较好，
 
 ### 配置编译选项 ###
 configure脚本参数，使用下面的配置，编译的php基本就满足使用了：
