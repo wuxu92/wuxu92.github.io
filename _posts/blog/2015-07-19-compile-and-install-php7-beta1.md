@@ -3,7 +3,7 @@ layout: post
 title: 编译安装PHP7 beta1
 description: 前段时间去php.net上闲逛发现PHP7的beta1版本出来了，就尝试着编译安装了一下
 category: blog
-tags: php lang
+tags: php lang php7
 publish: true
 ---
 
