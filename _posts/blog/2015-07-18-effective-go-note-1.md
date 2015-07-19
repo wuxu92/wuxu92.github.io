@@ -10,7 +10,7 @@ publish: true
 {{ page.description }} 
 
 
-部分笔记摘要,参考： https://go-zh.org/doc/effective_go.html
+部分笔记摘要,参考： [https://go-zh.org/doc/effective_go.html](https://go-zh.org/doc/effective_go.html "https://go-zh.org/doc/effective_go.html")
 
 
 ## 函数 ##
