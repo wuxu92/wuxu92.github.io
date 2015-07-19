@@ -1,3 +1,3 @@
-Sitemap: http://hahaya.github.com/sitemap.xml
+Sitemap: http://wuxu92.github.io/sitemap.xml
 User-agent: *
 Allow: /
