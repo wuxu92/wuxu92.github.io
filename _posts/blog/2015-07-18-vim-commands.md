@@ -14,7 +14,7 @@ publish: true
 !ls  使用感叹号开头调用系统命令
 ```
 
-### buffer相关 ###
+## buffer相关 ##
 
 ```
 :ls
@@ -25,7 +25,7 @@ publish: true
 :bufdo cmd 在所有缓冲区执行命令
 ```
 
-### 参数列表 ###
+## 参数列表 ##
 
 ```
 :args 列出参数列表或者设置参数列表
@@ -36,7 +36,7 @@ publish: true
 :wall :wa
 ```
 
-### 多窗口 ###
+## 多窗口 ##
 
 ```
 :sp [file] 水平分割
@@ -62,7 +62,7 @@ publish: true
 [n]<C-w>|
 ```
 
-### 标签 ###
+## 标签 ##
 
 ```
 :tabedit :tabe {filename} 如果filename为空则打开一个新的标签页
@@ -78,7 +78,7 @@ publish: true
 :tabp gT
 :tabmove [N] 移动标签页
 ```
-### 打开及保存文件 ###
+## 打开及保存文件 ##
 
 ```
 :edit full/path/name
