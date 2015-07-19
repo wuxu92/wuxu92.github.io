@@ -13,12 +13,12 @@ baseurl: /
 #lsi: true
 
 # Disqus Comments
-disqus_short_name: wuxu
+disqus_short_name: wuxu92
 disqus_show_comment_count: true
 
 # site
 title: wuxu's blog
-url: http://wuxu.github.com
+url: http://wuxu92.github.com
 feed: /atom.xml
 
 # color scheme
