@@ -4,7 +4,7 @@ title: Effective Go笔记: 方法，接口与其他类型
 description:  effective go 中的部分笔记，这是第二部分
 category: blog
 tags: golang lang
-publish: true
+published: true
 ---
 
 {{ page.description }} 
