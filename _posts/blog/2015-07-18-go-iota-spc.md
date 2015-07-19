@@ -4,10 +4,10 @@ title: Golang 中iota的用法
 description:  Golang中可以使用iota方便的定义复杂的常量结构，下面是golang spec中的说明
 category: blog
 tags: golang lang
-publish: true
+publishe: true
 ---
 
-{{page.description}}
+{{ page.description }}
 
 Within a constant declaration, the predeclared identifier iota represents successive untyped integer constants. It is reset to 0 whenever the reserved word const appears in the source and increments after each ConstSpec. It can be used to construct a set of related constants:
 
