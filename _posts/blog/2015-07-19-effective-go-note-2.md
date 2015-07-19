@@ -9,7 +9,7 @@ publish: true
 
 {{ page.description }} 
 
-部分笔记摘要,参考： https://go-zh.org/doc/effective_go.html
+部分笔记摘要,参考： [https://go-zh.org/doc/effective_go.html](https://go-zh.org/doc/effective_go.html "https://go-zh.org/doc/effective_go.html")
 
 ## 方法/Methods ##
 与一般的面向对象语言不同；一般的面向对象语言定义类，然后在类中定义属性和方法，通过类的继承来抽象一套机制，但是在Go中，首先是定义结构，然后为已经命名的结构（除了指针或接口）定义方法，这里有一个方法接收者的概念，为一个结构体绑定方法的常用用法如下：
