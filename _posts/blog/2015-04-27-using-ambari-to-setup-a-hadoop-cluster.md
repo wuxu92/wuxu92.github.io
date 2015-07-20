@@ -4,7 +4,7 @@ title: 使用ambari搭建并管理一个hadoop集群
 description: 
 category: blog
 tags: bigdata hadoop
-publish: true
+published: true
 ---
 
 这部分包含的内容：
@@ -136,12 +136,15 @@ Ambari架构采用的是Server/Client的模式，主要组件：ambari-agent、a
 	
 	sudo service thp stop
 	sudo chkconfig thp off
+
 3.磁盘空间不足。如果虚拟机使用的自动增长模式，很可能会导致这个问题，要求/目录下剩余容量不能小于2G，如果过少的，可以清理yum的缓存，或者删掉其他一些缓存、临时文件试试
+
 4.各个节点之间通信的问题。第一次操作很容易碰到这个问题，主要主机名，hosts文件是否配置正确
 
 后面的操作好像没有什么需要注意的了，安装完之后可能会有服务起不来的情况，这个第一次很容易碰到，具体原因很复杂，得自己分析报错的日志。
 
 下面是我们遇到的一些奇怪的问题：
+
 1. 节点的hosts文件配置了主机名到127.0.0.1。这会导致节点之间通信失败，其原因是这行hosts导致组件的端口监听绑定到了127.0.0.1而不是ip或者0.0.0.0，所以其他节点没法连接到这个节点。
 2. 其他，不记得了。
 
