@@ -1,4 +1,3 @@
-date: 2015-07-20 10:40:45
 ---
 layout: post
 title: Effective Go笔记：空白标识符，接口检查与内嵌

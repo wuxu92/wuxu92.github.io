@@ -1,4 +1,3 @@
-date: 2015-07-20 17:23:12
 ---
 layout: post
 title: Effective Go笔记：并发
