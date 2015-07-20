@@ -1,3 +1,4 @@
+date: 2015-07-20 12:20:40
 ---
 layout: post
 title: Go 快速拼接字符串

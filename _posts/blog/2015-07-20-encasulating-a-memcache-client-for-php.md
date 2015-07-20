@@ -1,3 +1,4 @@
+date: 2015-07-20 13:40:45
 ---
 layout: post
 title: 为PHP封装一个Memcache类

@@ -1,3 +1,4 @@
+date: 2015-07-20 23:40:45
 ---
 layout: post
 title: CentOS 编译安装vim 7.4添加Lua支持
