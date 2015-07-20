@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Go 快速拼接字符串
-description:  对于频繁的字符串操作，可以使用bytes.Buffer接口提供的方法快速凭借
+description:  对于频繁的字符串操作，可以使用bytes.Buffer接口提供的方法快速拼接
 category: blog
 tags: golang lang
 published: true
