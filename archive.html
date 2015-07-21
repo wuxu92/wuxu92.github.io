@@ -4,6 +4,9 @@ title: Archive
 permalink: /archive/
 NotLoadComment: true
 ---
+<style type="text/css" media="screen">
+    .listing-seperator { margin-top: 30px;}
+</style>
 
 <form class="page-loc" style="margin:0;margin-top:40px;" method="GET" action="/search">
     <span style="float:right"><input type="text" class="web-search" name ="q" placeholder="站内搜索" /><a href="/about.html">关于</a><a href="/atom.xml" class="page-rss" style="margin-left: 20px;">订阅</a></span>
@@ -11,16 +14,20 @@ NotLoadComment: true
 </form>
 <p></p>
 <div class="archive"  style="padding: 25px 15px;">
-    <ul class="posts">
+    <ul class="posts cate-list">
         {% for post in site.posts %}
         {% capture m %}{{post.date | date:"%m"}}{% endcapture %}
         {% if month != m %}
         {% assign month = m %}
         <li class="listing-seperator"><h3>{{ post.date | date:"%Y-%m" }}</h3></li>
         {% endif %}
-        <li class="listing-item">
+        <!-- <li class="listing-item">
         <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
         <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+        </li> -->
+        <li>
+            <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date_to_string }}</time> » 
+            <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
         </li>
         {% endfor %}
     </ul>
