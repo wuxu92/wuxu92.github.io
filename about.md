@@ -4,7 +4,7 @@ title: about
 ---
 <div id="content" class="aboutMe">
 <form class="page-loc" method="GET" action="/search">
-	<span style="float:right"><input type="text" class="web-search" name ="q" value="站内搜索" /><a href="/atom.xml" class="page-rss" style="margin-left: 20px;">订阅</a></span>
+	<span style="float:right"><input type="text" class="web-search" name ="q" placeholder="站内搜索" /><a href="/atom.xml" class="page-rss" style="margin-left: 20px;">订阅</a></span>
   	wuxu's blog » 关于我
 </form>
 <dl class="aboutDl">
