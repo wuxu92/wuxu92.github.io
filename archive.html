@@ -9,8 +9,8 @@ NotLoadComment: true
     <span style="float:right"><input type="text" class="web-search" name ="q" value="站内搜索" /><a href="/about.html">关于</a><a href="/atom.xml" class="page-rss" style="margin-left: 20px;">订阅</a></span>
     Blog » Categories
 </form>
-
-<div class="archive">
+<p></p>
+<div class="archive"  style="padding: 25px 15px;">
     <ul class="posts">
         {% for post in site.posts %}
         {% capture m %}{{post.date | date:"%m"}}{% endcapture %}
