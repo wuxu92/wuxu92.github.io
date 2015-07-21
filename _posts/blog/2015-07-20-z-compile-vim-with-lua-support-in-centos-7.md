@@ -1,7 +1,7 @@
 ---
 layout: post
 title: CentOS 编译安装vim 7.4添加Lua支持
-description:  一些vim插件需要提供Lua支持，特别是常见的补全插件，前段时间安装的yadr工具的补全也经常提示Vim需要Lua支持，搜了一些文章，终于在CentOS7下编译成功了
+description:  一些vim插件需要提供Lua支持，特别是常见的补全插件，前段时间安装的[yadr](https://github.com/skwp/dotfiles)工具的补全也经常提示Vim需要Lua支持，搜了一些文章，终于在CentOS7下编译成功了
 category: blog
 tags: vim tool linux
 published: true
@@ -10,7 +10,7 @@ published: true
 {{ page.description }} 
 
 ## 下载源码 ##
-首先，编译安装嘛，先下载源码， 可是呢这两sourceforge挂掉了，vim是托管在sf上的，导致下载页面也不能反问了，甚至vim的官网 www.vim.org 也不能访问了，幸好vim在github上有一个备份  [https://github.com/vim/vim](https://github.com/vim/vim "https://github.com/vim/vim") 或者直接访问vim.org的ftp站： [ftp://ftp.vim.org/pub/vim/unix/](ftp://ftp.vim.org/pub/vim/unix/ "ftp://ftp.vim.org/pub/vim/unix/")
+首先，编译安装嘛，先下载源码， 可是呢这两sourceforge挂掉了，vim是托管在sf上的，导致下载页面也不能访问了，甚至vim的官网 www.vim.org 也不能访问了，幸好vim在github上有一个备份  [https://github.com/vim/vim](https://github.com/vim/vim "https://github.com/vim/vim") 或者直接访问vim.org的ftp站： [ftp://ftp.vim.org/pub/vim/unix/](ftp://ftp.vim.org/pub/vim/unix/ "ftp://ftp.vim.org/pub/vim/unix/")
 
 ```
 // 使用下面之一的方法下载源码
@@ -23,7 +23,7 @@ tar xzvf vim-7.4.tar.bz2
 cd vim74
 ```
 ## 编译 ##
-vim的编译器其实很简单，就configure->make->make install 这样的流程。但是要添加 Lua支持，就有一些麻烦了。
+vim的编译其实很简单，就configure->make->make install 这样的流程。但是要添加 Lua支持，就有一些麻烦了。
 
 configure的配置大概是这样的：
 
@@ -31,7 +31,7 @@ configure的配置大概是这样的：
 ./configure --prefix=/data/vim74 --with-features=huge --with-luajit --enable-luainterp=yes 
 ```
 
-首先如果不再 configure配置那手动打开 ```--enable-fail-if-missing``` 这个选项，你会发现，configure没有问题，make没有问题，make install也OK，但是运行生成的vim： ``` vim --version```会发现Lua前面还是一个"-"（表示没有Lua支持）
+首先如果不在 configure配置那手动打开 ```--enable-fail-if-missing``` 这个选项，你会发现，configure没有问题，make没有问题，make install也OK，但是运行生成的vim： ``` vim --version```会发现Lua前面还是一个"-"（表示没有Lua支持）
 因为其实configure那根本就没有找到lua的支持，只是默认跳过了 ```--enable-luainterp=yes ``` 选项。。。
 所以应该这样运行configure：
 
@@ -53,13 +53,13 @@ luajit不在centos的官方repo里面，我们需要编译安装;
 wget http://luajit.org/download/LuaJIT-2.0.4.tar.gz
 tar -xzvf LuaJIT-2.0.4.tar.gz
 cd LuaJIT-2.0.4
-// 使用默认安装
+// 使用默认安装路径
 make
 sudo make install
 ```
 
 ## 编译安装 ##
-安装好lua支持后，在运行configure就不会报错了
+安装好lua支持后，再运行configure就不会报错了
 
 ```
 ./configure --prefix=/data/vim74 --with-features=huge --with-luajit --enable-luainterp=yes --enable-fail-if-missing
