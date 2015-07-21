@@ -17,8 +17,8 @@ disqus_short_name: wuxu92
 disqus_show_comment_count: true
 
 # site
-title: wuxu's blog
-url: http://wuxu92.github.com
+title: wuxu
+url: http://wuxu92.github.io
 feed: /atom.xml
 
 # color scheme
@@ -27,4 +27,4 @@ highlight: light
 # author
 author_name: wuxu
 author_email: wuxu92@gmail.com
-author_info: <a href="http://wuxu92.github.com">wuxu92</a>
+author_info: <a href="http://wuxu92.github.io">wuxu92</a>
