@@ -4,16 +4,24 @@ title: Archive
 permalink: /archive/
 NotLoadComment: true
 ---
-<ul class="posts">
-    {% for post in site.posts %}
-    {% capture m %}{{post.date | date:"%m"}}{% endcapture %}
-    {% if month != m %}
-    {% assign month = m %}
-    <li class="listing-seperator"><h3>{{ post.date | date:"%Y-%m" }}</h3></li>
-    {% endif %}
-    <li class="listing-item">
-    <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-    <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-    </li>
-    {% endfor %}
-</ul>
+
+<form class="page-loc" style="margin:0;margin-top:40px;" method="GET" action="/search">
+    <span style="float:right"><input type="text" class="web-search" name ="q" value="站内搜索" /><a href="/about.html">关于</a><a href="/atom.xml" class="page-rss" style="margin-left: 20px;">订阅</a></span>
+    Blog » Categories
+</form>
+
+<div class="archive">
+    <ul class="posts">
+        {% for post in site.posts %}
+        {% capture m %}{{post.date | date:"%m"}}{% endcapture %}
+        {% if month != m %}
+        {% assign month = m %}
+        <li class="listing-seperator"><h3>{{ post.date | date:"%Y-%m" }}</h3></li>
+        {% endif %}
+        <li class="listing-item">
+        <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+        <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
