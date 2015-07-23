@@ -4,9 +4,9 @@ title: about
 ---
 
 <style type="text/css" media="screen">
-    @media screen and (max-width: 720px) {
+    /*@media screen and (max-width: 720px) {
         .aboutMe {
-            width: 80%;
+            width: 85%;
         }
     }
     @media screen and (min-width: 720px) {
@@ -14,7 +14,11 @@ title: about
             width: 60%;
             padding-left: 30px;
         }
+    }*/
+    #content {
+        width: 85%;
     }
+
 </style>
 
 
