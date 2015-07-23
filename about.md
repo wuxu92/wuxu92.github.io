@@ -2,6 +2,22 @@
 layout: default
 title: about
 ---
+
+<style type="text/css" media="screen">
+    @media screen and (max-width: 720px) {
+        .aboutMe {
+            width: 80%;
+        }
+    }
+    @media screen and (min-width: 720px) {
+        .aboutMe {
+            width: 60%;
+            padding-left: 30px;
+        }
+    }
+</style>
+
+
 <div id="content" class="aboutMe">
 <form class="page-loc" method="GET" action="/search">
 	<span style="float:right"><input type="text" class="web-search" name ="q" placeholder="站内搜索" /><a href="/atom.xml" class="page-rss" style="margin-left: 20px;">订阅</a></span>
