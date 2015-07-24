@@ -11,16 +11,16 @@ published: true
 
 在制作一个API文档的侧边栏导航列表的时候，html大概是这样的
 
-```
-<div class="toc-macro absolute">
+
+	<div class="toc-macro absolute">
 	<ul class="toc-indentation">
 		<li><a href="#id-1">1. 绑定手机号</a></li>
 		<li><a href="#id-2">2. 查询手机号码是否可以绑定</a></li>
 		<li><a href="#id-3">3. 添加邮箱</a></li>
 		<li><a href="#id-4">4. 检查邮箱是否可以添加</a></li>
 	</ul>
-</div>
-```
+	</div>
+
 
 其他的样式就不具体写了，其实现的效果是在右侧边栏实现一个列表导航。一些主要的样式大概如下：
 
