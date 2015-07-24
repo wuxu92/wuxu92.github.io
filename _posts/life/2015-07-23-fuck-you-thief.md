@@ -4,7 +4,7 @@ title: 自行车被偷了，不开心
 description: 写完代码吃完饭，开开心心准备去看电影，尼玛车不见了。 i curse you theives to the gods below!!!
 category: life
 tags: life sad
-published: true
+published: false
 ---
 
 {{ page.description }}
