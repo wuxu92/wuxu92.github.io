@@ -74,7 +74,7 @@ yadr提供了
 - ```,qc``` 关闭quickfix,  qc => quickfix close， **有用**，yadr配置的vim在保存文件时会做语法检查，如果检查不通过会在quickfix窗口显示错误，并且不会自动消失，这时候也许需要 ```,qc```来关闭它。
 
 ## 其它常用 ##
-- 
+
 - ```Ctrl-p``` 循环历史剪切板，这个很有用，p是粘贴，Ctrl+p会粘贴之前的剪切板内容
 - ```,yr``` view yanking, 查看历史复制记录， ```q```退出查看
 - ```crs```, ```crc```, ```cru``` cr 应该是 coerce（强制）， s是snake, c是camelcase， u是UPPER，转换变量大小写下划线形式，比较有意思,可以使用```:help abolish ```查看更多
