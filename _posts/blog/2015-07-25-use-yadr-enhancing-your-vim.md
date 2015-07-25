@@ -25,9 +25,9 @@ yadr提供了
 
 ## 搜索与代码导航 ##
 
-```,f``` 跳转到类定
 
-- 义，需要系统安装了ctags，并创建tags file。
+
+- ```,f``` 跳转到类定义，需要系统安装了ctags，并创建tags file。
 
 > ctags是一个独立的软件，不包含在vim之中，使用yum安装即可，在项目目录下运行 ```ctags -R .``` 后会创建tags file，这是就可以使用跳转到定义的功能了。
 
@@ -35,7 +35,6 @@ yadr提供了
 - ```,gf```或者 ```ctrl+f``` 跳转到光标坐在变量名对应的文件，但是在一个新的分栏中显示，这在java中比较好用
 - ```gF``` 标准快捷键，打开文件
 - ```K``` 搜索光标所在单词，并在quickfix窗口显示结果，这个功能需要安装silver serach, ```sudo yum install -y the_silver_searcher ```
-- 
 - ```,K``` 没太多用，Grep the current word up to next exclamation point (useful for ruby foo! methods)
 - ```,hl``` 开关搜索结果的高亮，相当于 :set noh与其逆操作
 - ```,gg```或者```,ag```: 搜索，键入这个命令后，会出现一个输入符，在双引号中输入字符后回车会搜索包含这段字符的行
