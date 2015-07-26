@@ -1,7 +1,7 @@
 ---
 layout: post
 title: yadr中提供的vim快捷操作
-description:  github上面的活跃的dotfiles项目[yadr](https://github.com/skwp/dotfiles/)（yet another dotfiles repo）可以极大的提高你的终端特性，其中yadr为vim提供了非常多的插件，为了熟悉我们先学习一下一些简单的操作
+description:  github上面的活跃的dotfiles项目[yadr](https://github.com/skwp/dotfiles/)（yet another dotfiles repo）可以极大的丰富你的终端特性，其中yadr为vim提供了非常多的插件，为了熟悉我们先学习一下一些简单的操作
 category: blog
 tags: vim yadr linux
 published: true
