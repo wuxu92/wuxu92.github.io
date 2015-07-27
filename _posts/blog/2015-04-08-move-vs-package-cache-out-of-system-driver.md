@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 把Visual Studio的Package Cache文件夹移出C盘
+title: 把Visual Studio的Package Cache移出C盘
 description:  C盘空间不足时，会需要找各种方法删除不用的文件，把VS的cache文件挪出去是个不错的选择
 category: blog
 tags: windows tricks visual_studio
