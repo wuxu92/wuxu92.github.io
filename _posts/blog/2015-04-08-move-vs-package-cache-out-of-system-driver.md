@@ -1,6 +1,10 @@
 ---
 layout: post
-title: 移动Visual Studio的Package Cache文件夹
+title: 把Visual Studio的Package Cache文件夹移出C盘
+description:  C盘空间不足时，会需要找各种方法删除不用的文件，把VS的cache文件挪出去是个不错的选择
+category: blog
+tags: windows tricks visual_studio
+published: true
 ---
 
 最近有个项目需要用到VS，只好忍痛安装了VS3012 community update 4.说实话 **VS是个好东西**，虽然我选择安装在D盘，但是安装完后还是让我的C盘减少了近11G的空间。前几天好不容易才腾出来的一下C盘又变红了。
