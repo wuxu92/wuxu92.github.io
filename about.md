@@ -43,7 +43,7 @@ title: about
    </dd>
 </dl>
 <div class="footer">
-    <small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2013 - 202315 Modified by <a href="/about.html">wuxu</a> | <span class="label label-info">{{site.time | date:"%Y-%m-%d %H:%M:%S %Z"}}</span></small>
+    <small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2013 - 2015 Modified by <a href="/about.html">wuxu</a> | <span class="label label-info">{{site.time | date:"%Y-%m-%d %H:%M:%S %Z"}}</span></small>
 </div>
 </div>
 <script type="text/javascript">
