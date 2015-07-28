@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Go by Example 中值得注意的笔记
+title: Go by Example 中值得注意的点
 description:  gobyexample.com 是一个非常好的入门教程，里面有很多基础的知识，这里主要记录一些比较有“新意”的点
 category: lang
 tags: golang tricks
@@ -50,5 +50,25 @@ next()
 ```
 相比js的闭包，功能不是那么丰富，不过本质差不多。
 
+## 指针 ##
+Go提供了指针支持，允许传递值的引用。函数的参数可以是某种类型的指针。比如：
+
+```golang
+func zeroptr(i *int) {
+	*i = 0;
+}
+
+i := 1
+zeroptr(&i)
+```
+对于指针要理解星号（*）符号和引用符号（&）的作用。
+
+> Assigning a value to a dereferenced pointer changes the value at the referenced address.
+
+语法 ```&i```得到的是```i```的内存地址，也就是i的指针。也可能存在指向指针的指针。在函数体内部，```*i```将指针/内存地址 *解引用(dereferendes)*为地址指向的值。所以赋值语句为```*i=0```这中形式。
+
+##  ##
+
+## 待续 ##
 
 
