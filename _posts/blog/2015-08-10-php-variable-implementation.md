@@ -1,3 +1,12 @@
+---
+layout: post
+title: PHP变量在内核中的实现
+description:  PHP允许程序猿自由的使用变量而无须提前定义，甚至可以随时随意的对已存在的变量转换成其它任何PHP支持的数据类型。在程序在运行的时候，PHP还会自动的根据需求转换变量的类型。
+category: blog
+tags: php
+published: true
+---
+
 PHP本身是一种弱类型的语言，可以在程序中改变变量存储的值的类型。那么这些变量在PHP的底层是如何实现的呢，理解内核变中变量的实现机制将有利于我们理解PHP的变量系统。
 
 ## 变量的类型 ##
@@ -74,4 +83,63 @@ ZVAL_RESOURCE(pzv, res);	```Z_TYPE_P(pzv) = IS_RESOURCE;```
 Z_RESVAL_P(pzv) = res;
 
 ## 变量的存储方式 ##
+用户在PHP中定义的变量可以在一个HashTable中找到，当PHP中定义了一个变量，内核会自动把它的信息存储到一个用HashTable实现的符号表里。
+全局作用域的符号表在调用扩展的RINIT方法前创建，并且在RSHUTDOWN方法执行之后自动销毁。
 
+一个例子
+
+```
+<?php
+$foo = 'bar';
+?>
+```
+        
+上面是一段PHP语言的例子，我们创建了一个变量，并把它的值设置为'bar'，在以后的代码中我们便可以使用$foo变量。相同的功能我们怎样在内核中实现呢？我们可以先构思一下步骤：
+
+- 创建一个zval结构，并设置其类型。
+- 设置值为'bar'。
+- 将其加入当前作用域的符号表，只有这样用户才能在PHP里使用这个变量。
+
+
+具体的代码为：
+
+```
+{
+    zval *fooval;
+ 
+    MAKE_STD_ZVAL(fooval);
+    ZVAL_STRING(fooval, "bar", 1);
+    ZEND_SET_SYMBOL( EG(active_symbol_table) ,  "foo" , fooval);
+}
+```   
+首先，我们声明一个zval指针，并申请一块内存。然后通过ZVAL_STRING宏将值设置为‘bar’,最后一行的作用就是将这个zval加入到当前的符号表里去，并将其label定义成foo，这样用户就可以在代码里通过$foo来使用它了。
+
+## 变量的检索 ##
+在PHP中定义的变量，在内核中通过zend_hash_find()函数来找到当前作用域下用户定义好的变量。zend_hash_find是内核提供的操作hashTable的API之一。
+[http://www.walu.cc/phpbook/2.5.md](http://www.walu.cc/phpbook/2.5.md "http://www.walu.cc/phpbook/2.5.md")
+
+## 类型转换 ##
+我们可以通过符号表获取用户在PHP中定义的变量了，想想一下在PHP中的自动类型转换，它在底层C中是怎么实现的呢。
+内核中提供了很多函数专门来帮助实现类型转换，这类函数统一的形式为： ```convert_to_*()```
+
+```
+//将任意类型的zval转换成字符串
+void change_zval_to_string(zval *value)
+{
+    convert_to_string(value);
+}
+ 
+//其它基本的类型转换函数
+ZEND_API void convert_to_long(zval *op);
+ZEND_API void convert_to_double(zval *op);
+ZEND_API void convert_to_null(zval *op);
+ZEND_API void convert_to_boolean(zval *op);
+ZEND_API void convert_to_array(zval *op);
+ZEND_API void convert_to_object(zval *op);
+ 
+ZEND_API void _convert_to_string(zval *op ZEND_FILE_LINE_DC);
+#define convert_to_string(op) if ((op)->type != IS_STRING) { _convert_to_string((op) ZEND_FILE_LINE_CC); }
+```
+其中，convert_to_string其实是一个宏函数，调用的另外一个函数；另外没有convert_to_resource()的转换函数，因为资源的值在用户层面上，根本就没有意义，内核不会对它的值(不是指那个数字)进行转换。
+
+参考： [PHP变量在内核中的实现](http://www.walu.cc/phpbook/2.md "http://www.walu.cc/phpbook/2.md")
