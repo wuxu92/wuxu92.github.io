@@ -59,7 +59,7 @@ Array型变量的值其实是存储在C语言实现的HashTable中的， 我们�
 对象是一个复杂的结构体（zend_object_value结构体），不仅存储属性的定义、属性的值，还存储着访问权限、方法等信息。 内核中定义了以下组合宏让我们方便的操作对象： OBJ_HANDLE：返回handle标识符， OBJ_HT：handle表， OBJCE：类定义， OBJPROP：HashTable的属性， OBJ_HANDLER：在OBJ_HT中操作一个特殊的handler方法。
 资源型变量的值其实就是一个整数，可以用RESVAL组合宏来访问它，我们把它的值传给zend_fetch_resource函数，便可以得到这个资源的操作句柄，如mysql的链接句柄等。
 
-### 创建PHP变量 ###
+## 创建PHP变量 ##
 在内核中是如何创建zval的呢，PHP内核中提供了一个MAKE_STD_ZVAL(pzv)宏，它使用内核的方式类申请一块内存，并将其地址赋给pzv。这个宏能自动处理内存不足的问题。
 获取空间后，就可以给这个zval赋值了。旧的做法是先确定zval的类型：```Z_TYPE_P(pzv)=ISNULL``` 来设置其为null类型，再通过Z_SOMEVAL_P的宏类赋值：
 
