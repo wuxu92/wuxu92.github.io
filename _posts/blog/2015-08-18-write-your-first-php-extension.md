@@ -19,7 +19,7 @@ published: true
 
 1. 下载src： `wget http://cn2.php.net/get/php-5.6.12.tar.bz2/from/this/mirror` wget 下载的文件可能被命名为mirror，需要重命名一下 ```mv mirror php-5.6.12.tar.bz2```
 2. 解压： ```tar xjvf php-5.6.12.tar.bz2```
-3. ```cd php5.6.12``` 编译安装： ```./configure --prefix=/home/wuxu/data/php5.6/ --enable-debug --enable-maintainer-zts```
+3. ```cd php-5.6.12``` 编译安装： ```./configure --prefix=/home/wuxu/data/php5.6/ --enable-debug --enable-maintainer-zts```
 4. ```make```
 5. ```make install```
 6. ```make clean```
