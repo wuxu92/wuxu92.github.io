@@ -66,7 +66,7 @@ print confirm_mfs_compiled("myextension");
 //  
 // config.m4. Module mfs is now compiled into PHP."
 ```
-表名脚本已经编译到php了。下面我们就可以开始编写self_concat的具体内容了。
+表明脚本已经编译到php了。下面我们就可以开始编写self_concat的具体内容了。
 
 ## 起始代码 ##
 先看一下有ext_skel脚本自动生成的self_concat函数代码，在ext/mfs/mfs.c:76 
@@ -80,7 +80,7 @@ PHP_FUNCTION(self_concat)
 	long n;
 	if (zend_parse_parameters(argc TSRMLS_CC, "sl", &str, &str_len, &n) == FAILURE)
 		return;
-		php_error(E_WARNING, "self_concat: not yet implemented");
+	php_error(E_WARNING, "self_concat: not yet implemented");
 }
 ```
 这些代码是一个到处函数的基本框架了。
