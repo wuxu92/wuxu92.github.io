@@ -11,6 +11,7 @@ published: true
 参考： 
 [http://www.laruence.com/2009/04/28/719.html](http://www.laruence.com/2009/04/28/719.html "http://www.laruence.com/2009/04/28/719.html")
 [http://www.walu.cc/phpbook/5.md](http://www.walu.cc/phpbook/5.md "http://www.walu.cc/phpbook/5.md")
+
 首先我们从头安装一个PHP环境，现在最新的稳定版的PHP是5.6.12。
 
 ## 编译安装php ##
