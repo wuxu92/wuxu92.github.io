@@ -39,4 +39,5 @@ awk -F '[,-]' '{for(i=2;i<NF;i++) {printf("%s,%s\n", $1, $i)}}' mmid.csv > chann
 使用-F 设置两个分割参数，使用一个循环，其中NF是number of fields的简写，表名当前当有多少条记录，对应有NR，number of record
 
 3 完成
+
 使用awk处理excel/csv文件真的非常的方便
