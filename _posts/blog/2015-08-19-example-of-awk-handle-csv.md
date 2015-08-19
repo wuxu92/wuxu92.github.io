@@ -31,7 +31,8 @@ awk -F "," 'NR>1{printf("%s,%s\n", $1, $2)}' data.csv> mmid.csv
 ```
 NR代表当前的记录的数值，表示第几个记录了，这里忽略掉第一行。
 
-2 分割数据并创建新记录 
+2 分割数据并创建新记录
+
 ```bash
 awk -F '[,-]' '{for(i=2;i<NF;i++) {printf("%s,%s\n", $1, $i)}}' mmid.csv > channel_mmid.csv
 ```
