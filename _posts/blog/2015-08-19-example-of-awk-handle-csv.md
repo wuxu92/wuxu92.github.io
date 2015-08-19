@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 一个使用awk处理csv数据示例
-description: 
+description: 使用awk可以很方便的处理了csv文件，然后再倒入到数据库中
 category: blog
 tags: linux awk 
 published: true
