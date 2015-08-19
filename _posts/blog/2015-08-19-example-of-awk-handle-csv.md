@@ -41,3 +41,11 @@ awk -F '[,-]' '{for(i=2;i<NF;i++) {printf("%s,%s\n", $1, $i)}}' mmid.csv > chann
 3 完成
 
 使用awk处理excel/csv文件真的非常的方便
+
+4 扩展
+
+删除记录中的某一列
+
+```bash
+awk -F ',' 'BEGIN{OFS=","; } NR>1{str=""; for (i=1; i<=NF;i++) if (i != 2) str = str "," $i; print str}' channel-manage.csv > new-channel-manage.csv
+```
