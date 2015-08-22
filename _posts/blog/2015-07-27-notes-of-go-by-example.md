@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Go by Example 中值得注意的点(一)
-description:  gobyexample.com 是一个非常好的入门教程，里面有很多基础的知识，这里主要记录一些比较有“新意”的点
+description:  gobyexample.com 是一个非常好的入门教程，里面有很多基础的知识，这里主要记录一些比较有“新意”的点。这是第一部分，在后来又更新了接口，错误等部分
 category: lang
 tags: golang tricks
 published: true
