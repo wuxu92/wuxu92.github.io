@@ -101,3 +101,45 @@ func main() {
 ```
 
 ## 多路goroutine: select ##
+select用于从多个channel中轮询状态，从已经准备就绪的channel中接受值并执行相应的代码。select的语法和switch有点相似。请看代码：
+
+```
+import (
+	"math/rand",
+	"time"
+	"strconv"
+)
+
+func gr1(c chan string) {
+  dur := rand.Intn(300)
+  time.Sleep(time.Millisecond * time.Duration(dur))
+  c <- "gr1 sleep done " + strconv.Itoa(dur)
+}
+
+func gr2(c chan string) {
+  dur := rand.Intn(400)
+  time.Sleep(time.Millisecond * time.Duration(dur))
+  c <- "gr2 sleep done " + strconv.Itoa(dur)
+}
+
+func selects() {
+  c1 := make(chan string)
+  c2 := make(chan string)
+  go gr1(c1);
+  go gr1(c1);
+  go gr2(c2);
+  go gr2(c2);
+
+  for i:=0; i<4; i++ {
+    select {
+    case msg := <-c1:
+      fmt.Println(msg)
+    case msg2 := <-c2:
+      fmt.Println(msg2)
+    }
+  }
+}
+```
+要注意，channel的send与receive操作的个数必须是匹配的，否则会无限阻塞等待。
+
+
