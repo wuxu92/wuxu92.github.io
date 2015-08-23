@@ -142,4 +142,19 @@ func selects() {
 ```
 要注意，channel的send与receive操作的个数必须是匹配的，否则会无限阻塞等待。
 
+## 超时 ##
+在访问资源的代码中，我们常需要绑定一个超时时间，如果超过一段时间没有加载到资源，或者某个调用没有返回则需要做出相应的处理。
+一个例子就是在channel的接受操作，等待一定时间没有资源可以接受则执行预定代码。可以在select中添加一个超时：
+
+```
+select {
+case res <- c1 :
+	fmt.Println(res)
+case <-time.After(time.Seconde * 2)
+	fmt.Println("timeout")
+}
+```
+可以理解，time.After()是一个特殊的channel。
+
+## 非阻塞的channel操作 ##
 
