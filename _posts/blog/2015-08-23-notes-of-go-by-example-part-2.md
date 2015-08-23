@@ -157,4 +157,51 @@ case <-time.After(time.Seconde * 2)
 可以理解，time.After()是一个特殊的channel。
 
 ## 非阻塞的channel操作 ##
+在上面的例子里面，channel进行send/receive操作时，是阻塞的，有什么办法让channel的操作变得不是阻塞的呢，比如从一个channel中取数据，如果没有数据则直接执执行一个默认的操作，也不要想刚刚讨论的超时那样设置要给time.After().
 
+刚刚我们说了select的语法和switch很相似，那switch中有default可以用来指定当所有case不没有match到的情况，select是不是也有呢？答案是肯定的。
+
+我们可以为select操作添加一个default分支。一般在所有case之后。这样在所有case的channel都没有就绪的时候执行default的分支代码。
+
+```
+select {
+case msg := <-c1:
+  fmt.Println(msg)
+case msg2 := <-c2:
+  fmt.Println(msg2)
+default:
+  // non-blocking channel
+  fmt.Println("select default")
+}
+```
+
+## 关闭channel ##
+关闭一个channel意味着不再有数据发送到channel中，这在给接收者一个通信完成的信号时是很有用的。
+关闭channel的操作很简单，直接调用```close(chan)```方法即可（在所有数据被发送完后调用close）。
+在channel的接受操作时，其实可以指定两个变量:
+
+```
+msg, more := <- msgChannel
+```
+如果channel被关闭了，则more被赋值为false，否则more的值为true。 可以用```_, more := <- channel``` 判断一个channel是否被关闭了。
+
+## range over channels ##
+可以使用range遍历一个channel中的元素。使用方法也很简单
+
+```
+func rangeChannel() {
+  c := make(chan string, 2)
+  c <- "tomorrow is monday"
+  c <- "fee out"
+  close(c)
+  for str := range c {
+    fmt.Println(str)
+  }
+}
+```
+要注意，对于一个close了得channel，range能自动判断是否遍历结束，但是如果channel没有调用过close，在上面的代码中，会在接受第三个值的时候阻塞。
+
+## 待续 ##
+*第二部分结束* 
+
+last update: 2015-08-23 10:38:00
