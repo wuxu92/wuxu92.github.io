@@ -74,7 +74,7 @@ func chanSync() {
 我们可以在方法的定义的参数列表处指定channel参数的操作方式为发送或者接受，因为一般发送是一个逻辑，接受是一个逻辑，通常不会把两个操作放在一起，指定某个函数的操作模式可以起到“代码即文档”的作用。比如上面的working函数：
 
 ```go
-func working (flafChan chan<- bool) { ... }
+func working (flagChan chan<- bool) { ... }
 
 func recv (flagChan <-chan bool) { ... }
 ```
@@ -105,7 +105,7 @@ select用于从多个channel中轮询状态，从已经准备就绪的channel中
 
 ```
 import (
-	"math/rand",
+	"math/rand"
 	"time"
 	"strconv"
 )
@@ -125,10 +125,10 @@ func gr2(c chan string) {
 func selects() {
   c1 := make(chan string)
   c2 := make(chan string)
-  go gr1(c1);
-  go gr1(c1);
-  go gr2(c2);
-  go gr2(c2);
+  go gr1(c1)
+  go gr1(c1)
+  go gr2(c2)
+  go gr2(c2)
 
   for i:=0; i<4; i++ {
     select {
