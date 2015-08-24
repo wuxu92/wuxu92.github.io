@@ -71,7 +71,7 @@ for w:=0; w<5; w++ {
   go func(w int, jobs <-chan int, result chan<- int) {
     for j:= range jobs {
       fmt.Println("worker", w, "processing on", j)    
-      time.Sleep(time.Millisecond * time.Duration(rand.Intn(600))) // sleep a random time              
+      time.Sleep(time.Millisecond * time.Duration(rand.Intn(600))) // sleep a random time
       result <- j * 2
     }
   }(w, jobs, result)
