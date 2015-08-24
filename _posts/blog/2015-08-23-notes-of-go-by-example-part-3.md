@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Go by Example： Timer & Ticker(三)
+title: Go by Example(三)： Timer & Ticker
 description:  gobyexample.com 是一个非常好的入门教程，里面有很多基础的知识，这里主要记录一些比较有“新意”的点。这是第三部分。这些笔记记得越来越细了，本来只打算记一些比较有新意的东西的，现在想记就记了。
 category: lang
 tags: golang tricks
@@ -28,7 +28,7 @@ t2 := time.NewTimer(time.Second * 1)
 go func() {
 	<- t2.C
 	... // other code
-}
+}()
 stop2 := t2.Stop()
 ```
 实际上在上面的代码中，other code部分**不会被执行**，因为goroutine中的t2在主函数中被stop了， <-t2.C 没有机会到达expire点。
