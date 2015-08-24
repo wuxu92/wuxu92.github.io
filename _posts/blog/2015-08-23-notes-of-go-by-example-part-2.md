@@ -199,7 +199,7 @@ func rangeChannel() {
   }
 }
 ```
-要注意，对于一个close了得channel，range能自动判断是否遍历结束，但是如果channel没有调用过close，在上面的代码中，会在接受第三个值的时候阻塞。
+要注意，对于一个close了得channel，range能自动判断是否遍历结束，但是如果channel没有调用过close，在上面的代码中，会在接受第三个值的时候阻塞(异常退出)。
 
 ## 待续 ##
 *第二部分结束* 
