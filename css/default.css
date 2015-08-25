@@ -1,7 +1,3 @@
-/**
- * Author:           hahaya
- * Contact:          http://hahaya.github.com
- */
 
 /* 重置浏览器CSS */
 html{color:#000;}
@@ -112,7 +108,7 @@ table td, table th {
 
 
 
-#content {width:680px;margin:60px auto 20px;*padding-top:40px;min-height:400px;height:auto !important;height:400px;position:relative;}
+#content {width:720px;margin:60px auto 20px;*padding-top:40px;min-height:400px;height:auto !important;height:400px;position:relative;}
 
 /****************entry style**************/
 #content .entry{margin-bottom:55px;}

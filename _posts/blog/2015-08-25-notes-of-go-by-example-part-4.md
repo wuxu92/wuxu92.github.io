@@ -32,6 +32,8 @@ mutex在操作系统中是很重要的一部分，在资源调度/分配中，�
 
 [https://gobyexample.com/mutexes](https://gobyexample.com/mutexes "https://gobyexample.com/mutexes")
 
+*待更新*
+
 ## goroutine的状态/stateful goroutine ##
 我们可以通过除斥锁来在多个goroutine共享状态，另外也可以通过go语言goroutine和channel的内置特性来实现。这种基于channel的实现方式，和goroutine通过通信来共享内存来确保一块数据只被唯一的一个goroutine所有的思路是一样的。
 
