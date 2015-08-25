@@ -277,14 +277,14 @@ figure p { text-align: center}
     height:13px;
 }
 ::-webkit-scrollbar-thumb {
-    background-color:#c2c2c2;
+    background-color:#D84D3A;
     background-clip:padding-box;
     border:1px solid #979797;
     min-height:28px;
 }
 ::-webkit-scrollbar-thumb:hover {
     border:1px solid #636363;
-    background-color:#929292;
+    background-color:#F54F38;
 }
 /*内容样式*/
 pre::-webkit-scrollbar {width:10px;height:10px;background:#F6F6F6;border-top:1px solid #CCC;padding-top:1px;}
