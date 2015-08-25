@@ -126,3 +126,5 @@ for r:= range reqChannel {
 ```
 这个模型的关键是，使用两个channel协同，一个用于处理速率的控制，一个用于请求的缓冲。使用一个goroutine不断的定时填充速率控制goroutine，而请求channel则用一个for-range不停行从里面取请求
 
+## 待续 ##
+*下一部分主要是原子性，同步与互斥*
