@@ -39,7 +39,7 @@ title: about
 
 	<dt>好友链接</dt>
 	<dd>
-        博客技术基础来自 <a href="hayaya.github.io">hayaya的github</a>
+        博客基础来自 <a href="http://hayaya.github.io" target="_blank">hayaya的github</a>
    </dd>
 </dl>
 <div class="footer">
