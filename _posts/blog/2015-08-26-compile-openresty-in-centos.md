@@ -37,7 +37,8 @@ make install
 
 可以使用nginx的service文件。 从这里下载一个nginx的initscript（把内容拷贝出来新建文件）。把脚本保存为nginx。
 
-```
+
+```bash
 #!/bin/sh
 #
 # nginx - this script starts and stops the nginx daemon
