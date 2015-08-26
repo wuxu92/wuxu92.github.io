@@ -85,6 +85,12 @@ configure脚本参数，使用下面的配置，编译的php基本就满足使�
      --with-xmlrpc \
     --with-mysqli=mysqlnd
 ```
+
+另一套configure
+
+```
+./configure --prefix=/data/php --with-config-file-path=/data/php/etc --with-mysql=mysqlnd --with-pdo-mysql=mysqlnd --with-mysqli=mysqlnd --with-gd --with-iconv --with-zlib --enable-xml --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --enable-mbregex --enable-fpm --enable-mbstring --enable-ftp --enable-gd-native-ttf --with-openssl --enable-pcntl --enable-sockets --with-xmlrpc --enable-zip --enable-soap --without-pear --with-gettext --enable-session --with-mcrypt --with-curl --with-jpeg-dir --with-freetype-dir --with-xpm-dir=/usr --with-bz2
+```
 可能在运行配置脚本的时候会报一些错误，一般是缺少一些包，分析一下，把缺少的包安装上就可以了。注意几点：
 
 1. 最好不要使用默认安装路径，加上 ```--prefix=/path/to/install``` 参数，毕竟这是beta版本的
