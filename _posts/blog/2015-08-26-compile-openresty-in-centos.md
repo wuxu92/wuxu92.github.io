@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 编译安装openresty
-description:  openresty是章亦春（agentzh）维护的项目，早期由淘宝网赞助，后来作者加入cloudflare公司后，也就有该公司支持了。这是一个扩展nginx的项目，在nginx的基础上添加很多作者开发的模块。该项目目前有很多公司在使用。
+description:  openresty是章亦春（agentzh）维护的项目，早期由淘宝网赞助，后来作者加入cloudflare公司后，也就由该公司支持了。这是一个扩展nginx的项目，在nginx的基础上添加很多作者开发的模块。该项目目前有很多公司在使用。
 category: post
 tags: nginx openresty linux web-server
 published: true
@@ -36,6 +36,7 @@ make install
 起始openresty就是一台nginx服务器，它的配置文件和nginx的配置文件是一样的配置的。在这里不细说，只是openresty安装完后并不能使用service/systemctl控制nginx的开启与关闭。
 
 可以使用nginx的service文件。 从这里下载一个nginx的initscript（把内容拷贝出来新建文件）。把脚本保存为nginx。
+
 ```
 #!/bin/sh
 #
@@ -181,6 +182,7 @@ sudo cp nginx /usr/lib/systemd/system/nginx.service
 # 然后重新载入systemctl
 sudo systemctl daemon-reload
 ```
+
 
 也可以参考： [http://matsumpter.com/blog/2014/openresty-centos-7-systemd-script/](http://matsumpter.com/blog/2014/openresty-centos-7-systemd-script/ "http://matsumpter.com/blog/2014/openresty-centos-7-systemd-script/")
 
