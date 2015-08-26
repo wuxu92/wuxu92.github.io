@@ -35,7 +35,7 @@ make install
 ## 配置 ##
 起始openresty就是一台nginx服务器，它的配置文件和nginx的配置文件是一样的配置的。在这里不细说，只是openresty安装完后并不能使用service/systemctl控制nginx的开启与关闭。
 
-可以使用nginx的service文件。 从这里下载一个nginx的initscript（把内容拷贝出来新建文件）。把脚本保存为nginx。
+可以使用nginx的service文件。 从[这里下载](http://wiki.nginx.org/InitScripts "http://wiki.nginx.org/InitScripts")一个nginx的initscript（把内容拷贝出来新建文件）。把脚本保存为nginx。
 
 
 ```bash
