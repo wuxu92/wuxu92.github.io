@@ -186,7 +186,7 @@ sudo systemctl daemon-reload
 ```
 
 ## 一点注意 ##
-我是在Windows下写好这个启动脚本再scp到服务器上的，然后在服务器 ```chmod +x```；运行```./nginx start``` 会报错 No such file or directory 。google之后得知这是Windows文件编码格式的问题。使用vim重新保存一下：
+我是在Windows下写好这个启动脚本再scp到服务器上的，然后在服务器 ```chmod +x```；运行```./nginx start``` 可能会报错 No such file or directory 。google之后得知这是Windows文件编码格式的问题。使用vim重新保存一下：
 
 ```
 vim nginx
