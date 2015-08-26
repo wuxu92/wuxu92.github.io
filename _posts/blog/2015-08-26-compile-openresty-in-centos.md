@@ -185,8 +185,19 @@ sudo cp nginx /usr/lib/systemd/system/nginx.service
 sudo systemctl daemon-reload
 ```
 
+## 一点注意 ##
+我是在Windows下写好这个启动脚本再scp到服务器上的，然后在服务器 ```chmod +x```；运行```./nginx start``` 会报错 No such file or directory 。google之后得知这是Windows文件编码格式的问题。使用vim重新保存一下：
 
-也可以参考： [http://matsumpter.com/blog/2014/openresty-centos-7-systemd-script/](http://matsumpter.com/blog/2014/openresty-centos-7-systemd-script/ "http://matsumpter.com/blog/2014/openresty-centos-7-systemd-script/")
+```
+vim nginx
+# ff ~ fileformat
+:set ff=unix
+:wq
+```
+
+参考： [http://www.cnblogs.com/pipelone/archive/2009/04/17/1437879.html](http://www.cnblogs.com/pipelone/archive/2009/04/17/1437879.html "http://www.cnblogs.com/pipelone/archive/2009/04/17/1437879.html")
+
+也参考： [http://matsumpter.com/blog/2014/openresty-centos-7-systemd-script/](http://matsumpter.com/blog/2014/openresty-centos-7-systemd-script/ "http://matsumpter.com/blog/2014/openresty-centos-7-systemd-script/")
 
 ## 后续 ##
 *关于nginx的配置*
