@@ -169,6 +169,7 @@ case "$1" in
         exit 2
 esac
 ```
+
 记得修改nginx运行程序目录和配置文件目录两项，可恶意吧start部分的make_dirs注释掉。。。如果不注释掉可能在```service nginx start```时输出一堆无用的信息。注释掉可以正常工作。
 
 对于centos 6的系统，把这个文件拷贝到init.d目录
