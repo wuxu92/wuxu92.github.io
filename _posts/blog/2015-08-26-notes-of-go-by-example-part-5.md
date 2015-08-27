@@ -73,7 +73,7 @@ func defers() {
   defer func(f *os.File) {
 	f.Close()
   }(f)  // 此函数在整个调用结束时调用
-  fmt.Println(f, "defer close file")
+  fmt.Fprintln(f, "defer close file")
   ...  // do others here
 }
 ```
