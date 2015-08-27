@@ -72,8 +72,12 @@ try_files $uri $uri/ /index.php?r=$uri&$args
 
 对于我们自己实现的框架可能有不同的路由方法，相应的修改try_files的策略就可以了。
 
+
+当然try_files的最后一个参数还可以更复杂，具体可以看nginx的参考文档。
+
 完。
 
 参考: 
+
 - [http://wiki.nginx.org/NginxHttpCoreModule#try_files](http://wiki.nginx.org/NginxHttpCoreModule#try_files "http://wiki.nginx.org/NginxHttpCoreModule#try_files")
 - [https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/](https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/ "https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/")
