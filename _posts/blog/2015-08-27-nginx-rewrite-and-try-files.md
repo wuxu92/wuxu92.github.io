@@ -76,4 +76,5 @@ try_files $uri $uri/ /index.php?r=$uri&$args
 
 参考: 
 [http://wiki.nginx.org/NginxHttpCoreModule#try_files](http://wiki.nginx.org/NginxHttpCoreModule#try_files "http://wiki.nginx.org/NginxHttpCoreModule#try_files")
+
 [https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/](https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/ "https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/")
