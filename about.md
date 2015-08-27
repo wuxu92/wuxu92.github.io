@@ -28,10 +28,10 @@ title: about
   	wuxu's blog » 关于我
 </form>
 <dl class="aboutDl">
-	<dd><strong>wuxu，</strong> code for what?</dd>
-	<dd><strong>weibo:</strong><a href="http://weibo.com/u/2446209193" target="_blank">@kiwi</a></dd>
-	<dd><strong>email:</strong><a href="mailto:wuxu92@gmail.com">wuxu92@gmail.com</a></dd>
-	<dd><strong>自述:</strong>学生，计算机科学与技术，PHP，Golang, MySQL, UX, JS, CSS; Java, C, Groovy; MongoDB, Redis, Memcached; Linux, CentOS, Fedora, Nginx; C#, WPF; Python, Zsh, Vim.</dd>
+	<dd><strong>wuxu, </strong>不学无术</dd>
+	<dd><strong>weibo: </strong><a href="http://weibo.com/u/2446209193" target="_blank">@kiwi</a></dd>
+	<dd><strong>email: </strong><a href="mailto:wuxu92@gmail.com">wuxu92@gmail.com</a></dd>
+	<dd><strong>自述: </strong>学生，计算机科学与技术，PHP，Golang, MySQL, UX, JS, CSS; Java, C, Groovy; MongoDB, Redis, Memcached; Linux, CentOS, Fedora, Nginx; C#, WPF; Python, Zsh, Vim.</dd>
 	<dd><strong>简历: </strong><a href="http://wuxu92.github.io/resume/" title="简历" target="_blank">http://wuxu92.github.io/resume/</a></dd>
 
 	<dt>关于博客</dt>
