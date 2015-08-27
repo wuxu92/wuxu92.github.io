@@ -50,7 +50,7 @@ try_files file ... = code
 ```
 try_files $uri $uri/ index.php
 ```
-下面简单解释一下，try_files顾名思义就是尝试读取文件，正是对于请求的脚本不存在的情况，给nginx一个尝试读取脚本的策略。第一个是```$uri```就是读取uri指定的文件，如果不存在就把请求的看作目录，查找目录下有没有默认index文件（一般配置为index.html, index.htm, index.php）;如果有则读取这个文件。对于try_files的最后一个参数，会作一个 内部重定向/fallback，这个内部重定向可以看作一个内部子请求，会重新被nginx配置match一边。注意，**只有最后一个参数会发起子请求**
+下面简单解释一下，try_files顾名思义就是尝试读取文件，正是对于请求的脚本不存在的情况，给nginx一个尝试读取脚本的策略。第一个是```$uri```就是读取uri指定的文件，如果不存在就把请求的看作目录，查找目录下有没有默认index文件（一般配置为index.html, index.htm, index.php）;如果有则读取这个文件。对于try_files的最后一个参数，会作一个 内部重定向/fallback，这个内部重定向可以看作一个内部子请求，会重新被nginx配置match一遍。注意，**只有最后一个参数会发起子请求**
 
 在我们的配置里面最后一个参数是index.php这样，会发起一轮新的match会被nginx配置里面的 ```location ~ .*\.(php|php5).*$ {}``` catch然后进行转发到php-fpm解析。
 当请求是静态文件时，因为能直接match的$uri，所以直接就返回静态文件的内容了，对于页面的请求就会转发到index.php.
@@ -75,5 +75,5 @@ try_files $uri $uri/ /index.php?r=$uri&$args
 完。
 
 参考: 
-http://wiki.nginx.org/NginxHttpCoreModule#try_files
-https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/
+[http://wiki.nginx.org/NginxHttpCoreModule#try_files](http://wiki.nginx.org/NginxHttpCoreModule#try_files "http://wiki.nginx.org/NginxHttpCoreModule#try_files")
+[https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/](https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/ "https://servers.ustclug.org/2014/09/nginx-try_files-fallacy/")
