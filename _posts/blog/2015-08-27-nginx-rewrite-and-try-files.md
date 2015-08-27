@@ -1,6 +1,6 @@
 ---
 layout: post
-title: nginx重定向的几点经验
+title: nginx重定向的几点[人生的]经验
 description:  现在越来越多的server使用nginx做前端，在使用php的项目中越来越多的使用单一入口文件，而且很多时候希望隐藏这个入口文件，生成一个漂亮而简洁的url。以前在apache下是使用一个独立的rewrite模块，或者使用.htaccess文件实现重定向，nginx中需要小小的配置一下。
 category: post
 tags: nginx linux
