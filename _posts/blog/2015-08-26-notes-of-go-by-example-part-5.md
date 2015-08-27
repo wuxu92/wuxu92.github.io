@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Go by Example(五)：  杂烩1
+title: Go by Example(五)：杂烩1
 description:  gobyexample.com 是一个非常好的入门教程，这一部分是个大杂烩，包括排序, panic, defer, collection, strings等。
 category: lang
 tags: golang tricks
@@ -142,3 +142,7 @@ go提供的fmt.Printf()方法可以用来格式化输出字符串，其格式化
 - 你也许也想控制字符串输出时的宽度，特别是要确保他们在类表格输出时的对齐。这是基本的右对齐宽度表示。 `fmt.Printf("|%6s|%6s|\n", "foo", "b")`
 - 要左对齐，和数字一样，使用 `-` 标志。 `fmt.Printf("|%-6s|%-6s|\n", "foo", "b")`
 
+## 正则表达式 ##
+*待补充*
+
+## JSON ##
