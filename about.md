@@ -28,7 +28,7 @@ title: about
   	wuxu's blog » 关于我
 </form>
 <dl class="aboutDl">
-	<dd><strong>wuxu, </strong>不学无术</dd>
+	<dd><strong>wuxu, </strong>不学无术, 划水中...</dd>
 	<dd><strong>weibo: </strong><a href="http://weibo.com/u/2446209193" target="_blank">@wuxu_92</a></dd>
 	<dd><strong>email: </strong><a href="mailto:wuxu92@gmail.com">wuxu92@gmail.com</a></dd>
 	<dd><strong>自述: </strong>学生，计算机科学与技术，PHP, Golang, MySQL, UX, JS, CSS; Java, C, Groovy; MongoDB, Redis, Memcached; Linux, CentOS, Fedora, Nginx, Git; C#, WPF; Python, Zsh, Vim.</dd>
