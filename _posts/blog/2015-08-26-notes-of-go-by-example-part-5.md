@@ -146,3 +146,39 @@ go提供的fmt.Printf()方法可以用来格式化输出字符串，其格式化
 *待补充*
 
 ## JSON ##
+*待补充*
+
+## Time ##
+前面已经使用过time包的内容了，go的time包提供了很多常用的时间相关方法，具体内容可以查看time的godoc： [http://golang.org/pkg/time/](http://golang.org/pkg/time/ "http://golang.org/pkg/time/") 
+time提供Duration类型，其基本类型是int64，用于表示一段时间的长短；time包还提供Location类型用于时区定位，还提供了时间变量格式化输出，并且内定义了一些常用时间格式化标准，用方法:
+
+```
+// 创建一个时间
+then := time.Date(2015, 8, 27, 0, 0, 0, 0, time.UTC)  // Universal Coordinated Time
+// 获取时间的值
+then.Year()
+then.Month()
+then.Day()
+then.Hour()
+then.Minute()
+then.Second()
+then.Nanosecond()
+then.Location()
+then.Weekday()
+// 时间运算
+now := time.Now()
+then.Before(now)
+then.After(now)
+then.Equal(now)
+diff := time.Duration(time.Second * 100)
+then.Add(diff)
+then.Add(-diff)
+```
+更多时间相关的方法，查阅godoc即可。
+
+## epoch/时间戳 ##
+time包提供了对unix时间戳的支持，在Time变量调用Unix方法即可放回该时间对应于unix epoch的秒数（unix_timestamp）。甚至还能获取毫秒，微秒数据。
+
+```
+nowSecond := time.Now().Unix()
+```
