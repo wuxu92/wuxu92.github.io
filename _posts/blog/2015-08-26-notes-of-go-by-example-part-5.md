@@ -181,4 +181,9 @@ time包提供了对unix时间戳的支持，在Time变量调用Unix方法即可�
 
 ```
 nowSecond := time.Now().Unix()
+// 还可以获取毫秒，微妙数据。
+  fmt.Printf("%d-%02d-%02dT %02d:%02d:%02d %04d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), now.Nanosecond()/1000000)
 ```
+
+
+
