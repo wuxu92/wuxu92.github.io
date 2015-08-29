@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Go by Example(五)：杂烩2
+title: Go by Example(六)：杂烩2
 description:  gobyexample.com 是一个非常好的入门教程，这一部分是个大杂烩，包括随机数，字符串与数字类型转换等。
 category: lang
 tags: golang tricks
