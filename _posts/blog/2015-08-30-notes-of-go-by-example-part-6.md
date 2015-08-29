@@ -10,7 +10,7 @@ lastUpdate: 2015-08-30
 
 
 ## 随机数/Rand ##
-在之前的联系中，已经使用过随机数相关的函数了，比如随机休眠N毫秒：
+在之前的练习中，已经使用过随机数相关的函数了，比如随机休眠N毫秒：
 
 ```
 time.Sleep(time.Milliseond * time.Duration(rand.Intn(500) ))
