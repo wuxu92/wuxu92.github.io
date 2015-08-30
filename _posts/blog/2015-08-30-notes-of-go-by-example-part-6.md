@@ -58,7 +58,7 @@ scheme://[username:password@]host/path?querystring#fragement_id
 ```
 其中的host包括domain和port。
 
-url包提供了把一个字符串鸡西成url，并提供访问上面各个部分的方法:
+url包提供了把一个字符串解析成url，并提供访问上面模式中各个元素的方法:
 
 ```
 import "net/url"
@@ -88,27 +88,28 @@ fmt.Println(query, query["from"][0])
 Go的crypto包及其子包中包括多种hash函数，我们最常用的MD5和SHA1都包含在里面。各种hash算法实现在各个子包中，比如md5在 ```crypto/md5```, sha1在 ```crypto/sha1```。
 子包列表和简介：
 
-```
-Name	Synopsis
-aes	Package aes implements AES encryption (formerly Rijndael), as defined in U.S. Federal Information Processing Standards Publication 197.
-cipher	Package cipher implements standard block cipher modes that can be wrapped around low-level block cipher implementations.
-des	Package des implements the Data Encryption Standard (DES) and the Triple Data Encryption Algorithm (TDEA) as defined in U.S. Federal Information Processing Standards Publication 46-3.
-dsa	Package dsa implements the Digital Signature Algorithm, as defined in FIPS 186-3.
-ecdsa	Package ecdsa implements the Elliptic Curve Digital Signature Algorithm, as defined in FIPS 186-3.
-elliptic	Package elliptic implements several standard elliptic curves over prime fields.
-hmac	Package hmac implements the Keyed-Hash Message Authentication Code (HMAC) as defined in U.S. Federal Information Processing Standards Publication 198.
-md5	Package md5 implements the MD5 hash algorithm as defined in RFC 1321.
-rand	Package rand implements a cryptographically secure pseudorandom number generator.
-rc4	Package rc4 implements RC4 encryption, as defined in Bruce Schneier's Applied Cryptography.
-rsa	Package rsa implements RSA encryption as specified in PKCS#1.
-sha1	Package sha1 implements the SHA1 hash algorithm as defined in RFC 3174.
-sha256	Package sha256 implements the SHA224 and SHA256 hash algorithms as defined in FIPS 180-4.
-sha512	Package sha512 implements the SHA-384, SHA-512, SHA-512/224, and SHA-512/256 hash algorithms as defined in FIPS 180-4.
-subtle	Package subtle implements functions that are often useful in cryptographic code but require careful thought to use correctly.
-tls	Package tls partially implements TLS 1.2, as specified in RFC 5246.
-x509	Package x509 parses X.509-encoded keys and certificates.
-pkix	Package pkix contains shared, low level structures used for ASN.1 parsing and serialization of X.509 certificates, CRL and OCSP.
-```
+
+|Name |	Synopsis |
+|-----|----------|
+|aes |	Package aes implements AES encryption (formerly Rijndael), as defined in U.S. Federal Information Processing Standards Publication 197. |
+|cipher |	Package cipher implements standard block cipher modes that can be wrapped around low-level block cipher implementations. |
+|des |	Package des implements the Data Encryption Standard (DES) and the Triple Data Encryption Algorithm (TDEA) as defined in U.S. Federal Information Processing Standards Publication 46-3. |
+|dsa |	Package dsa implements the Digital Signature Algorithm, as defined in FIPS 186-3. |
+|ecdsa |	Package ecdsa implements the Elliptic Curve Digital Signature Algorithm, as defined in FIPS 186-3. |
+|elliptic |	Package elliptic implements several standard elliptic curves over prime fields. |
+|hmac |	Package hmac implements the Keyed-Hash Message Authentication Code (HMAC) as defined in U.S. Federal Information Processing Standards Publication 198. |
+|md5 |	Package md5 implements the MD5 hash algorithm as defined in RFC 1321. |
+|rand |	Package rand implements a cryptographically secure pseudorandom number generator. |
+|rc4 |	Package rc4 implements RC4 encryption, as defined in Bruce Schneier's Applied Cryptography. |
+|rsa |	Package rsa implements RSA encryption as specified in PKCS#1. |
+|sha1 |	Package sha1 implements the SHA1 hash algorithm as defined in RFC 3174. |
+|sha256 |	Package sha256 implements the SHA224 and SHA256 hash algorithms as defined in FIPS 180-4. |
+|sha512 |	Package sha512 implements the SHA-384, SHA-512, SHA-512/224, and SHA-512/256 hash algorithms as defined in FIPS 180-4. |
+|subtle |	Package subtle implements functions that are often useful in cryptographic code but require careful thought to use correctly. |
+|tls |	Package tls partially implements TLS 1.2, as specified in RFC 5246. |
+|x509 |	Package x509 parses X.509-encoded keys and certificates. |
+|pkix |	Package pkix contains shared, low level structures used for ASN.1 parsing and serialization of X.509 certificates, CRL and OCSP. |
+
 
 hash用法：
 
