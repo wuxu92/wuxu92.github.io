@@ -4,7 +4,7 @@ title: 近期技术方向选择
 description:  
 category: post
 tags: personal mixed
-published: false
+published: true
 lastUpdate: 2015-09-01
 ---
 
