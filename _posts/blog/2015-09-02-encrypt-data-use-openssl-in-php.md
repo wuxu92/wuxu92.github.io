@@ -27,7 +27,7 @@ $privateKey = openssl_pkey_new([
 
 openssl_pkey_export_to_file($privateKey, 'php-private.key');
 $key = openssl_pkey_get_details($privateKey);
-file_put_contents('php-public.key', $a_key['key']);
+file_put_contents('php-public.key', $key['key']);
 
 openssl_free_key($privateKey); // 释放资源
 ```
