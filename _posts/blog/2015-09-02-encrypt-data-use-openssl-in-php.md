@@ -54,7 +54,7 @@ $pubkeyStr = file_get_contents('./php-public.key');
 $publicKey = openssl_pkey_get_public($pubkeyStr);
 
 $p_key = openssl_pkey_get_details($publicKey);
-$chunkSize = ceil($p_key['bits'] / 8) -11; // 这里不知道为什么要-11.。。。
+$chunkSize = ceil($p_key['bits'] / 8) -11; // 这里不知道为什么要-11，后面追加解释
 
 $output = '';
 
