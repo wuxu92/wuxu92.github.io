@@ -85,7 +85,7 @@ encrypted: fal8QtGky0+PbEQ43s8enksH3Wkf39NyeemyjwdtAZvgCnCjF7ZDh6cGSy7ROaN9ite/l
 
 > However, the PKCS#1 standard, which OpenSSL uses, specifies a padding scheme (so you can encrypt smaller quantities without losing security), and that padding scheme takes a minimum of 11 bytes (it will be longer if the value you're encrypting is smaller)
 
-而openssl加密的data长度限制为： `2048/8 - 11`了使用其他大小的密钥时也减去11就可以了。
+这个note里面还提到了能加密字符串长度的限制，2048位密钥加密的data长度限制为： `2048/8 - 11`了。使用其他大小的密钥时也减去11就可以了。
 ## 解密数据 ##
 使用私钥对数据进行解密：
 
