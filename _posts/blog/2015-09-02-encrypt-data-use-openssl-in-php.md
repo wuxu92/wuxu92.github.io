@@ -158,7 +158,7 @@ verify result: 1
 上面的例子把签名和验签放在一起了，实际使用中，一般签名在数据发送方进行，验签在接收端进行。
 
 ### 注意 ###
-对数据进行签名时要注意一点，一般发送方通过post把数据发送给接收方，在接收方收到的post数据的顺序并不一定会和发送发签名时一样，所以要约定到post数组的键的顺序，一般在签名前进行```ksort($data)```。当然如果使用raw_post数据（```php://input```）那就没关系了。
+对数据进行签名时要注意一点，一般发送方通过post把数据发送给接收方，在接收方收到的post数据的顺序并不能保证和发送发签名时一样，所以要约定到post数组的键的顺序，一般在签名前进行```ksort($data)```。当然如果使用raw_post数据（```php://input```）那就没关系了。
 
 **参考：**
 1. [https://www.virendrachandak.com/techtalk/encryption-using-php-openssl/](https://www.virendrachandak.com/techtalk/encryption-using-php-openssl/ "https://www.virendrachandak.com/techtalk/encryption-using-php-openssl/")
