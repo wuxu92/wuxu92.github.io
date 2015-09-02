@@ -161,6 +161,5 @@ verify result: 1
 对数据进行签名时要注意一点，一般发送方通过post把数据发送给接收方，在接收方收到的post数据的顺序并不一定会和发送发签名时一样，所以要约定到post数组的键的顺序，一般在签名前进行```ksort($data)```。当然如果使用raw_post数据（```php://input```）那就没关系了。
 
 **参考：**
-[https://www.virendrachandak.com/techtalk/encryption-using-php-openssl/](https://www.virendrachandak.com/techtalk/encryption-using-php-openssl/ "https://www.virendrachandak.com/techtalk/encryption-using-php-openssl/")
-
-[http://blog.csdn.net/samxx8/article/details/47003561](http://blog.csdn.net/samxx8/article/details/47003561 "http://blog.csdn.net/samxx8/article/details/47003561")
+1. [https://www.virendrachandak.com/techtalk/encryption-using-php-openssl/](https://www.virendrachandak.com/techtalk/encryption-using-php-openssl/ "https://www.virendrachandak.com/techtalk/encryption-using-php-openssl/")
+1. [http://blog.csdn.net/samxx8/article/details/47003561](http://blog.csdn.net/samxx8/article/details/47003561 "http://blog.csdn.net/samxx8/article/details/47003561")
