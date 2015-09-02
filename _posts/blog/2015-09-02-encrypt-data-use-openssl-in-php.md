@@ -44,7 +44,7 @@ openssl rsa -pubout < private.key > public.key
 
 ## 使用密钥对加密数据 ##
 
-使用第一步的php函数生成的公钥对一段明文进行切断再加密：
+使用第一步的php函数生成的公钥对一段明文进行分段(chunk)再分段加密：
 
 ```
 $plain = 'this data will be encrypted for transform dolot virendrachadr dark';
@@ -63,7 +63,7 @@ while ($plain) {
   $plain = substr($plain, $chunkSize);
 
   $encrypted = '';
-  if ( ! openssl_public_encrypt($chunk, $encrypted, $publicKey)) {
+  if ( !openssl_public_encrypt($chunk, $encrypted, $publicKey)) {
     die("failed to encrypt data");
   }
   $output .= $encrypted;
