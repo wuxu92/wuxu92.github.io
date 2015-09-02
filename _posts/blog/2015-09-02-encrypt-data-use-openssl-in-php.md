@@ -81,7 +81,7 @@ plian text: this data will be encrypted for transform dolot virendrachadr dark
 encrypted: fal8QtGky0+PbEQ43s8enksH3Wkf39NyeemyjwdtAZvgCnCjF7ZDh6cGSy7ROaN9ite/lfTzJwupiZtXqZojWWzIqq+J3P/58LZogRgWACbRBevq5JF1XmBiQCNDdRCWaBAC3HToUfryh9+0OzxN5I4Txk+/+j4WdQpNyuUMJbNGlNXUdGfL7I6Hw07DAooqDLKGYCu9bfM8aOVn6MASmdegQzYw58YtbfPZIfSAKB35JJLlVK5mJX/4g/GIzFdbj3s9pQL7Xhs0+y2oi5GNsAO45vxrHE9xu+SM8c0/jAQKjXjm5KACsCUUw2zAi/G/g6cUsJAQfrbHKdpwcBp5JQ==
 ```
 
-**追加**： 关于什么加密时分片要减去11：2048位密钥加密的数据输出应该是2048bit，也就是256byte。在[函数的官方文档](http://php.net/manual/zh/function.openssl-public-encrypt.php "http://php.net/manual/zh/function.openssl-public-encrypt.php")中第一个User Notes里提到了：
+**追加**： 关于什么加密时分片要减去11：2048位密钥加密的数据输出应该是2048bit，也就是256byte。在[函数的官方文档](http://php.net/manual/zh/function.openssl-public-encrypt.php "http://php.net/manual/zh/function.openssl-public-encrypt.php")中[第一个User Notes](http://php.net/manual/zh/function.openssl-public-encrypt.php#55901 "http://php.net/manual/zh/function.openssl-public-encrypt.php#55901")里提到了：
 
 > However, the PKCS#1 standard, which OpenSSL uses, specifies a padding scheme (so you can encrypt smaller quantities without losing security), and that padding scheme takes a minimum of 11 bytes (it will be longer if the value you're encrypting is smaller)
 
