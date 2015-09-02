@@ -119,7 +119,7 @@ decrypted data: this data will be encrypted for transform dolot virendrachadr da
 ```
 
 ## 数字签名 ##
-使用完全加密的数据进行传输的好处是更加安全，但是计算更加复杂，需要传输的数据也更多，更常用的方式只是对要传输的数据做一个数字签名，在接收端对接收到的数据进行一个签名运算，只要客户端计算的签名和接受的的签名一样就可以认为收到的数据没有被修改过。
+使用完全加密的数据进行传输的好处是更加安全，但是计算更加复杂，需要传输的数据也更多，更常用的方式只是对要传输的数据做一个数字签名，在接收端对接收到的数据进行一个签名运算，只要客户端计算的签名和接受的的签名一样就可以认为收到的数据没有被篡改过。
 
 计算签名使用openssl提供的`openssl_sign()`，签名验证使用`openssl_verify()`
 这两个函数的函数签名为：
@@ -128,7 +128,8 @@ decrypted data: this data will be encrypted for transform dolot virendrachadr da
 bool openssl_sign ( string $data , string &$signature , mixed $priv_key_id [, mixed $signature_alg = OPENSSL_ALGO_SHA1 ] )
 int openssl_verify ( string $data , string $signature , mixed $pub_key_id [, mixed $signature_alg = OPENSSL_ALGO_SHA1 ] )
 ```
-通过参数比较容易理解函数的使用，sign函数第一个函数是一个字符串，所以对数组，对象等签名需要使用json_encode或者base64_encode等函数编码一下；第二个参数是`&$signature`就是函数会把对数据$data的签名保存在$signature变量。
+通过参数比较容易理解函数的使用，sign函数第一个函数是一个字符串，所以对数组，对象等签名需要使用`json_encode`或者`base64_encode`等函数编码一下；第二个参数是`&$signature`就是函数会把对数据`$data`的签名保存在`$signature`变量。
+
 注意返回值，第一个函数是bool值，第二个是int，1表示签名验证通过， 0表示签名不正确，-1表示发生错误。
 一个示例：
 
