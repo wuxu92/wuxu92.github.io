@@ -4,7 +4,7 @@ title: PHP框架中自动加载机制实现分析
 description: 之前一片文章分析过PHP中实现自动加载的方法，这几天在看lavaral的代码，发现其自动加载机制和Yii 2 的自动加载时同样的。这里索性把这种常用的自动加载实现做个简单的总结。
 category: post
 tags: php framework
-published: true
+published: false
 lastUpdate: 2015-09-04
 ---
 
