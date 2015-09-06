@@ -73,5 +73,59 @@ PSR-4中的规范：
 
 
 ## Laravel中的自动加载实现 ##
+作为Laravel入口文件（public/index.php）的第一个语句，就是引入自动加载。```require __DIR__.'/../bootstrap/autoload.php';``` 我们今天先不管其他的部分，只看这一句话引入的文件到底做了什么工作。
+
+进入bootstrap/打开autoload.php 文件，其实这个文件又引入了另外一个autoload，这个autoload是按路径索引找到vendor目录下的autoload文件： `require __DIR__.'/../vendor/autoload.php';`。 我们在前面介绍PSR的时候提到过这个vendor的概念。在框架中，或者一个使用PSR规范的项目中，vendor目录用来存放框架，各种类库的目录，各个命名空间的顶级目录（top-level）。
+
+一般来说vendor目录下的各个文件夹代表各个不同的组件，可能组件的概念不太正确，可以看作被框架使用的来自不同项目组[开源]的项目，比如composer是个文件夹，swiftmailer是一个文件夹，他们是各自独立的组件。一般来说vendor目录下除了这些文件夹外会有一个autoload.php文件，这个是为各个组件提供自动加载的。
+
+打开这个autoload.php 文件会发现，其实这个文件也非常简单。它引入了composer的autoload_real文件。并调用composer自动加载器的一个静态方法：
+
+```php
+require_once __DIR__ . '/composer' . '/autoload_real.php';
+return ComposerAutoloaderInitfd5743bc2bb9a7cd13b302b82eb0d158::getLoader();
+```
+可以发现，这个类的名字后面跟了一段很长的散列值，这是在使用composer安装项目是生成的，为了保证这个类的全局唯一？估计是这样的吧。
+
+打开/vendor/composer/autoload_real.php这个文件。查看源码，可以看到里面定义了一个composer自动加载器类，其中最重要的静态方法`getLoader`方法包含了很多的自动加载机制实现。
+
+```php
+public static function getLoader()
+{
+    if (null !== self::$loader) {
+        return self::$loader;
+    }
+
+    spl_autoload_register(array('ComposerAutoloaderInitfd5743bc2bb9a7cd13b302b82eb0d158', 'loadClassLoader'), true, true);
+    self::$loader = $loader = new \Composer\Autoload\ClassLoader();
+    spl_autoload_unregister(array('ComposerAutoloaderInitfd5743bc2bb9a7cd13b302b82eb0d158', 'loadClassLoader'));
+
+    $map = require __DIR__ . '/autoload_namespaces.php';
+    foreach ($map as $namespace => $path) {
+        $loader->set($namespace, $path);
+    }
+
+    $map = require __DIR__ . '/autoload_psr4.php';
+    foreach ($map as $namespace => $path) {
+        $loader->setPsr4($namespace, $path);
+    }
+
+    $classMap = require __DIR__ . '/autoload_classmap.php';
+    if ($classMap) {
+        $loader->addClassMap($classMap);
+    }
+
+    $loader->register(true);
+
+    $includeFiles = require __DIR__ . '/autoload_files.php';
+    foreach ($includeFiles as $file) {
+        composerRequirefd5743bc2bb9a7cd13b302b82eb0d158($file);
+    }
+
+    return $loader;
+}
+```
+这里的自动加载实现依赖于ClassLoader类，真正的加载逻辑由这个类实现，在autoload_real中相当于注册了namespace, psr4, files, classmap等各个自动加载的配置。
+
 
 ## 待续 ##
