@@ -1,7 +1,7 @@
 ---
 layout: post
 title: PHP框架中自动加载机制实现分析
-description: 之前一片文章分析过PHP中实现自动加载的方法，这几天在看lavaral的代码，发现其自动加载机制和Yii 2 的自动加载时同样的。这里索性把这种常用的自动加载实现做个简单的总结。
+description: 之前一片文章分析过PHP中实现自动加载的方法，这几天在看lavaral的代码，发现其自动加载机制和Yii 2 的自动加载是同样的。这里索性把这种常用的自动加载实现做个简单的总结。
 category: post
 tags: php framework
 published: true
@@ -21,20 +21,23 @@ lastUpdate: 2015-09-06
 3. laravel中自动流程
 
 ## 自动加载机制 ##
-关于php中的自动加载机制，在之前的[一篇文章](http://wuxu92.github.io/php-using-spl-autoloader/)已经简单的介绍了。php在5.3版本才引入命名空间，有一种松散凌乱的语言慢慢向标准化进化，自动加载机制就是重要的一部分。
-在之前的文章中，介绍了实现自动加载的方法，通过```spl_autoload_register```函数给系统注册一下autoloader，这些加载器通过我们自定义的函数去寻找类对应的php文件，找到文件后使用`require`方法引入文件。
+关于php中的自动加载机制，在之前的[一篇文章](http://wuxu92.github.io/php-using-spl-autoloader/)已经简单的介绍了。php在5.3版本才引入命名空间，由一种松散凌乱的语言慢慢向标准化进化，自动加载机制就是重要的一部分。
+
+在之前的文章中，介绍了实现自动加载的方法，通过```spl_autoload_register```函数给系统注册一个autoloader，这些加载器通过我们自定义的函数去寻找类对应的php文件，找到文件后使用`require`方法引入文件。
+
 这样做可以实现基本的类加载，但是不同的人去注册自动加载方法会各不相同，导致不同的php项目的加载机制实现还是五花八门，这对于模块化的开发是灾难性的，因为不同模块的加载机制都不同，整合到一起更本没法工作。
 
 ## PSR-0 和 PSR-4 ##
 鉴于这些问题的存在，[php-fig](http://www.php-fig.org/),即PHP Framework Interop Group/php框架互操作小组，推出了一系列的推荐规范。其中包括推荐的，也是已经被接受的自动加载规范。
-其实PHP发展了这么多年，并缺少一个官方的语言规范(language specification)，知道最近才有一个[社区维护的spec](https://github.com/php/php-langspec)。php-fig就推出了一些列的recommendation，详情参见： [http://www.php-fig.org/psr/](http://www.php-fig.org/psr/)
+其实PHP发展了这么多年，一直缺少一个官方的语言规范(language specification)，知道最近才有一个[社区维护的spec](https://github.com/php/php-langspec)。php-fig就推出了一些列的recommendation，详情参见： [http://www.php-fig.org/psr/](http://www.php-fig.org/psr/)
 
-其实在php-fig的一接受规范中，有两个是关于自动加载的，即[PSR-0](http://www.php-fig.org/psr/psr-0/)和[PSR-4](http://www.php-fig.org/psr/psr-4/)。为什么一个工作组推出的规范会有两个不同的版本呢？这还是因为php常年的不够规范导致的。
+其实在php-fig的已接受规范中，有两个是关于自动加载的，即[PSR-0](http://www.php-fig.org/psr/psr-0/)和[PSR-4](http://www.php-fig.org/psr/psr-4/)。为什么一个工作组推出的规范会有两个不同的版本呢？这还是因为php常年的不够规范导致的。
 
-PSR-0是比较早的一个规范，在2014年10月21日已经是一个过时的规范了，现在官方推荐使用的是PSR-4规范。但是由于一些项目已经在使用PSR-0规范实现类加载了，而且又没有升级到PSR-4兼容的规范，所以在一般的php框架都会同时支持psr-0和psr-4的自动加载实现。
+PSR-0是比较早的一个规范，在2014年10月21日被官方标注为一个过时的规范了，现在官方推荐使用的是PSR-4规范。但是由于一些项目已经在使用PSR-0规范实现类加载了，而且又没有升级到PSR-4兼容的实现，所以在一般的php框架都会同时支持psr-0和psr-4的自动加载实现。
 
 ### PSR-0 ###
 虽然PSR-0是一个deprecated的规范，在这里还是要介绍一下，PSR-0有如下的强制要求：
+
 1. A fully-qualified namespace and class must have the following structure \<Vendor Name>\(<Namespace>\)*<Class Name>
 1. Each namespace must have a top-level namespace ("Vendor Name").
 1. Each namespace can have as many sub-namespaces as it wishes.
@@ -53,6 +56,7 @@ PSR-0的一种实现： [http://gist.github.com/221634](http://gist.github.com/2
 > The purpose is to specify the rules for an interoperable PHP autoloader that maps namespaces to file system paths, and that can co-exist with any other SPL registered autoloader. This would be an addition to, not a replacement for, PSR-0.
 
 PSR-4中的规范：
+
 1. The fully qualified class name MUST have a top-level namespace name, also known as a "vendor namespace".
 1. The fully qualified class name MAY have one or more sub-namespace names.
 1. The fully qualified class name MUST have a terminating class name.
