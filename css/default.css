@@ -499,7 +499,7 @@ pre::-webkit-color-swatch {border:none;}
 .home-contact a { width:30px; display:inline-block; }
 .home-contact img { width:18px; }
 
-@media screen and (max-width: 750px){
+@media screen and (max-width: 940px){
     body {font-size:14px}
     #content {width:85%;margin:100px auto 50px; }
 
