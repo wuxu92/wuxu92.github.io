@@ -38,8 +38,11 @@ title: about
 	<dd>所有文章非特别说明皆为原创，遵循的协议为「<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank">署名-非商业性使用-相同方式共享</a>」，由于文章表述或者内容可能存在诸多错误，所以部分内容会作修改，为保证转载信息与源同步，转载请注明文章出处！谢谢合作 :）</dd>
 
 	<dt>好友链接</dt>
-	<dd>
+    <dd>
         博客基础来自 <a href="http://hahaya.github.com" target="_blank">hayaya的github</a>
+   </dd>
+   <dd>
+        我的博客园 <a href="http://www.cnblogs.com/kiwi/" target="_blank">kiwi bird</a>
    </dd>
 </dl>
 <div class="footer">
