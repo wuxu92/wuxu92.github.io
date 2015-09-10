@@ -6,12 +6,12 @@ title: about
 <style type="text/css" media="screen">
     @media screen and (max-width: 720px) {
         .aboutMe {
-            width: 95%;
+            width: 95% !important;
         }
     }
     @media screen and (min-width: 720px) {
         .aboutMe {
-            width: 85%;
+            width: 85% !important;
             padding-left: 30px;
         }
     }
