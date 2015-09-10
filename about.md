@@ -3,24 +3,6 @@ layout: default
 title: about
 ---
 
-<style type="text/css" media="screen">
-    @media screen and (max-width: 720px) {
-        .aboutMe {
-            width: 95% !important;
-        }
-    }
-    @media screen and (min-width: 720px) {
-        .aboutMe {
-            width: 85% !important;
-            padding-left: 30px;
-        }
-    }
-    /*#content {
-        width: 85%;
-    }*/
-
-</style>
-
 
 <div id="content" class="aboutMe">
 <form class="page-loc" method="GET" action="/search">
@@ -54,3 +36,21 @@ $(function(){
 	$('#disqus_container .comment').trigger('click');
 });
 </script>
+
+<style type="text/css" media="screen">
+    @media screen and (max-width: 720px) {
+        .aboutMe {
+            width: 95% !important;
+        }
+    }
+    @media screen and (min-width: 720px) {
+        .aboutMe {
+            width: 85% !important;
+            padding-left: 30px;
+        }
+    }
+    /*#content {
+        width: 85%;
+    }*/
+
+</style>
