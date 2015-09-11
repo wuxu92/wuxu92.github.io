@@ -177,12 +177,24 @@ esac
 ```
 sudo cp nginx /etc/init.d/nginx
 ```
-对于centos 7，使用的是systemctl的，可以复制到这个目录:
+对于centos 7，不能使用这个启动脚本，需要使用systemctl使用的脚本，也就是fedora的脚本
 
 ```
-sudo cp nginx /usr/lib/systemd/system/nginx.service
-# 然后重新载入systemctl
-sudo systemctl daemon-reload
+[Unit]
+Description=The nginx HTTP and reverse proxy server
+After=syslog.target network.target remote-fs.target nss-lookup.target
+ 
+[Service]
+Type=forking
+PIDFile=/run/nginx.pid   // 修改到自己的目录下
+ExecStartPre=/usr/sbin/nginx -t  // 修改可执行文件目录
+ExecStart=/usr/sbin/nginx   // 修改可执行文件的目录
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+ 
+[Install]
+WantedBy=multi-user.target
 ```
 
 ## 一点注意 ##

@@ -36,7 +36,7 @@ sudo yum install -y gcc gcc-c++  make zlib zlib-devel pcre pcre-devel  libjpeg l
 	glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel curl curl-devel\
 	e2fsprogs e2fsprogs-devel krb5 krb5-devel openssl openssl-devel \
 	openldap openldap-devel nss_ldap openldap-clients openldap-servers \
-	php-mysqlnd libmcrypt-devel  libtidy libtidy-devel recode recode-devel
+	php-mysqlnd libmcrypt-devel  libtidy libtidy-devel recode recode-devel libxpm-devel
 ```
 这里面可能有一些已经安装过了，或者其实不是不需要的，因为一些功能我们可能会在编译时排除掉，但是像libxml2, zlib, freetype, bzip2, curl,curl-devel, openssl这些常用的包还是装上比较好，
 
@@ -86,7 +86,7 @@ configure脚本参数，使用下面的配置，编译的php基本就满足使�
     --with-mysqli=mysqlnd
 ```
 
-另一套configure
+另一套configure(公司环境)
 
 ```
 ./configure --prefix=/data/php --with-config-file-path=/data/php/etc --with-mysql=mysqlnd --with-pdo-mysql=mysqlnd --with-mysqli=mysqlnd --with-gd --with-iconv --with-zlib --enable-xml --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --enable-mbregex --enable-fpm --enable-mbstring --enable-ftp --enable-gd-native-ttf --with-openssl --enable-pcntl --enable-sockets --with-xmlrpc --enable-zip --enable-soap --without-pear --with-gettext --enable-session --with-mcrypt --with-curl --with-jpeg-dir --with-freetype-dir --with-xpm-dir=/usr --with-bz2
