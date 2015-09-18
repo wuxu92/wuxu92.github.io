@@ -30,9 +30,11 @@ title: about
 	<dt>联系我</dt>
     <dd class='contact-dd' data-id="qq">QQ</dd>
     <dd class='contact-dd' data-id="wechat">WeChat</dd>
+</dl>
+<div>
     <img src="/images/contact/qq.jpg" alt="qq" id='contact-img-qq' class="contact-img">
     <img src="/images/contact/wechat.png" alt="wechat" id='contact-img-wechat' class="contact-img">
-</dl>
+</div>
 <div class="footer">
     <small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2013 - 2015 Modified by <a href="/about.html">wuxu</a> | <span class="label label-info">{{site.time | date:"%Y-%m-%d %H:%M:%S %Z"}}</span></small>
 </div>
