@@ -42,10 +42,10 @@ $(function(){
 	$('#disqus_container .comment').trigger('click');
 
     $('.contact-dd').hover(function() {
-        var type = $this.data('id');
+        var type = $(this).data('id');
         $('#contact-img-'+type).css('display', 'block');
     }, function() {
-        var type = $this.data('id');
+        var type = $(this).data('id');
         $('#contact-img-'+type).css('display', 'none');
     });
 });
