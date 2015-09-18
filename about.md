@@ -19,13 +19,19 @@ title: about
 	<dt>关于博客</dt>
 	<dd>所有文章非特别说明皆为原创，遵循的协议为「<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank">署名-非商业性使用-相同方式共享</a>」，由于文章表述或者内容可能存在诸多错误，所以部分内容会作修改，为保证转载信息与源同步，转载请注明文章出处！谢谢合作 :）</dd>
 
-	<dt>好友链接</dt>
+    <dt>好友链接</dt>
     <dd>
         博客基础来自 <a href="http://hahaya.github.com" target="_blank">hayaya的github</a>
    </dd>
    <dd>
         我的博客园 <a href="http://www.cnblogs.com/kiwi/" target="_blank">kiwi bird</a>
    </dd>
+
+	<dt>联系我</dt>
+    <dd class='contact-dd' data-id="qq">QQ</dd>
+    <dd class='contact-dd' data-id="wechat">WeChat</dd>
+    <img src="/images/contact/qq.jpg" alt="qq" id='contact-img-qq' class="contact-img">
+    <img src="/images/contact/wechat.png" alt="wechat" id='contact-img-wechat' class="contact-img">
 </dl>
 <div class="footer">
     <small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2013 - 2015 Modified by <a href="/about.html">wuxu</a> | <span class="label label-info">{{site.time | date:"%Y-%m-%d %H:%M:%S %Z"}}</span></small>
@@ -34,23 +40,13 @@ title: about
 <script type="text/javascript">
 $(function(){
 	$('#disqus_container .comment').trigger('click');
+
+    $('.contact-dd').hover(function() {
+        var type = $this.data('id');
+        $('#contact-img-'+type).css('display', 'block');
+    }, function() {
+        var type = $this.data('id');
+        $('#contact-img-'+type).css('display', 'none');
+    });
 });
 </script>
-
-<style type="text/css" media="screen">
-    @media screen and (max-width: 720px) {
-        .aboutMe {
-            width: 95% !important;
-        }
-    }
-    @media screen and (min-width: 720px) {
-        .aboutMe {
-            width: 85% !important;
-            padding-left: 30px;
-        }
-    }
-    /*#content {
-        width: 85%;
-    }*/
-
-</style>

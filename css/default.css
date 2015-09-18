@@ -30,6 +30,8 @@ body .hide{display:none;}
 .left{float:left;}
 .right{float:right;}
 
+/************add by wuxu ***********/
+.contact-dd  { display: none; }
 
 /***********default settings**********/
 body {font-family: "微软雅黑","Arial","Helvetica","sans-serif";font-size:16px;overflow-x:hidden;_height:100%;background-color: #FFFFFA;}
