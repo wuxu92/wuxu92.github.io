@@ -31,8 +31,8 @@ body .hide{display:none;}
 .right{float:right;}
 
 /************add by wuxu ***********/
-.contact-img  { display: none; position:absolute; bottom: 30px; right:-20px; width: 400px; height:400px;}
-
+.contact-img  { display: none; position:absolute; bottom: 30px; right:60px; width: 400px; height:400px;}
+.contact-dd { cursor: pointer; }
 /***********default settings**********/
 body {font-family: "微软雅黑","Arial","Helvetica","sans-serif";font-size:16px;overflow-x:hidden;_height:100%;background-color: #FFFFFA;}
 a {color:#4A75B5;text-decoration:none;outline:none;
