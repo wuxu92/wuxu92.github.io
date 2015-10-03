@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 十一前青岛游记
+title: 十一前青岛游记（一）
 description: 从掌游离职之后连续四五天和老师忙着写项目的申请书，算下来连续工作了十多天，实在感觉有点累，就想着马上那就中秋、十一放假了，不如出去玩两天吧。
 category: life
 tags: travel qingdao 
