@@ -394,7 +394,7 @@ pre::-webkit-color-swatch {border:none;}
    about me
 ============*/
 .aboutMe {
-    width: 50% !important;
+    width: 80%;
 }
 .aboutDl {
     margin-bottom: 50px;
