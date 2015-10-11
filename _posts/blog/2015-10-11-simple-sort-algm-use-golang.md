@@ -107,6 +107,7 @@ func TestPressure(t *testing.T) {
 
 对排序方法写一些测试用例
 
+**这里有一些问题，数组作为引用传递在后面的测试会被前面的覆盖，待修改**
 ```
 package sort
 
