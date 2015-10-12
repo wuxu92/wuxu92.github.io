@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Golang中array和slice的总结
-description: golang内置对切片(slice)的支持，同时由于golang的类型系统对数组(array)的使用并没有动态/脚本语言那么方便，在使用中经常需要使用切片和数组的一些操作。
+description: golang内置对切片(slice)的支持，但是golang的类型系统对数组(array)的使用并没有动态/脚本语言那么方便，在使用中经常需要使用切片和数组的一些操作。
 category: Blog
 tags: golang go
 published: true
