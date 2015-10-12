@@ -87,7 +87,7 @@ append(t, sli...)
 
 参考:
 
-- http://blog.golang.org/go-slices-usage-and-internals
-- https://gobyexample.com/slices
-- https://gobyexample.com/arrays
-- https://golang.org/doc/effective_go.html#arrays
+- [http://blog.golang.org/go-slices-usage-and-internals](https://golang.org/doc/effective_go.html#arrays)
+- [https://gobyexample.com/slices](https://gobyexample.com/slices)
+- [https://gobyexample.com/slices](https://gobyexample.com/slices)
+- [https://golang.org/doc/effective_go.html#arrays](https://golang.org/doc/effective_go.html#arrays)
