@@ -31,7 +31,9 @@ wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsoc
 chmod +x shadowsocks-libev.sh
 sudo ./shadowsocks-libev.sh 2>&1 | tee shadowsocks-libev.log
 ```
-这中方式会自动添加开机启动服务，还会在init.d中添加脚本，可以使用systemctl工具启动、关闭和查看服务运行状态。
+安装过程中会询问端口密码等配置项，也可以使用默认值。
+
+这种方式会自动添加开机启动服务，还会在init.d中添加脚本，可以使用systemctl工具启动、关闭和查看服务运行状态。
 
 配置文件在 `/etc/shadowsocks-libev/config.json`，应该默认的配置就是可用的不需要修改。
 
@@ -66,6 +68,7 @@ sudo make install
 nohup /usr/local/bin/ss-server -s your_ec2_public_ip -p 8981 -k admin888 -m aes-256-cfb &
 ```
 其中 
+
 - -s指定的ip是你在ec2的dashboard看到的public ip，不是ifconfig查到的ip，那是在Amazon cloud中的private ip.
 - -k 指定密码
 - -m 指定加密方法
@@ -74,7 +77,7 @@ nohup /usr/local/bin/ss-server -s your_ec2_public_ip -p 8981 -k admin888 -m aes-
 
 ## 注意防火墙策略 ##
 需要额外注意的是EC2的防火墙策略。我一开始使用编译安装，但是客户端怎么都连接不到，查看系统的防火墙，iptables和firewalld都没有安装，运行后端口都在监听，但是在本地telnet到ss的端口都是不通的，后来才知道ec2的防火墙策略是在dashboard中配置的，叫做Security Groups。我们先添加一个Scurity Group把设定的端口添加进去，注意 source设置为任意，添加后到运行的实例的页面
-![应用Security Group](/images/post/ec2-sg)
+![应用Security Group](/images/post/ec2-sg.png)
 把新添加的策略勾选并assign。
 
 这样应该就可以使用了。
