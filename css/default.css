@@ -483,7 +483,8 @@ pre::-webkit-color-swatch {border:none;}
 
 
 /**************目录导航**************/
-#menuIndex {position:fixed;top:80px;left:32px;/*top:40px; margin-left:300px; left:50%;*/ width:220px;overflow:auto; _position:absolute;}
+#menuIndex {position:fixed;top:80px;left:32px;/*top:40px; margin-left:300px; left:50%;*/ 
+    max-width:220px; min-width:100px; width:15%; overflow:auto; _position:absolute;}
 #menuIndex a {display:block; padding:2px 0; }
 #menuIndex a:hover {text-decoration:none;}
 #menuIndex ul li{font-size:12px;margin-bottom:5px;word-wrap:break-word;padding-left:10px;}
