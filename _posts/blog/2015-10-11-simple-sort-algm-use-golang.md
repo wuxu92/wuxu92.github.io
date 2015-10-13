@@ -127,6 +127,26 @@ func merge(arr []int, lo, mid, hi int) {
 }
 ```
 我们知道插入排序对于小数组的性能是非常好的，可以在归并排序的小数组使用插入排序代替递归。这样能带来一定的性能提升。
+另外可以使用从下往上归并的思路，即先归并小数组，再不断长大。实现如下：
+
+```golang
+/**
+ * merge sort from down to up
+ */
+func MergeDToU(arr []int) []int {
+	n := len(arr)
+	var sz, lo int
+	tmp = make([]int, n)
+	for sz=1; sz < n; sz += sz {
+		for lo=0; lo<n-sz; lo += sz+sz {
+			merge(arr, lo, lo+sz-1, min(lo+sz+sz-1, n-1))
+		}
+	}
+	return arr
+}
+
+```
+相比递归实现的算法更加简单，性能测试显示它们的速度并没有太大区别。自底向上的实现稍微慢一点点，但是差的不多。
 
 ## 性能测试 ##
 在我的笔记本上面使用这三个排序算法对一个1000000规模的数组进行排序。
