@@ -1,7 +1,6 @@
 ---
 layout: post
 title: 充值mysql的密码/无密码登录mysql
-description: mysql经常会忘记密码,尤其是极其多的时候
 category: post
 tags: mysql linux
 published: true
