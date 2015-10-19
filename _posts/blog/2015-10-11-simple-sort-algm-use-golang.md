@@ -201,7 +201,8 @@ if lo>=hi {
 	return
 }
 ``` 
-改进为 
+改进为
+ 
 ```
 if lo >= hi {
 	InsertSort(arr, lo, hi)
