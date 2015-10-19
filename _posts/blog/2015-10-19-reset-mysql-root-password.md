@@ -1,6 +1,7 @@
 ---
 layout: post
-title: 充值mysql的密码/无密码登录mysql
+title: 重置mysql的密码/无密码登录mysql
+description: 经常会忘记mysql的root密码，尤其是机器一多的时候
 category: post
 tags: mysql linux
 published: true
