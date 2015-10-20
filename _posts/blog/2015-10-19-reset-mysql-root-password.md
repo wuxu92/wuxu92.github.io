@@ -36,7 +36,7 @@ set password for 'root'@'localhost' = PASSWORD('yourPassword');
 sudo kill `cat /var/run/mysqld/mysqld.pid`  // 也可以通过ps查找pid再kill
 sudo service mysqld start
 ```
-
+当然，其他账号同理可以修改密码了。注意不要开启root的远程登录权限。
 done
 
 参考: [https://dev.mysql.com/doc/refman/5.0/en/resetting-permissions.html](https://dev.mysql.com/doc/refman/5.0/en/resetting-permissions.html)
