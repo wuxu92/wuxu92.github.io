@@ -53,6 +53,7 @@ LVM利用Linux内核的device-mapper实现存储系统的虚拟化，使系统�
 
 LVM方式
 卷组VG1 (/dev/MyStorage/ = /dev/sda1 + /dev/sda2 + /dev/sdb1):
+
      _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ __ 
     |逻辑卷1 15GB                  |逻辑卷2 35GB                        |逻辑卷3 200GB                         |
     |/dev/MyStorage/rootvol        |/dev/MyStorage/homevol             |/dev/MyStorage/mediavol              |
