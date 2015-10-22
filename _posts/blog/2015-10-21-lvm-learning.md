@@ -171,4 +171,4 @@ done
 
 - [https://wiki.archlinux.org/index.php/LVM](https://wiki.archlinux.org/index.php/LVM"LVM在archlinux wiki上的页面")
 - [http://icsmile.com/2013/04/22/lvm_1.html](http://icsmile.com/2013/04/22/lvm_1.html)
-- [https://en.wikipedia.org/wiki/Logical_Volume_Manager_(Linux)](https://en.wikipedia.org/wiki/Logical_Volume_Manager_(Linux))
+- https://en.wikipedia.org/wiki/Logical_Volume_Manager_(Linux)
