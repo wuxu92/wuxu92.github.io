@@ -120,15 +120,15 @@ mount /dev/mapper/VolGroup00-home /home
 
 ### 移动物理区域 ###
 在移动空间的物理区域到卷尾部之前，需要运行 `# pvdisplay -v -m`查看物理设备的分段。这条命令会列出物理卷上的各个逻辑卷的分布。
-具体的移动物理分区命令比较麻烦，请参考 https://wiki.archlinux.org/index.php/LVM_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87) 中相关章节
+具体的移动物理分区命令比较麻烦，请参考 [https://wiki.archlinux.org/index.php/LVM](https://wiki.archlinux.org/index.php/LVM "archlinux wiki") 中相关章节
 
 ### 调整逻辑分区大小 ###
 可以使用lvresize命令对逻辑分区的大小进行调整，一般来说，扩大逻辑分区可以在线上完成，而缩小逻辑分区哦到小需要先卸载分区以避免数据丢失。
 
 ```bash
-# lsresize -L +2G VolGroup00/home  // 增加2GB
-# lsresize -L 20G VolGroup00/home  // 设置其大小为20GB
-# lsresize -l +100%FREE VolGreoup/home  // 将所有空余空间都加入
+# lvresize -L +2G VolGroup00/home  // 增加2GB
+# lvresize -L 20G VolGroup00/home  // 设置其大小为20GB
+# lvresize -l +100%FREE VolGreoup/home  // 将所有空余空间都加入
 ```
 
 使用`lvs`列出逻辑卷，使用`lsblk`列出逻辑卷的挂载点。
