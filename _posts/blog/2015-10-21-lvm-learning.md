@@ -6,7 +6,6 @@ category: post
 tags: centos linux lvm
 published: true
 lastUpdate: 2015-10-21
-
 ---
 LVM 是一种可用在Linux内核的逻辑分卷管理器；可用于管理磁盘驱动器或其他类似的大容量存储设备。
 
