@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Golang 学习
-description: 
+title: Golang 学习笔记1
+description: 最近开始看golang的一个网上教程，名字叫做 A Go Developer’s Notebook，挺不错的
 category: post
 tags: go golang lang
 published: true
