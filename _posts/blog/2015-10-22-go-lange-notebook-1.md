@@ -94,3 +94,57 @@ m.Store("hello", "world")
 s := m.String()
 ```
 
+## Go的类型嵌入及其方法调用 ##
+Go没有提供面向对象的继承机制，意味着熟悉的子类调用父类方法的思维不再适用了。
+但是Go提供了一种类似于Javascript的原型继承很相似的方式，叫做"类型内嵌"，即A类型内嵌按一个B类型的变量，可以直接在A类型的变量调用B类型绑定的方法，只要方法没有冲突。
+
+请看下面的例子：
+
+```golang
+type ColorMessage struct {
+	Message
+}
+
+func TestTypeEmbed(t *testing.T) {
+	cm := ColorMessage{Message{"colorful", nil}}
+	cm.StorePtr("new", "Message")  // 直接调用Message绑定的方法
+	fmt.Println(cm)     // 会调用Message的String()方法
+}
+```
+
+更复杂一点，多个内嵌类型都有Stirng方法，会依次调用它们的String方法：
+
+```golang
+type Ring struct {
+	ring string
+}
+func (r Ring) String() string {
+	return r.ring
+}
+
+type Bell struct {
+	bell string
+}
+func (b Bell) String() string {
+	return b.bell
+}
+
+type ColorMessage struct {
+	Message
+	Ring
+	Bell
+}
+func TestTypeEmbed(t *testing.T) {
+	cm := ColorMessage{Message{"colorful", nil}, Ring{"morning"}, Bell{"dida, dida"}}
+	cm.StorePtr("new", "Message")
+	fmt.Println(cm)  // 输出: {new, Message morning dida, dida}
+}
+```
+
+> Go allows **user-defined** types to declare methods on either a value type or a pointer to a value type. When methods operate on a value type the value manipulated remains **immutable** to the rest of the program (essentially the method operates on a copy of the value) whilst with a pointer to a value type any changes to the value are apparent throughout the program. 
+
+注意其中的user-defined types,只有对用户定义类型是这样的，对于切片和数组并不适用。
+
+
+
+
