@@ -145,6 +145,83 @@ func TestTypeEmbed(t *testing.T) {
 
 注意其中的user-defined types,只有对用户定义类型是这样的，对于切片和数组并不适用。
 
+## 接口 ##
+在Java，C#这些传统的面向对象语言中，接口代表着一种类型约束。子类需要显示声明实现了某些接口，以确保他们拥有某种能力，或者具有某种类型。在Golang中的接口定义了一些方法，只要实现了这些方法就认为类型实现了该接口。
 
+这与以往的类型系统很不一样。并且对于接口系统来说，方法绑定的对象带不带指针很重要了；这里Go并不会自动对指针做一些转换。如下,定义了一个Singer的接口，后面定义的两种类型Sparrow：和Dove，分别将`Sing()`方法绑定在其类型和指针类型上，那么就是`Sparrow`和`*Dove`二者实现了接口`Singer`,而Dove并没有。
 
+```golang
+type Singer interface {
+	Sing() string
+}
 
+type Sparrow struct {}
+func (s Sparraw) Sing() string {
+	return "i am a sparrow"
+}
+
+type Dove struct {}
+func (d *Dove) Sing() string {
+	return "ge..ge..ge.."
+}
+
+type Zoo struct {
+	s, d Singer
+}
+
+func (z Zoo) CanSing() (ok bool) {
+	if _,ok = z.s.(*Sparrow); !ok {
+		_, ok = z.d.(*Dove)
+	}
+	return
+}
+
+func TestZoo(t * testing.T) {
+	z := Zoo{}
+	fmt.Println(z.CanSing())
+	z.s = new(Sparrow)
+	fmt.Println(z.s.Sing())
+	fmt.Println(z.CanSing())
+	
+	z.d = Dove{}  // 这样会报错，因为Dove没有实现接口
+}
+```
+理解最后一行 `z.d=Dove{}`会在编译期报错，就是因为Dove并没有实现Singer接口，不能保存在使用Singer定义的变量中，如下两种方式都可以:
+
+```golang
+z.d = new(Dove)
+z.d = &Dove{}
+```
+和类型内嵌一样，接口也可以通过内嵌接口来组合接口的方法。最常见的标准io库中的ReadWriter接口：
+
+```golang
+type Reader interface {
+	Read(p []byte) (n int, err error)
+}
+
+type Writer interface {
+	Write(p []byte) (n int, err error)
+}
+
+type ReadWriter interface {
+	Reader
+	Writer
+}
+```
+
+## 初始化 ##
+之前也提到过，Go的包可以包含一个或者多个init方法。这些方法会在程序初始化的时候执行。这是Go很有特色的语言特性。init方法可以包含任意的go代码，甚至勀把所有的代码都扔到init里面，而只留下一个空的main方法～～
+
+因为一个包内可以定义多个init函数，并且它们的执行顺序并不是固定的，所以不要使代码逻辑依赖于init方法的执行顺序。
+
+```golang
+func init(){
+	fmt.Println("inited")
+}
+// 在一个.go文件中定义多个init方法是允许的
+func init() {
+	fmt.Println("init again")
+}
+```
+
+下一部分网络的新开一篇
