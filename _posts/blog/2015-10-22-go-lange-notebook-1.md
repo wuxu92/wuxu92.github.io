@@ -7,6 +7,20 @@ tags: go golang lang
 published: true
 lastUpdate: 2015-10-22
 ---
+## 指针和值 ##
+自定义类型的实例化对象有值类型和指针类型的区别（个人理解），比如下面：
+
+```golang
+type Unicorn struct {
+  Name string
+  Age int
+  weight int
+}
+larry := new(Unicorn)  // *Unicorn, pointer type
+larry := &Unicorn{}	   // 这和上面一样 
+
+la := Unicorn{}		// value type
+```
 
 ## 定义函数 ##
 定义函数很简单：
