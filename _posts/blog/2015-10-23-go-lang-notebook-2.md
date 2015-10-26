@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Golang 学习笔记2
+title: Golang 学习笔记：HTTP, TCP/IP, UDP
 description: 最近开始看golang的一个网上教程，名字叫做 A Go Developer’s Notebook，挺不错的
 category: post
 tags: go golang lang
@@ -306,3 +306,216 @@ func main() {
 这样我们就实现了一个使用tls密钥加密的传输通道了。
 
 ## UDP ##
+UDP的使用和TCP类似也包括一种加密的UDP传输。具体UDP和TCP的区别就不详细说了，这部分是考试面试的重点，一般都能说个123出来。
+
+与TCP实现不一样的是，UDP要先使用`net.ResolveUDPAddr(string, string)`来获得一个`*net.UDPAddr`，然后使用`net.ListenUDP("udp", addr)`监听这个端口的UDP通信。一个简单实现如下：
+
+```golang
+import (
+	. "fmt"
+	"net"
+	"os"
+)
+
+var MSG = ([]byte)("hello golong udp\n")
+
+func main() {
+	if addr, e := net.ResolveUDPAddr("udp", ":1026"); e == nil {
+		if server, e := net.ListenUDP("udp", addr); e == nil {
+			// infinit loop
+			for buffer := MakeBuffer(); ; buffer = MakeBuffer() {
+				if n, client, e := server.ReadFromUDP(buffer); e == nil {
+					go func( c *net.UDPAddr, packet []byte) {
+						if n, e := server.WriteToUDP(MSG, c); e == nil {
+							Printf("%v bytes written to %v\n", n, c)
+						}
+					}(client, buffer[:n])
+				} else {
+					Println("error1", e)
+				}
+			}
+		} else {
+			Println("error2", e)
+		}
+	} else {
+		Println("error3", e)
+	}
+}
+
+func MakeBuffer() ([]byte) {
+	return make([]byte, 1024)
+}
+```
+作为server需要一个无限循环保持监听，每当收到一个客户端请求(`ReadFromUDP`)，就启动一个Goroutine服务这个请求(`WriteToUDP`)。
+
+UDP不想TCP服务可以用telnet连接，因为它是一个无连接的通信，我们需要自己写一个请求的客户端。client也比较简单，其实现如下:
+
+```golang
+import (
+	. "fmt"
+	"net"
+	"bufio"
+)
+
+var CRLF = ([]byte)("\n")
+
+func main() {
+	if addr, e := net.ResolveUDPAddr("udp", "localhost:1026"); e == nil {
+		if server, e := net.DialUDP("udp", nil, addr); e == nil {
+			defer server.Close()
+			// 随意发送一些内容到server等待回应
+			// 这里可以多次(for 循环写都可以)写内容到服务器
+			if _, e := server.Write(CRLF); e == nil {
+				if text, e := bufio.NewReader(server).ReadString('\n'); e == nil {
+					Printf("%v", text)
+				}
+			}
+		} else {
+			Println("error2", e)
+		}
+	} else {
+		Println("error3", e)
+	}
+}
+```
+这里注意注释里面的话，使用`Write()`方法向UDP Server发送一些内容，然后才会受到Server的返回，返回使用bufio读取。一个UDP的Dial实例可以多起发送数据和读取返回。
+
+### 使用加密的UDP ###
+Golang提供了很方便的加密UDP连接，只需要提供一个密钥，就可以对传输的数据进行加密了，当然我们需要对server和client的数据都进行修改。
+rsa encrypt server:
+
+```golang
+import (
+	. "fmt"
+	"bytes"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/sha1"
+	"encoding/gob"
+	. "net"
+)
+
+var MSG = []byte("hello go scure udp")
+var RSA_LABEL = []byte("server")
+
+func main() {
+	Serve(":1025", func(conn *UDPConn, c *UDPAddr, packet *bytes.Buffer) (n int) {
+		var key rsa.PublicKey
+		if e := gob.NewDecoder(packet).Decode(&key); e==nil {
+			if resp, e := rsa.EncryptOAEP(sha1.New(), rand.Reader, &key, MSG, RSA_LABEL); e==nil {
+				n, _ = conn.WriteToUDP(resp, c)
+			}
+		}
+		return
+	})
+}
+
+func Serve(addr string, f func(*UDPConn, *UDPAddr, *bytes.Buffer) int) {
+	Launch(addr, func(conn *UDPConn) {
+		for {
+			buffer := make([]byte, 1024)
+			if n, client, e := conn.ReadFromUDP(buffer); e == nil {
+				go func(c *UDPAddr, b []byte) {
+					if n := f(conn, c, bytes.NewBuffer(b)); n!=0 {
+						Println(n, "write to ", c)
+					}
+				}(client, buffer[:n])
+			}
+		}
+	})
+}
+
+func Launch(addr string, f func(*UDPConn)) {
+	if a, e := ResolveUDPAddr("udp", addr); e == nil {
+		if server, e := ListenUDP("udp", a); e == nil {
+			f(server)
+		}
+	}
+}
+```
+
+rsa used  client
+
+```golang
+import (
+	. "fmt"
+	"bytes"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/sha1"
+	"crypto/x509"
+	"encoding/gob"
+	"encoding/pem"
+	"io/ioutil"
+	. "net"
+)
+
+var RSA_LABEL = []byte("server")
+
+func main() {
+	Connect("localhost:1025", func(server *UDPConn, priKey *rsa.PrivateKey) {
+		cipherText := MakeBuffer()
+		if n, e := server.Read(cipherText); e == nil {
+			Println("cipher text", string(cipherText))
+			// cipherText是加密的数据，需要解密
+			if plainText, e := rsa.DecryptOAEP(sha1.New(), rand.Reader, priKey, cipherText[:n], RSA_LABEL); e == nil {
+				Println("receive decrypt string:", string(plainText))
+			}
+		}
+	})
+}
+
+func Connect(address string, f func(*UDPConn, *rsa.PrivateKey)) {
+	LoadPrivateKey("key.pem", func(pk *rsa.PrivateKey) { // pk is private key
+		if addr, e := ResolveUDPAddr("udp", address); e ==nil {
+			if server, e := DialUDP("udp", nil, addr); e == nil {
+				defer server.Close()
+				SendKey(server, pk.PublicKey, func() {
+					f(server, pk)
+				})
+			} else {
+				Println("err1", e)
+			}
+		} else {
+			Println("err2", e)
+		}
+	})
+}
+
+func LoadPrivateKey(file string, f func(*rsa.PrivateKey)) {
+	if file, e := ioutil.ReadFile(file); e == nil {
+		if block, _ := pem.Decode(file); block != nil {
+			if block.Type == "RSA PRIVATE KEY" {
+				if key, _ := x509.ParsePKCS1PrivateKey(block.Bytes); key !=nil {
+					f(key)
+				}
+			}
+		}
+	} else {
+		Println(e)
+	}
+	return
+}
+
+func SendKey(server *UDPConn, publicKey rsa.PublicKey, f func()) {
+	var encodedKey bytes.Buffer
+	if e := gob.NewEncoder(&encodedKey).Encode(publicKey); e == nil {
+		if _, e = server.Write(encodedKey.Bytes()); e == nil {
+			f()
+		}
+	}
+}
+
+func MakeBuffer() (r []byte) {
+	return make([]byte, 1024)
+}
+```
+
+需要注意的几点:
+
+- RSA_LABEL 是rsa加密使用的一个label，需要客户端和服务器端一致
+- 请求流程是客户端读取一个密钥，然后获取一个publickey，使用gob序列化后发送到server， server读取出key，使用这个publicKey对返回的数据进行加密
+- 客户端读取返回后，使用密钥进行解密，读取明文
+- 客户端代码使用了大量的回调，方法字面量，理解起来有点麻烦，可以用javascript的回调的思路去理解
+
+done
