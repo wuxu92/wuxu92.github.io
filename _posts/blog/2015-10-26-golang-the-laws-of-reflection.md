@@ -7,6 +7,7 @@ tags: go golang lang reflect
 published: true
 lastUpdate: 2015-10-26
 ---
+
 反射是提供一种程序在运行时检查变量结构，状态的能力，它是元编程的一种形式(metaprogramming)。反射功能强大，但是很多时候反射使得代码难以理解，并且性能并不很好。
 
 ## 类型和接口 ##
