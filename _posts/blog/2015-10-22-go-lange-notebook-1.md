@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Golang 学习笔记1
+title: Golang 学习笔记： 指针,函数,内嵌及接口
 description: 最近开始看golang的一个网上教程，名字叫做 A Go Developer’s Notebook，挺不错的
 category: post
 tags: go golang lang
