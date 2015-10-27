@@ -160,3 +160,23 @@ DROP TABLE IF EXISTS backup_tbl;
 > 在生产环境中，不推荐使用 `select * ` 这样的查询语句，因为结果与表结构关联，表插入一栏后结果会改变。
 
 ### 联合查询 ###
+多表联合查询实际上和mysql也没有太多区别，也就是标准的sql。
+
+### 聚合函数 ###
+Pg支持很多聚合函数，其使用和mysql并灭有太多区别。比如max.注意的是max不能用在where子句。
+
+```
+select max(tmp_lo) from weather;
+select city from weather where tmp_lo = max(temp_lo);  // 错误
+select city from weather where temp_lo = (select max(temp_lo) from weather);  // 正确
+```
+另一个常用的聚合就是group by了。没什么特殊的，和mysql同样的用法，注意group by 的条件子句使用 `having condition` 就可以了。
+
+> WHERE selects input rows before groups and aggregates are computed, whereas HAVING selects group rows after groups and aggregates are computed. Thus, **the WHERE clause must not contain aggregate functions**; it makes no sense to try to use an aggregate to determine which rows will be inputs to the aggregates. On the other hand, **the HAVING clause always contains aggregate functions**. (Strictly speaking, you are allowed to write a HAVING clause that doesn't use aggregates, but it's seldom useful. The same condition could be used more efficiently at the WHERE stage.)
+
+参考
+
+- [http://www.postgresql.org/docs/9.2/static/tutorial-start.html](http://www.postgresql.org/docs/9.2/static/tutorial-start.html)
+- [http://www.postgresql.org/docs/9.2/static/tutorial-sql.html](http://www.postgresql.org/docs/9.2/static/tutorial-sql.html)
+
+done
