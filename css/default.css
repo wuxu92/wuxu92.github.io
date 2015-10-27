@@ -280,7 +280,7 @@ figure p { text-align: center}
     height:13px;
 }
 ::-webkit-scrollbar-thumb {
-    background-color:#D84D3A;
+    background-color:#B9B9B9;
     background-clip:padding-box;
     border:1px solid #979797;
     min-height:28px;
