@@ -10,6 +10,7 @@ lastUpdate: 2015-10-27
 
 ## 安装 ##
 被蓝屏搞没了
+默认的initdb数据目录是 `/var/lib/pgsql/data/`
 
 ## 简介 ##
 被蓝屏搞没了
@@ -39,6 +40,6 @@ createdb -U postgres golang
 
 ### 创建pg用户 ###
 在登陆管理pg之前我们要学会怎么创建pg的用户，并用这个用户去登陆pg的服务。
-
+说实话 [官方文档](http://www.postgresql.org/docs/9.2/interactive/auth-username-maps.html) 看起来可不是那么简单。
 
 ### psql ###
