@@ -222,7 +222,7 @@ h3.about {color:#777;margin-top:20px;font-size:22px;margin-bottom:10px}
 
 /**************功能按钮样式**************/
 #page-leader {
-    position: fixed;left:50%;margin-left:450px;top: 35%;z-index: 100;; _position:absolute;
+    position: fixed;left:50%;margin-left:550px;top: 35%;z-index: 100;; _position:absolute;
     opacity: .4; filter:alpha(opacity=40); -moz-opacoty: .4;
 }
 #page-leader:hover {
