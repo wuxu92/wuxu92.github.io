@@ -49,4 +49,7 @@ lastUpdate: 2015-10-29
 ![](/images/golang/messages.png)
 消息传递用在大部分cs架构中，X window system(Linux的图形界面服务)就是这样的机制。server等待用户发送的消息（鼠标键盘信息），然后处理消息，返回结果。
 
-### 远程过程调用(RPC) ###
+- 远程过程调用(RPC)
+- 分布计算模型： 点对点，过滤器，CS
+
+
