@@ -12,10 +12,30 @@ lastUpdate: 2015-10-31
 
 以往的本地文档都是以PDF或者CHM的形式存在，使用的应该都能感觉他们的缺点，PDF缺乏组织，查找/索引很不方便，而CHM限于Windows的技术支持，并且有时候也不是很方便。
 
-实际上Go的安装包里提供了基础包的文档，他就保存在 `GOROOT/doc` 下，是一些html文件，当然我们可以直接浏览器打开，有一种更见好用的方式是用godoc提供的http服务，在命令行运行：
+实际上Go的安装包里提供了基础包的文档，他就保存在 `GOROOT/doc`（好像不是这个目录） 下，是一些html文件，当然我们可以直接浏览器打开，有一种更见好用的方式是用godoc提供的http服务，在命令行运行：
 
 ```
 godoc -http:6060 &
 // & 表示后台运行，windows下可能需要保持命令行窗口不关闭
 ```
 这条命令会监听6060端口的http请求，提供和golang.org同样的页面服务 。浏览器打开 `http://localhost:6060` 就可以方便的查看文档啦。
+
+**IPAddr** net包中很多函数都返回一个IPAddr指针。IPAddr的定义很简单的就是包含了一个IP。 
+
+```
+type IPAddr struct {
+	IP IP
+}
+
+// 使用,ResolveIPAddr(string, string) 返回域名对应的IPAddress
+addr, _ := net.ResolveIPAddr("ip", "baidu.com")
+	if addr == nil {
+		fmt.Println("Invalid address")
+	} else {
+		fmt.Println("the address is ", addr.String())
+	}
+```
+net包还有一个LookupHost的函数，可以用来查找CNAME(canonical name)
+
+
+

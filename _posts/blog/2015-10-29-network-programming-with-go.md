@@ -53,3 +53,31 @@ lastUpdate: 2015-10-29
 - 分布计算模型： 点对点，过滤器，CS
 
 
+## Socket编程 ##
+TCP/IP协议栈的东西就不记录了。
+
+### net包中定义的IP地址 ###
+net 包是网络编程中最重要的包，它定义了很多相关的类型，函数，方法。`IP`是其中最重要的一个类型，它的定义如下：
+
+```golang
+type IP []byte
+```
+IP的基础类型是 `[]byte` 即byte的切片，我们知道IPv4的地址是4-byte（32bit）， IPv6地址是16-byte。IP使用切片作为基础类型可以同时支持IPv4和IPv6。但是不要通过切片的长度来判断IP的类型，因为16-byte的切片也可能保存的是IPv4地址。
+net包提供了很多的方法调用。比如将string类型转换为IP类型的`net.ParseIP(string)`
+
+**IPmask**: 掩码相关 `type IPmask []byte`, 一个IP mask 也会死一个ip地址。子网掩码有几个很重要的函数。
+
+```
+// 通过 4-byte 生成一个IPMask变量
+func IPv4Mask(a, b, c, d byte) IPMask
+
+// 获取IP的默认子网掩码
+func (ip IP) DefaultMask() IPMask
+
+// 获取IP地址的网络地址
+func (ip IP) Mask(mask IPMask) IP
+```
+
+
+
+
