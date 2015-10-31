@@ -77,7 +77,22 @@ func (ip IP) DefaultMask() IPMask
 // 获取IP地址的网络地址
 func (ip IP) Mask(mask IPMask) IP
 ```
+**IPAddr** net包中很多函数都返回一个IPAddr指针。IPAddr的定义很简单的就是包含了一个IP。 
 
+```
+type IPAddr struct {
+	IP IP
+}
+
+// 使用,ResolveIPAddr(string, string) 返回域名对应的IPAddress
+addr, _ := net.ResolveIPAddr("ip", "baidu.com")
+	if addr == nil {
+		fmt.Println("Invalid address")
+	} else {
+		fmt.Println("the address is ", addr.String())
+	}
+```
+net包还有一个LookupHost的函数，可以用来查找CNAME(canonical name)
 
 
 

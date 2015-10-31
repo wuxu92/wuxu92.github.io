@@ -20,22 +20,4 @@ godoc -http:6060 &
 ```
 这条命令会监听6060端口的http请求，提供和golang.org同样的页面服务 。浏览器打开 `http://localhost:6060` 就可以方便的查看文档啦。
 
-**IPAddr** net包中很多函数都返回一个IPAddr指针。IPAddr的定义很简单的就是包含了一个IP。 
-
-```
-type IPAddr struct {
-	IP IP
-}
-
-// 使用,ResolveIPAddr(string, string) 返回域名对应的IPAddress
-addr, _ := net.ResolveIPAddr("ip", "baidu.com")
-	if addr == nil {
-		fmt.Println("Invalid address")
-	} else {
-		fmt.Println("the address is ", addr.String())
-	}
-```
-net包还有一个LookupHost的函数，可以用来查找CNAME(canonical name)
-
-
 
