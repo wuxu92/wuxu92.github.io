@@ -157,16 +157,12 @@ import (
 func main() {
 	addr, e := net.ResolveTCPAddr("tcp4", "baidu.com:80")
 	CheckErr(e)
-
 	conn, e := net.DialTCP("tcp", nil, addr)
 	CheckErr(e)
-	
 	_, e = conn.Write([]byte("HEAD / HTTP/1.0\r\n\r\n"))
 	CheckErr(e)
-	
 	res, e := ioutil.ReadAll(conn)
 	CheckErr(e)
-	
 	fmt.Println(string(res))
 }
 
@@ -207,10 +203,8 @@ func main() {
 	port := ":1200"
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", port)
 	CheckErr(err)
-
 	server, err := net.ListenTCP("tcp", tcpAddr)
 	CheckErr(err)
-
 	for {
 		conn, err := server.Accept()
 		if err != nil {
