@@ -142,6 +142,94 @@ Go提供的 `net.TCPConn` 类型提供了client和server之间的全双工通信
 func (c *TCPConn) Write(b []byte) (n int, err os.Error)
 func (c *TCPConn) Read(b []byte) (n int, err os.Error)
 ```
-**TCP Client** 要获得TCPConn的实例，使用 `net.DialTCP(net string, laddr, raddr *TCPAddr) (c *TCPConn, err os.Error)`；其中net同上表示tcp, tcp4, tcp6等
+**TCP Client** 要获得TCPConn的实例，使用 `net.DialTCP(net string, laddr, raddr *TCPAddr) (c *TCPConn, err os.Error)`；其中net同上表示tcp, tcp4, tcp6等, laddr表示localAddr，一般使用nil，raddr表示要请求的Remote Address。
 
+使用上面的内容对网站发送 HEAD 请求：
 
+```
+import (
+	"fmt"
+	"os"
+	"io/ioutil"
+	"net"
+)
+
+func main() {
+	addr, e := net.ResolveTCPAddr("tcp4", "baidu.com:80")
+	CheckErr(e)
+
+	conn, e := net.DialTCP("tcp", nil, addr)
+	CheckErr(e)
+	
+	_, e = conn.Write([]byte("HEAD / HTTP/1.0\r\n\r\n"))
+	CheckErr(e)
+	
+	res, e := ioutil.ReadAll(conn)
+	CheckErr(e)
+	
+	fmt.Println(string(res))
+}
+
+func CheckErr(err error) {
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error:", err)
+		os.Exit(1)
+	}
+}
+```
+
+返回信息如下：
+
+```
+HTTP/1.1 200 OK
+Date: Mon, 02 Nov 2015 07:02:02 GMT
+Server: Apache
+***
+```
+HEAD 请求有时候很有用，比如用来查看网络是否可达，它只发送很少的数据且服务器只返回连接信息。
+
+我们的代码里出现了很多的错误检查，这是不得已的，因为网络编程很多地方都容易出错，比如硬件错误，路由错误，防火墙阻止，超时等等。由于缺少异常系统的 try-catch 只能分别对每个错误进行检查。
+我们知道TCP的数据是按包发送的，所以实际读的是一个数据流，不过ioutil.ReadAll 方法会处理这个问题，它会一直等待读取知道所有包都收到。
+
+**TCP server** 搭建一个TCP server也很简单，主要使用的方法是 `func ListenTCP(net string, laddr *TCPAddr) (l *TCPListener, err os.Error)` 和 `func (l *TCPListener) Acccept() (c Conn, err os.Error)` 两个方法。
+
+下面是一个简单的TCP server 的搭建示例：
+
+```
+import (
+	"fmt"
+	"net"
+	"os"
+	"time"
+)
+
+func main() {
+	port := ":1200"
+	tcpAddr, err := net.ResolveTCPAddr("tcp4", port)
+	CheckErr(err)
+
+	server, err := net.ListenTCP("tcp", tcpAddr)
+	CheckErr(err)
+
+	for {
+		conn, err := server.Accept()
+		if err != nil {
+			continue
+		}
+		time := time.Now().String()
+		conn.Write([]byte(time))
+		conn.Close()
+	}
+}
+```
+其中的CheckErr和之前的示例是一样的。这个server会对任意的请求返回当前的服务器时间。可以使用telnet工具连接 `telnet localhost 1200` 会返回一个时间，并被关闭连接。
+当然我们可以使用Goroutine执行各个连接的处理。这个之前用的挺多的了，不详细写了。
+
+**Timeout和Keep-alive** 我们知道浏览器的请求有超时和keep-alive的选项，对于TCP连接也可以设置这两个参数。
+
+```
+func (c *TCPConn) SetTimeOut(nsec int64) os.Error
+func (c (TCPConn) SetKeepAlive(keepalive bool) os.Error
+```
+
+### UDP数据报 ###
