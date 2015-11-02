@@ -5,7 +5,7 @@ description: 对于任何一门语言，网络编程都是重要的一部分。�
 category: post
 tags: network golang go
 published: true
-lastUpdate: 2015-10-29
+lastUpdate: 2015-11-02
 ---
 ![](/images/golang/gopher-banner-small.jpg)
 
@@ -185,7 +185,7 @@ Server: Apache
 HEAD 请求有时候很有用，比如用来查看网络是否可达，它只发送很少的数据且服务器只返回连接信息。
 
 我们的代码里出现了很多的错误检查，这是不得已的，因为网络编程很多地方都容易出错，比如硬件错误，路由错误，防火墙阻止，超时等等。由于缺少异常系统的 try-catch 只能分别对每个错误进行检查。
-我们知道TCP的数据是按包发送的，所以实际读的是一个数据流，不过ioutil.ReadAll 方法会处理这个问题，它会一直等待读取知道所有包都收到。
+我们知道TCP的数据是按包发送的，所以实际读的是一个数据流，不过ioutil.ReadAll 方法会处理这个问题，它会一直等待读取直到所有包都收到。
 
 **TCP server** 搭建一个TCP server也很简单，主要使用的方法是 `func ListenTCP(net string, laddr *TCPAddr) (l *TCPListener, err os.Error)` 和 `func (l *TCPListener) Acccept() (c Conn, err os.Error)` 两个方法。
 
@@ -227,3 +227,4 @@ func (c (TCPConn) SetKeepAlive(keepalive bool) os.Error
 ```
 
 ### UDP数据报 ###
+见下一篇
