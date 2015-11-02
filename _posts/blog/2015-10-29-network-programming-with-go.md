@@ -94,5 +94,54 @@ addr, _ := net.ResolveIPAddr("ip", "baidu.com")
 ```
 net包还有一个LookupHost的函数，可以用来查找CNAME(canonical name)
 
+**服务/service** 服务是持续运行在服务器端等待客户端请求的程序，服务有很多中，但是internet中大部分服务都是基于UDP和TCP通信，诸如SCTP这些协议还没有大量使用。
+
+对计算机网络有一定了解的话，我们知道IP定位到服务器，但是一个机器可以提供很多的服务，这时使用port来区分不同的服务。一个服务可以监听一个或者多个端口，端口分为TCP，UDP端口。一些常用的默认端口如下：
+
+- Telnet 23 TCP
+- DNS 53 TCP/UDP(or)
+- 21/20 FTP
+- 22 SSH TCP
+- X window system 6000-6007  TCP/UDP(both)
+
+更详细的端口与服务对应列表可以在linux系统的 `/etc/services` 文件中找到。Go中提供了一个 `func LookupPort(network, service string) (port int, err os.Error) ` 方法用于查询服务对应的端口。network参数是 tcp 或者 udp。
+
+```
+port, err := net.LookupPort("tcp", "ftp")
+if err != nil {
+	fmt.Println("lookupPort err:", err)
+} else {
+	fmt.Println("port for svn on tcp", port)
+}
+```
+**TCPAddr** TCP地址，是IP加上端口的类型。
+
+```
+type TCPAddr struct {
+	IP IPp
+	Port int
+}
+```
+创建一个TCPAddr的方法是 `ResolveTCPAddr(net, addr string) (*TCPAddr, os.Error)` 其中的net是网络类型，如 tcp, tcp4, tcp6
+
+```golang
+ta, err := net.ResolveTCPAddr("tcp6", "localhost:6060")
+if err != nil {
+	fmt.Println("tcpaddr err:", err)
+} else {
+	fmt.Println("tcp addr:", ta)   // [::1]:6060
+}
+```
+
+### TCP Sockets ###
+如果我们要建立一个服务器，需要绑定一个端口并且监听之。当有消息请求到这个端口时要能够读取请求的内容并把处理的结果返回给请求者。
+
+Go提供的 `net.TCPConn` 类型提供了client和server之间的全双工通信,它能够同时用作client和server，提供的最重要的两个函数如下：
+
+```
+func (c *TCPConn) Write(b []byte) (n int, err os.Error)
+func (c *TCPConn) Read(b []byte) (n int, err os.Error)
+```
+**TCP Client** 要获得TCPConn的实例，使用 `net.DialTCP(net string, laddr, raddr *TCPAddr) (c *TCPConn, err os.Error)`；其中net同上表示tcp, tcp4, tcp6等
 
 
