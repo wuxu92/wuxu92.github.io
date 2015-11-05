@@ -23,6 +23,49 @@ ASN 是 abstract Syntax notation 的缩写，也就是抽象格式标记。这�
 
 ```
 func Marshal(val interface{}) ([]byte, os.Error)
-func Unmarshal(val interface{}, b []byte) (rest []byte, err os.Error)
+func Unmarshal(b []byte, val interface{}) (rest []byte, err error)
 ```
- 
+第一个方法将数据(val)整理为一个序列化的字节数组；第二个方法就是反序列化了。注意由于Go是静态类型的语言，与PHP和JS中的反序列化不太一样，Unmarshal的第一个参数的类型是interface{}，在实际反序列化时需要做类型检查，因为要把反序列化得到一个序列化时输入的对象相同的类型的变量中。其一个示例如下：
+
+```
+import (
+	"fmt"
+	"encoding/asn1"
+)
+func main() {
+	serialed, e := asn1.Marshal(12)
+	CheckErr(e)
+	fmt.Println("serialed data", serialed)   // [2 1 12]
+	var n int
+	_, err := asn1.Unmarshal(serialed, &n)
+	CheckErr(err)
+	fmt.Println("After unmarshal", n)  // 12
+}
+```
+要注意对于基础类型的Unmarshal需要取地址符，否则会panic。
+要知道序列化支持的数据类型跟Go对其的实现程度有关。asn定义了很多的字符集和类型，但是Go只支持 PrintableString 和 IA5String(ASCII)。注意它不能实现unicode字符的序列化。
+
+asn1可以序列化结构体(struct)，但是**要求结构体的所有字段都是可导出的**（Exportable）即首字母都是大写的，如果有非导出的小写字母field则会unmarshal的时候panic。
+
+```
+type Person struct {
+	Name string
+	Age int
+	gender int  // cause unmarshal panic
+}
+
+func main() {
+	me := Person{"wuxu", 23, 1}
+	serialMe, err := asn1.Marshal(me)
+	CheckErr(err)
+	
+	var anotherMe = new(Person)
+	_, err = asn1.Unmarshal(serialMe, anotherMe) // panic: reflect: reflect.Value.SetInt using value obtained using unexported field
+
+	CheckErr(err)
+	
+	fmt.Println("unmarshal me", anotherMe)
+}
+```
+还有要注意的是序列化的时候只考虑属性的类型，而不考虑属性的变量名。所以对于只是属性名不同的结构体的序列化字节数组可以互相反序列化操作的。
+
