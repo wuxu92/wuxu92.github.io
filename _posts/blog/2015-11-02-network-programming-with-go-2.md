@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Go 网络编程-2
+title: Go 网络编程-Socket接口与IP套接字
 description: 对于任何一门语言，网络编程都是重要的一部分。对于Go来说其天生的高并发网络编程更是充满魅力。所以今天开学学习Go网络编程部分，教材是 Jan Newmarch 的 Network programming with Go 的pdf文档。
 category: post
 tags: network golang go
