@@ -216,9 +216,9 @@ func loadGob(file string, v interface{}) {
 
 ```
 func NewEncoder(enc *Encoding, w io.writer) io.WriteCloser
-func NewDecoder(enc *Encoding, r io.Reader) io,Reader
+func NewDecoder(enc *Encoding, r io.Reader) io.Reader
 ```
-其中的第一个参数常用 `base64.StdEncoding` 既可。base64包定义了一些 Encodign 类型的变量，如下：
+其中的第一个参数常用 `base64.StdEncoding` 既可。base64包定义了一些 Encoding 类型的变量，如下：
 
 ```
 var RawStdEncoding = StdEncoding.WithPadding(NoPadding)
