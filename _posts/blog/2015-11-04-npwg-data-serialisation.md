@@ -75,5 +75,172 @@ JSON 应该都比较熟悉了，它是一种很方便的JavaScript对象标记�
 下面是一个序列化json的示例
 
 ```
+import (
+	"fmt"
+	"encoding/json"
+)
+type Person struct {
+	Name Name
+	Email []Email
+}
+type Name struct {
+	Xing string
+	Ming string
+}
+type Email struct {
+	Type string
+	Addr string
+}
+func main() {
+	me := Person{
+		Name: Name{"wu", "xu"},
+		Email: []Email{
+			Email{"work", "wuxu92@outlook.com"},
+			Email{"home", "wuxu92@163.com"},
+		},
+	}
+	serialData, err := json.Marshal(me)
+	fmt.Println("marshaled", string(serialData))
+	var newMe Person
+	err = json.Unmarshal(serialData, &newMe)
+	CheckErr(err)
+	fmt.Println("umarshal data", newMe)
+	saveJson("me.json", me)
+	loadMe := new(Person)
+	loadJson("me.json", loadMe)
+	fmt.Printf("load from file %v %T\n", loadMe, loadMe)
+}
+func saveJson(file string, v interface{}) {
+	oFile, err := os.Create(file)
+	CheckErr(err)
+	defer oFile.Close()
+	encoder := json.NewEncoder(oFile)
+	err = encoder.Encode(v)
+	CheckErr(err)
+}
+func loadJson(file string, v interface{} ) {
+	iFile, err := os.Open(file)
+	CheckErr(err)
+	defer iFile.Close()
+	decoder := json.NewDecoder(iFile)
+	err = decoder.Decode(v)
+	CheckErr(err)
+}
+```
+这段代码有使用json包的marshal/unmarshal方法以及Encoder/Decoder的使用。其中Decoder/Encoder的使用比较有意思的。NewEncoder使用一个 `io.Writer` 作为参数，其Encode方法直接将序列化的结果保存到这个writer，我们使用一个文件作为参数就能直接将序列化结果保存到文件了，非常方便，而Decoder的使用也同样方便。
+
+## gob ##
+gob应该是Go的特有的技术，因为在Go之前没有听说过。
+
+> Gob is a serialisation technique specific to Go. It is designed to encode Go data types specifically and does not at present have support for or by any other languages. It supports all Go data types except for channels, functions and interfaces. 
+
+果然gob是go特有的技术，可以对go中很多特有的类型提供序列化支持，比如 channel， interface等等，目前只此一家，其他语言都不支持它。
+gob 会把类型信息保存在序列化之后的数据中，这使得它比的可扩展性非常好。同时它相比XML的类型信息要高效很多。由于序列化保存了类型信息，所以下面两个类型的序列化可以互相转换：
 
 ```
+type T struct {
+	a int
+	b int
+]
+
+type T2 struct {
+	b int
+	a int
+}
+```
+也就是属性的顺序可以随意，甚至多一些少一些字段的类型都是可以的，鲁棒性非常强。对于指针类型也是可以的，上面的T的序列化数据甚至能反序列化到下面的类型：
+
+```
+type T3 struct {
+	*a int
+	**b int
+}
+```
+gob的使用和json的encoder/decoder模式很像，首先创建一个Encode对象，它使用一个 `io.Writer` 作为参数，encoder的 `Encode` 方法将序列化的值写到数据流中。Decoder使用也很相似，下面是一个示例：
+
+```
+import (
+	"fmt"
+	"os"
+	"encoding/gob"
+)
+type Person struct {
+	Name Name
+	Email []Email
+}
+type Name struct {
+	Xing string
+	Ming string
+}
+type Email struct {
+	Type string
+	Addr string
+}
+
+func main() {
+	me := Person{
+		Name: Name{"wu", "xu"},
+		Email: []Email{
+			Email{"work", "wuxu92@outlook.com"},
+			Email{"home", "wuxu92@163.com"},
+		},
+	}
+	saveGob("me.gob", me)
+	var loadMe = new(Person)
+	loadGob("me.gob", loadMe)
+	fmt.Printf("load %v \ntype:%T\n", loadMe, loadMe)
+}
+func saveGob(file string, v interface{}) {
+	iFile, err := os.Create(file)
+	CheckErr(err)
+	defer iFile.Close()
+	encoder := gob.NewEncoder(iFile)
+	err = encoder.Encode(v)
+	CheckErr(err)
+}
+func loadGob(file string, v interface{}) {
+	oFile, err := os.Open(file)
+	CheckErr(err)
+	defer oFile.Close()
+	decoder := gob.NewDecoder(oFile)
+	err = decoder.Decode(v)
+	CheckErr(err)
+}
+```
+通过和上面的json的比较，gob序列化出来的并不是一个基于可打印字符串的，而是一个二进制流，使用文本编辑器打开可以看到email等信息，但是有很多是乱码，序列化结果gob比json的文件要小很多。
+
+因为可以使用 `io.Write/io.Read` 创建Encoder和Decoder，而之前讲的网络服务部分的 `Conn` 就同时实现了Write和Read，所以可以直接使用Conn变量传输序列化数据，非常方便。
+
+## 二进制数据的序列化 ##
+把二进制数据序列化的方法最常用的像base64这样的方法，把二进制文件转换为ascii码，go的 `encoding/base64` 提供了相应的支持。其中最重要的两个方法如下：
+
+```
+func NewEncoder(enc *Encoding, w io.writer) io.WriteCloser
+func NewDecoder(enc *Encoding, r io.Reader) io,Reader
+```
+其中的第一个参数常用 `base64.StdEncoding` 既可。base64包定义了一些 Encodign 类型的变量，如下：
+
+```
+var RawStdEncoding = StdEncoding.WithPadding(NoPadding)
+var RawURLEncoding = URLEncoding.WithPadding(NoPadding)
+var StdEncoding = NewEncoding(encodeStd)  // StdEncoding is the standard base64 encoding, as defined in RFC 4648.
+var URLEncoding = NewEncoding(encodeURL)
+```
+base64 encoding的基本用法示例如下：
+
+```
+bitData := []byte{1,2,3,4,5,6,7,8}
+bb := &bytes.Buffer{}  // buffer是一个Writer和Reader
+encoder := base64.NewEncoder(base64.StdEncoding, bb)
+encoder.Write(bitData) // 把二进制数据写入 Writer bb
+rncoder.Close()
+
+dbuf := make([byte, 12)
+decoder := base64.NewDecoder(baes64.StdEncoding, bb)
+decoder.Read(dbuf)
+for _, ch := range dbuf {
+	fmt.Print(ch)
+}
+```
+
+本节结束，对于数据序列方法应该有了基本的印象，在实际项目中应该知道怎么序列化数据了。
