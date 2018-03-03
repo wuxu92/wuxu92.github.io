@@ -1,0 +1,818 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="APUE,C,Unix,Linux," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="前面已近有一篇系统级IO，那是 CSAPP 中的一章，讲了Unix IO的内容，这一次是Unix环境高级编程的一章，也是讲Unix/Linux下的文件IO，可能这里讲编程的内容多一些。 我们知道通过 low level 的 open, creat 方法调用可以获得一个 file description ,它是一个整数，对应到进程文件描述符表的一项，使用这个整数就可以标识这个打开的文件。 文件信息对">
+<meta name="keywords" content="APUE,C,Unix,Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APUE：文件和目录">
+<meta property="og:url" content="http://blog.wuxu92.com/apue-files-and-dirs/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="前面已近有一篇系统级IO，那是 CSAPP 中的一章，讲了Unix IO的内容，这一次是Unix环境高级编程的一章，也是讲Unix/Linux下的文件IO，可能这里讲编程的内容多一些。 我们知道通过 low level 的 open, creat 方法调用可以获得一个 file description ,它是一个整数，对应到进程文件描述符表的一项，使用这个整数就可以标识这个打开的文件。 文件信息对">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.wuxu92.com/images/linux-logo.png">
+<meta property="og:image" content="http://blog.wuxu92.com/images/post/apue-inodes.png">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.475Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="APUE：文件和目录">
+<meta name="twitter:description" content="前面已近有一篇系统级IO，那是 CSAPP 中的一章，讲了Unix IO的内容，这一次是Unix环境高级编程的一章，也是讲Unix/Linux下的文件IO，可能这里讲编程的内容多一些。 我们知道通过 low level 的 open, creat 方法调用可以获得一个 file description ,它是一个整数，对应到进程文件描述符表的一项，使用这个整数就可以标识这个打开的文件。 文件信息对">
+<meta name="twitter:image" content="http://blog.wuxu92.com/images/linux-logo.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> APUE：文件和目录 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                APUE：文件和目录
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-15T12:34:50+08:00" content="2015-12-15">
+              2015-12-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p><img src="/images/linux-logo.png" alt=""><br>前面已近有一篇系统级IO，那是 CSAPP 中的一章，讲了Unix IO的内容，这一次是Unix环境高级编程的一章，也是讲Unix/Linux下的文件IO，可能这里讲编程的内容多一些。</p>
+<p>我们知道通过 low level 的 open, creat 方法调用可以获得一个 file description ,它是一个整数，对应到进程文件描述符表的一项，使用这个整数就可以标识这个打开的文件。</p>
+<h2 id="文件信息"><a href="#文件信息" class="headerlink" title="文件信息"></a>文件信息</h2><p>对于一个打开的文件的 fd， 我们已经知道有一个 <code>stat</code> 函数可以获得该文件的信息，其实有另外好几个类似的函数（在64位系统还是有stat64的一套函数），其函数声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;sys/stat.h&gt;</span><br><span class="line">int stat(const char *restrict pathname, struct stat *restrict buf);</span><br><span class="line">int fstat(int fd, struct stat *buf);</span><br><span class="line">int lstat(const char *restrict pathname, struct stat *restrict buf);</span><br><span class="line">int fstatat(int fd, const char *restrict pathname, struct stat *restrict buf, int flag);</span><br></pre></td></tr></table></figure>
+<p>它们的作用都是获得某个文件的相关信息，文件信息被保存在一个结构体中，上面的函数调用会填充这个函数体的成员字段。stat和fstat比较好理解，只是第一个参数不同（不考虑参数的修饰符），stat使用一个文件名做参数，fstat使用一个fd做参数，实际的效果是一样的，不过stat的buf参数使用了restrict修饰符，这个修饰符在之前的文章中已经解释过了，它提示编译器保证该指针指向的对象不被当前指针以外的指针修改。<br><a id="more"></a><br>lstat的作用是当参数的文件是一个符号链接时，lstat返回该符号链接有关的信息（符号链接有自己的信息），而不是符号链接指向的文件的信息。<code>fstatat</code>函数为一个相对于打开目录（fd指向）的路径名返回文件信息，flag参数使用一个预定义常量，控制当参数是一个符号链接时是否跟随该链接（follow），默认返回链接指向的文件的信息，设置为 <code>AT_SYMLINK_NOFOLLOW</code> 使返回链接本身的信息。如果fd参数的值是 <code>AT_FDCWD</code> 并且pathname是一个相对路径则计算相对于当前目录的pathname，如果pathname是一个绝对路径则忽略fd参数。</p>
+<p>让我们先看下这个结构体 <code>struct stat</code>:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct stat &#123;</span><br><span class="line">	mode_t		st_mode;</span><br><span class="line">	ino_t		st_ino;</span><br><span class="line">	dev_t		st_dev;</span><br><span class="line">	dev_t		st_rdev;</span><br><span class="line">	nlink_t		st_nlink;</span><br><span class="line">	uid_t		st_uid;</span><br><span class="line">	gid_t		st_gid;</span><br><span class="line">	off_t		st_size;</span><br><span class="line">	struct timespec	st_atime;</span><br><span class="line">	struct timespec	st_mtime;</span><br><span class="line">	struct timespec	st_ctime;</span><br><span class="line">	blksize_t	st_blksize;</span><br><span class="line">	blkcnt_t	st_blocks;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中各成员基本对应到Linux文件的一项属性。这个结构体在不同实现的定义可能有所不同，比如POSIX.1中并未要求 st_rdev, st_blksize, st_blocks 等字段，而SUS XSI 扩展定义了这些字段。虽然有一些区别，但是基本形式是差不多的。</p>
+<p>这个结构体非常重要，我们经常要用到的字段包括 st_mode， st_uid, st_gid等，要理解其中一些常用成员的用法。</p>
+<h2 id="文件类型"><a href="#文件类型" class="headerlink" title="文件类型"></a>文件类型</h2><p>我们知道Unix下有普通文件和目录两种类型，但是还有另外一些特殊文件类型，下面简单介绍：</p>
+<ol>
+<li>普通文件，最常见的文件类型，对于Unix内核而言，文本和二进制数据并无区别，对普通文件内容的解释由处理该文件的应用程序进行。对于ELF文件则是内核可理解的二进制形式。</li>
+<li>目录文件，这个也比较了解了，目录文件包含了其他文件的名字以及指向这些文件有关信息的指针。</li>
+<li>块特殊文件，提供对设备带缓冲的访问，每次访问以固定长度为单位。</li>
+<li>字符特殊文件，提供对设备不带缓冲的访问，每次访问长度可变，系统中的设备要么是字符特殊文件，要么是块特殊文件。</li>
+<li>FIFO，这种特殊的文件用于进程间的通信，也称为命名管道。</li>
+<li>套接字，socket这个也比较熟悉了。</li>
+<li>符号链接，这中我呢间指向另一个文件</li>
+</ol>
+<p>文件类型的信息保存在 stat结构体的 st_mode 成员中，通过预定义的类函数宏判断文件类型，这些宏的名称为 <code>S_ISXXX()</code> 将stat.st_mode 作为宏参数，XXX为文件类型，包括： REG, DIR, CHR, BLK, FIFLE, SOCK, LNK 分别对应上面的其中类型。这些宏定义在 &lt;sys/stat.h&gt; 中。</p>
+<h2 id="ID和Group"><a href="#ID和Group" class="headerlink" title="ID和Group"></a>ID和Group</h2><p>当程序要打开或者读写一个文件时，首先要对其进行权限检查，要看进程是否有读写一个文件的权限主要靠文件相关的id和进程相关的id的关系以及文件的访问权限设置。</p>
+<p>与一个进程关联的id有多个，常见的6个位：实际用户ID，实际组ID，有效用户ID，有效组ID，附属组ID，保存的设置用户ID，保存的设置组ID。实际ID表明我们究竟是谁，有效ID决定文件访问权限，保存的ID有exec函数保存，在执行一个程序时，包含了有效用户ID和有效组ID的副本。</p>
+<p>通常有效用户ID等于实际用户ID，有效组ID等于实际组ID。</p>
+<p>这里还有一个设置用户ID和设置组ID的话题，表示可以在执行文件的有效用户id设置为文件所有者的id，这通过设置 stat.st_mode 中的一个标志实现，比如 passwd 命令可以不用sudo就修改当前用户的密码，但是这个命令要修改 /etc/passwd 文件是需要root访问权限，通过设置用户id将执行进程的有效用户id设置为 /etc/passwd 的所有者id（即root）得到额外的权限。因为设置用户ID程序会获得额外的权限，因此也变得<strong>更加危险</strong>，编写这种程序时要特别小心。</p>
+<p>熟悉Linux的对Linux的文件权限设置比较熟悉了，777，755，600等，就不细说了。要注意理解的是目录的可执行权限与目录的可读权限的区别。文件访问权限的9个访问权限位，分为3类分别设置了一个宏定义：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">S_IRUSR</span><br><span class="line">S_IWUSR</span><br><span class="line">S_IXUSR</span><br><span class="line"></span><br><span class="line">S_IRGRP</span><br><span class="line">S_IWGRP</span><br><span class="line">S_IXGRP</span><br><span class="line"></span><br><span class="line">S_IROTH</span><br><span class="line">S_IWOTH</span><br><span class="line">S_IXOTH</span><br></pre></td></tr></table></figure>
+<p>新建文件和目录的用户ID设置为进程的有效用户ID，而组ID有两种选择：1.进程的有效组ID，2.其所在目录的组ID。</p>
+<h2 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h2><h3 id="umask"><a href="#umask" class="headerlink" title="umask"></a>umask</h3><p>umask为进程设置<strong>文件模式创建屏蔽字</strong>（file mode creation mask），并返回之前的值（这是一个没有出错返回的函数）。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;sys/stat.h&gt;</span><br><span class="line">mode_t umask(mode_t cmask);</span><br><span class="line"></span><br><span class="line">umask(0);	// 不屏蔽权限位</span><br><span class="line">umask(S_IXUSR|S_IXGRP|S_IXOTH);		// 屏蔽所有的执行位</span><br></pre></td></tr></table></figure>
+<p>其中cmask是上面列出的9个权限常量中的<strong>若干个按位或</strong>构成的。比如 <code>S_IRUSR | S_IRFRP | S_IROTH</code>。在创建一个文件或目录时，一定会使用文件模式创建屏蔽字。</p>
+<p>记得在运行时修改umask的值，很多程序员会忘忘记修改它，通常在登录时由shell的启动文件设置一次屏蔽值，为了确保指定的权限位已激活，要在运行时修改umask值。否则已有的umask值可能会关闭一些权限位。</p>
+<h3 id="chmod-fchmod-fchmodat"><a href="#chmod-fchmod-fchmodat" class="headerlink" title="chmod, fchmod, fchmodat"></a>chmod, fchmod, fchmodat</h3><p>使用过Linux的用户对chmod命令很定不陌生，它用来修改已有文件和目录的权限，使用非常方便， <code>chmod 777 ****</code> 就可以将一个文件权限全打开，在C中可以用上面三个函数实现修改权限。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;sys/stat.h&gt;</span><br><span class="line">int chmod(const char *pathname, mode_t mode);</span><br><span class="line">int fchmod(int fd, mode_t mode);</span><br><span class="line">int fchmodat(int fd, const char *pathname, mode_t mode, int flag);</span><br></pre></td></tr></table></figure>
+<p>这三个函数参数的意义和前面 stat 系列函数是一样理解的。这里设置的mode_t 的取值较前面的要多些，可以设置 执行时设置用户ID(<code>S_ISUID</code>)，执行时设置组ID(<code>S_ISGID</code>)，保存正文/粘着位(<code>S_ISVTX</code>)三个宏。另外有更方便的同时设置可读可写可执行的三个宏： <code>S_IRWXU</code>, <code>S_IRWXG</code>， <code>S_IRWXO</code>，分别对应到用户、组、其它的读写执行。</p>
+<p>类似有修改用户id，组id的函数可以调用，它们在 unistd.h 中声明，其函数声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">int chown(const char *pathname, uid_t owner, gid_t group);</span><br><span class="line">int fchown(int fd, uid_t owner, gid_t group);</span><br><span class="line">int fchownat(int fd, const char *pathname, uid_t owner, gid_t group);</span><br><span class="line">int lchown(const char *pathname, uid_t owner, gid_t group);</span><br></pre></td></tr></table></figure>
+<p>这些函数用的不多，具体细节需要的时候再查手册把。</p>
+<h3 id="粘着位"><a href="#粘着位" class="headerlink" title="粘着位"></a>粘着位</h3><p>前面提到了<strong>粘着位</strong>，熟悉Linux的用户应该听过这个名词，在 /tmp 和 /vay/tmp 目录的介绍中肯定会介绍这个特殊的权限位。粘着一词的由来是在Unix系统还未使用请求分页技术的早期保本中为了保证可执行程序能快速地载入内存而设置的（通过将程序正文的副本保存在交换区），后来的Unix版本称之为 保存正文位（saved-text bit) 因此常量定义为 <code>S_ISVTX</code>。</p>
+<p>现在的系统扩展了粘着位，如果对一个目录设置了粘着位，只有对该目录具有写权限的用户<strong>并且</strong>满足下列条件之一的才能删除或者重命名该目录下文件：</p>
+<ul>
+<li>拥有此文件</li>
+<li>拥有此目录</li>
+<li>是超级用户</li>
+</ul>
+<p>这种对删除/重命名操作的特殊权限要求特别符合 /tmp 和 /var/tmp 目录的要求，任何用户都可以在这两个目录创建文件，其他用户都有读写执行权限，但是<strong>用户不能删除或重命名其他用户的文件</strong>。</p>
+<h2 id="文件长度"><a href="#文件长度" class="headerlink" title="文件长度"></a>文件长度</h2><p>stat结构中的 st_size 成员表示以字节为单位的文件的长度，此字段值对普通文件，目录文件和符号链接有意义。对于符号链接，其长度是在文件名中的实际字节数，例如<code>lib-&gt;/usr/lib</code>，这个符号链接的长度为7。</p>
+<p>现在的操作系统大部分都提供了 stat 结构的 st_blksize 字段和 st_blocks 字段，第一个确认文件IO较合适的块长度，第二个是所分配的实际512字节块的块数。当使用 st_blksize 用于读操作时，读取一个文件所需要的时间最少，为了提高效率，标注IO库也试图一次读写一个 st_blksize 个字节。</p>
+<h3 id="空洞"><a href="#空洞" class="headerlink" title="空洞"></a>空洞</h3><p>之前的文章介绍过文件空洞的存在，空洞是所设置的偏移量超过文件尾端并写入数据后造成的。空洞并不会占用实际的磁盘空间，但是使用ls查看文件大小时会计算空洞的大小，文件系统使用了若干块以存放指向实际数据块的各个指针。</p>
+<h3 id="文件截断"><a href="#文件截断" class="headerlink" title="文件截断"></a>文件截断</h3><p>unistd.h 中有一个用于截断一个文件的函数，truncate和ftruncate，它们的声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">int truncate(const char *pathname, off_t length);</span><br><span class="line">int ftruncate(int fd, off_t length);</span><br></pre></td></tr></table></figure>
+<p>这个很容易理解，就是将文件长度阶截断为length长。如果length超过文件长度，文件长度将增加，并填充0。另使用open函数时，指定 O_TRUNC 标志可以截断文件长度为0。</p>
+<h2 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h2><p>Unix/Linux系统下可以使用多种文件系统实现，如传统的基于BSD的Unix文件系统（UFS），主要是要了解i节点和指向i节点的目录项之间的区别。</p>
+<p>i节点，目录快，数据块，文件，i节点编号，i节点数组等。i节点包含了文件有关的所有信息，文件类型，文件访问权限位，文件长度和指向文件数据块的指针等。stat结构中的大多数信息都取自i节点。只有两项数据存放在目录项中：文件名和i节点编号。为文件重命名或者移动文件时，也只是构造一个指向享有i节点的新目录项，并删除旧的目录项即可。</p>
+<p>下面这个图是创建一个目录testdir后的文件系统示例：<br><img src="/images/post/apue-inodes.png" alt=""><br>其他的就不具体介绍了，文件系统比较复杂。理解inode之后基本就可以了。</p>
+<h2 id="链接函数"><a href="#链接函数" class="headerlink" title="链接函数"></a>链接函数</h2><p>任何一个文件可以有多个目录项指向其i节点，创建一个指向现有文件的链接方法是使用link函数或linkat，类似，取消一个指向现有文件的链接使用 unlink 和 unlinkat 函数。它们包含在 &lt;unistd.h&gt; 中，函数声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">int link(const char *existringpath, const char *newpath);</span><br><span class="line">int linkat(int efd, const char *existingpath, int nfd, const char *newpath, int flag);</span><br><span class="line">int unlink(const char *pathname);</span><br><span class="line">int unlinkat(int fd, const char *pathname, int flag);</span><br></pre></td></tr></table></figure>
+<p>其中的 ××at 函数和之前的类似明明方式的意义相同。如果linkat的两个文件描述符参数的任意一个设置为 AT_FDCWD 那么相应的路径名（如果它的相对路径）就通过相对于当前目录进行计算，如果任意路径是绝对路径，相应的文件描述符参数就会被<strong>忽略</strong>。</p>
+<p>unlink函数删除指定的目录项，并将由pathname所引用文件的链接计数减1.如果还有对该文件的其他链接，则仍可以通过其它链接访问该文件的数据，当链接计数达到0时，文件内容才会被删除。另外只要有进程打开了这个文件也不能删除文件的内容，内核会首先检查打开该文件的进程个数，这个计数达到0再检查其链接计数，如果也是0就可以删除文件的内容。</p>
+<p>unlink 的特性常用来确保即使程序奔溃时，它所创建的<strong>临时文件</strong>也不会遗留下来，进程用 <code>open</code> 或 <code>creat</code> 创建一个文件，然后<strong>立即调用</strong><code>unlink</code>，因为该文件仍旧是打开的，所以不会将其内容删除。只有当进程关闭时或终止时，该文件的内容才会被删除。</p>
+<p>重命名函数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">int rename(const char *oldname, const char *newname);</span><br><span class="line">int renameat(int oldfd, const char *oldname, int newfd, const char *newname);</span><br></pre></td></tr></table></figure>
+<p>如果oldname是一个文件，newname已经存在，则newname不能是目录项，如果newname也是文件则删除newname的文件再将oldname重命名为newname。如果oldname是一个目录且newname已经存在，那么如果newname是一个空目录，则可以将其删除，然后将oldname目录重命名我newname。</p>
+<p>另外对于目录重命名，newname不能包含oldname作为路径前缀，即不能将 <code>/var/foo</code> 重命名为 <code>/var/foo/bar</code>。不能对 <code>.</code> 和 <code>..</code> 进行重命名。</p>
+<h2 id="符号链接"><a href="#符号链接" class="headerlink" title="符号链接"></a>符号链接</h2><p>符号链接是对一个文件的间接指针，它与上一节的硬链接有所不同。硬链接直接指向文件的inode，符号链接是为了避开硬链接的一些限制：</p>
+<ul>
+<li>硬链接通常要求链接和文件位置在同一文件系统中</li>
+<li>只有超级用户才能创建指向目录的硬链接（在文件系统支持的条件下）</li>
+</ul>
+<p>符号链接，也常称为软连接，没有上面的限制。符号链接和系统命令 <code>ln -s target link_name</code> 的效果是一样的，硬链接则和 <code>ln target link_name</code>类似。</p>
+<p>创建符号链接的函数声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">int symlink(const char *actualpath, const char *sympath);</span><br><span class="line">int symlinkat(const char *actualpath, int fd, const char *sympath);</span><br></pre></td></tr></table></figure>
+<p>注意的是，创建符号链接时，并不会检查 actualpath 是否已经存在。 <code>open</code> 函数打开一个符号文件时会跟随（follow）符号链接，所以要打开符号链接本身需要使用 readlink 函数。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">ssize_t readlink(const char *restrict pathname, char *restrict buf, sie_t bufsize);</span><br><span class="line">ssize_t readlinkat(int fd, const char *restrict pathnae, char *restrict buf, size_t bufsize);</span><br></pre></td></tr></table></figure>
+<p>这两个函数组合了 open, read, close 的所有操作。返回读取到buf中的字节数。</p>
+<p><strong>关于文件时间的读取、修改暂时跳过</strong></p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p>目录操作就是创建目录，删除目录，重命名，读取目录的函数，需要注意的是这些函数包含在不同的头文件中，有 &lt;sys/stat.h&gt;, &lt;unistd.h&gt;, &lt;dirent.h&gt;等头文件中。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;sys/stat.h&gt;</span><br><span class="line">int mkdir(const char *pathname, mode_t mode);</span><br><span class="line">int mkdirat(int fd, const char *pathame, mode_t mode);</span><br></pre></td></tr></table></figure>
+<p>创建目录指定文件访问权限mode由进程的文件模式创建屏蔽字修改。对于目录通常至少要设置一个执行权限位，以允许访问该目录中的文件名。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">int rmdir(const char *pathname);</span><br></pre></td></tr></table></figure>
+<h3 id="读取目录"><a href="#读取目录" class="headerlink" title="读取目录"></a>读取目录</h3><p>对某个目录具有访问权限的任意用户都可以读该目录，但是为了防止文件系统混乱，只有内核才能写目录。一个目录的写权限位与执行权限位决定在该目录能否创建新文件以及删除文件，并不表示能否写<strong>目录本身</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;dirent.h&gt;</span><br><span class="line">DIR *opendir(const char *pathname);</span><br><span class="line">DIR *fdopendir(int fd);</span><br><span class="line"></span><br><span class="line">struct dirent *readdir(DIR *dp);</span><br><span class="line"></span><br><span class="line">void rewinddir(DIR *dp);</span><br><span class="line">int closedir(DIR *dp);</span><br><span class="line">long telldir(DIR *dp);</span><br><span class="line">void seekdir(DIR *dp, long loc);</span><br></pre></td></tr></table></figure>
+<p>其中前两个函数用于打开一个目录，返回一个 DIR 指针，后面的函数对这个指针进行操作，其中最常用的 <code>readdir</code> 用于从开打的目录读取一个目录项，要遍历目录下的文件则使用 <code>while( (dirp = readdir(dp) != NULL) {...}</code> 循环。readdir 返回的是一个<code>dirent</code>结构指针，dirent 结构具体与实现有关，不过其中至少都定义了下面两个成员：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ino_t d_ino;</span><br><span class="line">char d_name[];</span><br></pre></td></tr></table></figure>
+<p>d_name 项即指向一个目录项的文件名，它的大小没有指定，但必须保证它至少包含 NAME_MAX个字节。常用的读取目录示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if ((dp = opendir(fullpath)) == NULL) &#123;</span><br><span class="line">  ..</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">while ((dirp = readdir(dp)) != NULL) &#123;</span><br><span class="line"> 	if (strcmp(dirp-&gt;d_name, &quot;.&quot;) == 0 ||</span><br><span class="line">         strcmp(dirp-&gt;d_name, &quot;..&quot;) == 0)</span><br><span class="line">    	continue;</span><br><span class="line"> 	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if (closedir(dp) &lt; 0) &#123;</span><br><span class="line"> printf(&quot;closr dir %s error: %s\n&quot;, fullpath, strerror(errno));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="目录操作函数"><a href="#目录操作函数" class="headerlink" title="目录操作函数"></a>目录操作函数</h3><p>修改当前(进程)工作目录函数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">int chdir(const char *pathname);</span><br><span class="line">int fchdir(int fd);</span><br><span class="line"></span><br><span class="line">char *getcwd(char *buf, size_t size);</span><br></pre></td></tr></table></figure>
+<p>这些函数只会影响进程本身，不会影响其它进程。 getcwd 返回当前工作目录的绝对路径。</p>
+<hr>
+<p>彩蛋：一种 typedef 声明函数的方法</p>
+<p>这是在APUE中讲目录遍历示例中使用的函数方法，非常的trick，平时不怎么能接触到，在这里分析一下，我修改了一些，其代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef int FileTypeFunc(const char *, const struct stat *, int);</span><br><span class="line"></span><br><span class="line">static FileTypeFunc myfunc;</span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static int myfunc(const char *pathname, const struct stat *statptr, int type) &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>前面的文章提到了函数指针的用法，这里使用typedef方式也是类似的。</p>
+<p>基本结束</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/APUE/" rel="tag">#APUE</a>
+          
+            <a href="/tags/C/" rel="tag">#C</a>
+          
+            <a href="/tags/Unix/" rel="tag">#Unix</a>
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/array-and-pointer/" rel="next" title="C数组和指针">
+                <i class="fa fa-chevron-left"></i> C数组和指针
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/intro-of-cloudsim/" rel="prev" title="Cloudsim 云计算仿真系统介绍">
+                Cloudsim 云计算仿真系统介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#文件信息"><span class="nav-number">1.</span> <span class="nav-text">文件信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件类型"><span class="nav-number">2.</span> <span class="nav-text">文件类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ID和Group"><span class="nav-number">3.</span> <span class="nav-text">ID和Group</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限"><span class="nav-number">4.</span> <span class="nav-text">权限</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#umask"><span class="nav-number">4.1.</span> <span class="nav-text">umask</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chmod-fchmod-fchmodat"><span class="nav-number">4.2.</span> <span class="nav-text">chmod, fchmod, fchmodat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#粘着位"><span class="nav-number">4.3.</span> <span class="nav-text">粘着位</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件长度"><span class="nav-number">5.</span> <span class="nav-text">文件长度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#空洞"><span class="nav-number">5.1.</span> <span class="nav-text">空洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件截断"><span class="nav-number">5.2.</span> <span class="nav-text">文件截断</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件系统"><span class="nav-number">6.</span> <span class="nav-text">文件系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链接函数"><span class="nav-number">7.</span> <span class="nav-text">链接函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#符号链接"><span class="nav-number">8.</span> <span class="nav-text">符号链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录"><span class="nav-number">9.</span> <span class="nav-text">目录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#读取目录"><span class="nav-number">9.1.</span> <span class="nav-text">读取目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目录操作函数"><span class="nav-number">9.2.</span> <span class="nav-text">目录操作函数</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

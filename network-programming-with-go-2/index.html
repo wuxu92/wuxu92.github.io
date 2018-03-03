@@ -1,0 +1,738 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="golang,go,network," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="UDP数据报关于UDP的部分在 这篇 文章里已经介绍了很多了，这里只记录在npwg中出现的内容。 监听多个socket一个server一般式监听多个端口服务多个客户端的，这种情况一般会用到轮训的方式。在C中使用 select() 调用让内核去做这个工作。在Go中，为每一个端口分配一个Goroutine来实现。 Conn, PacketConn, Listener 类型前面的TCP和UDP使用了不">
+<meta name="keywords" content="golang,go,network">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go 网络编程-Socket接口与IP套接字">
+<meta property="og:url" content="http://blog.wuxu92.com/network-programming-with-go-2/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="UDP数据报关于UDP的部分在 这篇 文章里已经介绍了很多了，这里只记录在npwg中出现的内容。 监听多个socket一个server一般式监听多个端口服务多个客户端的，这种情况一般会用到轮训的方式。在C中使用 select() 调用让内核去做这个工作。在Go中，为每一个端口分配一个Goroutine来实现。 Conn, PacketConn, Listener 类型前面的TCP和UDP使用了不">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.wuxu92.com/images/golang/gopher-banner-small.jpg">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.547Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go 网络编程-Socket接口与IP套接字">
+<meta name="twitter:description" content="UDP数据报关于UDP的部分在 这篇 文章里已经介绍了很多了，这里只记录在npwg中出现的内容。 监听多个socket一个server一般式监听多个端口服务多个客户端的，这种情况一般会用到轮训的方式。在C中使用 select() 调用让内核去做这个工作。在Go中，为每一个端口分配一个Goroutine来实现。 Conn, PacketConn, Listener 类型前面的TCP和UDP使用了不">
+<meta name="twitter:image" content="http://blog.wuxu92.com/images/golang/gopher-banner-small.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> Go 网络编程-Socket接口与IP套接字 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Go 网络编程-Socket接口与IP套接字
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-02T12:34:50+08:00" content="2015-11-02">
+              2015-11-02
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p><img src="/images/golang/gopher-banner-small.jpg" alt=""></p>
+<h2 id="UDP数据报"><a href="#UDP数据报" class="headerlink" title="UDP数据报"></a>UDP数据报</h2><p>关于UDP的部分在 <a href="http://wuxu92.github.io/go-lang-notebook-2/" target="_blank" rel="noopener">这篇</a> 文章里已经介绍了很多了，这里只记录在npwg中出现的内容。</p>
+<h2 id="监听多个socket"><a href="#监听多个socket" class="headerlink" title="监听多个socket"></a>监听多个socket</h2><p>一个server一般式监听多个端口服务多个客户端的，这种情况一般会用到轮训的方式。在C中使用 select() 调用让内核去做这个工作。在Go中，为每一个端口分配一个Goroutine来实现。</p>
+<h2 id="Conn-PacketConn-Listener-类型"><a href="#Conn-PacketConn-Listener-类型" class="headerlink" title="Conn, PacketConn, Listener 类型"></a>Conn, PacketConn, Listener 类型</h2><p>前面的TCP和UDP使用了不同的API，比如TCPConn和UDPConn其实它们都是实现了 Conn 接口。所以之前的写法也都可以直接使用 Conn 实现，这样可以不需要在代码中区分 TCP和 UDP而直接使用 <code>Dial</code> 方法。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func Dial(net, laddr, raddr string) (c Conn, e os.Error)</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，这里的 laddr 和 raddr 都是字符串，也就是 host:port 这样的形式的字符串，而不需要向之前那样先使用 <code>net.ResolveUDPAddr</code> 或者 <code>net.ResolveTCPAddr</code> 先解析出地址。因为可以兼顾TCP/UDP/IP数据，所以net参数可以为 <code>tcp, tcp4, tcp6, udp, udp4, udp6, ip, ip4, ip6</code>。这个方法返回一个Conn接口的实例。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">conn, _ := net.Dial(&quot;tcp&quot;, &quot;zhihu.com:80&quot;)</span><br><span class="line">conn.Write([]byte(&quot;HEAD / HTTP/1.0\r\n\r\n&quot;))</span><br><span class="line">var buffer = make([]byte, 512)</span><br><span class="line">if n, err := conn.Read(buffer); err == nil &#123;</span><br><span class="line">	fmt.Println(&quot;response&quot;, n, &quot;\n&quot;, string(buffer))</span><br><span class="line">&#125; else &#123;</span><br><span class="line">	fmt.Println(&quot;err occur&quot;, err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一个更加简化的使用接口实现的Head程序。但是这样写有一个问题，如果服务器端返回的内容超多了512个字节，那么buffer不能存储这么多，那么就只会读到前512个字节的内容，后面的被丢弃。我们需要是用一个缓冲区来存储（这部分可以封装为一个方法，读取所有返回）。Read部分改如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">result := bytes.NewBuffer(nil)</span><br><span class="line">var buf [512]byte</span><br><span class="line">for &#123;</span><br><span class="line">	n, err ：= conn.Read(buf[0:])</span><br><span class="line">	result.Write(buf[0:n])</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		if err == io.EOF &#123;</span><br><span class="line">			break</span><br><span class="line">		&#125;</span><br><span class="line">		fmt.Pritnln(&quot;err&quot;, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">fmt.Println(&quot;res&quot;, result.Bytes())</span><br></pre></td></tr></table></figure>
+<p>而对于server端，可以不需要ListenUDP或者ListenTCP而直接使用 <code>Listen</code> 方法，它会返回一个实现了 <code>Listener</code> 接口的对象。其对应的方法签名如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func Listen(net, laddr string) (l Listener, err os.Error)</span><br><span class="line">func (l Listener) Accept() (c Conn, err os.Error)</span><br></pre></td></tr></table></figure>
+<p>同样需要注意Listen的laddr是一个字符串了，而不是解析过的TCPAddr或者UDPAddr。<br>对应UDP使用 <code>ListenPacket(net, laddr string) (c PacketConn, err os.Error)</code> 方法。</p>
+<h2 id="使用更原始的IP套接字"><a href="#使用更原始的IP套接字" class="headerlink" title="使用更原始的IP套接字"></a>使用更原始的IP套接字</h2><p>这一节我们讨论一下一般情况下不太需要的原始套接字，这可以构建我们自己的IP协议或者使用TCP和UDP之外的协议。<br>TCP和UDP不是IP层上仅有的协议。现在大概有140种这样的协议（参看 <code>/etc/protocls</code>）。<br>Go可以通过原始套接字使用户使用这些协议进行通信。</p>
+<p>我们可以使用原始套接字实现一个icmp客户端程序，也就是ping命令。我们要注意的是ping不是传输层应用，不使用TCP或者UDP也就<strong>没有端口的概念</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func main() &#123;</span><br><span class="line">	addr, _ := net.ResolveIPAddr(&quot;ip&quot;, &quot;baidu.com&quot;)</span><br><span class="line">	conn, err = net.DialIP(&quot;ip4:icmp&quot;, nil, addr)</span><br><span class="line">	CheckErr(err)</span><br><span class="line"></span><br><span class="line">	var msg [512]byte   // icmp 报文</span><br><span class="line">	msg[0] = 8</span><br><span class="line">	msg[1] = 0</span><br><span class="line">	msg[2] = 0</span><br><span class="line">	msg[3] = 0</span><br><span class="line">	msg[4] = 0</span><br><span class="line">	msg[5] =  13</span><br><span class="line">	msg[6] = 0</span><br><span class="line">	msg[7] = 37</span><br><span class="line">	len := 8</span><br><span class="line">	check := checkSum(msg[:len])</span><br><span class="line">	msg[2] = byte(check &gt;&gt; 8)</span><br><span class="line">	msg[3] = byte(check &amp; 255)</span><br><span class="line">	_, err = conn.Write(msg[0:len])</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	fmt.Println(&quot;wites&quot;, (msg[0:len]))</span><br><span class="line">	n, err := conn.Read(msg[0:])</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	fmt.Println(&quot;got ping res&quot;, n)</span><br><span class="line">	if msg[5] == 13 &#123;</span><br><span class="line">		fmt.Println(&quot;ping identifier matches&quot;)</span><br><span class="line">	&#125;</span><br><span class="line">	if msg[7] == 37 &#123;</span><br><span class="line">		fmt.Println(&quot;ping sequence matches&quot;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">// 计算校验和</span><br><span class="line">func checkSum(msg []byte) uint16 &#123;</span><br><span class="line">	sum := 0</span><br><span class="line">	for n := 1; n &lt; len(msg)-1; n += 2 &#123;</span><br><span class="line">		sum += int(msg[n])*256 + int(msg[n+1])</span><br><span class="line">	&#125;</span><br><span class="line">	sum = (sum &gt;&gt; 16) + (sum &amp; 0xffff)</span><br><span class="line">	sum += (sum &gt;&gt; 16)</span><br><span class="line">	var ans uint16 = uint16(^sum)</span><br><span class="line">	return ans</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func CheckErr(err error) &#123;</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		fmt.Fprintf(os.Stderr, &quot;err %s&quot;, err.Error())</span><br><span class="line">		os.Exit(1)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码在Windows下使用管理员运行也没有结果（使用非管理员运行会提示权限不足），会在<code>Read(msg[:])</code> 那里卡住，但是在Linux运行是可以的，不过后面那端matches的不知道干什么的，读到的返回的数据的内容大概是这样的： <code>[69 0 0 28 45 250 64 0 64 1 216 33 10 4 16 95 10 4 16 95 8 0 242 255 0 13 0 37]</code></p>
+<p>下一张 数据序列化</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/golang/" rel="tag">#golang</a>
+          
+            <a href="/tags/go/" rel="tag">#go</a>
+          
+            <a href="/tags/network/" rel="tag">#network</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/golang-local-document/" rel="next" title="Go 启用本地文档">
+                <i class="fa fa-chevron-left"></i> Go 启用本地文档
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/jp-drama-lines/" rel="prev" title="台词">
+                台词 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP数据报"><span class="nav-number">1.</span> <span class="nav-text">UDP数据报</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监听多个socket"><span class="nav-number">2.</span> <span class="nav-text">监听多个socket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conn-PacketConn-Listener-类型"><span class="nav-number">3.</span> <span class="nav-text">Conn, PacketConn, Listener 类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用更原始的IP套接字"><span class="nav-number">4.</span> <span class="nav-text">使用更原始的IP套接字</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,781 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="js,fe,vue," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="2015年，Vue.js在国内的前端圈子内可是大红大紫了一把，作为国内开发者（尤雨溪）开源的作品，在github上获得众多star与 fork，也成为laravel官方推荐的js框架，大有可取代jQuery的势头。目前前端JS框架比较流行的，jQuery不用说是使用最广泛的，现在随便浏览一个网站都基本都使用了它，jQuery在Web技术发展中可是立下了汗马功劳了，不过jQuery因为时代原因，也越">
+<meta name="keywords" content="js,fe,vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="开始学习 vue.js">
+<meta property="og:url" content="http://blog.wuxu92.com/vuejs-starting/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="2015年，Vue.js在国内的前端圈子内可是大红大紫了一把，作为国内开发者（尤雨溪）开源的作品，在github上获得众多star与 fork，也成为laravel官方推荐的js框架，大有可取代jQuery的势头。目前前端JS框架比较流行的，jQuery不用说是使用最广泛的，现在随便浏览一个网站都基本都使用了它，jQuery在Web技术发展中可是立下了汗马功劳了，不过jQuery因为时代原因，也越">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.wuxu92.com/images/lifecycle.png">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.602Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="开始学习 vue.js">
+<meta name="twitter:description" content="2015年，Vue.js在国内的前端圈子内可是大红大紫了一把，作为国内开发者（尤雨溪）开源的作品，在github上获得众多star与 fork，也成为laravel官方推荐的js框架，大有可取代jQuery的势头。目前前端JS框架比较流行的，jQuery不用说是使用最广泛的，现在随便浏览一个网站都基本都使用了它，jQuery在Web技术发展中可是立下了汗马功劳了，不过jQuery因为时代原因，也越">
+<meta name="twitter:image" content="http://blog.wuxu92.com/images/lifecycle.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> 开始学习 vue.js | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                开始学习 vue.js
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-05T12:34:50+08:00" content="2016-01-05">
+              2016-01-05
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/fe/" itemprop="url" rel="index">
+                    <span itemprop="name">fe</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>2015年，Vue.js在国内的前端圈子内可是大红大紫了一把，作为国内开发者（尤雨溪）开源的作品，在github上获得众多star与 fork，也成为laravel官方推荐的js框架，大有可取代jQuery的势头。目前前端JS框架比较流行的，jQuery不用说是使用最广泛的，现在随便浏览一个网站都基本都使用了它，jQuery在Web技术发展中可是立下了汗马功劳了，不过jQuery因为时代原因，也越来越被开发者所“嫌弃”，认为jQuery只能算一个类库，而算不上现代的js框架。即使这样，也不可否认,jQuery是非常优秀的。</p>
+<p>现在jQuery之外有了更多选择（这些选择不再是ext，ember这些了），那就是 Angular， react等等，虽然它们所要实现的功能并不相同，但是也经常拿他们一起比较。可以参考<a href="https://www.zhihu.com/question/38989845" target="_blank" rel="noopener">这个讨论</a>。</p>
+<h2 id="开头"><a href="#开头" class="headerlink" title="开头"></a>开头</h2><a id="more"></a>
+<p>今天中午开始看了一会 Vue.js 的示例，简单使用了一下，其功能真是非常惊艳，相见恨晚，其数据操作和jQuery完全是不同的思路，就是非常简单直接，使js的开发更加有feel了。不过玩了一会后，手机被我搞坏了，充不了电，开不了机，下午就跑去数码大厦修手机了，修完手机回来刷机一直有问题，搞到好晚才刷到最新的CM，不提。<br><!-- more --><br>开发时应该使用<a href="http://vuejs.org/js/vue.js" target="_blank" rel="noopener">开发版本</a>，可以有友好的错误提示，部署时使用<a href="http://vuejs.org/js/vue.min.js" target="_blank" rel="noopener">生产版本</a>，体积更小。使用时，直接使用 script 标签引入即可。</p>
+<p>Vue.js官方的文档非常棒，毕竟是中国人开发维护的项目，中文文档看起来很好理解，<del>现在作者在国内做了一个文档镜像</del>：<a href="http://vuejs.org/guide/instance.html" target="_blank" rel="noopener">http://vuejs.org/guide/instance.html</a>，访问速度快很多了，查文档推荐去这里。</p>
+<p>官方文档的起步、概述讲的很详细，就不赘述了，跟着走一遍就好了，这部分是基础，也很重要，对js有些经验的话，应该很快就能过完。</p>
+<blockquote>
+<p>Vue.js 的核心是一个响应的数据绑定系统，它让数据与 DOM 保持同步非常简单。在使用 jQuery 手工操作 DOM 时，我们的代码常常是命令式的、重复的与易错的。Vue.js 拥抱数据驱动的视图概念。通俗地讲，它意味着我们在普通 HTML 模板中使用特殊的语法将 DOM “绑定”到底层数据。一旦创建了绑定，DOM 将与数据保持同步。每当修改了数据，DOM 便相应地更新。这样我们应用中的逻辑就几乎都是直接修改数据了，不必与 DOM 更新搅在一起。这让我们的代码更容易撰写、理解与维护。</p>
+</blockquote>
+<h2 id="Vue实例"><a href="#Vue实例" class="headerlink" title="Vue实例"></a>Vue实例</h2><p>一个Vue应用的起步都是使用全局构造函数<code>Vue</code> 创建一个 <strong>Vue的根实例</strong>。该函数的参数是一个js对象（键值对，选项对象），一般的指定键为 el, data, methods;el是一个css选择器，代表这个Vue实例对应的dom节点，比如 ‘#app’; data是这个实例持有的数据，它是一个js对象，其成员的键绑定DOM节点中同名的符号，methods是方法的集合，也是一个js对象，其键是方法名，值为一个函数。</p>
+<p>一个Vue实例其实正是一个 MVVM模式中的ViewModel，可以将一个实例保存为一个本地变量，用于对该节点的引用。</p>
+<p>每一个Vue实例都会<strong>代理</strong>其data对象里所有的属性（可以直接用示例变量名引用data中的键，而不需要通过data域）。注意，只有被代理的属性是<strong>响应</strong>的，在实例创建<strong>之后</strong>添加到实例的属性不会触发视图的更新。除了数据属性，Vue实例还暴露一些有用的实例属性与方法。这些属性与方法都使用前缀 <code>$</code> 以区分于代理的数据属性。比如data域使用 <code>vm.$data</code>，还有 <code>vm.$el</code>、<code>vm.$watch</code>等，下面是官方的示例：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> data = &#123; <span class="attr">a</span>: <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#example'</span>,</span><br><span class="line">  data: data</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">vm.$data === data <span class="comment">// -&gt; true</span></span><br><span class="line">vm.$el === <span class="built_in">document</span>.getElementById(<span class="string">'example'</span>) <span class="comment">// -&gt; true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// $watch 是一个实例方法</span></span><br><span class="line">vm.$watch(<span class="string">'a'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">newVal, oldVal</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 这个回调将在 `vm.a`  改变后调用</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="Vue实例的生命周期"><a href="#Vue实例的生命周期" class="headerlink" title="Vue实例的生命周期"></a>Vue实例的生命周期</h3><p>Vue实例的创建有系列初始化步骤，如建立数据观察，编译模板，创建必要的数据绑定。在此过程中，它会调用一些<strong>生命周期钩子</strong>，这些钩子会在对应的阶段自动调用，Vue实例的生命周期图示如下：<br><img src="/images/lifecycle.png" alt=""><br>其中红色圆角方框中的就是暴露的钩子。</p>
+<h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2><p>Vue可以看作一个模板引擎，有自己的数据绑定语法，这里主要就介绍数据绑定。</p>
+<p>Vue 的模板是<strong>基于DOM</strong>实现的，这意味着所有的Vue模板都是可解析的有效的HTML，且通过一些特性做了增强。<strong>Vue 模板从根本上不同于基于字符串的模板</strong>，作者让我们牢记这一点。</p>
+<h3 id="插值"><a href="#插值" class="headerlink" title="插值"></a>插值</h3><p>数据绑定最基础的形式是文本插值，使用 “Mustache”(双大括号)语法。在HTML中任意地方（Vue实例指定的DOM节点）插入 Mustache 标签就会被相应数据对象的属性的值替换，<strong>每当这个属性变化时，显示的值也会自动更新</strong>。也可以只处理单次插值，后面的数据变化就不会再引起插值更新，其语法是在大括号内的第一个字符插入一个星号和一个空格。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">span</span>&gt;</span> &#123;&#123;* msg &#125;&#125; <span class="tag">&lt;<span class="name">span</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>对于html内容，使用三 Mustache标签,将数据解析为html而不是纯文本，双大括号则直接输出纯文本。（注意渲染不受控制的HTML内容是非常危险的，可能导致XSS攻击）。</p>
+<p>Mustache 标签可以用在HTML特性（Attributes）内。</p>
+<h3 id="绑定表达式"><a href="#绑定表达式" class="headerlink" title="绑定表达式"></a>绑定表达式</h3><p>放在大括号标签内的文本称为<strong>绑定表达式</strong>，在Vue.js中，一段绑定表达式由一个简单的JavaScript表达式和一个可选的一个或多个<strong>过滤器</strong>构成。</p>
+<p>注意一个绑定只能包含<strong>单个</strong>的 <strong>表达式</strong>，而<strong>不能是语句</strong>或者流程控制，三元操作符，函数调用是可以的，赋值操作和if等是不允许的。</p>
+<p>Vue.js允许在表达式后添加可选的<strong>过滤器（filter）</strong>，以管道符(|)指示。如<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&#123; message | capitalize &#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里的capitalize即是所谓“过滤器”，这个过滤器其实只是一个JavaScript函数，返回大写化的值，Vue.js提供数个内置过滤器，也可以自己开发过滤器。</p>
+<p>过滤器函数可以指定多个参数，它始终以表达式的值作为第一个参数，后面指定后续的参数，如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&#123; message | filter &apos;arg1&apos; arg2 &#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>这里 arg1 字符串作为filter函数的第二个参数，arg2可以是一个表达式，将其计算的结果作为第三个参数。</p>
+<p>管道(|)不是JavaScript的语法，所以不要在表达式内使用过滤器，只能添加到表达式的后面，Vue.js的过滤器可以串联，就像Linux中的管道一样。</p>
+<h3 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h3><p>指令（directive）是特殊的带有前缀<code>v-</code>的特性，指令的值限定为<strong>绑定表达式</strong>，指令的职责就是当其表达式的值改变时把偶写特殊的行为应用到DOM上，常见的指令：<code>v-if</code>, <code>v-for</code>, <code>v-bind</code>, <code>v-on</code>。几个示例：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"bind"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">""</span> <span class="attr">v-bind:href</span>=<span class="string">"url"</span> <span class="attr">v-bind:target</span>=<span class="string">"target"</span>&gt;</span>&#123;&#123;url&#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> <span class="attr">href</span>=<span class="string">""</span> <span class="attr">v-on:click</span>=<span class="string">"update"</span>&gt;</span>&#123;&#123;text&#125;&#125;<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">""</span> <span class="attr">v-if</span>=<span class="string">"greeting"</span> <span class="attr">v-bind:target</span>=<span class="string">"target"</span>&gt;</span>&#123;&#123;greet&#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>上面的 <code>v-bind:href</code> 在冒号后面的 href称为<strong>参数</strong>，v-bind可以用于绑定节点的属性值。还有一个<strong>修饰符</strong>，它以半角句号开始的特殊<strong>后缀</strong>，用于表示指令应当以特殊方式绑定，例如常用的 <code>.literal</code> 修饰符表示将值解析为一个字面量字符串而不是一个表达式，常用的在事件绑定中使用修饰符指定对应的按键，例如为input绑定回车事件： <code>v-on:keyup.enter=&quot;addBook&quot;</code>。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> bind = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#bind'</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    target: <span class="string">'_blank'</span>,</span><br><span class="line">    url: <span class="string">"http://blog.wuxu92.com"</span>,</span><br><span class="line">    text: <span class="string">'update'</span>,</span><br><span class="line">    greet: <span class="string">"hello"</span>,</span><br><span class="line">    greeting: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    update: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.greeting = !<span class="keyword">this</span>.greeting</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>这是针对上面的DOM节点的Vue实例。</p>
+<h3 id="缩写"><a href="#缩写" class="headerlink" title="缩写"></a>缩写</h3><p>使用 <code>v-</code> 前缀是标识模板中特定的Vue特性的视觉暗示。如果觉得使用前缀比较罗嗦麻烦，而且在构建单页面应用时，Vue.js会管理所有的模板，此时前缀就没有那么重要了，Vue.js为两个最常用的指令 <code>v-bind</code> 和 <code>v-on</code> 提供了特别的缩写。</p>
+<p>v-bind 可以直接省略，而已 <code>:</code> 开后，因为bind指令肯定需要指定一个参数的，可以省略v-bind前缀。</p>
+<p>v-on: 可以省略为 <code>@</code> 符号，如 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;a v-on:click=&quot;clickHandler&quot;&gt;link&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+<p>等价于： </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;a @lick=&quot;clickHandler&quot;&gt;link&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="计算属性"><a href="#计算属性" class="headerlink" title="计算属性"></a>计算属性</h2><p>Vue将数据绑定限制为一个表达式，如果需要多于一个表达式的逻辑，应该使用计算属性。计算属性是 Vue实例中的一个域 <code>computed</code>,将一个函数作为属性的值（这个函数必须有返回值），然后可以将计算属性绑定到标识上，等价于函数的计算值绑定,可以向绑定普通属性一样绑定计算属性，计算属性也是即时更新的。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"comput"</span>&gt;</span></span><br><span class="line">  a=&#123;&#123;a&#125;&#125; and b=&#123;&#123;b&#125;&#125;</span><br><span class="line">  <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">"addOne"</span>&gt;</span>a+1<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="xml"> <span class="comment">&lt;!-- 这里的\是为了显式正常加的 --&gt;</span></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> computed = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">  el: <span class="string">'#comput'</span>,</span></span><br><span class="line"><span class="undefined">  data: &#123;</span></span><br><span class="line"><span class="undefined">    a: 100</span></span><br><span class="line"><span class="undefined">  &#125;,</span></span><br><span class="line"><span class="undefined">  computed: &#123;</span></span><br><span class="line"><span class="javascript">    b: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> <span class="keyword">this</span>.a * <span class="number">2</span>  <span class="comment">// this.a can't omit this</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;,</span></span><br><span class="line"><span class="undefined">  methods: &#123;</span></span><br><span class="line"><span class="javascript">    addOne: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.a += <span class="number">1</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">&#125;)</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>Vue 还提供了一个暴露的 $watch 方法，用于观察Vue实力上的数据变动，当一些数据需要根据其他数据变动时，watch很有用，但是实际上它的作用和计算属性是一样的，并且计算属性更加优雅且好理解，所以<strong>更好的选择是使用计算属性</strong>而不是调用 $watch 方法。</p>
+<p>计算属性默认只提供 getter方法，就像上面的例子一样，当然我们也可以提供一个setter方法，下面是一个示例：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">computed: &#123;</span><br><span class="line">  b: &#123;</span><br><span class="line">    get: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span>  <span class="keyword">this</span>.a * <span class="number">2</span></span><br><span class="line">    &#125;,</span><br><span class="line">    set: <span class="function"><span class="keyword">function</span>(<span class="params">newVlaue</span>) </span>&#123;</span><br><span class="line">      ...	<span class="comment">// do something here</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意，setter方法并不会破坏计算属性的get方法，也就是对应的标签显示的值只会是get方法计算的值。</p>
+<p>更多细节参考： <a href="http://cn-stage.vuejs.org/guide/reactivity.html#计算属性的秘密" target="_blank" rel="noopener">http://cn-stage.vuejs.org/guide/reactivity.html#计算属性的秘密</a></p>
+<h2 id="Class与Style绑定"><a href="#Class与Style绑定" class="headerlink" title="Class与Style绑定"></a>Class与Style绑定</h2><p>数据绑定还可以操作元素的class列表和它的内联样式。因为它们都是属性，我们可以用 <code>v-bind</code>处理它们，即计算出表达式的最终字符串后绑定上去，不过字符串拼接很麻烦又容易出错，所以Vue.js增强了Class和Style属性的绑定，这类数据绑定的表达式结果类型除了字符串外，还可以<strong>对象或者数组</strong>。如果对css样式有了解的话，会发现这样的处理会变得非常方便。</p>
+<p>尽管可以用标签绑定class，但是不推荐<code>class=&quot;{{ className }} &quot;</code> 和 <code>v-bind:class</code> 混用，两者只选其一。</p>
+<p>绑定Class和Style有两种方式，只需要掌握绑定数据里的一个对象这种方法即可，更详细的方法参考官方手册： <a href="http://cn-stage.vuejs.org/guide/class-and-style.html" target="_blank" rel="noopener">http://cn-stage.vuejs.org/guide/class-and-style.html</a></p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>绑定class和style的示例如下：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"classbind"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"static"</span> <span class="attr">v-bind:class</span>=<span class="string">"bookClass"</span>&gt;</span>books class<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"static"</span> <span class="attr">v-bind:style</span>=<span class="string">"bookStyle"</span>&gt;</span>books style<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>js</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> classbind = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#classbind'</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    bookClass: &#123;</span><br><span class="line">      <span class="string">'class_a'</span>: <span class="literal">true</span>,    <span class="comment">// class_a, class_b 是一个css类选择器名</span></span><br><span class="line">      <span class="string">'class_b'</span>: <span class="literal">false</span></span><br><span class="line">    &#125;,</span><br><span class="line">    bookStyle: &#123;</span><br><span class="line">      color: <span class="string">"red"</span>,</span><br><span class="line">      <span class="string">'font-size'</span>: <span class="string">"22px"</span>    <span class="comment">// font-size做键需要引号引起来</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意，带有特殊字符（如上面的-）的字符串做JavaScript对象的键时，需要使用引号，引用其值时不能用点号，而要使用数组形式。</p>
+</blockquote>
+<p>上面的节点可以像<code>classbind.bookClass.class_a = false</code> 这样操作删除相应节点的class_a。</p>
+<p>style的绑定还可以是一个数组，将多个样式对象应用到一个元素上，如： <code>v-bind:style=&quot;[styleObjA, styleObjB]&quot;</code></p>
+<h3 id="自动前缀"><a href="#自动前缀" class="headerlink" title="自动前缀"></a>自动前缀</h3><p>当 <code>v-bind:style</code> 使用需要厂商前缀的 CSS 属性时，如 <code>transform</code>，Vue.js 会自动侦测并添加相应的前缀。 </p>
+<p>完</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/js/" rel="tag">#js</a>
+          
+            <a href="/tags/fe/" rel="tag">#fe</a>
+          
+            <a href="/tags/vue/" rel="tag">#vue</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/techs-to-learn-late-2015/" rel="next" title="近期技术方向选择">
+                <i class="fa fa-chevron-left"></i> 近期技术方向选择
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/jekyll-posts-to-hexo-style/" rel="prev" title="用Go将jekyll的文章转换成hexo文章风格">
+                用Go将jekyll的文章转换成hexo文章风格 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#开头"><span class="nav-number">1.</span> <span class="nav-text">开头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vue实例"><span class="nav-number">2.</span> <span class="nav-text">Vue实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Vue实例的生命周期"><span class="nav-number">2.1.</span> <span class="nav-text">Vue实例的生命周期</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础语法"><span class="nav-number">3.</span> <span class="nav-text">基础语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#插值"><span class="nav-number">3.1.</span> <span class="nav-text">插值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绑定表达式"><span class="nav-number">3.2.</span> <span class="nav-text">绑定表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指令"><span class="nav-number">3.3.</span> <span class="nav-text">指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缩写"><span class="nav-number">3.4.</span> <span class="nav-text">缩写</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算属性"><span class="nav-number">4.</span> <span class="nav-text">计算属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Class与Style绑定"><span class="nav-number">5.</span> <span class="nav-text">Class与Style绑定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">5.1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动前缀"><span class="nav-number">5.2.</span> <span class="nav-text">自动前缀</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

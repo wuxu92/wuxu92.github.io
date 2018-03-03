@@ -1,0 +1,1027 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="c,programming,Unix,Linux,signal," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="信号是软件中断，是比较底层的机制，这样一章断断续续看完了，但是很多地方都没有理解好。 信号提供了一种处理异步事件的方法，例如中断用户键入中断，会通过信号机制停止一个程序，或及早终止管道的下一个程序。信号机制在Unix的早起版本就提供了，不过早期的信号机制并不可靠，后来信号模型做了更改，增加了可靠信号机制（4.3 BSD、SVR3），POSIX.1对可靠信息号进行了标准化，现在的信号都基于这一标准。">
+<meta name="keywords" content="c,programming,Unix,Linux,signal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APUE：信号">
+<meta property="og:url" content="http://blog.wuxu92.com/apue-signals/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="信号是软件中断，是比较底层的机制，这样一章断断续续看完了，但是很多地方都没有理解好。 信号提供了一种处理异步事件的方法，例如中断用户键入中断，会通过信号机制停止一个程序，或及早终止管道的下一个程序。信号机制在Unix的早起版本就提供了，不过早期的信号机制并不可靠，后来信号模型做了更改，增加了可靠信号机制（4.3 BSD、SVR3），POSIX.1对可靠信息号进行了标准化，现在的信号都基于这一标准。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.477Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="APUE：信号">
+<meta name="twitter:description" content="信号是软件中断，是比较底层的机制，这样一章断断续续看完了，但是很多地方都没有理解好。 信号提供了一种处理异步事件的方法，例如中断用户键入中断，会通过信号机制停止一个程序，或及早终止管道的下一个程序。信号机制在Unix的早起版本就提供了，不过早期的信号机制并不可靠，后来信号模型做了更改，增加了可靠信号机制（4.3 BSD、SVR3），POSIX.1对可靠信息号进行了标准化，现在的信号都基于这一标准。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> APUE：信号 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                APUE：信号
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-13T14:43:12+08:00" content="2016-01-13">
+              2016-01-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>信号是软件中断，是比较底层的机制，这样一章断断续续看完了，但是很多地方都没有理解好。</p>
+<p>信号提供了一种处理异步事件的方法，例如中断用户键入中断，会通过信号机制停止一个程序，或及早终止管道的下一个程序。信号机制在Unix的早起版本就提供了，不过早期的信号机制并不可靠，后来信号模型做了更改，增加了可靠信号机制（4.3 BSD、SVR3），POSIX.1对可靠信息号进行了标准化，现在的信号都基于这一标准。</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>信号都有一个名字，信号的名字都是以 SIG 三个字符开头，信号在<code>&lt;signal.h&gt;</code>中定义为<strong>正整数</strong>常量（不同的系统可能定义在另外的头文件，不过那些头文件肯定会被 signal.h 包含），当然我们并不要去关心具体的定义是什么。</p>
+<p>有多种方法向进程发送信号：</p>
+<ol>
+<li>中断按键，常见 <code>Ctrl+C</code> 发送中断信号（SIGINT）</li>
+<li>硬件异常产生信号，这是硬件检测到发送给内核的，如除数为0，无效的内存引用等</li>
+<li>进程调用 <code>kill</code> 函数可以将<strong>任意信号</strong>发送给进程/进程组，前提是接收信号的进程和发送信号进程所有者相同。</li>
+<li>用户在终端调用 <code>kill</code> 命令将信号发送给指定进程，常用来结束一个失控的后台进程， <code>kill -9 pid</code></li>
+<li>当系统检测到某种<strong>软件条件</strong>已经发生，并应将其通知有关进程时也产生信号。<a id="more"></a>
+产生信号的事件对于进程来说是随机出现的，进程不能简单地测试一个变量来判断是否产生一个信号（可以测试 errno 变量判断是否产生错误）。而是必须告诉内核，当这个信号发生时，请执行下面的操作。这有和事件注册有点像，事先对信号注册处理函数，在信号到达时由内核自动调用该函数处理。</li>
+</ol>
+<p>当信号到达是，可以告诉内核按下列的方式之一进行处理。</p>
+<ul>
+<li>忽略该信号，大部分信号都是被忽略的，但有两种信号不能被忽略，<code>SIGKILL</code> 和 <code>SIGSTOP</code> 这两个信号要确保在任何条件下，内核和超级用户都能通过这两个信号终止或停止这个进程</li>
+<li>捕捉信号，通知内核在某个信号到达时，执行一个用户定义函数。这是大部分信号相关应用要关心的。</li>
+<li>执行默认动作。 每个信号都对应一个默认动作，对大多数信号系统的默认动作就是终止进程</li>
+</ul>
+<p>常见/常用的几个信号:</p>
+<ol>
+<li>SIGABRT        异常终止</li>
+<li>SIGALRM        定时器超时，使用这个信号实现 sleep 函数</li>
+<li>SIGCHLD        子进程状态改变，这在进程控制中使用过</li>
+<li>SIGHUP        连接断开</li>
+<li>SIGILL        非法硬件指令</li>
+<li>SIGINT        终端中断符，这是最常用的信号，特别是不允许 Ctrl+c 终止运行时</li>
+<li>SIGPOLL        可轮询事件（poll）</li>
+<li>SIGSEGV        无效内存引用/段错误/segment violation</li>
+<li>SIGWINCH        终端窗口大小改变/window change</li>
+<li>SIGUSR1        用户定义信号1</li>
+<li>SIGUSR2        用户定义信号2</li>
+</ol>
+<h2 id="signal-函数"><a href="#signal-函数" class="headerlink" title="signal 函数"></a>signal 函数</h2><p><code>signal</code>是Unix系统信号机制最简单也是最重要的接口。它的函数声明如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="keyword">void</span> (*signal(<span class="keyword">int</span> signo, <span class="keyword">void</span> (*func)(<span class="keyword">int</span>)))(<span class="keyword">int</span>);</span><br></pre></td></tr></table></figure>
+<p>这个声明有点复杂，要一点点分析：<br>首先，signal是一个函数指针，它的参数部分是<code>int, void (*func)(int)</code>,我们知道第二个参数是一个指向函数的指针，这个函数返回值是void，参数是一个int，也就是调用signal函数要传入两个参数，第一个是信号名（信号名是一个SIG开头的常量，实际定义为整形），第二个参数是一个函数，这个函数没有返回值且要有一个int参数。</p>
+<p>再看signal的返回值，signal的返回值是一个函数地址，返回的函数使用一个int作为参数，返回的函数没有返回值。也就是调用signal函数将返回一个函数指针。这是第一次见到。</p>
+<p>signal函数原型有点复杂，可以用下面的方式方便理解,这个定义和上面的signal定义是等价的：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="keyword">void</span> <span class="title">Sigfunc</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line"><span class="function">Sigfunc *<span class="title">singal</span><span class="params">(<span class="keyword">int</span> Sigfunc *)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>为什么signal要返回一个函数呢？这是因为使用signal为信号绑定了一个信号处理函数，那如果原来信号就有一个处理函数了呢？不能简单地丢掉它而要将它的引用返回给调用者，以防后面还需要它，<strong>所以signal函数的返回值是指向在此之前的信号处理程序的指针</strong>。这是很有用的，很多时候为一个信号绑定处理程序，过一段时间还要再恢复到原来的处理程序。</p>
+<p>那如果绑定信号失败了呢？C语言中一般的调用失败反悔一个-1，但是 signal 调用返回的是一个函数指针，怎么通过一个函数指针判断是否绑定失败呢？还好系统定义了一个常量 <code>SIG_ERR</code> 只需要比较返回值和 <code>SIG_ERR</code>，如果它们相等则是signal调用失败。实际上 <code>SIG_ERR</code>常量也是一个函数指针，声明如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SIG_ERR (void (*)())-1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SIG_DFL (void (*)())0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SIG_IGN	(void (*)())1</span></span><br></pre></td></tr></table></figure>
+<p>另外两常量分别标识默认方法和忽略信号，即 default 和 ignore，它们可以用作 signal 方法的第二个参数。</p>
+<p>signal的使用示例：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sig_user</span><span class="params">(<span class="keyword">int</span>)</span></span>; <span class="comment">// signal handler</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">main(<span class="keyword">void</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (signal(SIGUSR1, sig_user) == SIG_ERR)</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"can't catch SIGUSR1\n"</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (signal(SIGUSR2, sig_user) == SIG_ERR)</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"can't catch SIGUSR2\n"</span>);</span><br><span class="line">  <span class="keyword">for</span> (;;)</span><br><span class="line">    pause();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line">sig_user(<span class="keyword">int</span> signo) &#123;</span><br><span class="line">  <span class="keyword">if</span> (signo == SIGUSR1)</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"received sigusr1\n"</span>);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (signo == SIGUSR2)</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"received sigusr2\n"</span>);</span><br><span class="line">  <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">"received signal %d\n"</span>, signo);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当一个进程调用fork时，其子进程继承父进程的信号处理方式，因为子进程在开始时复制了父进程内存映像，所以信号捕捉函数地址在子进程是有意义的。</p>
+<p>在早起的Unix系统（如V7）中，信号是不可靠的，这是指信号可能会丢失，一个信号发生了，但是进程却可能一直不知道这一点，同时进程对信号的控控制能力也很差，当然这都是早起Unix系统能够存在的问题，不需要太过关心。</p>
+<h2 id="可重入函数-Reentrant-Functions"><a href="#可重入函数-Reentrant-Functions" class="headerlink" title="可重入函数/Reentrant Functions"></a>可重入函数/Reentrant Functions</h2><p>由于信号处理程序是异步进行的，这就牵涉到主进程函数调用和信号处理程序之间可能造成的冲突了。</p>
+<p>进程捕捉到信号并对其进行处理时，进程正在执行的正常指令序列就被信号处理程序临时中断，它首先执行该信号处理程序中的指令，如果从信号处理程序反悔，则继续执行在捕捉到信号时进程正在执行的指令序列。但是在信号处理程序中，不能判断捕捉到信号时进程执行到何处，如果进程正在执行 malloc ，在其堆中分配另外的存储空间，此时捕捉到信号而插入执行信号处理程序，若在信号处理中又调用 malloc，那么返回进程时原来的地址分配很可能出错，还有向 getpwnam 这样的结果存放在静态存储单元的函数，如果在信号处理程序调用了的话也会导致原来的数据被覆盖。</p>
+<p>SUS说明了信号处理程序中保证调用安全的函数，这些函数被称为<strong>可重入的</strong>，并被称为是异步信号安全的。除了可重入之外，在信号处理操作期间，它会阻塞任何引起不一致的信号发送。常见的可重入函数也挺多的，不过大部分函数还是<strong>不可重入的</strong>，一个可重入函数的列表如下：</p>
+<table>
+<thead>
+<tr>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>abort</td>
+<td>faccessat</td>
+<td>linkat</td>
+<td>select</td>
+<td>socketpair</td>
+</tr>
+<tr>
+<td>accept</td>
+<td>fchmod</td>
+<td>listen</td>
+<td>sem_post</td>
+<td>stat</td>
+</tr>
+<tr>
+<td>access</td>
+<td>fchmodat</td>
+<td>lseek</td>
+<td>send</td>
+<td>symlink</td>
+</tr>
+<tr>
+<td>aio_error</td>
+<td>fchown</td>
+<td>lstat</td>
+<td>sendmsg</td>
+<td>symlinkat</td>
+</tr>
+<tr>
+<td>aio_return</td>
+<td>fchownat</td>
+<td>mkdir</td>
+<td>sendto</td>
+<td>tcdrain</td>
+</tr>
+<tr>
+<td>aio_suspend</td>
+<td>fcntl</td>
+<td>mkdirat</td>
+<td>setgid</td>
+<td>tcflow</td>
+</tr>
+<tr>
+<td>alarm</td>
+<td>fdatasync</td>
+<td>mkfifo</td>
+<td>setpgid</td>
+<td>tcflush</td>
+</tr>
+<tr>
+<td>bind</td>
+<td>fexecve</td>
+<td>mkfifoat</td>
+<td>setsid</td>
+<td>tcgetattr</td>
+</tr>
+<tr>
+<td>cfgetispeed</td>
+<td>fork</td>
+<td>mknod</td>
+<td>setsockopt</td>
+<td>tcgetpgrp</td>
+</tr>
+<tr>
+<td>cfgetospeed</td>
+<td>fstat</td>
+<td>mknodat</td>
+<td>setuid</td>
+<td>tcsendbreak</td>
+</tr>
+<tr>
+<td>cfsetispeed</td>
+<td>fstatat</td>
+<td>open</td>
+<td>shutdown</td>
+<td>tcsetattr</td>
+</tr>
+<tr>
+<td>cfsetospeed</td>
+<td>fsync</td>
+<td>openat</td>
+<td>sigaction</td>
+<td>tcsetpgrp</td>
+</tr>
+<tr>
+<td>chdir</td>
+<td>ftruncate</td>
+<td>pause</td>
+<td>sigaddset</td>
+<td>time</td>
+</tr>
+<tr>
+<td>chmod</td>
+<td>futimens</td>
+<td>pipe</td>
+<td>sigdelset</td>
+<td>timer_getoverrun</td>
+</tr>
+<tr>
+<td>chown</td>
+<td>getegid</td>
+<td>poll</td>
+<td>sigemptyset</td>
+<td>timer_gettime</td>
+</tr>
+<tr>
+<td>clock_gettime</td>
+<td>geteuid</td>
+<td>posix_trace_event</td>
+<td>sigfillset</td>
+<td>timer_settime</td>
+</tr>
+<tr>
+<td>close</td>
+<td>getgid</td>
+<td>pselect</td>
+<td>sigismember</td>
+<td>times</td>
+</tr>
+<tr>
+<td>connect</td>
+<td>getgroups</td>
+<td>raise</td>
+<td>signal</td>
+<td>umask</td>
+</tr>
+<tr>
+<td>creat</td>
+<td>getpeername</td>
+<td>read</td>
+<td>sigpause</td>
+<td>uname</td>
+</tr>
+<tr>
+<td>dup</td>
+<td>getpgrp</td>
+<td>readlink</td>
+<td>sigpending</td>
+<td>unlink</td>
+</tr>
+<tr>
+<td>dup2</td>
+<td>getpid</td>
+<td>readlinkat</td>
+<td>sigprocmask</td>
+<td>unlinkat</td>
+</tr>
+<tr>
+<td>execl</td>
+<td>getppid</td>
+<td>recv</td>
+<td>sigqueue</td>
+<td>utime</td>
+</tr>
+<tr>
+<td>execle</td>
+<td>getsockname</td>
+<td>recvfrom</td>
+<td>sigset</td>
+<td>utimensat</td>
+</tr>
+<tr>
+<td>execv</td>
+<td>getsockopt</td>
+<td>recvmsg</td>
+<td>sigsuspend</td>
+<td>utimes</td>
+</tr>
+<tr>
+<td>execve</td>
+<td>getuid</td>
+<td>rename</td>
+<td>sleep</td>
+<td>wait</td>
+</tr>
+<tr>
+<td>_Exit</td>
+<td>kill</td>
+<td>renameat</td>
+<td>sockatmark</td>
+<td>waitpid</td>
+</tr>
+<tr>
+<td>_exit</td>
+<td>link</td>
+<td>rmdir</td>
+<td>socket</td>
+<td>write</td>
+</tr>
+</tbody>
+</table>
+<p>不可重入函数的特点是：</p>
+<ul>
+<li>已知它们使用静态数据结构，如 <code>getpwnam</code></li>
+<li>它们调用 malloc 或 free，因为这些函数为它所分配的存储区维护了一个链表，插入信号处理程序可能修改这个链表。</li>
+<li>它们是标准I/O函数，标准IO函数的很多实现都以不可冲入方式使用全局数据结构。虽然有时在信号处理程序中使用 printf ，但这是不可靠的，这样信号处理程序可能中断主进程的 printf 函数调用。</li>
+</ul>
+<p>还有一个要注意的就是 <code>errno</code>，我们知道它是定义在 <code>&lt;error.h&gt;</code>中的全局变量，用于说明前一个调用是否有错误，每个线程只有一个 errno，所以即使信号处理程序调用上面的可重入函数也可能会修改errno原值，常见的做法是在信号处理程序调用上表中的函数时，先保存errno，在调用后再恢复errno。</p>
+<h2 id="信号屏蔽字"><a href="#信号屏蔽字" class="headerlink" title="信号屏蔽字"></a>信号屏蔽字</h2><p>每个进程都有一个信号屏蔽字（signal mask）,就像文件创建权限屏蔽字。信号屏蔽字规定了当前要阻塞递送到进程的信号集合。回忆一下文件创建屏蔽字，用屏蔽字的一位代表一个权限，信号屏蔽字也是相似的思路，不过信号编号很多，可能会超过一个整形所包含的二进制位数，因此不能简单用一个整形表示。POSIX.1定义了一个数据类型 <code>sigset_t</code> 它可以容纳一个<strong>信号集</strong>。这个类型一般定义在 &lt;bit/sigset.h&gt; 中，这个头文件被 &lt;signal.h&gt; 包含，所以也不需要单独在包含了。</p>
+<p>关于信号集，和一些常用的操作函数声明如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigemptyset</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>)</span></span>;		# 清空信号集</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigfillset</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>)</span></span>;		# 添加所有的信号到信号集</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigaddset</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>, <span class="keyword">int</span> signo)</span></span>;	# 向信号集添加一个信号</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigdelset</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>, <span class="keyword">int</span> signo)</span></span>;	# 从信号集删除一个信号</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigismember</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>, <span class="keyword">int</span> signo)</span></span>;	# 判断某个信号是否在信号集中</span><br></pre></td></tr></table></figure>
+<p>在应用程序使用信号集之前，都要对该信号集调用一次 <code>sigemptyset</code> 或者 <code>sigfillset</code>，因为C编译程序将不赋初值的外部变量和静态变量都初始化为0，而这与是否与个顶的信号集实现相对应是不清楚的。</p>
+<h2 id="函数：-kill-和-raised"><a href="#函数：-kill-和-raised" class="headerlink" title="函数： kill 和 raised"></a>函数： kill 和 raised</h2><p>可以通过 <code>kill</code> 函数将信号发送给进程或者进程组，<code>raised</code>则允许向自身发送信号。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">kill</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">int</span> signo)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">raise</span><span class="params">(<span class="keyword">int</span> signo)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>pid可正可负可为0与-1，其意义与之前使用 pid_t 类型参数的方法一样，为负时表示进程组，0标识所有同一进程组的，-1标识发送给所有有权限的进程。</p>
+<p>POSIX.1 将信号编号为0定义为<strong>空信号</strong>，如果signo为0，则kill仍执行正常的错误检查，但不发送信号，这常被用来<strong>确定一个特定的进程是否仍然存在</strong>。如果像一个不存在进程发送空信号，kill返回-1，errno设置为 <code>ESRCH</code>。</p>
+<h2 id="函数-alarm-和-pause"><a href="#函数-alarm-和-pause" class="headerlink" title="函数 alarm 和 pause"></a>函数 alarm 和 pause</h2><p><code>SIGALRM</code>是常用的信号，alarm函数可以设置一个定时器，在将来的某个时刻该定时器会超时，当定时器超时时，产生 <code>SIGALRM</code> 信号，如果忽略不捕捉这个信号，默认动作是终止调用该 alarm函数的进程。大部分使用 <code>SIGALRM</code>信号的进程都会捕捉该信号。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">alarm</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> seconds)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>每个进程只有一个闹钟时间，如果在alarm时，之前已经注册的闹钟事件还没有超时，则该alarm调用的返回值为之前闹钟的剩余时间。</p>
+<p>另一个 <code>pause</code>函数使调用进程挂起知道捕捉到一个信号。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;signal.h&gt;</span><br><span class="line">int pause(void);</span><br></pre></td></tr></table></figure>
+<p>只有执行了一个信号处理程序并从其返回时，pause才返回，这种情况下，pause返回-1，errno设置为 <code>EINTR</code>。</p>
+<h2 id="设置信号屏蔽字-sigprocmask"><a href="#设置信号屏蔽字-sigprocmask" class="headerlink" title="设置信号屏蔽字 sigprocmask"></a>设置信号屏蔽字 sigprocmask</h2><p>进程的信号屏蔽字规定了当前阻塞而不能递送给该进程的信号集。调用函数 sigprocmask 可以检测或更改，或同时进行检测和更改信号屏蔽字。其函数声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;signal.h&gt;</span><br><span class="line">int sigprocmask(int how, const sigset_t *restrict set, const sigset_t *restrict oldset);</span><br></pre></td></tr></table></figure>
+<p>如果oldset是非空指针，则将进程的当前信号屏蔽字保存到oldset中。<br>如果set是一个非空指针，则参数<strong>how指示如何修改当前屏蔽字</strong></p>
+<p>how有三个可选操作，它们是三个定义常量：</p>
+<ul>
+<li>SIG_BLOCK        该进程新的屏蔽字是当前屏蔽字与set的<strong>并集</strong>，set中要包含希望阻塞的附加信号</li>
+<li>SIG_UNBLOCK    新的屏蔽字是当前屏蔽字和set信号集<strong>补集的交集</strong>，所以set中要包含希望解除屏蔽的信号</li>
+<li>SIG_SETMASK    新的屏蔽字是 set 指向的值</li>
+</ul>
+<p>如果set是空指针，则不改变什么。sigprocmask是为单线程定义的，在多线程中使用另一个函数。</p>
+<h3 id="sigpending"><a href="#sigpending" class="headerlink" title="sigpending"></a>sigpending</h3><p><code>sigpending</code> 函数返回一个信号集，对于调用进程而言，返回的信号集中的各信号是阻塞不能递送的，同set参数返回。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigpendding</span><span class="params">(<span class="keyword">sigset_t</span> *<span class="built_in">set</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>这里有一个阻塞信号是否排队的问题，即一个信号在阻塞期间多次触发，系统是否将这些信号排队起来还是只保存最近的一个，大部分系统的实现只并不排队，只保存最近的一个信号。</p>
+<h3 id="sigaction"><a href="#sigaction" class="headerlink" title="sigaction"></a>sigaction</h3><p><code>sigaction</code>函数的功能是检查或修改于指定信号相关联的处理动作，此函数取代了Unix早起使用的<code>signal</code>函数，现代的<code>signal</code>函数实现中常使用 <code>sigaction</code>。这个函数比较复杂，其声明如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigaction</span><span class="params">(<span class="keyword">int</span> signo, <span class="keyword">const</span> struct sigaction *<span class="keyword">restrict</span> act, struct sigaction *<span class="keyword">restrict</span> oact)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>这里的第二和第三个参数是 sigaction 结构体，注意结构体与函数重名是可以的，它们并不发生冲突。该结构体定义如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> &#123;</span></span><br><span class="line">  <span class="keyword">void</span> (*sa_handler)(<span class="keyword">int</span>);	<span class="comment">// addr of signal handlerot SIG_DFL/SIG_IGN</span></span><br><span class="line">  <span class="keyword">sigset_t</span> sa_mask;			<span class="comment">// additional signals to block</span></span><br><span class="line">  <span class="keyword">int</span> sa_flags;				<span class="comment">// signal options</span></span><br><span class="line">  <span class="keyword">void</span> (*sa_sigaction)(<span class="keyword">int</span>, <span class="keyword">siginfo_t</span> *, <span class="keyword">void</span> *)	<span class="comment">// alternate handler</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">siginfo</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> si_signo;</span><br><span class="line">  <span class="keyword">int</span> si_errno;</span><br><span class="line">  <span class="keyword">int</span> si_code;</span><br><span class="line">  ..</span><br><span class="line">  <span class="keyword">int</span> si_status;</span><br><span class="line">  <span class="comment">/** possibly other fields */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这两个结构体有点复杂。需要使用时再具体分析吧。Chapter 10.6 page 278</p>
+<p>后面还有一些没看懂的，之后再补吧。</p>
+<p>暂时完 </p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/c/" rel="tag">#c</a>
+          
+            <a href="/tags/programming/" rel="tag">#programming</a>
+          
+            <a href="/tags/Unix/" rel="tag">#Unix</a>
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+            <a href="/tags/signal/" rel="tag">#signal</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/common-bash-commands/" rel="next" title="有用的Bash命令记录">
+                <i class="fa fa-chevron-left"></i> 有用的Bash命令记录
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/go-get-use-sock5-proxy/" rel="prev" title="让go get命令使用socks5代理">
+                让go get命令使用socks5代理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#signal-函数"><span class="nav-number">2.</span> <span class="nav-text">signal 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可重入函数-Reentrant-Functions"><span class="nav-number">3.</span> <span class="nav-text">可重入函数/Reentrant Functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信号屏蔽字"><span class="nav-number">4.</span> <span class="nav-text">信号屏蔽字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数：-kill-和-raised"><span class="nav-number">5.</span> <span class="nav-text">函数： kill 和 raised</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数-alarm-和-pause"><span class="nav-number">6.</span> <span class="nav-text">函数 alarm 和 pause</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置信号屏蔽字-sigprocmask"><span class="nav-number">7.</span> <span class="nav-text">设置信号屏蔽字 sigprocmask</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sigpending"><span class="nav-number">7.1.</span> <span class="nav-text">sigpending</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sigaction"><span class="nav-number">7.2.</span> <span class="nav-text">sigaction</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

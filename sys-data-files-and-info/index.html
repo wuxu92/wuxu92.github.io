@@ -1,0 +1,811 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="APUE,C,Unix,Linux," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="Unix系统的正常运作需要使用大量与系统有关的数据文件，例如口令文件 /etc/passwd 和组文件 /etc/group 就经常被多个程序使用，由于历史原因，这些文件都是ASCII文本文件，并且使用标准IO库读这些文件…但是，对于较大的系统，顺序扫描指令文件很花费时间，我们需要能够以非ASCII文本格式存储这些文件，但仍然向使用其他文件格式的应用程序提供接口。 口令文件口令文件就是 /etc/">
+<meta name="keywords" content="APUE,C,Unix,Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APUE：系统数据文件和信息">
+<meta property="og:url" content="http://blog.wuxu92.com/sys-data-files-and-info/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="Unix系统的正常运作需要使用大量与系统有关的数据文件，例如口令文件 /etc/passwd 和组文件 /etc/group 就经常被多个程序使用，由于历史原因，这些文件都是ASCII文本文件，并且使用标准IO库读这些文件…但是，对于较大的系统，顺序扫描指令文件很花费时间，我们需要能够以非ASCII文本格式存储这些文件，但仍然向使用其他文件格式的应用程序提供接口。 口令文件口令文件就是 /etc/">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.wuxu92.com/images/linux-logo.png">
+<meta property="og:image" content="http://blog.wuxu92.com/images/linux/time-functions.png">
+<meta property="og:image" content="http://blog.wuxu92.com/images/linux/strftime-format.png">
+<meta property="og:image" content="http://blog.wuxu92.com/images/linux/strptime.png">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.572Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="APUE：系统数据文件和信息">
+<meta name="twitter:description" content="Unix系统的正常运作需要使用大量与系统有关的数据文件，例如口令文件 /etc/passwd 和组文件 /etc/group 就经常被多个程序使用，由于历史原因，这些文件都是ASCII文本文件，并且使用标准IO库读这些文件…但是，对于较大的系统，顺序扫描指令文件很花费时间，我们需要能够以非ASCII文本格式存储这些文件，但仍然向使用其他文件格式的应用程序提供接口。 口令文件口令文件就是 /etc/">
+<meta name="twitter:image" content="http://blog.wuxu92.com/images/linux-logo.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> APUE：系统数据文件和信息 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                APUE：系统数据文件和信息
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-21T12:34:50+08:00" content="2015-12-21">
+              2015-12-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p><img src="/images/linux-logo.png" alt=""><br>Unix系统的正常运作需要使用大量与系统有关的数据文件，例如口令文件 /etc/passwd 和组文件 /etc/group 就经常被多个程序使用，由于历史原因，这些文件都是ASCII文本文件，并且使用标准IO库读这些文件…但是，对于较大的系统，顺序扫描指令文件很花费时间，我们需要能够以非ASCII文本格式存储这些文件，但仍然向使用其他文件格式的应用程序提供接口。</p>
+<h2 id="口令文件"><a href="#口令文件" class="headerlink" title="口令文件"></a>口令文件</h2><p>口令文件就是 /etc/passwd 文件，里面记录了系统的用户的信息，包括用户名，密码（可能单独存放在另一个文件），备注，家目录，默认shell等信息，对Linux比较熟悉的话，对这个文件应该也不陌生。不同的系统的passwd 文件实现不同，Linux实现了7个字段，而FreeBSD 和 MacOS X则实现了全部10个字段（至于各个字段是什么…其实并不重要）。</p>
+<p>与口令文件操作相关的函数和结构声明包含在 &lt;pwd.h&gt; 中，其中定义的结构体 <code>struct passwd</code> 用来保存一个用户对应的信息。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;pwd.h&gt;</span><br><span class="line">struct passwd</span><br><span class="line">&#123;</span><br><span class="line">  char *pw_name;		/* Username.  */</span><br><span class="line">  char *pw_passwd;		/* Password.  */</span><br><span class="line">  __uid_t pw_uid;		/* User ID.  */</span><br><span class="line">  __gid_t pw_gid;		/* Group ID.  */</span><br><span class="line">  char *pw_gecos;		/* Real name.  */</span><br><span class="line">  char *pw_dir;			/* Home directory.  */</span><br><span class="line">  char *pw_shell;		/* Shell program.  */</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct passwd *getpwuid(uid_t uid);</span><br><span class="line">struct passwd *getpwdnam(const char *name);</span><br></pre></td></tr></table></figure>
+<p>上面两个函数分别通过uid和username获取口令文件中的信息，它们都返回一个指向passwd结构的指针，该结构在执行函数时填写了信息，一般返回的passwd结构是<strong>函数内部的静态变量</strong>，只要调用任意相关函数，其内容就会被重写。<br><a id="more"></a><br>其他还是有 <code>getpwent(), setpwent(), endpwent()</code> 函数不太会用到，它们都是SUS(Single Unix Specification)中定义为 XSI 扩展的，没有在 POSIX.1中定义，不过现在的系统大都实现了这些函数。它们被用来读取整个口令文件，如果需要在查找手册吧。</p>
+<blockquote>
+<p>这些函数定义的 ent 后缀表示 entry，即一个表项，这是一个约定的命名习惯。</p>
+</blockquote>
+<h2 id="阴影文件-shadow-passwords"><a href="#阴影文件-shadow-passwords" class="headerlink" title="阴影文件/shadow passwords"></a>阴影文件/shadow passwords</h2><p>阴影文件即用户密码单向加密后的用户口令副本，对于一个加密口令，没有算法能将其反变换到明文口令，但是可以对口令进行猜测，为了使其图这样做的人难以获得原始资料（加密口令），现在的系统将加密口令存放在一个称为阴影口令的文件中。该文件至少要包含用户名和加密口令，与口令相关的其他信息也可存放在该文件中。</p>
+<p>与阴影文件操作相关的结构体为 <code>spwd</code>(shadow password)。阴影口令文件不是一般用户可读的，只有少数的程序可以访问加密口令，如 login，passwd。因为阴影口令的存在使得普通口令文件允许普通用户自由读取。</p>
+<p>阴影口令操作包含在 &lt;shaodw.h&gt; 头文件中。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct spwd</span><br><span class="line">&#123;</span><br><span class="line">    char *sp_namp;		/* Login name.  */</span><br><span class="line">    char *sp_pwdp;		/* Encrypted password.  */</span><br><span class="line">    long int sp_lstchg;		/* Date of last change.  */</span><br><span class="line">    long int sp_min;		/* Minimum number of days between changes.  */</span><br><span class="line">    long int sp_max;		/* Maximum number of days between changes.  */</span><br><span class="line">    long int sp_warn;		/* Number of days to warn user to change the password.  */</span><br><span class="line">    long int sp_inact;		/* Number of days the account may be inactive.  */</span><br><span class="line">    long int sp_expire;		/* Number of days since 1970-01-01 until account expires.  */</span><br><span class="line">    unsigned long int sp_flag;	/* Reserved.  */</span><br><span class="line">&#125;;</span><br><span class="line">struct spwd *getspnam(const char *name);</span><br><span class="line">struct spwd *getspent(void);</span><br><span class="line">void setspent(void);</span><br><span class="line">void endspent(void);</span><br></pre></td></tr></table></figure>
+<p>其使用与普通口令文件操作类似。</p>
+<h2 id="组文件-etc-group"><a href="#组文件-etc-group" class="headerlink" title="组文件/etc/group"></a>组文件/etc/group</h2><p>组文件指 /etc/group 文件，里面保存了系统用户组相关的信息，相关的函数包含在头文件 &lt;grp.h&gt; 中，定义了一个 group 结构，用于保存一个组信息。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct group</span><br><span class="line">&#123;</span><br><span class="line">    char *gr_name;		/* Group name.	*/</span><br><span class="line">    char *gr_passwd;		/* Password.	*/</span><br><span class="line">    __gid_t gr_gid;		/* Group ID.	*/</span><br><span class="line">    char **gr_mem;		/* Member list.	*/</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>其中的 gr_mem 成员是一个字符转数组的指针，用于保存该组的多个成员。其中指向组的加密口令（ge_passwd）并不是 POSIX.1 要求的，不过大部分系统都实现了这个字段，一般不用。</p>
+<p>相关的函数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;grp.h&gt;</span><br><span class="line">struct group *getgrgid(gid_t gid);</span><br><span class="line">struct group *getgrnam(const char *name);</span><br><span class="line">struct group *getgrent(void);</span><br><span class="line">void setgrent(void);</span><br><span class="line">void endgrent(void);</span><br></pre></td></tr></table></figure>
+<h2 id="附属组和其他数据文件"><a href="#附属组和其他数据文件" class="headerlink" title="附属组和其他数据文件"></a>附属组和其他数据文件</h2><p>跳跳跳</p>
+<h2 id="系统表示-uname"><a href="#系统表示-uname" class="headerlink" title="系统表示/uname"></a>系统表示/uname</h2><p>在Linux系统中，常通过 <code>uname -a</code> 命令查看系统的版本和编译信息。POSIX.1定义了相关的结构体和函数uname。下面是相关结构体（部分）和函数。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;sys/utsname.h&gt;</span><br><span class="line">struct utsname</span><br><span class="line">  &#123;</span><br><span class="line">    char sysname[];	/* Name of the operating system.  */</span><br><span class="line">    </span><br><span class="line">    char nodename[];	/* Name of this node on the network.  */</span><br><span class="line">    char release[];		/* Current release level of this implementation.  */</span><br><span class="line">    char version[];		/* Current version level of this release.  */</span><br><span class="line">    char machine[];		/* Name of the hardware type the system is running on.  */</span><br><span class="line">&#125;;</span><br><span class="line">int uname(struct utsname *name);</span><br></pre></td></tr></table></figure>
+<p>上面的utsname结构只是Linux实现的主要部分，省略了数组长度，具体可以通过 <code>/usr/include/sys/utsname.h</code> 文件查看，大概在48行。</p>
+<p>在 &lt;unistd.h&gt; 有一个 <code>gethostname()</code>函数用于返回主机名，也是很常用的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">int gethostname(char *name, int namelen);	// namelen 指定最大长度为 HOST_NAME_MAX</span><br></pre></td></tr></table></figure>
+<p>主机名通常在系统自举（bootstrap）时由/etc/rc 或 init 取自一个启动文件完成设置。</p>
+<h2 id="Unix时间"><a href="#Unix时间" class="headerlink" title="Unix时间"></a>Unix时间</h2><p>由Unix内核提供的基本时间服务是计算自协调世界时（UTC: Coordinated Universal Time）公元1970年1月1日 00:00:00 这一时间点到现在经过的秒数。这种秒数以数据类型 <code>time_t</code> 表示，我们称它们为<strong>日历时间</strong>。日历时间包括时间和日期。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;time.h&gt;</span><br><span class="line">time_t time(time_t *calptr); // 出错返回-1</span><br></pre></td></tr></table></figure>
+<p>我们知道 time_t 是使用typedef定义的基础类型，至于其具体的数据类型是什么，C语言并没有规定，只需要它是数字类型即可，现在系统一般使用 unsigned integer 类型，可能是32为或者64位的。所以实际使用time返回的就是Unix 时间戳（timestamp）。</p>
+<p>另一个重要的结构体是 <code>timespec</code> ，其定义如下，提供sec和nanoseconds成员。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;time.h&gt;</span><br><span class="line">struct timespec</span><br><span class="line">&#123;</span><br><span class="line">    __time_t tv_sec;		/* Seconds.  */</span><br><span class="line">    __syscall_slong_t tv_nsec;	/* Nanoseconds.  */</span><br><span class="line">&#125;;</span><br><span class="line">int clock_gettime(clockid_t clock_id, struct timespec *tsp);</span><br></pre></td></tr></table></figure>
+<p>其中的 <strong>time_t 一般是 time_t 的底层类型，即常有 `typedef </strong>time_t time_t`。</p>
+<p>clock_gettime函数应该是包含在头文件 &lt;time.h&gt; 中，但是APUE书本上写的是 &lt;sys/time.h&gt;，应该是一个笔误。其中的clockid_id 表示系统时钟的类型，POSIX.1扩展增加了多个系统时钟的支持，使用宏定义表示。</p>
+<table>
+<thead>
+<tr>
+<th>标识符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CLOCK_REALTIME</td>
+<td>实时系统时间</td>
+</tr>
+<tr>
+<td>CLOCK_MONOTONIC</td>
+<td>不带负跳数的实时系统时间</td>
+</tr>
+<tr>
+<td>CLOCK_PROCESS_CPUTIME_ID</td>
+<td>调用进程的CPU时间</td>
+</tr>
+<tr>
+<td>CLOCK_THREAD_CPUTIME_ID</td>
+<td>调用线程的CPU时间</td>
+</tr>
+</tbody>
+</table>
+<p>常用 CLOCK_REALTIME获得比 time() 更精确的时间（带 nanoseconds）。</p>
+<p>时间存在多种表示形式，各个时间函数之间的关系如下，这<strong>张图超级有用</strong>，其中方框中的是结构体，箭头上的是函数。<br><img src="/images/linux/time-functions.png" alt=""></p>
+<p>其中的几个函数声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;time.h&gt;</span><br><span class="line"></span><br><span class="line">struct tm</span><br><span class="line">&#123;</span><br><span class="line">  int tm_sec;			/* Seconds.	[0-60] (1 leap second) 可能闰秒*/</span><br><span class="line">  int tm_min;			/* Minutes.	[0-59] */</span><br><span class="line">  int tm_hour;			/* Hours.	[0-23] */</span><br><span class="line">  int tm_mday;			/* Day.		[1-31] */</span><br><span class="line">  int tm_mon;			/* Month.	[0-11] */</span><br><span class="line">  int tm_year;			/* Year	- 1900.  */</span><br><span class="line">  int tm_wday;			/* Day of week.	[0-6] */</span><br><span class="line">  int tm_yday;			/* Days in year.[0-365]	*/</span><br><span class="line">  int tm_isdst;			/* DST.		[-1/0/1]*/</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct tm *gmtime(const time_t *calptr);</span><br><span class="line">struct tm *localtime(const time_t *calptr);</span><br><span class="line">time_t mktime(struct tm *tmptr);</span><br></pre></td></tr></table></figure>
+<p>tm常被称为分解时间。localtime 和 gmtime 的区别是 localtime 将日历时间转换成本地时间（考虑本地时区和夏令时标志），而 gmtime 则将日历时间转换成协调统一时间。</p>
+<p>实际使用中常需要将时间戳或者时间的结构体用易读的字符串打印出来，这就要使用 strftime strftime_l 函数，这两个函数是类似于printf的时间值函数，它们比较复杂，通过多个参数<strong>定制产生的字符串</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;time.h&gt;</span><br><span class="line">size_t strftime(char *restrict buf, size_t maxsize,</span><br><span class="line">	const char *restrict format,</span><br><span class="line">	const struct tm *restrict tmptr);</span><br><span class="line"></span><br><span class="line">size_t strftime_l(char *restrict buf, size_t maxsize,</span><br><span class="line">	const char *restrict format,</span><br><span class="line">	cosnt struct tm *restrict tmptr, locale_t locale);</span><br></pre></td></tr></table></figure>
+<p>strftime 和 strftime_l 的区别是后者可以通过 locale参数设定区域，而前者使用 TZ(timezone) 环境变量指定区域。</p>
+<p>这两个函数签名比较复杂，其实理解不难，就是将 tmptr 指向的分解时间结构的内容使用 format 指定的格式生成字符串保存到 buf 指向的字符串中。</p>
+<p>还有两个函数， <code>asctime</code> 和 <code>ctime</code> 能产生指定格式的字符串，类似于 date 命令的输出，使用很简单，不过它们都被标识为弃用了，因为它们容易受到缓冲区溢出问题的影响。</p>
+<p>format指定的格式和printf类似，不过有更多的特定字符，而且没有宽度修饰符。输出格式转换说明表如下：</p>
+<p><img src="/images/linux/strftime-format.png" alt=""></p>
+<p>其中大部分都比较容易理解，其中 %U, %V, %W 都与周数有关，它们之间有细微的区别， %U的周数是该年中第一个星期日的周为第一周，， %W是该年第一个星期一的周为第一周，%V则是包含1月1日的那一周包含了新一年的4天或者更多，那么这周是这年的第一周，否则认为是上一年的最后一周。</p>
+<p>一个示例： <code>strftime(strtime, 36, &quot;%a %b %d %H:%M:%S %Z %z %Y&quot;, localtime(&amp;t));</code> 输出为 <code>Mon Dec 21 15:39:44 CST +0800 2015</code>。</p>
+<p>有了将时间字符串表示，当然还需要将一个符合时间表示的字符串转换成一个系统可以理解的时间值的需求。C提供了指定format的字符串时间转换函数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;time.h&gt;</span><br><span class="line">char *strptime(const char *restrict buf, const char *restrict format,</span><br><span class="line">	struct tm *restrict tmptr);</span><br></pre></td></tr></table></figure>
+<p>format参数给出了buf参数指向的缓冲区内的字符串的格式，虽然与strftime函数的格式稍有不同，但是基本类似。</p>
+<p><img src="/images/linux/strptime.png" alt=""></p>
+<p>时间相关的函数很多都是用 TZ 环境变量的值，Linux可以用 tzselect 工具设定tz，这是一个交互性的文字界面工具。</p>
+<p>基本完成</p>
+<p>参考：</p>
+<ul>
+<li><a href="http://linux.die.net/man/3/clock_gettime" target="_blank" rel="noopener">http://Linux.die.net/man/3/clock_gettime</a></li>
+<li><a href="http://en.cppreference.com/w/c/chrono/time_t" target="_blank" rel="noopener">http://en.cppreference.com/w/c/chrono/time_t</a></li>
+<li><a href="http://stackoverflow.com/questions/471248/what-is-ultimately-a-time-t-typedef-to" target="_blank" rel="noopener">http://stackoverflow.com/questions/471248/what-is-ultimately-a-time-t-typedef-to</a></li>
+<li>Unix 环境高级编程</li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/APUE/" rel="tag">#APUE</a>
+          
+            <a href="/tags/C/" rel="tag">#C</a>
+          
+            <a href="/tags/Unix/" rel="tag">#Unix</a>
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hp-mysql-paradigm/" rel="next" title="高性能MySQL：范式和反范式">
+                <i class="fa fa-chevron-left"></i> 高性能MySQL：范式和反范式
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/process-environment/" rel="prev" title="进程环境">
+                进程环境 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#口令文件"><span class="nav-number">1.</span> <span class="nav-text">口令文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阴影文件-shadow-passwords"><span class="nav-number">2.</span> <span class="nav-text">阴影文件/shadow passwords</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组文件-etc-group"><span class="nav-number">3.</span> <span class="nav-text">组文件/etc/group</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附属组和其他数据文件"><span class="nav-number">4.</span> <span class="nav-text">附属组和其他数据文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统表示-uname"><span class="nav-number">5.</span> <span class="nav-text">系统表示/uname</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unix时间"><span class="nav-number">6.</span> <span class="nav-text">Unix时间</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

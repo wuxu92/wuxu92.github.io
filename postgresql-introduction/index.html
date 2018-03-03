@@ -1,0 +1,799 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="database,postgresql,pg," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="安装被蓝屏搞没了默认的initdb数据目录是 /var/lib/pgsql/data/ 简介被蓝屏搞没了 入门 重写  创建数据库pg的管理模式和mysql很不一样。在MySQL我们要登陆到mysql服务器才能进行创建数据库，添加用户等操作。但是pg提供了一个createdb 的命令，可以直接在bash中创建数据库。但是要求： 运行该命令的用户必须是启动postgresql服务的用户。 使用yu">
+<meta name="keywords" content="database,postgresql,pg">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PostgreSQL 入门">
+<meta property="og:url" content="http://blog.wuxu92.com/postgresql-introduction/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="安装被蓝屏搞没了默认的initdb数据目录是 /var/lib/pgsql/data/ 简介被蓝屏搞没了 入门 重写  创建数据库pg的管理模式和mysql很不一样。在MySQL我们要登陆到mysql服务器才能进行创建数据库，添加用户等操作。但是pg提供了一个createdb 的命令，可以直接在bash中创建数据库。但是要求： 运行该命令的用户必须是启动postgresql服务的用户。 使用yu">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.wuxu92.com/images/logo/postgresql.png">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.561Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PostgreSQL 入门">
+<meta name="twitter:description" content="安装被蓝屏搞没了默认的initdb数据目录是 /var/lib/pgsql/data/ 简介被蓝屏搞没了 入门 重写  创建数据库pg的管理模式和mysql很不一样。在MySQL我们要登陆到mysql服务器才能进行创建数据库，添加用户等操作。但是pg提供了一个createdb 的命令，可以直接在bash中创建数据库。但是要求： 运行该命令的用户必须是启动postgresql服务的用户。 使用yu">
+<meta name="twitter:image" content="http://blog.wuxu92.com/images/logo/postgresql.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> PostgreSQL 入门 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                PostgreSQL 入门
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-27T12:34:50+08:00" content="2015-10-27">
+              2015-10-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/db/" itemprop="url" rel="index">
+                    <span itemprop="name">db</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p><img src="/images/logo/postgresql.png" alt=""></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>被蓝屏搞没了<br>默认的initdb数据目录是 <code>/var/lib/pgsql/data/</code></p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>被蓝屏搞没了</p>
+<h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><blockquote>
+<p>重写</p>
+</blockquote>
+<h3 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h3><p>pg的管理模式和mysql很不一样。在MySQL我们要登陆到mysql服务器才能进行创建数据库，添加用户等操作。但是pg提供了一个<code>createdb</code> 的命令，可以直接在bash中创建数据库。但是要求： 运行该命令的用户必须是启动postgresql服务的用户。</p>
+<p>使用yum安装的pg会自动创建一个postgres用户并用这个用户启动相关的各个线程，所以要运行<code>createdb</code> 命令，需要先切换到postgres 用户。由于是系统创建的用户，我们也不知道用户的密码是什么，可以先重置 postgres 的密码。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo passwd postgres</span><br><span class="line">// enter new password here</span><br><span class="line"></span><br><span class="line">su postgres</span><br><span class="line">createdb golang</span><br><span class="line">// dropdb golang</span><br></pre></td></tr></table></figure>
+<p>当然也可以使用命令参数指定用户</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">createdb -U postgres golang</span><br></pre></td></tr></table></figure>
+<p>但是运行并没有成功，还是没有权限，切换到postgres用户比较好用。这样的管理方式对于习惯mysql的人来说，多少有些奇怪。</p>
+<h3 id="创建pg用户"><a href="#创建pg用户" class="headerlink" title="创建pg用户"></a>创建pg用户</h3><p>在登陆管理pg之前我们要学会怎么创建pg的用户，并用这个用户去登陆pg的服务。<br>说实话 <a href="http://www.postgresql.org/docs/9.2/interactive/auth-username-maps.html" target="_blank" rel="noopener">官方文档</a> 看起来可不是那么简单。<br>首先要切换到系统的postgres用户，登陆pg创建新用户。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">su postgres</span><br><span class="line">psql</span><br><span class="line"></span><br><span class="line">postgres =<span class="comment"># create user golang with login password 'golang'</span></span><br><span class="line">postgres =<span class="comment"># \q</span></span><br></pre></td></tr></table></figure>
+<p>这样创建一个用户名为golang,登陆密码为golang的可登录用户。但是切换回普通用户，登陆还是会报错。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">su wuxu</span><br><span class="line">psql -U golang -W</span><br><span class="line">Enter password</span><br><span class="line">psql: FATAL:  Ident authentication failed <span class="keyword">for</span> user <span class="string">"golang"</span></span><br></pre></td></tr></table></figure>
+<p>命名用户名和密码都是对的，却总是认证失败，注意前面的Ident authentication是什么意思？<br>这牵涉到pg的认证方式了。我们知道pg的认证方式是保存在配置文件 <code>pg_hba.conf</code> 中，这个文件在初始化数据(initdb) 所制定的目录，默认地址是 <code>/var/lib/pgsql/data/pg_hba.conf</code> ,这是一个比较标准的Linux风格的配置文件，一行代表一条规则。主要内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># TYPE  DATABASE        USER            ADDRESS                 METHOD</span><br><span class="line"></span><br><span class="line"># &quot;local&quot; is for Unix domain socket connections only</span><br><span class="line">local   all             all                                     peer</span><br><span class="line"># IPv4 local connections:</span><br><span class="line">host    all             all             127.0.0.1/32            ident</span><br><span class="line"># IPv6 local connections:</span><br><span class="line">host    all             all             ::1/128                 ident</span><br></pre></td></tr></table></figure>
+<p>我们关心的是最后那个字段，METHOD，就是认证的方式，有很多种方式可以配置，常用的</p>
+<ul>
+<li>trust 任何连接都允许，不需要密码</li>
+<li>reject 拒绝符合条件(前面几个条件)的请求</li>
+<li>MD5 接收一个MD5加密过的密码</li>
+<li>password 接收一个密码来登陆，只在可信的网络使用这种方式</li>
+<li>gss 使用gssapi认证，只在tcp/ip连接可用</li>
+<li>sspi 只在windows可用的一种方式</li>
+<li>krb5 不常用，只在TCP/IP可用</li>
+<li>ident 使用操作系统用户名认证，验证它是否符合请求的的数据库用户名</li>
+<li>ldap 使用LDAP服务器认证</li>
+<li>cert 使用ssl客户端认证</li>
+<li>pam 使用操作系统的pam模块服务</li>
+</ul>
+<p>根据上面的报错，是配置文件使用了ident认证方式，而用户golang并不是系统用户，所以会认证失败。所以我们要添加一行认证配置：</p>
+<blockquote>
+<p>还有可能系统监听了 v4/v6两个端口，需要使用 <code>-h 127.0.0.1</code> 指定ipv4，否则会连接ipv6的端口，也会认证失败</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">host	golang	golang	0.0.0.0		password</span><br></pre></td></tr></table></figure>
+<p>然后重新加载配置文件 <code>sudo systemctl reload postgresql.service</code>.这样应该就能使用golang用户登录了。</p>
+<h3 id="psql"><a href="#psql" class="headerlink" title="psql"></a>psql</h3><p>psql是pg的中孤单交互程序，就像mysql的mysql程序一样。如下登陆： <code>psql -U golang -h 127.0.0.1 -p 5432 -W</code>，然后输入密码进入交互界面。</p>
+<p>进入控制台有一些sql标准之外的命令，这些命令常用来管理pg。它们使用 <code>\</code> 开头，常用命令如下：</p>
+<ul>
+<li>\h：查看SQL命令的解释，比如\h select。</li>
+<li>\?：查看psql命令列表</li>
+<li><strong>\l：列出所有数据库</strong></li>
+<li>\c [database_name]：连接其他数据库</li>
+<li><strong>\d：列出当前数据库的所有表格</strong></li>
+<li>\d [table_name]：列出某一张表格的结构</li>
+<li>\du：列出所有用户</li>
+<li>\e：打开文本编辑器</li>
+<li>\conninfo：列出当前数据库和连接的信息</li>
+<li>\password 设置密码</li>
+<li>\q 退出</li>
+</ul>
+<p>应该说pg的控制台比mysql的控制台人性化很多，特别是旧版本的mysql控制台真的很难用，不过5.6，或者mariadb 的控制台也有很大的改善了。</p>
+<p>可以和mysql控制台一样在psql控制台运行各种标准sql语句。#注意字符串使用单引号# j建表，增删改查没有太大的区别。<br>官方给的创建表语句(我加了一个自增的字段,–表示注释)：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE TABLE weather (</span><br><span class="line">	id				SERIAL primary key,			-- same as auto_increments</span><br><span class="line">    city            varchar(80),</span><br><span class="line">    temp_lo         int,           -- low temperature</span><br><span class="line">    temp_hi         int,           -- high temperature</span><br><span class="line">    prcp            real,          -- precipitation</span><br><span class="line">    date            date</span><br><span class="line">);</span><br><span class="line">CREATE TABLE cities (</span><br><span class="line">    name            varchar(80),</span><br><span class="line">    location        point</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>pg支持位置的point数据类型，它是一对数据，代表经纬度，这样插入数据可以如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into cities values (&apos;beijing&apos;, &apos;(100.0, 36.0)&apos;);</span><br></pre></td></tr></table></figure>
+<p>或者要从txt文件导入数据，在mysql中，我们使用load data local infile ‘’ into table ** 这样的命令，pg使用copy命令导入：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">copy table_name from &apos;/path/to/file/of/server/&apos;</span><br></pre></td></tr></table></figure>
+<p>一些对表结构的操作如下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 添加栏位 </span><br><span class="line">ALTER TABLE user_tbl ADD email VARCHAR(40);</span><br><span class="line"># 更新结构 </span><br><span class="line">ALTER TABLE user_tbl ALTER COLUMN signup_date SET NOT NULL;</span><br><span class="line"># 更名栏位 </span><br><span class="line">ALTER TABLE user_tbl RENAME COLUMN signup_date TO signup;</span><br><span class="line"># 删除栏位 </span><br><span class="line">ALTER TABLE user_tbl DROP COLUMN email;</span><br><span class="line"># 表格更名 </span><br><span class="line">ALTER TABLE user_tbl RENAME TO backup_tbl;</span><br><span class="line"># 删除表格 </span><br><span class="line">DROP TABLE IF EXISTS backup_tbl;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在生产环境中，不推荐使用 <code>select *</code> 这样的查询语句，因为结果与表结构关联，表插入一栏后结果会改变。</p>
+</blockquote>
+<h3 id="联合查询"><a href="#联合查询" class="headerlink" title="联合查询"></a>联合查询</h3><p>多表联合查询实际上和mysql也没有太多区别，也就是标准的sql。</p>
+<h3 id="聚合函数"><a href="#聚合函数" class="headerlink" title="聚合函数"></a>聚合函数</h3><p>Pg支持很多聚合函数，其使用和mysql并灭有太多区别。比如max.注意的是max不能用在where子句。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select max(tmp_lo) from weather;</span><br><span class="line">select city from weather where tmp_lo = max(temp_lo);  // 错误</span><br><span class="line">select city from weather where temp_lo = (select max(temp_lo) from weather);  // 正确</span><br></pre></td></tr></table></figure>
+<p>另一个常用的聚合就是group by了。没什么特殊的，和mysql同样的用法，注意group by 的条件子句使用 <code>having condition</code> 就可以了。</p>
+<blockquote>
+<p>WHERE selects input rows before groups and aggregates are computed, whereas HAVING selects group rows after groups and aggregates are computed. Thus, <strong>the WHERE clause must not contain aggregate functions</strong>; it makes no sense to try to use an aggregate to determine which rows will be inputs to the aggregates. On the other hand, <strong>the HAVING clause always contains aggregate functions</strong>. (Strictly speaking, you are allowed to write a HAVING clause that doesn’t use aggregates, but it’s seldom useful. The same condition could be used more efficiently at the WHERE stage.)</p>
+</blockquote>
+<p>参考</p>
+<ul>
+<li><a href="http://www.postgresql.org/docs/9.2/static/tutorial-start.html" target="_blank" rel="noopener">http://www.postgresql.org/docs/9.2/static/tutorial-start.html</a></li>
+<li><a href="http://www.postgresql.org/docs/9.2/static/tutorial-sql.html" target="_blank" rel="noopener">http://www.postgresql.org/docs/9.2/static/tutorial-sql.html</a></li>
+</ul>
+<p>done</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/database/" rel="tag">#database</a>
+          
+            <a href="/tags/postgresql/" rel="tag">#postgresql</a>
+          
+            <a href="/tags/pg/" rel="tag">#pg</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/postgresql-views-fk-and-trans/" rel="next" title="PostgreSQL 视图，外键与事物">
+                <i class="fa fa-chevron-left"></i> PostgreSQL 视图，外键与事物
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/network-programming-with-go/" rel="prev" title="Go 网络编程">
+                Go 网络编程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#入门"><span class="nav-number">3.</span> <span class="nav-text">入门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建数据库"><span class="nav-number">3.1.</span> <span class="nav-text">创建数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建pg用户"><span class="nav-number">3.2.</span> <span class="nav-text">创建pg用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#psql"><span class="nav-number">3.3.</span> <span class="nav-text">psql</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#联合查询"><span class="nav-number">3.4.</span> <span class="nav-text">联合查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚合函数"><span class="nav-number">3.5.</span> <span class="nav-text">聚合函数</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

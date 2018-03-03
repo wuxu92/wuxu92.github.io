@@ -1,0 +1,755 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="golang,go,network," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="这一篇主要是关于Go序列化数据。数据序列化在网络编程中非常重要，在网络传输数据时，如果数据是对象，数组等等，需要先把对象序列化为才能传递，同时接收方需要进行反序列化才能使用这些数据。一个比较常见的是json数据。 序列化和反序列化操作又成为 marshalling 和 unmarshalling 。 序列化方法序列化其实简单地说就是一种把变量似乎用字节流表示出来的规范，我们可以定义自己的规范，只">
+<meta name="keywords" content="golang,go,network">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go 网络编程-数据序列化">
+<meta property="og:url" content="http://blog.wuxu92.com/npwg-data-serialisation/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="这一篇主要是关于Go序列化数据。数据序列化在网络编程中非常重要，在网络传输数据时，如果数据是对象，数组等等，需要先把对象序列化为才能传递，同时接收方需要进行反序列化才能使用这些数据。一个比较常见的是json数据。 序列化和反序列化操作又成为 marshalling 和 unmarshalling 。 序列化方法序列化其实简单地说就是一种把变量似乎用字节流表示出来的规范，我们可以定义自己的规范，只">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.wuxu92.com/images/golang/gopher-banner-small.jpg">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.553Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go 网络编程-数据序列化">
+<meta name="twitter:description" content="这一篇主要是关于Go序列化数据。数据序列化在网络编程中非常重要，在网络传输数据时，如果数据是对象，数组等等，需要先把对象序列化为才能传递，同时接收方需要进行反序列化才能使用这些数据。一个比较常见的是json数据。 序列化和反序列化操作又成为 marshalling 和 unmarshalling 。 序列化方法序列化其实简单地说就是一种把变量似乎用字节流表示出来的规范，我们可以定义自己的规范，只">
+<meta name="twitter:image" content="http://blog.wuxu92.com/images/golang/gopher-banner-small.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> Go 网络编程-数据序列化 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Go 网络编程-数据序列化
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-04T12:34:50+08:00" content="2015-11-04">
+              2015-11-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p><img src="/images/golang/gopher-banner-small.jpg" alt=""></p>
+<p>这一篇主要是关于Go序列化数据。数据序列化在网络编程中非常重要，在网络传输数据时，如果数据是对象，数组等等，需要先把对象序列化为才能传递，同时接收方需要进行反序列化才能使用这些数据。一个比较常见的是json数据。 序列化和反序列化操作又成为 marshalling 和 unmarshalling 。</p>
+<h2 id="序列化方法"><a href="#序列化方法" class="headerlink" title="序列化方法"></a>序列化方法</h2><p>序列化其实简单地说就是一种把变量似乎用字节流表示出来的规范，我们可以定义自己的规范，只要接收方能使用相应的方法反序列化出来原来的对象就可以了。但是我们要考虑序列化方法的通用性，希望对任意的数据可以使用同样的序列化和反序列化方法实现。<br>早期很著名的系列化方法是 XDR(external data representation),它最早用于Sun的RPC中。Go没有对不透数据的marshalling 和 unmarshalling 有明确的支持。RPC包中没有使用XDR，而是使用<code>gob</code>。<br>要实现对数据统一的序列化方法，需要实现一套 <strong>自描述数据</strong>的规范。像xml就是一类自描述的数据，能通过节点属性对数据进行描述。xml还有很强的扩展性。这也是为什么很多项目中会使用xml作为数据传输的格式。</p>
+<a id="more"></a>
+<h2 id="ASN"><a href="#ASN" class="headerlink" title="ASN"></a>ASN</h2><p>ASN 是 abstract Syntax notation 的缩写，也就是抽象格式标记。这是1984年为电信行业设计的。ASN.1非常复杂，在Go的 ‘ans.1’ 包中实现了一个它的一个子集。它可以从复杂的数据结构中建立自描述的序列化数据。在现在的网络系统中用的最多的是作为 X.509 认证的编码，我们知道 X.509 在认证（SSL）中用途非常广。<br>下面两个方法可以用来marshal和unmarshal数据。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func Marshal(val interface&#123;&#125;) ([]byte, os.Error)</span><br><span class="line">func Unmarshal(b []byte, val interface&#123;&#125;) (rest []byte, err error)</span><br></pre></td></tr></table></figure>
+<p>第一个方法将数据(val)整理为一个序列化的字节数组；第二个方法就是反序列化了。注意由于Go是静态类型的语言，与PHP和JS中的反序列化不太一样，Unmarshal的第一个参数的类型是interface{}，在实际反序列化时需要做类型检查，因为要把反序列化得到一个序列化时输入的对象相同的类型的变量中。其一个示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import (</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">	&quot;encoding/asn1&quot;</span><br><span class="line">)</span><br><span class="line">func main() &#123;</span><br><span class="line">	serialed, e := asn1.Marshal(12)</span><br><span class="line">	CheckErr(e)</span><br><span class="line">	fmt.Println(&quot;serialed data&quot;, serialed)   // [2 1 12]</span><br><span class="line">	var n int</span><br><span class="line">	_, err := asn1.Unmarshal(serialed, &amp;n)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	fmt.Println(&quot;After unmarshal&quot;, n)  // 12</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要注意对于基础类型的Unmarshal需要取地址符，否则会panic。<br>要知道序列化支持的数据类型跟Go对其的实现程度有关。asn定义了很多的字符集和类型，但是Go只支持 PrintableString 和 IA5String(ASCII)。注意它不能实现unicode字符的序列化。</p>
+<p>asn1可以序列化结构体(struct)，但是<strong>要求结构体的所有字段都是可导出的</strong>（Exportable）即首字母都是大写的，如果有非导出的小写字母field则会unmarshal的时候panic。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Person struct &#123;</span><br><span class="line">	Name string</span><br><span class="line">	Age int</span><br><span class="line">	gender int  // cause unmarshal panic</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	me := Person&#123;&quot;wuxu&quot;, 23, 1&#125;</span><br><span class="line">	serialMe, err := asn1.Marshal(me)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	var anotherMe = new(Person)</span><br><span class="line">	_, err = asn1.Unmarshal(serialMe, anotherMe) // panic: reflect: reflect.Value.SetInt using value obtained using unexported field</span><br><span class="line"></span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	fmt.Println(&quot;unmarshal me&quot;, anotherMe)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>还有要注意的是序列化的时候只考虑属性的类型，而不考虑属性的变量名。所以对于只是属性名不同的结构体的序列化字节数组可以互相反序列化操作的。</p>
+<h2 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h2><p>JSON 应该都比较熟悉了，它是一种很方便的JavaScript对象标记，本是用来在js系统之间传递数据的轻量级方法，它使用基于文本的格式且具有足够的一般性，被许多的编程语言用作数据序列化方法。<br>关于json标记的具体语法可以看<a href="http://www.json.org/" target="_blank" rel="noopener">官方的文档</a>，有很多非常好理解的图示说明。<br>下面是一个序列化json的示例</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import (</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">	&quot;encoding/json&quot;</span><br><span class="line">)</span><br><span class="line">type Person struct &#123;</span><br><span class="line">	Name Name</span><br><span class="line">	Email []Email</span><br><span class="line">&#125;</span><br><span class="line">type Name struct &#123;</span><br><span class="line">	Xing string</span><br><span class="line">	Ming string</span><br><span class="line">&#125;</span><br><span class="line">type Email struct &#123;</span><br><span class="line">	Type string</span><br><span class="line">	Addr string</span><br><span class="line">&#125;</span><br><span class="line">func main() &#123;</span><br><span class="line">	me := Person&#123;</span><br><span class="line">		Name: Name&#123;&quot;wu&quot;, &quot;xu&quot;&#125;,</span><br><span class="line">		Email: []Email&#123;</span><br><span class="line">			Email&#123;&quot;work&quot;, &quot;wuxu92@outlook.com&quot;&#125;,</span><br><span class="line">			Email&#123;&quot;home&quot;, &quot;wuxu92@163.com&quot;&#125;,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">	serialData, err := json.Marshal(me)</span><br><span class="line">	fmt.Println(&quot;marshaled&quot;, string(serialData))</span><br><span class="line">	var newMe Person</span><br><span class="line">	err = json.Unmarshal(serialData, &amp;newMe)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	fmt.Println(&quot;umarshal data&quot;, newMe)</span><br><span class="line">	saveJson(&quot;me.json&quot;, me)</span><br><span class="line">	loadMe := new(Person)</span><br><span class="line">	loadJson(&quot;me.json&quot;, loadMe)</span><br><span class="line">	fmt.Printf(&quot;load from file %v %T\n&quot;, loadMe, loadMe)</span><br><span class="line">&#125;</span><br><span class="line">func saveJson(file string, v interface&#123;&#125;) &#123;</span><br><span class="line">	oFile, err := os.Create(file)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	defer oFile.Close()</span><br><span class="line">	encoder := json.NewEncoder(oFile)</span><br><span class="line">	err = encoder.Encode(v)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">&#125;</span><br><span class="line">func loadJson(file string, v interface&#123;&#125; ) &#123;</span><br><span class="line">	iFile, err := os.Open(file)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	defer iFile.Close()</span><br><span class="line">	decoder := json.NewDecoder(iFile)</span><br><span class="line">	err = decoder.Decode(v)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码有使用json包的marshal/unmarshal方法以及Encoder/Decoder的使用。其中Decoder/Encoder的使用比较有意思的。NewEncoder使用一个 <code>io.Writer</code> 作为参数，其Encode方法直接将序列化的结果保存到这个writer，我们使用一个文件作为参数就能直接将序列化结果保存到文件了，非常方便，而Decoder的使用也同样方便。</p>
+<h2 id="gob"><a href="#gob" class="headerlink" title="gob"></a>gob</h2><p>gob应该是Go的特有的技术，因为在Go之前没有听说过。</p>
+<blockquote>
+<p>Gob is a serialisation technique specific to Go. It is designed to encode Go data types specifically and does not at present have support for or by any other languages. It supports all Go data types except for channels, functions and interfaces. </p>
+</blockquote>
+<p>果然gob是go特有的技术，可以对go中很多特有的类型提供序列化支持，比如 channel， interface等等，目前只此一家，其他语言都不支持它。<br>gob 会把类型信息保存在序列化之后的数据中，这使得它比的可扩展性非常好。同时它相比XML的类型信息要高效很多。由于序列化保存了类型信息，所以下面两个类型的序列化可以互相转换：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type T struct &#123;</span><br><span class="line">	a int</span><br><span class="line">	b int</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">type T2 struct &#123;</span><br><span class="line">	b int</span><br><span class="line">	a int</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也就是属性的顺序可以随意，甚至多一些少一些字段的类型都是可以的，鲁棒性非常强。对于指针类型也是可以的，上面的T的序列化数据甚至能反序列化到下面的类型：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type T3 struct &#123;</span><br><span class="line">	*a int</span><br><span class="line">	**b int</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>gob的使用和json的encoder/decoder模式很像，首先创建一个Encode对象，它使用一个 <code>io.Writer</code> 作为参数，encoder的 <code>Encode</code> 方法将序列化的值写到数据流中。Decoder使用也很相似，下面是一个示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import (</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">	&quot;os&quot;</span><br><span class="line">	&quot;encoding/gob&quot;</span><br><span class="line">)</span><br><span class="line">type Person struct &#123;</span><br><span class="line">	Name Name</span><br><span class="line">	Email []Email</span><br><span class="line">&#125;</span><br><span class="line">type Name struct &#123;</span><br><span class="line">	Xing string</span><br><span class="line">	Ming string</span><br><span class="line">&#125;</span><br><span class="line">type Email struct &#123;</span><br><span class="line">	Type string</span><br><span class="line">	Addr string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	me := Person&#123;</span><br><span class="line">		Name: Name&#123;&quot;wu&quot;, &quot;xu&quot;&#125;,</span><br><span class="line">		Email: []Email&#123;</span><br><span class="line">			Email&#123;&quot;work&quot;, &quot;wuxu92@outlook.com&quot;&#125;,</span><br><span class="line">			Email&#123;&quot;home&quot;, &quot;wuxu92@163.com&quot;&#125;,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">	saveGob(&quot;me.gob&quot;, me)</span><br><span class="line">	var loadMe = new(Person)</span><br><span class="line">	loadGob(&quot;me.gob&quot;, loadMe)</span><br><span class="line">	fmt.Printf(&quot;load %v \ntype:%T\n&quot;, loadMe, loadMe)</span><br><span class="line">&#125;</span><br><span class="line">func saveGob(file string, v interface&#123;&#125;) &#123;</span><br><span class="line">	iFile, err := os.Create(file)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	defer iFile.Close()</span><br><span class="line">	encoder := gob.NewEncoder(iFile)</span><br><span class="line">	err = encoder.Encode(v)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">&#125;</span><br><span class="line">func loadGob(file string, v interface&#123;&#125;) &#123;</span><br><span class="line">	oFile, err := os.Open(file)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	defer oFile.Close()</span><br><span class="line">	decoder := gob.NewDecoder(oFile)</span><br><span class="line">	err = decoder.Decode(v)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过和上面的json的比较，gob序列化出来的并不是一个基于可打印字符串的，而是一个二进制流，使用文本编辑器打开可以看到email等信息，但是有很多是乱码，序列化结果gob比json的文件要小很多。</p>
+<p>因为可以使用 <code>io.Write/io.Read</code> 创建Encoder和Decoder，而之前讲的网络服务部分的 <code>Conn</code> 就同时实现了Write和Read，所以可以直接使用Conn变量传输序列化数据，非常方便。</p>
+<h2 id="二进制数据的序列化"><a href="#二进制数据的序列化" class="headerlink" title="二进制数据的序列化"></a>二进制数据的序列化</h2><p>把二进制数据序列化的方法最常用的像base64这样的方法，把二进制文件转换为ascii码，go的 <code>encoding/base64</code> 提供了相应的支持。其中最重要的两个方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func NewEncoder(enc *Encoding, w io.writer) io.WriteCloser</span><br><span class="line">func NewDecoder(enc *Encoding, r io.Reader) io.Reader</span><br></pre></td></tr></table></figure>
+<p>其中的第一个参数常用 <code>base64.StdEncoding</code> 既可。base64包定义了一些 Encoding 类型的变量，如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var RawStdEncoding = StdEncoding.WithPadding(NoPadding)</span><br><span class="line">var RawURLEncoding = URLEncoding.WithPadding(NoPadding)</span><br><span class="line">var StdEncoding = NewEncoding(encodeStd)  // StdEncoding is the standard base64 encoding, as defined in RFC 4648.</span><br><span class="line">var URLEncoding = NewEncoding(encodeURL)</span><br></pre></td></tr></table></figure>
+<p>base64 encoding的基本用法示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">bitData := []byte&#123;1,2,3,4,5,6,7,8&#125;</span><br><span class="line">bb := &amp;bytes.Buffer&#123;&#125;  // buffer是一个Writer和Reader</span><br><span class="line">encoder := base64.NewEncoder(base64.StdEncoding, bb)</span><br><span class="line">encoder.Write(bitData) // 把二进制数据写入 Writer bb</span><br><span class="line">rncoder.Close()</span><br><span class="line"></span><br><span class="line">dbuf := make([byte, 12)</span><br><span class="line">decoder := base64.NewDecoder(baes64.StdEncoding, bb)</span><br><span class="line">decoder.Read(dbuf)</span><br><span class="line">for _, ch := range dbuf &#123;</span><br><span class="line">	fmt.Print(ch)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>本节结束，对于数据序列方法应该有了基本的印象，在实际项目中应该知道怎么序列化数据了。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/golang/" rel="tag">#golang</a>
+          
+            <a href="/tags/go/" rel="tag">#go</a>
+          
+            <a href="/tags/network/" rel="tag">#network</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/jp-drama-lines/" rel="next" title="台词">
+                <i class="fa fa-chevron-left"></i> 台词
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/my-git-config/" rel="prev" title="我的git配置">
+                我的git配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#序列化方法"><span class="nav-number">1.</span> <span class="nav-text">序列化方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ASN"><span class="nav-number">2.</span> <span class="nav-text">ASN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSON"><span class="nav-number">3.</span> <span class="nav-text">JSON</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gob"><span class="nav-number">4.</span> <span class="nav-text">gob</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二进制数据的序列化"><span class="nav-number">5.</span> <span class="nav-text">二进制数据的序列化</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

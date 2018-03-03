@@ -1,0 +1,795 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="bigdata,hadoop," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="这部分包含的内容：  什么是ambari 如何安装Ambari 安装hadoop集群的准备工作 如何使用Ambari搭建一个集群 其他  什么是AmbariAmbari是的apache基金会下的一个开源项目。其目标是简化Hadoop集群的管理。通过Ambari提供工具可以方便的配置、管理、监控Hadoop集群。Ambari提供了一个直观的，易用的Hadoop管理web界面。Ambari现在最新的版">
+<meta name="keywords" content="bigdata,hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用ambari搭建并管理一个hadoop集群">
+<meta property="og:url" content="http://blog.wuxu92.com/using-ambari-to-setup-a-hadoop-cluster/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="这部分包含的内容：  什么是ambari 如何安装Ambari 安装hadoop集群的准备工作 如何使用Ambari搭建一个集群 其他  什么是AmbariAmbari是的apache基金会下的一个开源项目。其目标是简化Hadoop集群的管理。通过Ambari提供工具可以方便的配置、管理、监控Hadoop集群。Ambari提供了一个直观的，易用的Hadoop管理web界面。Ambari现在最新的版">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.593Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用ambari搭建并管理一个hadoop集群">
+<meta name="twitter:description" content="这部分包含的内容：  什么是ambari 如何安装Ambari 安装hadoop集群的准备工作 如何使用Ambari搭建一个集群 其他  什么是AmbariAmbari是的apache基金会下的一个开源项目。其目标是简化Hadoop集群的管理。通过Ambari提供工具可以方便的配置、管理、监控Hadoop集群。Ambari提供了一个直观的，易用的Hadoop管理web界面。Ambari现在最新的版">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> 使用ambari搭建并管理一个hadoop集群 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用ambari搭建并管理一个hadoop集群
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-04-27T12:34:50+08:00" content="2015-04-27">
+              2015-04-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>这部分包含的内容：</p>
+<ol>
+<li>什么是ambari</li>
+<li>如何安装Ambari</li>
+<li>安装hadoop集群的准备工作</li>
+<li>如何使用Ambari搭建一个集群</li>
+<li>其他</li>
+</ol>
+<h2 id="什么是Ambari"><a href="#什么是Ambari" class="headerlink" title="什么是Ambari"></a>什么是Ambari</h2><p><a href="http://ambari.apache.org/" target="_blank" rel="noopener">Ambari</a>是的apache基金会下的一个开源项目。其目标是简化Hadoop集群的管理。通过Ambari提供工具可以方便的配置、管理、监控Hadoop集群。Ambari提供了一个直观的，易用的Hadoop管理web界面。Ambari现在最新的版本为2.0.0，但是网上比较多的资料都是1.2-1.7的。</p>
+<p>作为一个开源项目，Hadoop在的配置与管理一直非常的不友好，要配置一个Hadoop集群经常会出现各种问题，并且对于集群的监控也比较麻烦，这也是像cloudera、hortonworks这类的提供Hadoop服务的公司可以存在的理由。</p>
+<p>Ambari架构采用的是Server/Client的模式，主要组件：ambari-agent、ambari-server和ambari-web。ambari-agent是一个无状态的， 采集所在节点的信息并且汇总发心跳汇报给ambari-server， 处理ambari-server的执行请求。<br><a id="more"></a><br>需要注意的是<strong>Ambari现在只支持64为的Linux系统，并且局限于RHEL 5/6，CentOS 5/6，OEL 5/6， SLES 11，Ubuntu 12</strong>。这些是官方提供repository的系统，对于之外的系统需要自己编译安装。但是<strong>对于32为的系统，不推荐去编译安装，因为我们在Fedora 32bit上失败了</strong></p>
+<h2 id="安装Ambari"><a href="#安装Ambari" class="headerlink" title="安装Ambari"></a>安装Ambari</h2><p>如果像我们一样使用CentOS 6.5系统的话，安装Ambari就非常简单了，参考<a href="https://cwiki.apache.org/confluence/display/AMBARI/Install+Ambari+2.0.0+from+Public+Repositories" target="_blank" rel="noopener">这里</a>。添加repo后直接</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install ambari-server</span><br></pre></td></tr></table></figure>
+<p>就可以了。<br>安装完成后，需要对Ambari-server进行配置。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo ambari-server setup</span><br></pre></td></tr></table></figure>
+<p>这样会进入一个交互式的配置程序，主要配置项：</p>
+<ol>
+<li>关闭SELinux</li>
+<li>关闭iptables</li>
+<li>运行用户（默认root）</li>
+<li>jdk配置，最好事先安装好最近的oracle jdk，否则Ambari会自己去下载安装jdk。选择自己配置jdk后，输入jdk的路径，默认是/usr/Java/latest</li>
+<li>设置数据库，Ambari支持多种数据库，但是内置了postgreSQL，所以这一部分直接默认就可以了</li>
+</ol>
+<p>大部分都默认就可以了，最好在配置之前就关掉SELinux和iptables，只要配置一下Java路径。<br>配置好之后，启动Ambari server</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo ambari-serve start</span><br></pre></td></tr></table></figure>
+<h3 id="安装Hadoop的准备工作"><a href="#安装Hadoop的准备工作" class="headerlink" title="安装Hadoop的准备工作"></a>安装Hadoop的准备工作</h3><p>要搭建一个集群当然首先要有几台PC，我们可以用虚拟机实现，推荐使用VirtualBox，比较方便，因为要集群的所有机器在同一个子网，需要使用桥接网络，VirtualBox的虚拟机的网络管理比较方便，kvm使用桥接网络有点麻烦。</p>
+<p>首先配置好一台虚拟机，然后把这一台虚拟机复制几次就得到一个集群啦。不过<strong>Ambari对配置要求比较高</strong>，如果宿主机器的配置不太好就还是不要使用虚拟机了。</p>
+<p>安装好虚拟机后，要配置虚拟机的ip，假设为192.168.100.1。现在虚拟机管理的设置里把虚拟机设置为桥接网络，只需要在网络选择的下拉框里选择桥接就可以了，一般不需要修改其他东西。</p>
+<p>启动虚拟机后，配置一个固定ip的网络配置。然后需要修改机器的hostname（这也可以在安装虚拟机的时候设置好）。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hostname</span><br><span class="line">hostname -f</span><br></pre></td></tr></table></figure>
+<p>这两个命令查看机器的hostname，他们的区别是，hostname -f使用的/etc/hosts文件中127.0.0.1 那一行的第一的名字，我们通过hostname命令修改主机名</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo hostname 01.data</span><br></pre></td></tr></table></figure>
+<p>但是这样的修改会在虚拟机重启后被重置，需要修改一个网络配置文件。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/sysconfig/network</span><br></pre></td></tr></table></figure>
+<p>把文件中hostname相关的那行改为01.data。这样重启后，主机名也会是01.data</p>
+<p>使用相同的方法，得到其他的虚拟机，分别将主机名设置为02.data,03.data,04.data,…并且为他们设好静态ip。</p>
+<p>下面配置hosts文件。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/hosts</span><br></pre></td></tr></table></figure>
+<p>在文件中加上所有节点的ip与主机名的对应行，比如：</p>
+<pre><code>01.data    192.168.100.1
+02.data    192.168.100.2
+03.data    192.168.100.3
+...
+</code></pre><p>这样各个节点之间就可以通过主机名通信了。</p>
+<p>下面配置ssh无密码登录<br>因为Ambari安装Hadoop集群时，要从Ambari-server所在的机器ssh登录到节点上面去安装Ambari-agent和Hadoop相关的组件，这需要Ambari-server到各个节点，以及各个几点到server之间的无密码登录，<strong>各个节点之间不需要无密码登录</strong></p>
+<p><strong> 最好设置root的无密码登录，因为我们配置的集群都是内网的，没什么安全性问题，使用root操作可以省去一些麻烦，非root用户可能在安装Hadoop组件时不能成功</strong></p>
+<p>在server节点<br>1.切换到root用户，生成密钥对。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">su</span><br><span class="line">ssh-keygen -t rsa // 指定rsa算法,直接回车3次</span><br></pre></td></tr></table></figure>
+<p>2.复制公钥到节点</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssh-copy-id -i .ssh/id_ras.pub root@01.data</span><br><span class="line">// 输入一次密码</span><br></pre></td></tr></table></figure>
+<p>3.验证无密码登录</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssh root@01.data</span><br><span class="line">// 不需要密码就可以登录</span><br></pre></td></tr></table></figure>
+<p>4.重复上面的操作将公钥添加到所有的节点</p>
+<p>然后因此远程到所有节点，同样的操作实现节点到server的无密码登录。</p>
+<p>至此，准备工作就基本完成了，当然在实际操作中可能会遇到其他的问题，第一次操作可能比较费时间，尤其是节点多了，要挨个测试是很麻烦的。</p>
+<h2 id="使用Ambari搭建一个集群"><a href="#使用Ambari搭建一个集群" class="headerlink" title="使用Ambari搭建一个集群"></a>使用Ambari搭建一个集群</h2><p>准备工作做好之后终于可以开始安装集群了。<br>在server端启动Ambari server，如果之前已经启动过了，可以用下面的命令停止或者重启</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo ambari-server stop</span><br><span class="line">sudo ambari-server restart</span><br></pre></td></tr></table></figure>
+<p>如果之前已经使用Ambari安装过集群，要删除原来的进度，可以运行reset命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo ambari-server reset</span><br></pre></td></tr></table></figure>
+<p>，提示成功开启服务之后，就可以告别枯燥的命令行，通过浏览器操作了。<br>到开浏览器，访问     <code>http://server-ip:8080</code>就可以访问ambari的管理页了。</p>
+<p>后面的操作基本就比较简单了，按照顺序一步一步走就可以了，不过有几个我们遇到的问题在这里罗列一下：</p>
+<ol>
+<li>节点机器的ssh版本过低可能导致注册节点失败。这是航哥发现的奇怪的问题…</li>
+<li>推荐使用ssh private key的方式注册节点，那里需要添加的是ambari-server所在的机器的.ssh/id_rsa 文件，比较要注意的是，这里添加的是<strong>私钥</strong></li>
+<li>刚开始可能有各种原因注册失败，根据提示一个个解决吧～</li>
+<li>注册成功后，可能会有一些warning，这些warning不想编程里面的warning，不要忽略他们，最好一个个都解决了，否则后面出了问题都找不到原因的。</li>
+</ol>
+<p>列几个常见的：<br>1.thp没有关闭。hdp服务默认是开启的，这会导致Hadoop的资源占用还是什么的过高，推荐关闭，这个比较简单：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled</span><br><span class="line">echo never &gt; /sys/kernel/mm/transparent_hugepage/defrag</span><br></pre></td></tr></table></figure>
+<p>2.时间同步服务没有开启，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo service thp stop</span><br><span class="line">sudo chkconfig thp off</span><br></pre></td></tr></table></figure>
+<p>3.磁盘空间不足。如果虚拟机使用的自动增长模式，很可能会导致这个问题，要求/目录下剩余容量不能小于2G，如果过少的，可以清理yum的缓存，或者删掉其他一些缓存、临时文件试试</p>
+<p>4.各个节点之间通信的问题。第一次操作很容易碰到这个问题，主要主机名，hosts文件是否配置正确</p>
+<p>后面的操作好像没有什么需要注意的了，安装完之后可能会有服务起不来的情况，这个第一次很容易碰到，具体原因很复杂，得自己分析报错的日志。</p>
+<p>下面是我们遇到的一些奇怪的问题：</p>
+<ol>
+<li>节点的hosts文件配置了主机名到127.0.0.1。这会导致节点之间通信失败，其原因是这行hosts导致组件的端口监听绑定到了127.0.0.1而不是ip或者0.0.0.0，所以其他节点没法连接到这个节点。</li>
+<li>其他，不记得了。</li>
+</ol>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>搭建好之后，可以跑一跑基本程序，看看效果，Ambari的监控界面看起来还是很炫酷的。不过我们还没跑就是了。</p>
+<p>总结：Ambari使用还是很有帮助的，虽然我们花了大概3天才搞通，不过，中间的问题真得自己去做才知道的，解决一个问题说不定得多长时间，写这篇烂文章都花了两个多小时呢。</p>
+<p>最后，这篇文章就是抛个砖而已（砖没有加图，有时间再加）。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/bigdata/" rel="tag">#bigdata</a>
+          
+            <a href="/tags/hadoop/" rel="tag">#hadoop</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/go-iota-spc/" rel="prev" title="Golang 中iota的用法">
+                Golang 中iota的用法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Ambari"><span class="nav-number">1.</span> <span class="nav-text">什么是Ambari</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Ambari"><span class="nav-number">2.</span> <span class="nav-text">安装Ambari</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Hadoop的准备工作"><span class="nav-number">2.1.</span> <span class="nav-text">安装Hadoop的准备工作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Ambari搭建一个集群"><span class="nav-number">3.</span> <span class="nav-text">使用Ambari搭建一个集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">4.</span> <span class="nav-text">其他</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

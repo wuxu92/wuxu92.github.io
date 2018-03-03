@@ -1,0 +1,738 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="C,goto," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="虽然 goto 被认为是语言设计中的“毒瘤”，人人都避而远之，但是在真正的C开发者心中，goto不应该是让人害怕的东西。反而有一些比goto更加放肆的跳转函数！ setjmp 和 longjmp在C中，goto语句只能在函数内部进行跳转，而不能跨越函数，要执行这种跳转功能需要 setjmp 和  longjmp 配合使用，这两个函数对于处理发生在很深层嵌套函数调用中的出错情况是非常有用的，我们把它">
+<meta name="keywords" content="C,goto">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跳转 setjmp 和 longjmp">
+<meta property="og:url" content="http://blog.wuxu92.com/setjmp-and-longjmp-in-c/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="虽然 goto 被认为是语言设计中的“毒瘤”，人人都避而远之，但是在真正的C开发者心中，goto不应该是让人害怕的东西。反而有一些比goto更加放肆的跳转函数！ setjmp 和 longjmp在C中，goto语句只能在函数内部进行跳转，而不能跨越函数，要执行这种跳转功能需要 setjmp 和  longjmp 配合使用，这两个函数对于处理发生在很深层嵌套函数调用中的出错情况是非常有用的，我们把它">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.565Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="跳转 setjmp 和 longjmp">
+<meta name="twitter:description" content="虽然 goto 被认为是语言设计中的“毒瘤”，人人都避而远之，但是在真正的C开发者心中，goto不应该是让人害怕的东西。反而有一些比goto更加放肆的跳转函数！ setjmp 和 longjmp在C中，goto语句只能在函数内部进行跳转，而不能跨越函数，要执行这种跳转功能需要 setjmp 和  longjmp 配合使用，这两个函数对于处理发生在很深层嵌套函数调用中的出错情况是非常有用的，我们把它">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> 跳转 setjmp 和 longjmp | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                跳转 setjmp 和 longjmp
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-23T12:34:50+08:00" content="2015-12-23">
+              2015-12-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>虽然 goto 被认为是语言设计中的“毒瘤”，人人都避而远之，但是在真正的C开发者心中，goto不应该是让人害怕的东西。反而有一些比goto更加放肆的跳转函数！</p>
+<h2 id="setjmp-和-longjmp"><a href="#setjmp-和-longjmp" class="headerlink" title="setjmp 和 longjmp"></a>setjmp 和 longjmp</h2><p>在C中，goto语句只能在函数内部进行跳转，而不能跨越函数，要执行这种跳转功能需要 <code>setjmp</code> 和  <code>longjmp</code> 配合使用，这两个函数对于处理发生在很深层嵌套函数调用中的出错情况是非常有用的，我们把它们成为<strong>非局部跳转</strong>，表示它们在栈上跳过多个调用栈帧，返回到当前函数调用路径上的某一个函数。</p>
+<p>这两个函数的声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;setjmp.h&gt;</span><br><span class="line">int setjmp(jmp_buf env);</span><br><span class="line">void longjmp(jmp_buf env, int val);</span><br></pre></td></tr></table></figure>
+<p>这两个函数让人感到比较奇怪的是，它的参数env看起来是一个结构体变量，而不是一个结构体指针，实际上是因为 jmp_buf 并不是结构体定义，而是某种形式的数组定义，本身就是一个指针，所以不需要使用取地址操作。</p>
+<p>我们在希望返回的地方调用 <code>setjmp</code>，该调用会将用于恢复栈帧状态的信息保存到 env 变量中，因为 env 变量在 longjmp函数调用中要用到，而longjmp常在另一个函数调用，所以常需要<strong>将env设置为全局变量</strong>。</p>
+<p>调用 setjmp 后可以在后续调用的函数中使用 longjmp 函数，它使用 setjmp 时所使用的 env 作为参数，第二个参数是一个非0值，则作为 setjmp 处恢复栈帧后的函数返回值，第二个参数可以用来作为多处调用 longjmp 返回到一个 setjmp时判断具体是那个 longjmp 的跳转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;setjmp.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">jmp_buf jbuf;</span><br><span class="line">void handle(char *);</span><br><span class="line">int main(void) &#123;</span><br><span class="line">    int i;</span><br><span class="line">    char line[32];</span><br><span class="line">    i = setjmp(jbuf);</span><br><span class="line">    if (i != 0) puts(&quot;setjmp error&quot;);  // longjmp return comes here</span><br><span class="line">    printf(&quot;i : %d\n&quot;, i);</span><br><span class="line">    while(fgets(line, 32, stdin) != NULL) &#123;</span><br><span class="line">        handle(line);</span><br><span class="line">    &#125;</span><br><span class="line">    puts(&quot;exit&quot;);</span><br><span class="line">&#125;</span><br><span class="line">void handle(char *line) &#123;</span><br><span class="line">    if (line[0] == &apos;n&apos; &amp;&amp; line[1] == &apos;o&apos;) &#123;</span><br><span class="line">         longjmp(jbuf, 1);</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;handle %s\n&quot;, line);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="跳转中的变量"><a href="#跳转中的变量" class="headerlink" title="跳转中的变量"></a>跳转中的变量</h2><p>我们要考虑一下跳转后<strong>自动变量</strong>和<strong>寄存器变量</strong>（其他类型不需要考虑）的值的状态。当longjmp返回到main函数时，这些变量的值是否能恢复到以前调用setjmp是的值，或者这些变量的值保持为调用函数时的值？很遗憾，这个问题的答案是看情况，所有的标准称这些值是不确定的，虽然大多数的实现并<strong>不回滚</strong>这些自动变量和寄存器变量的值，但是在编译器使用优化策略时，其值可能会被回滚。</p>
+<p>如果有一个自动变量，又要确保不回滚其值，可以定义其为具有 <code>volatile</code>属性，声明为全局变量或者静态变量的值在执行 longjmp 时保持不变（总是能保持最近所呈现的值）。</p>
+<p>下面是一个示例，表示了不同类型的变量在 longjmp 跳转后值是否回滚：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;setjmp.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">void f2(void);</span><br><span class="line">void f3(void);</span><br><span class="line">void f1(int, int, int, int);</span><br><span class="line"></span><br><span class="line">jmp_buf jbuf;</span><br><span class="line">int global;</span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line">    int aut;</span><br><span class="line">    register int reg;</span><br><span class="line">    volatile int vola;</span><br><span class="line">    global = 1; aut = 2; reg = 3; vola = 4;</span><br><span class="line">    if (setjmp(jbuf) != 0) &#123;</span><br><span class="line">        printf(&quot;after long jmp\nglobal:%d, auto:%d, reg:%d, vola:%d\n&quot;,</span><br><span class="line">                global, aut, reg, vola);</span><br><span class="line">        exit(0);</span><br><span class="line">    &#125;</span><br><span class="line">    global = 11; aut = 22; reg = 33; vola = 44;</span><br><span class="line">    f1(global, aut, reg, vola);</span><br><span class="line">&#125;</span><br><span class="line">void f1(int g, int a, int r, int v) &#123;</span><br><span class="line">    printf(&quot;in f1\ng:%d, a:%d, r:%d, v:%d\n&quot;, g, a, r, v);</span><br><span class="line">    f2();</span><br><span class="line">&#125;</span><br><span class="line">void f2(void) &#123;</span><br><span class="line">     f3();</span><br><span class="line">&#125;</span><br><span class="line">void f3() &#123;</span><br><span class="line">     longjmp(jbuf, 1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不使用优化的编译结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wuxu@centos7 % gcc -o jmpvar jmpvariable.c</span><br><span class="line">wuxu@centos7 % ./jmpvar</span><br><span class="line">in f1</span><br><span class="line">g:11, a:22, r:33, v:44</span><br><span class="line">after long jmp</span><br><span class="line">global:11, auto:22, reg:33, vola:44</span><br></pre></td></tr></table></figure>
+<p>开启编译器优化的结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wuxu@centos7 % gcc -O2 -o jmpvarO2 jmpvariable.c</span><br><span class="line">wuxu@centos7 % ./jmpvarO2</span><br><span class="line">in f1</span><br><span class="line">g:11, a:22, r:33, v:44</span><br><span class="line">after long jmp</span><br><span class="line">global:11, auto:2, reg:3, vola:44</span><br></pre></td></tr></table></figure>
+<p>可以看出，在启用编译器优化后，自动变量和寄存器变量都回滚了，而全局的，volatile修饰的变量咩有回滚值。</p>
+<h2 id="自动变量的潜在问题"><a href="#自动变量的潜在问题" class="headerlink" title="自动变量的潜在问题"></a>自动变量的潜在问题</h2><p>对于自动变量，一个基本的规则是声明自动变量的函数已经返回后，不能再引用这些变量。下面是一个例子，使用一个自动变量作为文件流的缓冲区了：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">FILE * open_file(const char *filename);</span><br><span class="line"></span><br><span class="line">int main(int argc,  char *argv[]) &#123;</span><br><span class="line">    char *filename = &quot;a.txt&quot;;</span><br><span class="line">    FILE *fp = open_file(filename);</span><br><span class="line">	// call some other function</span><br><span class="line">    char buf[64];</span><br><span class="line">    fread(buf, sizeof(char), sizeof buf, fp);</span><br><span class="line">    puts(buf);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">FILE *open_file(const char *filename) &#123;</span><br><span class="line">     FILE *fp;</span><br><span class="line">     char databuf[BUFSIZ];</span><br><span class="line">     if ((fp = fopen(filename, &quot;r&quot;)) == NULL)</span><br><span class="line">         puts(&quot;open file failed&quot;);</span><br><span class="line"></span><br><span class="line">     if (setvbuf(fp, databuf, _IOLBF, BUFSIZ) != 0)  // IOLBF means line buffer io</span><br><span class="line">         puts(&quot;setvbuf failed&quot;);</span><br><span class="line"></span><br><span class="line">     return fp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>open_file</code> 函数中，使用自动变量 databuf 的空间作为文件流的缓冲区，当函数返回时，databuf在栈上的的空间将由下一个被调用函数的栈帧使用，这个时候就产生了冲突（在实际测试（gcc 4.8.3, centos 7）中，并没有出现问题，文件流能正常读取）。不过按照理论这是容易出现问题，为了防止出现问题，应该使用全局存储空间静态地（static, extern）或者动态地(malloc等）为数组 databuf 分配空间。</p>
+<p>基本完</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag">#C</a>
+          
+            <a href="/tags/goto/" rel="tag">#goto</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Eternal-Sunshine-of-the-Spotless-Mind/" rel="next" title="电影：美丽心灵的永恒阳光">
+                <i class="fa fa-chevron-left"></i> 电影：美丽心灵的永恒阳光
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/c-ptrs-funccall/" rel="prev" title="C函数指针使用">
+                C函数指针使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#setjmp-和-longjmp"><span class="nav-number">1.</span> <span class="nav-text">setjmp 和 longjmp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跳转中的变量"><span class="nav-number">2.</span> <span class="nav-text">跳转中的变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自动变量的潜在问题"><span class="nav-number">3.</span> <span class="nav-text">自动变量的潜在问题</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

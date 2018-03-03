@@ -1,0 +1,759 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="c,csapp,cs,optimizing," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="你能获得的对程序对大的加速比就是当你第一次让它工作起来的时候。–John K.Ousterhout  优化编译器的能力和局限性下面的代码1不能优化为代码2： 代码1： void teiddle1(int *xp, int *yp) &amp;#123;    *xp += *yp;    *xp += *yp&amp;#125;">
+<meta name="keywords" content="c,csapp,cs,optimizing">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP：优化程序性能">
+<meta property="og:url" content="http://blog.wuxu92.com/csapp-optimizing-program-performance/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="你能获得的对程序对大的加速比就是当你第一次让它工作起来的时候。–John K.Ousterhout  优化编译器的能力和局限性下面的代码1不能优化为代码2： 代码1： void teiddle1(int *xp, int *yp) &amp;#123;    *xp += *yp;    *xp += *yp&amp;#125;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.wuxu92.com/images/post/csapp2ecover.jpg">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.488Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CSAPP：优化程序性能">
+<meta name="twitter:description" content="你能获得的对程序对大的加速比就是当你第一次让它工作起来的时候。–John K.Ousterhout  优化编译器的能力和局限性下面的代码1不能优化为代码2： 代码1： void teiddle1(int *xp, int *yp) &amp;#123;    *xp += *yp;    *xp += *yp&amp;#125;">
+<meta name="twitter:image" content="http://blog.wuxu92.com/images/post/csapp2ecover.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> CSAPP：优化程序性能 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                CSAPP：优化程序性能
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-20T12:34:50+08:00" content="2015-11-20">
+              2015-11-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p><img src="/images/post/csapp2ecover.jpg" alt=""></p>
+<blockquote>
+<p>你能获得的对程序对大的加速比就是当你第一次让它工作起来的时候。<br>–John K.Ousterhout</p>
+</blockquote>
+<h2 id="优化编译器的能力和局限性"><a href="#优化编译器的能力和局限性" class="headerlink" title="优化编译器的能力和局限性"></a>优化编译器的能力和局限性</h2><p>下面的代码1不能优化为代码2：</p>
+<p>代码1：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">teiddle1</span><span class="params">(<span class="keyword">int</span> *xp, <span class="keyword">int</span> *yp)</span> </span>&#123;</span><br><span class="line">    *xp += *yp;</span><br><span class="line">    *xp += *yp</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>代码2： </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">twiddle2</span><span class="params">(<span class="keyword">int</span> *xp, <span class="keyword">int</span> *yp)</span> </span>&#123;</span><br><span class="line">    *xp += <span class="number">2</span> * (*yp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看起来两段代码是一样的，但是考虑一下，如果  <em>xp 和 </em>yp 相等的情况，前者xp的值会翻4倍，而后者是3倍。编译器必须假设参数 <em>xp 和 </em>yp 可能相等，所以不能将代码2作为代码1 的优化版本。</p>
+<p>两个指针可能指向同一个存储位置的情况称为<strong>存储器别名使用</strong>。如果编译器不能确定两个指针是否指向同一个位置，就必须假设什么情况都有可能，限制了可能的优化策略。如下， <em>p 和 </em>q 可能是指向同一个位置，故不能安全地优化：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">x = <span class="number">1000</span>; y = <span class="number">3000</span>;</span><br><span class="line">*p = x;</span><br><span class="line">*q = y;</span><br><span class="line">t = *q; <span class="comment">// 1000 or 3000</span></span><br></pre></td></tr></table></figure>
+<p>如果可以确定 <em>p 或者 </em>q 是同一个位置或者不是同一个位置，就可以直接优化成赋值。考虑下面的swap程序：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="keyword">int</span> *xp, <span class="keyword">int</span> *yp)</span> </span>&#123;</span><br><span class="line">    *xp += *yp;</span><br><span class="line">    *yp = *xp - *yp;</span><br><span class="line">    *xp = *xp - *yp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一种很常见的trick方法，但是考虑存储器别名使用的情况，即 <em>xp 和 </em>yp 相同的情况下， 结果是会被置零。所以为了一般性，不应该适用这样的swap代码。</p>
+<p>当函数有副作用时不能对多次调用的函数进行“想当然的”优化，比如 <code>fun()+fun()+fun()</code> 和 <code>3 * fun()</code> 在fun有副作用的时候就不是等价的。一种对函数调用的可能的优化是<strong>使用内联函数替换函数调用</strong>。即将函数调用转换为函数体。减少了函数调用的开销，也允许对生成的代码进行进一步的优化。这种优化在 <code>-O2</code> 或者更高的等级，或者使用编译选项 <code>-finline</code> 时进行。</p>
+<h2 id="消除低效率的循环"><a href="#消除低效率的循环" class="headerlink" title="消除低效率的循环"></a>消除低效率的循环</h2><p>类似于把strlen从for循环的条件判断中移出，使用一个临时变量替代，把循环体中的重复计算使用临时变量替换。考虑函数调用的副作用和存储器别名的情况，编译器并不会对这样的重复计算进行优化，需要程序员手动实现。</p>
+<h2 id="优化：消除不必要的存储器引用"><a href="#优化：消除不必要的存储器引用" class="headerlink" title="优化：消除不必要的存储器引用"></a>优化：消除不必要的存储器引用</h2><p>对存储器的引用，也就是内存读取是一个很低效率的操作，在循环中，如果能消除对存储器的引用可以大大提高程序的效率。看下面的一个例子，这是CSAPP Page.336(chapter 5.5)中的示例。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">combine</span><span class="params">(vec_ptr v, <span class="keyword">data_t</span> *dest)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">int</span> length = vec_length(v);</span><br><span class="line">    <span class="keyword">data_t</span> *data = v-&gt;data;</span><br><span class="line">    *dest = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;length; i++) &#123;</span><br><span class="line">        *dest = *dest * data[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码简单理解就是vec_ptr结构有一个 <code>*data_t</code> 的域（即data_t的数组），要对所有元素连乘。这里如果查看gcc 的汇编代码可以发现，在循环中多次存储计算结果到dest，因为dest是一个存储器位置（一个指针），我们可以消除这种无用的存储器读取，只把最后计算的记过写入到 *dest 就可以了。<br>只需要引入一个局部变量即可。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">combine2</span><span class="params">(...)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">data_t</span> *data = v-&gt;data;</span><br><span class="line">    <span class="keyword">data_t</span> acc = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;length; i++) &#123;</span><br><span class="line">        acc = acc * data[i];</span><br><span class="line">    &#125;</span><br><span class="line">    *dest = acc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样临时计算的结果保存在acc中，acc会被保存在一个寄存器中，而不会多次保存到存储器。在循环比较大时能获得不错的性能提升。</p>
+<h2 id="循环展开"><a href="#循环展开" class="headerlink" title="循环展开"></a>循环展开</h2><p>循环展开是一种程序变换，通过增加每次迭代计算的数量，减少循环的迭代次数。循环展开从两个方面提高性能：首先它减少了不直接有助于程序结果的操作的数量，例如循环索引计算和条件分支；其次它提供了一些方法可以进一步变化代码，减少整个计算中关键路径上的操作数量。</p>
+<p>进行循环展开要注意循环索引上界（下界）的确定，展开为K次，则上限设置为 <code>n-k+1</code> 。对于可能最后没有遍历到的情况使用一个额外的循环解决。</p>
+<p>通过一些实验发现，循环展开只对证书的加法和乘法有性能提升，对于浮点数的加法与乘法并无效果。展开到2-3次就达到了很好的效果。太多层的展开并无更大好处。</p>
+<p>有的编译器能自动执行循环展开优化，使用选项 <code>-funroll-loops</code> 会执行循环展开。</p>
+<h2 id="提高并行，打破顺序相关"><a href="#提高并行，打破顺序相关" class="headerlink" title="提高并行，打破顺序相关"></a>提高并行，打破顺序相关</h2><p>在之前的combine函数中，使用了临时变量和循环展开的优化策略达到了不错的效果，但是由于乘法运算的每一步都是基于之前计算的累积值的，在之前的计算完成之前都不能计算acc的新值。这是合并操作的延迟。我们可以使用一些方法打这种顺序相关。</p>
+<h3 id="多个累计变量"><a href="#多个累计变量" class="headerlink" title="多个累计变量"></a>多个累计变量</h3><p>一种直观的想法就是使用多个累积值，把待操作数（循环）划分为两路计算。比如下面的示例：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">combine6</span><span class="params">(vec_ptr v, <span class="keyword">data_t</span> *dest)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">int</span> length = vec_length(v);</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">int</span> limit = length <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">data_t</span> *data = v-&gt;data;</span><br><span class="line">    <span class="keyword">data_t</span> acc0 = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">data_t</span> acc1 = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;limit; i += <span class="number">2</span>) &#123;</span><br><span class="line">        acc0 = acc0 * data[i];</span><br><span class="line">        acc1 = acc1 * data[i+<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (; i&lt;length; i++) &#123;</span><br><span class="line">        acc0 = acc0 * data[i];</span><br><span class="line">    &#125;</span><br><span class="line">    *dest = acc0 * acc1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>得益于处理器的流水线技术，这样的两路划分能获得不错的效果，并且对浮点数运算也有效果。不过由于浮点数的乘法和加法都是不可结合的，由于四舍五入或者溢出，combine6可能产生和之前方法不同的结果。<br>不过注意到如果数据非常奇葩比如所有个偶数都非常大，所有奇数都非常的小，这样可能使用顺序求值不会溢出，而使用两路划分计算就会溢出。虽然这样的情况在现实程序中很几乎不可能遇到，但是这确实也有可能。</p>
+<h3 id="重新结合变换"><a href="#重新结合变换" class="headerlink" title="重新结合变换"></a>重新结合变换</h3><p>对于上面的combine函数，考虑下面两种不同的结合方式：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 结合1</span></span><br><span class="line">acc = (acc * data[i]) * data[i+<span class="number">1</span>];</span><br><span class="line"><span class="comment">// 结合2</span></span><br><span class="line">acc = acc * (data[i] * data[i+<span class="number">1</span>]);</span><br></pre></td></tr></table></figure>
+<p>这两个看起来本质上是一样的，但是对于浮点数的运算，第二种结合方式会得到很大的性能提升（CSAPP Page 355）。而对于整数，由于证书本身是可结合的，其影响可以忽略不计。</p>
+<p>之所以浮点数性能提升，是由于使用第二种方式结合，能更好地利用流水线能力。GCC对自动对整数运算进行重新结合，但并不是总有好的效果。<br>重新结合变换并不是总会带来好的结果，所以实际中它带来的差距并不重要。也就是可用可不用啦。</p>
+<p>基本完</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/c/" rel="tag">#c</a>
+          
+            <a href="/tags/csapp/" rel="tag">#csapp</a>
+          
+            <a href="/tags/cs/" rel="tag">#cs</a>
+          
+            <a href="/tags/optimizing/" rel="tag">#optimizing</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/csapp-understanding-pointer/" rel="next" title="CSAPP：理解指针">
+                <i class="fa fa-chevron-left"></i> CSAPP：理解指针
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/movie-life-is-beautiful/" rel="prev" title="电影：美丽人生">
+                电影：美丽人生 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#优化编译器的能力和局限性"><span class="nav-number">1.</span> <span class="nav-text">优化编译器的能力和局限性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消除低效率的循环"><span class="nav-number">2.</span> <span class="nav-text">消除低效率的循环</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化：消除不必要的存储器引用"><span class="nav-number">3.</span> <span class="nav-text">优化：消除不必要的存储器引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#循环展开"><span class="nav-number">4.</span> <span class="nav-text">循环展开</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提高并行，打破顺序相关"><span class="nav-number">5.</span> <span class="nav-text">提高并行，打破顺序相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多个累计变量"><span class="nav-number">5.1.</span> <span class="nav-text">多个累计变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重新结合变换"><span class="nav-number">5.2.</span> <span class="nav-text">重新结合变换</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

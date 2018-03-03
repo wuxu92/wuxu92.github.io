@@ -1,0 +1,745 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux,Fedora,LVM," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="之前写了一片重新装了一个Fedora 24的博客，那次装的时候为了系统速度比较快，把fedora装在了SSD上面，但我用的还是几年前买的三星的120GB的SSD，容量是捉襟见肘啊，只能从原来的windows系统分了35GB的空间给fedora，使用fedora自动分配后，挂载的可用空间只有29GB了，随着系统用的越来越久，剩余空间也就越来越少了，到现在只有10多G的可用空间了。幸好装Fedora的">
+<meta name="keywords" content="Linux,Fedora,LVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一次LVM扩容记录">
+<meta property="og:url" content="http://blog.wuxu92.com/lvm-extend-record/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="之前写了一片重新装了一个Fedora 24的博客，那次装的时候为了系统速度比较快，把fedora装在了SSD上面，但我用的还是几年前买的三星的120GB的SSD，容量是捉襟见肘啊，只能从原来的windows系统分了35GB的空间给fedora，使用fedora自动分配后，挂载的可用空间只有29GB了，随着系统用的越来越久，剩余空间也就越来越少了，到现在只有10多G的可用空间了。幸好装Fedora的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.539Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一次LVM扩容记录">
+<meta name="twitter:description" content="之前写了一片重新装了一个Fedora 24的博客，那次装的时候为了系统速度比较快，把fedora装在了SSD上面，但我用的还是几年前买的三星的120GB的SSD，容量是捉襟见肘啊，只能从原来的windows系统分了35GB的空间给fedora，使用fedora自动分配后，挂载的可用空间只有29GB了，随着系统用的越来越久，剩余空间也就越来越少了，到现在只有10多G的可用空间了。幸好装Fedora的">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> 一次LVM扩容记录 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                一次LVM扩容记录
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-10-04T16:34:50+08:00" content="2016-10-04">
+              2016-10-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>之前写了一片重新装了一个Fedora 24的博客，那次装的时候为了系统速度比较快，把fedora装在了SSD上面，但我用的还是几年前买的三星的120GB的SSD，容量是捉襟见肘啊，只能从原来的windows系统分了35GB的空间给fedora，使用fedora自动分配后，挂载的可用空间只有29GB了，随着系统用的越来越久，剩余空间也就越来越少了，到现在只有10多G的可用空间了。幸好装Fedora的时候使用的LVM，这样可以很方便的进行扩容了。</p>
+<h2 id="Shrink-Windows-Disk"><a href="#Shrink-Windows-Disk" class="headerlink" title="Shrink Windows Disk"></a>Shrink Windows Disk</h2><p>首先从windows的分区压缩一些空间出来，当然LVM是支持从不同磁盘扩容的，但是为了速度还是从SSD中压缩空间吧，这样window留70G左右，剩余40G给Fedora，能压出来15G左右（因为影音类文件都放在另一个硬盘，所以45GB左右的Linux空间可以用比较长时间了）。<br>但是windows压缩空间有一个限制，那就是使用系统的压缩空间时，如果有一些不可移动文件占据了空间，那就只能从没有这类文件的位置开始压缩空间。。也就是说虽然C盘有30G的剩余空间，却不能压缩出30G，像我的情况就只能压缩出6G。。。这时候可以自己捣鼓也可以使用一个软件 AOMEI Partition Assistant 进行扩容，使用非常方便。但是！有一个问题，那就是需要重启进入一个XXX PreOS的界面自动重新分区，双系统重新分区后。。会导致Grub引导失效，只能进入 Grub Rescue 界面。</p>
+<h2 id="修复引导"><a href="#修复引导" class="headerlink" title="修复引导"></a>修复引导</h2><p>还好Grub的修复还是有很多路子的，也许可以从Grub Recue中捣鼓，但是更方便的做一个Fedora Linux进入系统重新安装grub。<br><a id="more"></a><br>进入Live后，打开终端，使用 <code>fdisk -l</code> 查看Linux的引导分区是哪一个，主要看下面这个部分：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Device     Boot     Start       End   Sectors  Size Id Type</span><br><span class="line">/dev/sda1  *         ****    ******    ******  350M  7 HPFS/NTFS/exFAT</span><br><span class="line">/dev/sda2          ****** ********* ********* 60.7G  7 HPFS/NTFS/exFAT</span><br><span class="line">/dev/sda3       ********* *********    ******  453M 27 Hidden NTFS WinRE</span><br><span class="line">/dev/sda4       ********* ********* ********* 50.3G  f W95 Ext&apos;d (LBA)</span><br><span class="line">/dev/sda5       ********* *********  ******** 17.7G  7 HPFS/NTFS/exFAT</span><br><span class="line">/dev/sda6       ********* *********   *******  500M 83 Linux</span><br><span class="line">/dev/sda7       ********* *********  ******** 32.1G 8e Linux LVM</span><br></pre></td></tr></table></figure>
+<p>这是我的输出，找到Type为Linux的，我的是 /dev/sda6 ,二 /dev/sda5 就是刚刚从windows中压缩出来的空闲空间。找到这个引导分区后，重新安装grub引导如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">su -</span><br><span class="line">mkdir /mnt/root</span><br><span class="line">mount /dev/mapper/Fedora-root /mnt/root</span><br><span class="line">chroot /mnt/root</span><br><span class="line">grub2-install --no-floopy --recheck /dev/sda</span><br><span class="line">grub2-mkconfig -o /boot/grub/grub/cfg</span><br></pre></td></tr></table></figure>
+<p>这样应该就能更新grub引导了，双系统的话应该可以在输出看到 Windows 10  found之类的提示。</p>
+<h2 id="将新空间添加到LVM"><a href="#将新空间添加到LVM" class="headerlink" title="将新空间添加到LVM"></a>将新空间添加到LVM</h2><p>重启进入系统后，就可以用LVM操作将空闲空间 sda5 加到LVM中了，之前又一篇讲LVM操作的： <a href="http://blog.wuxu92.com/Lvm-learning/">http://blog.wuxu92.com/Lvm-learning/</a> 大概也够用了，步骤如下：</p>
+<h3 id="使用sda5创建PV（physical-volume）"><a href="#使用sda5创建PV（physical-volume）" class="headerlink" title="使用sda5创建PV（physical volume）"></a>使用sda5创建PV（physical volume）</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo pvcreate /dev/sda5</span><br><span class="line">sudo pvdisplay</span><br></pre></td></tr></table></figure>
+<h3 id="添加PV到VG-volume-group"><a href="#添加PV到VG-volume-group" class="headerlink" title="添加PV到VG(volume group)"></a>添加PV到VG(volume group)</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vgextend Fedora /dev/sda5  # fedora是我的vg名，可以用vgs查看系统的vg名</span><br></pre></td></tr></table></figure>
+<h3 id="扩展lv（logic-volume）"><a href="#扩展lv（logic-volume）" class="headerlink" title="扩展lv（logic volume）"></a>扩展lv（logic volume）</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">lvresize -l +100%FREE Fedora/root # fedora/root是我要扩容的lv，根据系统可能不同，用df可以查看</span><br></pre></td></tr></table></figure>
+<h2 id="一个插曲"><a href="#一个插曲" class="headerlink" title="一个插曲"></a>一个插曲</h2><p>在使用 <code>lvresize</code>，使用 <code>-l</code>参数的<code>+100%FREE</code> 一不小心没有打那个 <code>+</code>号，这样就是把原来的lv大小变成了剩余空间的大小，我的情况是，100%FREE正好是刚刚 vgextends进来的 /dev/sda5 的17GB空间，这样原来32GB的 /Fedora/root 逻辑卷变成了17GB，这个误操作会报一个 WARNING因为调整后的LV变小了，可能会损坏系统的数据。。。但是一个Warning我也没有仔细看就继续执行了。。。</p>
+<p>执行成功后，系统就卡死了 ，这时仔细看一下warning才发现有点大事不好了的感觉。。。强制重启后，果然进不了系统了，grub正常，但是引导到Fedora的图标界面后，进入一个shell界面，提示 <code>entering emergency mode ×××</code>，进不了系统了，能用的命令也非常少，基本没法抢救了。</p>
+<p>这时候没办法只好又用Live系统，进入尝试将LV的空间扩大看能不能起作用了，使用命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">su -</span><br><span class="line">vgs # 查看vg列表</span><br><span class="line">vgchange -a y Fedora    # identify and activate your vg</span><br><span class="line">lvresize -l +100%FREE Fedora/root   # 这次正确执行将剩余空间加到LV</span><br><span class="line"></span><br><span class="line"># 可以执行一下fsck</span><br><span class="line">fsck /dev/Fedora/root</span><br><span class="line"></span><br><span class="line"># 重启</span><br><span class="line">sudo shutdown - r now</span><br></pre></td></tr></table></figure>
+<p>幸好，重启之后进入系统了，数据没有损坏，实在是幸运了。</p>
+<h2 id="扩展分区"><a href="#扩展分区" class="headerlink" title="扩展分区"></a>扩展分区</h2><p>上面的操作还只是将剩余空间加到了LV，这时候使用 <code>df -h</code>查看的话会发现，空间没有变化， <code>/dev/mapper/Fedora-root</code> 的空间并没有增大，我们还需要一步，将lv的空间加到文件系统中， xfs使用<code>xfs_grows</code>命令，我的是 <code>ext</code>文件系统，使用<code>resize2fs</code>命令，也比较简单：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo resize2fs /dev/mapper/Fedora-root</span><br></pre></td></tr></table></figure>
+<p>这个执行很快，一会就完成了，这时候再用 <code>df -h</code> 查看就能看到空间变大了。</p>
+<p>完成。</p>
+<p>参考：</p>
+<ul>
+<li><a href="https://help.1and1.com/servers-c37684/dedicated-server-linux-c37687/administration-c37694/increase-the-size-of-the-logical-volume-a756168.html" target="_blank" rel="noopener">https://help.1and1.com/servers-c37684/dedicated-server-Linux-c37687/administration-c37694/increase-the-size-of-the-logical-volume-a756168.html</a></li>
+<li><a href="http://blog.wuxu92.com/lvm-learning/">http://blog.wuxu92.com/Lvm-learning/</a> </li>
+<li><a href="https://ask.fedoraproject.org/en/question/34060/" target="_blank" rel="noopener">https://ask.Fedoraproject.org/en/question/34060/</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+            <a href="/tags/Fedora/" rel="tag">#Fedora</a>
+          
+            <a href="/tags/LVM/" rel="tag">#LVM</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/my-configure-of-fedora-24/" rel="next" title="从头开始配置一个Fedora 24的双系统">
+                <i class="fa fa-chevron-left"></i> 从头开始配置一个Fedora 24的双系统
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/whats-up-oct-2016/" rel="prev" title="这个十一做了什么？">
+                这个十一做了什么？ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Shrink-Windows-Disk"><span class="nav-number">1.</span> <span class="nav-text">Shrink Windows Disk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修复引导"><span class="nav-number">2.</span> <span class="nav-text">修复引导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将新空间添加到LVM"><span class="nav-number">3.</span> <span class="nav-text">将新空间添加到LVM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用sda5创建PV（physical-volume）"><span class="nav-number">3.1.</span> <span class="nav-text">使用sda5创建PV（physical volume）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加PV到VG-volume-group"><span class="nav-number">3.2.</span> <span class="nav-text">添加PV到VG(volume group)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展lv（logic-volume）"><span class="nav-number">3.3.</span> <span class="nav-text">扩展lv（logic volume）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个插曲"><span class="nav-number">4.</span> <span class="nav-text">一个插曲</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展分区"><span class="nav-number">5.</span> <span class="nav-text">扩展分区</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

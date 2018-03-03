@@ -1,0 +1,789 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="C,CPP(C,Primer,Plus)," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="结构体一块本科的时候就没有学好，在学习Go的时候学习了Go定义结构体的方式，最近看C Primer Plus的结构体一章，发现Go借鉴了很多C中结构体的东西，并且这本书中讲的结构体和本科书上的结构体部分很不一样，讲的更加容易理解。 这里只记一些最重要的，因为对结构体已经有一定的基础了，虽然很久没有使用过了。 结构体的声明和变量定义声明结构体的关键字是 struct ，结构体的声明是描述结构如何组">
+<meta name="keywords" content="C,CPP(C,Primer,Plus)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言中的结构">
+<meta property="og:url" content="http://blog.wuxu92.com/c-struct-of-cpp/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="结构体一块本科的时候就没有学好，在学习Go的时候学习了Go定义结构体的方式，最近看C Primer Plus的结构体一章，发现Go借鉴了很多C中结构体的东西，并且这本书中讲的结构体和本科书上的结构体部分很不一样，讲的更加容易理解。 这里只记一些最重要的，因为对结构体已经有一定的基础了，虽然很久没有使用过了。 结构体的声明和变量定义声明结构体的关键字是 struct ，结构体的声明是描述结构如何组">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.wuxu92.com/images/clang.gif">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.493Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C语言中的结构">
+<meta name="twitter:description" content="结构体一块本科的时候就没有学好，在学习Go的时候学习了Go定义结构体的方式，最近看C Primer Plus的结构体一章，发现Go借鉴了很多C中结构体的东西，并且这本书中讲的结构体和本科书上的结构体部分很不一样，讲的更加容易理解。 这里只记一些最重要的，因为对结构体已经有一定的基础了，虽然很久没有使用过了。 结构体的声明和变量定义声明结构体的关键字是 struct ，结构体的声明是描述结构如何组">
+<meta name="twitter:image" content="http://blog.wuxu92.com/images/clang.gif">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> C语言中的结构 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                C语言中的结构
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-06T12:34:50+08:00" content="2015-12-06">
+              2015-12-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p><img src="/images/clang.gif" alt=""></p>
+<p>结构体一块本科的时候就没有学好，在学习Go的时候学习了Go定义结构体的方式，最近看C Primer Plus的结构体一章，发现Go借鉴了很多C中结构体的东西，并且这本书中讲的结构体和本科书上的结构体部分很不一样，讲的更加容易理解。</p>
+<p>这里只记一些最重要的，因为对结构体已经有一定的基础了，虽然很久没有使用过了。</p>
+<h2 id="结构体的声明和变量定义"><a href="#结构体的声明和变量定义" class="headerlink" title="结构体的声明和变量定义"></a>结构体的声明和变量定义</h2><p>声明结构体的关键字是 struct ，结构体的声明是描述结构如何组合的主要方法。下面是一个示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book &#123;</span><br><span class="line">	title char[20];</span><br><span class="line">	char author[20];</span><br><span class="line">	price float;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 定义一个结构体的变量</span><br><span class="line">struct book cpp;</span><br></pre></td></tr></table></figure>
+<p>我们把struct 后面的 book 称作（可选的）标记，用来引用该结构的快速标记。<br><a id="more"></a><br>变量的声明使编译器创建一个变量 cpp ，编译器使用结构体 book 为模板为变量分配空间，这些空间以一个名字 cpp 被组合在一起，它们在一段连续的存储器空间。</p>
+<p>在变量的声明中，struct book的作用就和int， float是一样的，可以如下定义一个变量及一个指针：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book cpp, *pcpp;</span><br></pre></td></tr></table></figure>
+<p>一种更常见的方式是将结构体的声明和变量定义合并成一步：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book &#123;</span><br><span class="line">	char title[20];</span><br><span class="line">	char author[20];</span><br><span class="line">	float title;</span><br><span class="line">&#125; cpp, *pcpp;</span><br></pre></td></tr></table></figure>
+<p>其中的标记 book 是可选的，有book标记会保留到该结构声明的引用，用来声明其他的结构体变量，如果不带book标记，则是一个未命名的结构类型。我以前一直把这里理解错了，以为后面变量定义是类型定义。</p>
+<h2 id="结构体的初始化"><a href="#结构体的初始化" class="headerlink" title="结构体的初始化"></a>结构体的初始化</h2><p>在Go中，结构体可以用类似于js的使用大括号的方法初始化，非常方便，原来C（ANSC）中的结构体也可以这样，因为很久没有使用过C了，所以这些都忘记了（或许以前没教过？？）这让我对C语言更加有好感了，我们可以用很方便的方式初始化一个结构体变量。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book cpp = &#123;</span><br><span class="line">    &quot;c primer plus&quot;,</span><br><span class="line">    &quot;stephen prata&quot;,</span><br><span class="line">    60.0</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>现在（ANSC之后）C的数组初始化也可以使用字面量初始化了，比如 <code>int a[] = [1,2,3,4]</code> 这样，非常方便</p>
+</blockquote>
+<p>甚至还可以指定要初始化的项目，比如值初始化title和author部分：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book apue = &#123;</span><br><span class="line">	.title = &quot;APUE&quot;,</span><br><span class="line">	.author = &quot;W. Stevens&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>语法有点“独特”，使用点运算符和成员名来标识具体的元素，和Go的直接使用成员名不同。甚至指定初始化和常规的（顺序）初始化可以混合使用，不过常规初始化方法跟在指定初始化方法之后，为其他成员提供初始化，这样规定：对特定成员的最后一次赋值是它实际获得的值，比如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book cpp = &#123;</span><br><span class="line">	.price = 61.0,</span><br><span class="line">	.author = &quot;prata&quot;,</span><br><span class="line">	60.0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后的60.0会赋给price成员而覆盖之前的指定初始化的值。这样的代码虽然基本不会出现，但是最好也知道它的运行原理。</p>
+<h2 id="结构体数组"><a href="#结构体数组" class="headerlink" title="结构体数组"></a>结构体数组</h2><p>我们知道基本数据类型的变量数组直接定义就可以分配空间了，结构体可以看作一种新类型，它也是定义声明变量之后就会自动分配空间的，结构体的数组也是这样。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book library[10];</span><br></pre></td></tr></table></figure>
+<p>这样就定义了一个有10个book变量的数组，并且<strong>已经分配了存储空间</strong>。 结构体的数组和普通数组索引方式是一样的。</p>
+<p>结构体数组也可以使用字面量初始化方法，如下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book lib[2] = &#123;</span><br><span class="line">	&#123;&quot;apue&quot;, &quot;stevens&quot;, 128.0&#125;,</span><br><span class="line">	&#123;&quot;cpp&quot;, &quot;prata&quot;, 60.0&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>是不是很方便了。要注意最外面的是 <code>{</code> ，不是 <code>[</code> 哦。 对于成员是一个结构的结构体变量，同样可以使用字面量初始化，记住，只是初始化，不能用于对结构体变量的赋值哦。</p>
+<h2 id="指向结构的指针"><a href="#指向结构的指针" class="headerlink" title="指向结构的指针"></a>指向结构的指针</h2><p>指向结构体的指针是一个一直都没有掌握好的点，希望这里能记录好一点，加强理解。</p>
+<p>对于指针有几个<del>好处</del>，第一：就像指向数组的指针比数组本身更容易操作一样，指向结构的指针通常也更容易操作； 第二：在早期的C中参数传递只能使用结构的指针；第三：很多奇妙的数据表示都是用了包含指向其他结构的指针的结构。</p>
+<p>和数组不同，结构的名字不是该结构的地址（即单独的结构名并不是该结构地址的同义词），必须使用 &amp; 运算符。声明一个指针的方式与一个普通变量没有什么区别：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book *cpp;</span><br><span class="line">struct book c = &#123;</span><br><span class="line">	&quot;c primer plus&quot;,</span><br><span class="line">	&quot;prata&quot;,</span><br><span class="line">	60.1</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">cpp = &amp;c;</span><br></pre></td></tr></table></figure>
+<p>假设 <code>lib</code> 是一个 struct book 的数组，现在用结构指针 cpp 指向 <code>lib[0]</code>,那么根据指针的运算规则， <code>cpp+1</code> 会指向 <code>lib[1]</code>。虽然在一般的认识里面，结构体中的元素在存储器中是一次排列的，所以可以根据各个元素的大小来计算 <code>cpp+1</code> 与 <code>cpp</code> 之间的地址差多少。但是考虑到系统对存储器的对齐要求，不同的系统对齐的方式可能不一样，所以使用各个成员大小相加的方式计算结构的存储大小是不合适的。</p>
+<h2 id="访问结构的成员"><a href="#访问结构的成员" class="headerlink" title="访问结构的成员"></a>访问结构的成员</h2><p>这个比较简单，注意结构和指向机构的指针访问成员的方式不一样，结构本身使用 <code>.</code>运算符访问，而指向结构的指针则使用 <code>-&gt;</code> 访问。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strcut book cpp, *pcpp;</span><br><span class="line">...</span><br><span class="line">char *title;</span><br><span class="line">title = cpp.title;</span><br><span class="line">// title = pcpp-&gt;title;</span><br><span class="line">// title = (*pcpp).title;  // 因为 . 的优先级比 * 高，必须要有括号</span><br></pre></td></tr></table></figure>
+<h2 id="其他特性"><a href="#其他特性" class="headerlink" title="其他特性"></a>其他特性</h2><h3 id="赋值结构体"><a href="#赋值结构体" class="headerlink" title="赋值结构体"></a>赋值结构体</h3><p>我们可以向普通的 int 类型变量一样对结构体变量使用赋值操作（将一个结构体赋值给另一个结构体）。这是可以的，因为和数组不同，数组的名字是一个指针，所以不能使用直接的赋值来复制一个数组，但是结构体名不是指针，使用赋值可以把另一个结构体初始化成这个结构体样的内容。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book cpp = &#123;</span><br><span class="line">    &quot;c primer plus&quot;,</span><br><span class="line">    &quot;prata&quot;,</span><br><span class="line">    60.1</span><br><span class="line">&#125;;</span><br><span class="line">struct book c1;</span><br><span class="line">c1 = cpp;</span><br></pre></td></tr></table></figure>
+<p>c1 和 cpp 现在是两个互不影响的变量。</p>
+<h3 id="结构还是指针"><a href="#结构还是指针" class="headerlink" title="结构还是指针"></a>结构还是指针</h3><p>在代码中，使用结构本身还是使用指向结构的指针是一个比较难以理解的点。使用指针的好处是执行起来很快，但是缺乏对数据的保护。被调用函数可能修改原来结构中的数据，不过 ANSI C中新增了 const 限定词可以解决数据篡改的问题，对于使用了const 修饰的结构体指针参数，如果在函数中修改了原结构的内容，编译器会将此视为一个错误。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">float buy(const struct book *b, int num) &#123;</span><br><span class="line">	// 不能在这里修改 b 的内容</span><br><span class="line">	return b-&gt;price * num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="结构成员使用字符数组而不是指针"><a href="#结构成员使用字符数组而不是指针" class="headerlink" title="结构成员使用字符数组而不是指针"></a>结构成员使用字符数组而不是指针</h3><p>在结构的成员中如果有字符串推荐使用字符数组而不是指向字符的指针。对于指向字符串的指针，结构体内只保存一个地址，真正的字符串内容被保存在在编译器存储字符串常量的节中。这样的结构定义很有可能导致一些未初始化变量的问题，</p>
+<p>结论就是如果需要一个结构来存储字符串，请使用字符数组成员，存储字符指针有它的用处，但也有被严重误用的可能。</p>
+<h3 id="malloc"><a href="#malloc" class="headerlink" title="malloc"></a>malloc</h3><p>在我的印象中，老师教的初始化结构体总是使用malloc函数的，定义一个结构体的指针，再用malloc去分配存储空间，在一个个初始化成员，好麻烦。。。现在更推荐的使用时定义结构体变量，用字面量方法初始化结构体，在用取地址操作获取指针，这样更方便。</p>
+<p>在前面讲过的不推荐使用字符指针，如果一定要使用字符指针的话，就需要用malloc先分类一个动态大小的空间给这个指针。这在有的时候还是很有用的，因为可以动态的分配字符串的大小。但有一个问题是，malloc分配的空间都得用free去释放，这样有点麻烦的。</p>
+<p>malloc的函数定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void *malloc(size_t size);</span><br></pre></td></tr></table></figure>
+<h3 id="复合文字和结构"><a href="#复合文字和结构" class="headerlink" title="复合文字和结构"></a>复合文字和结构</h3><p>在C99中新增的复合文字（复合字面量 compound literal）特性，可以使用复合文字<strong>创建一个</strong>被用来作为函数参数或被赋值给另一个结构的结构。 这种字面量方式使用非常棒，用法和动态语言有点相似，只是需要做一个类似于强制类型转换的操作。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book csapp;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">csapp = (struct book) &#123; &quot;csapp&quot;,</span><br><span class="line">	&quot;Hallaron&quot;,</span><br><span class="line">	99.0</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>还可以将这种字面量定义作为函数的参数，或者取它的地址，这都是很方便的用法。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">buy( &amp;(struct book) &#123;&quot;csapp&quot;, &quot;Hallaron&quot;, 99.0&#125;, 3);</span><br></pre></td></tr></table></figure>
+<p>出现在所有函数外面的字面量具有静态存储时期，而出现在一个代码块内部的复合字面量具有自动存储时期。使用于常规初始化项目列表的语法规则同样适用于字面量方式，也就是说可以在字面量中使用<strong>指定初始化项目</strong>。</p>
+<h3 id="伸缩性数组成员"><a href="#伸缩性数组成员" class="headerlink" title="伸缩性数组成员"></a>伸缩性数组成员</h3><p>这是C99提供的一个新特性，一般来说结构的成员都是固定大小的，由于C没有动态长度的数组，所以结构中的数组的大小都是固定长度的，在C99中提出了伸缩数组成员的概念，即在结构定义的最后一个成员可以是一个变长的数组（长度不在结构声明时指定）。这个特性有一点的约束：</p>
+<p>－　伸缩型数组成员的必须是最后一个数组成员<br>－　结构中至少有一个其他成员<br>－　该成员向普通数组一样声明，不过方括号内为空，不指定程度</p>
+<p>声明一个这种结构的变量，不会为伸缩型成员分配任何空间，事实上不应该声明这种结构的变量，而应该使用该给结构的指针，然后用malloc分配足够的空间。这里的空间的计算应该包括动态成员的大小，比如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book &#123;</span><br><span class="line">    char title[20];</span><br><span class="line">    float price;</span><br><span class="line">    char author[][20];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    struct book *csapp;</span><br><span class="line">    csapp = (struct book *)malloc(sizeof(struct book) + 2 * 20 * sizeof(char));</span><br><span class="line">    strcpy(csapp-&gt;title ,&quot;csapp&quot;);</span><br><span class="line">    csapp-&gt;price = 99.00;</span><br><span class="line">    strcpy(csapp-&gt;author[0],&quot;Randal E.Bryant&quot;);  // 访问伸缩性数组成员</span><br><span class="line">    strcpy(csapp-&gt;author[1], &quot;David R. O&apos;Hallaron&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里再提一下char数组的初始化，在C中可以在声明char数组的时候使用 <code>char name[10] = &quot;wuxu&quot;;</code>这样的方式初始化，但是在在定义之外的其他地方不能再使用这中方式初始化，即不能用 <code>csapp-&gt;title = &quot;csapp&quot;;</code> 这样的方式初始化title成员了。这有点麻烦，特别是对于习惯动态语言的人来说。要在定义之外初始化这个成员，要么使用上面的 <code>strcpy</code> 函数，要么一个个字符赋值。</p>
+<p>伸缩型数组成员有一定的动态性了，但是很明显和动态语言来说，还太弱了，不过C本身就不是动态性的语言，有这样的特性已经是很大的进步了。</p>
+<h2 id="把结构保存到文件"><a href="#把结构保存到文件" class="headerlink" title="把结构保存到文件"></a>把结构保存到文件</h2><p>写文件我们可以使用 <code>fprintf</code> 函数实现，但是 fprintf 本身的格式定义太过复杂，对于结构的保存会非常麻烦，我们可以使用 <code>fread</code> 和 <code>fwrite</code> 函数以结构的大小为单元进行读写。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);</span><br><span class="line">size_t fwite(const void *ptr, size_t size, size_t nmemb, FILE *stream);</span><br></pre></td></tr></table></figure>
+<p>从两个函数的声明可以看出它们可以读写任意类型的（void *)变量，自然可以用来读写结构体变量，只需要指明结构体的大小和要读写的结构体的个数。这对于我们保存结构体非常方便。不过写入到文件的都是二进制格式，所以用文本编辑器打开大部分都是乱码了。读写结构到文件的简单示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// write</span><br><span class="line">struct book &#123;</span><br><span class="line">    char title[20];</span><br><span class="line">    float price;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    FILE *f;</span><br><span class="line">    struct book lib[2] = &#123;</span><br><span class="line">        &#123;&quot;csapp&quot;,</span><br><span class="line">            99.0</span><br><span class="line">        &#125;, &#123;&quot;cpp&quot;,</span><br><span class="line">            60.0</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    if ((f = fopen(&quot;books.dat&quot;, &quot;a+b&quot;)) != NULL) &#123;</span><br><span class="line">         rewind(f);</span><br><span class="line">         int wsize = fwrite(lib, sizeof(struct book), 2, f);</span><br><span class="line">         printf(&quot;write to file of size: %d\n&quot;, wsize);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// read</span><br><span class="line">struct book &#123;</span><br><span class="line">    char title[20];</span><br><span class="line">    float price;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    FILE *f;</span><br><span class="line">    struct book books[6];</span><br><span class="line">    if ((f = fopen(&quot;books.dat&quot;, &quot;r+b&quot;)) != NULL) &#123;</span><br><span class="line">        rewind(f);</span><br><span class="line">        fread(books, sizeof(struct book), 2, f);</span><br><span class="line">        for (int i=0; i&lt;6; i++)</span><br><span class="line">            printf(&quot;%d: %s\n&quot;, i, books[i].title);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结构体先到这，下面的联合，枚举的类容新写一篇。</p>
+<p>参考：</p>
+<ul>
+<li><a href="http://stackoverflow.com/questions/11515287/c-variable-has-initializer-but-incomplete-type" target="_blank" rel="noopener">http://stackoverflow.com/questions/11515287/c-variable-has-initializer-but-incomplete-type</a></li>
+<li>The C Library Reference Guide</li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag">#C</a>
+          
+            <a href="/tags/CPP-C/" rel="tag">#CPP(C</a>
+          
+            <a href="/tags/Primer/" rel="tag">#Primer</a>
+          
+            <a href="/tags/Plus/" rel="tag">#Plus)</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/linux-ip-command/" rel="next" title="Linux ip/ss 命令详解">
+                <i class="fa fa-chevron-left"></i> Linux ip/ss 命令详解
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/c-union-enum-and-func-ptr/" rel="prev" title="C 联合、枚举及函数指针">
+                C 联合、枚举及函数指针 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#结构体的声明和变量定义"><span class="nav-number">1.</span> <span class="nav-text">结构体的声明和变量定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结构体的初始化"><span class="nav-number">2.</span> <span class="nav-text">结构体的初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结构体数组"><span class="nav-number">3.</span> <span class="nav-text">结构体数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指向结构的指针"><span class="nav-number">4.</span> <span class="nav-text">指向结构的指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问结构的成员"><span class="nav-number">5.</span> <span class="nav-text">访问结构的成员</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他特性"><span class="nav-number">6.</span> <span class="nav-text">其他特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#赋值结构体"><span class="nav-number">6.1.</span> <span class="nav-text">赋值结构体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结构还是指针"><span class="nav-number">6.2.</span> <span class="nav-text">结构还是指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结构成员使用字符数组而不是指针"><span class="nav-number">6.3.</span> <span class="nav-text">结构成员使用字符数组而不是指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#malloc"><span class="nav-number">6.4.</span> <span class="nav-text">malloc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复合文字和结构"><span class="nav-number">6.5.</span> <span class="nav-text">复合文字和结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#伸缩性数组成员"><span class="nav-number">6.6.</span> <span class="nav-text">伸缩性数组成员</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#把结构保存到文件"><span class="nav-number">7.</span> <span class="nav-text">把结构保存到文件</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

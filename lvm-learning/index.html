@@ -1,0 +1,800 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux,centos,Lvm," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="LVM 是一种可用在Linux内核的逻辑分卷管理器；可用于管理磁盘驱动器或其他类似的大容量存储设备。 LVM的特点首先LVM有如下的优点：  文件系统可以跨多个磁盘，因此不会受物理磁盘大小的限制 可以在系统运行状态下扩展文件系统大小 可以增加新的磁盘到LVM的存储池中 调整逻辑卷大小的时候不需要考虑逻辑卷的位置，不需要担心没有足够的连续空间 可以以镜像的方式冗余重要数据到多个物理磁盘上 可以很方便">
+<meta name="keywords" content="Linux,centos,Lvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux的LVM相关学习">
+<meta property="og:url" content="http://blog.wuxu92.com/lvm-learning/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="LVM 是一种可用在Linux内核的逻辑分卷管理器；可用于管理磁盘驱动器或其他类似的大容量存储设备。 LVM的特点首先LVM有如下的优点：  文件系统可以跨多个磁盘，因此不会受物理磁盘大小的限制 可以在系统运行状态下扩展文件系统大小 可以增加新的磁盘到LVM的存储池中 调整逻辑卷大小的时候不需要考虑逻辑卷的位置，不需要担心没有足够的连续空间 可以以镜像的方式冗余重要数据到多个物理磁盘上 可以很方便">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.539Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux的LVM相关学习">
+<meta name="twitter:description" content="LVM 是一种可用在Linux内核的逻辑分卷管理器；可用于管理磁盘驱动器或其他类似的大容量存储设备。 LVM的特点首先LVM有如下的优点：  文件系统可以跨多个磁盘，因此不会受物理磁盘大小的限制 可以在系统运行状态下扩展文件系统大小 可以增加新的磁盘到LVM的存储池中 调整逻辑卷大小的时候不需要考虑逻辑卷的位置，不需要担心没有足够的连续空间 可以以镜像的方式冗余重要数据到多个物理磁盘上 可以很方便">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> Linux的LVM相关学习 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Linux的LVM相关学习
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-21T12:34:50+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>LVM 是一种可用在Linux内核的逻辑分卷管理器；可用于管理磁盘驱动器或其他类似的大容量存储设备。</p>
+<h2 id="LVM的特点"><a href="#LVM的特点" class="headerlink" title="LVM的特点"></a>LVM的特点</h2><p>首先LVM有如下的优点：</p>
+<ul>
+<li>文件系统可以跨多个磁盘，因此不会受物理磁盘大小的限制</li>
+<li>可以在系统运行状态下扩展文件系统大小</li>
+<li>可以增加新的磁盘到LVM的存储池中</li>
+<li>调整逻辑卷大小的时候不需要考虑逻辑卷的位置，不需要担心没有足够的连续空间</li>
+<li>可以以镜像的方式冗余重要数据到多个物理磁盘上</li>
+<li>可以很方便的导出整个卷组并写到另一台机器上</li>
+</ul>
+<p>当然LVM也存在一些限制：</p>
+<ul>
+<li>卷组中一个磁盘损坏时，整个卷组都受影响</li>
+<li>不能减小文件系统大小</li>
+<li>存储性能会受到影响</li>
+<li>从卷组中移除一个磁盘时必须使用reducevg</li>
+</ul>
+<a id="more"></a>
+<h2 id="LVM基本组成"><a href="#LVM基本组成" class="headerlink" title="LVM基本组成"></a>LVM基本组成</h2><p>LVM利用Linux内核的device-mapper实现存储系统的虚拟化，使系统分区独立于底层硬件。通过LVM可以实现存储空间的抽象化，并在上面建立虚拟分区，可以极大地方便扩大和缩小分区。LVM的基本组成如下：</p>
+<ul>
+<li>物理卷(Physical  volume,PV) 用于建立卷组的媒介，可以是硬盘分区，也可以是硬盘本身或回环文件。</li>
+<li>卷组(Volume group,VG) 将一组物理卷收集为一个管理单元。卷组可以看成硬盘驱动器(hard drivers)</li>
+<li>逻辑卷(Logic volume LV) 虚拟分区，由物理区域组成。逻辑卷可以看作普通的分区。</li>
+<li>物理区域(Physical extent,PE) 硬盘可供指派给逻辑卷的最小单位，通常为4MB。</li>
+</ul>
+<p>示例</p>
+<p>两块物理硬盘的传统磁盘组织方式<br>硬盘1 (/dev/sda):</p>
+<pre><code> _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|分区1 50GB (物理卷)           |分区2 80GB (物理卷)            |
+|/dev/sda1                    |/dev/sda2                     |
+|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ _ _ _ _ _ _ __|
+</code></pre><p>硬盘2 (/dev/sdb):</p>
+<pre><code> _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+|分区1 120GB (物理卷)                         |
+|/dev/sdb1                                   |
+| _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+</code></pre><p>LVM方式<br>卷组VG1 (/dev/MyStorage/ = /dev/sda1 + /dev/sda2 + /dev/sdb1):</p>
+<pre><code> _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ __ 
+|逻辑卷1 15GB                  |逻辑卷2 35GB                        |逻辑卷3 200GB                         |
+|/dev/MyStorage/rootvol        |/dev/MyStorage/homevol             |/dev/MyStorage/mediavol              |
+|_ _ _ _ _ _ _ _ _ _ _ _ _ _ __|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ __ |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+</code></pre><h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>应该在系统安装过程中的分区和创建文件系统步骤创建LVM卷，而且根分区不再通知直接格式化硬盘来创建，而是创建在LVM逻辑卷上。</p>
+<ol>
+<li>创建物理卷所在的分区，设置分区的格式为Linux LVM。</li>
+<li>如果只有一个硬盘，最好只创建一个一个分区一个物理卷。如果有多个硬盘可以创建多个分区，在每个分区上分别创建一个物理卷</li>
+<li>创建卷组，并把所有物理卷加入卷组</li>
+<li>在卷组上创建逻辑卷</li>
+</ol>
+<h3 id="创建物理卷-PV"><a href="#创建物理卷-PV" class="headerlink" title="创建物理卷(PV)"></a>创建物理卷(PV)</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># lvmdiskscan  // 扫描磁盘，列出设备</span></span><br><span class="line"><span class="comment"># pvcreate DEVICE 在列出的设备上创建物理卷 这里的设备一般是磁盘，比如/dev/sda2, 现在Linux的一般使用sda1挂在/boot分区，把sda2挂载为lvm</span></span><br><span class="line"><span class="comment"># pvdisplay  查看建立的物理卷的信息</span></span><br></pre></td></tr></table></figure>
+<h3 id="创建卷则-VG"><a href="#创建卷则-VG" class="headerlink" title="创建卷则(VG)"></a>创建卷则(VG)</h3><p>当有多个物理卷时，要把他们加入到一个卷组再在卷组建立逻辑分区。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># vgcreate vol_group_name &lt;physical_vol&gt;</span></span><br><span class="line"><span class="comment"># vgextend vol_group_name &lt;physical_vol&gt;  // 扩展lvm</span></span><br><span class="line"><span class="comment"># vgextend vgCentos00 /dev/sdb1</span></span><br><span class="line"><span class="comment"># vgdisplay //查看卷组的状态</span></span><br></pre></td></tr></table></figure>
+<p>也可以直接在命令中一步创建卷组和物理卷:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># vgcreate VolGroup00 /dev/sda2 /dev/sdb1 /dev/sdc</span><br></pre></td></tr></table></figure>
+<h3 id="创建逻辑卷-LV"><a href="#创建逻辑卷-LV" class="headerlink" title="创建逻辑卷(LV)"></a>创建逻辑卷(LV)</h3><p>在卷组上创建逻辑卷</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># lvcreate -L &lt;size&gt; &lt;vol_group&gt; -n &lt;logical_vol_name&gt;</span></span><br><span class="line"><span class="comment"># lvcreate -L 100G VolGroup00 -n home</span></span><br></pre></td></tr></table></figure>
+<p>创建完后可以通过<code>/dev/mapper/VolGroup00-home</code> 访问分区</p>
+<p>上面我们可以将多个磁盘加入到卷组中，如果我们要制定逻辑分区创建在某个磁盘上，比如把家目录放在速度较慢的机械硬盘上，只需要把物理卷设备加到命令中即可。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># lvcreate -L 100G -n home /dev/sdc</span></span><br></pre></td></tr></table></figure>
+<h2 id="建立文件系统与挂在逻辑卷"><a href="#建立文件系统与挂在逻辑卷" class="headerlink" title="建立文件系统与挂在逻辑卷"></a>建立文件系统与挂在逻辑卷</h2><p>在逻辑卷上传见文件系统，并挂载</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkfs.ext4 /dev/mapper/VolGroup00-home</span><br><span class="line">mount /dev/mapper/VolGroup00-home /home</span><br></pre></td></tr></table></figure>
+<p>注意挂载点要选择逻辑卷，而不是实际的分区设备(sda1, sdb1, etc.)</p>
+<h2 id="配置LVM"><a href="#配置LVM" class="headerlink" title="配置LVM"></a>配置LVM</h2><p>存在物理卷的设备在<strong>扩增之后</strong>或者<strong>缩小其容量之前</strong>，必须使用pvresize命令相应地增大或者减少物理卷的大小。执行命令 <code>sudo pvresize /dev/sda</code>,自动将物理卷扩展到其最大容量。</p>
+<h3 id="移动物理区域"><a href="#移动物理区域" class="headerlink" title="移动物理区域"></a>移动物理区域</h3><p>在移动空间的物理区域到卷尾部之前，需要运行 <code># pvdisplay -v -m</code>查看物理设备的分段。这条命令会列出物理卷上的各个逻辑卷的分布。<br>具体的移动物理分区命令比较麻烦，请参考 <a href="https://wiki.archlinux.org/index.php/LVM" title="archlinux wiki" target="_blank" rel="noopener">https://wiki.archLinux.org/index.php/LVM</a> 中相关章节</p>
+<h3 id="调整逻辑分区大小"><a href="#调整逻辑分区大小" class="headerlink" title="调整逻辑分区大小"></a>调整逻辑分区大小</h3><p>可以使用lvresize命令对逻辑分区的大小进行调整，一般来说，扩大逻辑分区可以在线上完成，而缩小逻辑分区哦到小需要先卸载分区以避免数据丢失。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># lvresize -L +2G VolGroup00/home  // 增加2GB</span></span><br><span class="line"><span class="comment"># lvresize -L 20G VolGroup00/home  // 设置其大小为20GB</span></span><br><span class="line"><span class="comment"># lvresize -l +100%FREE VolGreoup/home  // 将所有空余空间都加入</span></span><br></pre></td></tr></table></figure>
+<p>使用<code>lvs</code>列出逻辑卷，使用<code>lsblk</code>列出逻辑卷的挂载点。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo lsblk</span><br><span class="line">NAME            MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0   128G  0 disk </span><br><span class="line">├─sda1            8:1    0   500M  0 part /boot</span><br><span class="line">└─sda2            8:2    0 127.5G  0 part </span><br><span class="line">  ├─centos-root 253:0    0    50G  0 lvm  /</span><br><span class="line">  ├─centos-swap 253:1    0   6.4G  0 lvm  [SWAP]</span><br><span class="line">  └─centos-home 253:2    0  71.1G  0 lvm  /home</span><br><span class="line">sr0              11:0    1  1024M  0 rom</span><br></pre></td></tr></table></figure>
+<p>然后可以使用<code>unmount MOUNTPOINT</code>卸载逻辑卷</p>
+<h2 id="添加物理卷到卷组"><a href="#添加物理卷到卷组" class="headerlink" title="添加物理卷到卷组"></a>添加物理卷到卷组</h2><p>这在添加新磁盘的时候很有用。首先创建新的物理卷，然后把卷组扩展到该物理卷上。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># pvcreate /dev/sdd1</span></span><br><span class="line"><span class="comment"># vgextend VolGroup00 /dev/sdd1</span></span><br></pre></td></tr></table></figure>
+<p>可以使用<code>vgrerduce</code>命令移除VG中的PV。但是在移除之前要先试用<code>pvmove</code>把物理卷的数据转移到别的分区。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># vgreduce --all VolGroup00     // 删除所有物理卷</span></span><br></pre></td></tr></table></figure>
+<h2 id="快照"><a href="#快照" class="headerlink" title="快照"></a>快照</h2><p>LVM可以给系统创建一个快照，由于使用了写入时复制(copy-on-write) 策略，相比传统的备份更有效率。 初始的快照只有关联到实际数据的inode的实体链接(hark-link)而已。只要实际的数据没有改变，快照就只会包含指向数据的inode的指针，而非数据本身。一旦你更改了快照对应的文件或目录，LVM就会自动拷贝相应的数据，包括快照所对应的旧数据的拷贝和你当前系统所对应的新数据的拷贝。这样的话，只要你修改的数据（包括原始的和快照的）不超过2G，你就可以只使用2G的空间对一个有35G数据的系统创建快照。</p>
+<p>具体使用，没有经验，还是参考： <a href="https://wiki.archlinux.org/index.php/LVM_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87" target="_blank" rel="noopener">https://wiki.archLinux.org/index.php/LVM_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)</a>) 吧</p>
+<p>done</p>
+<p>参考:</p>
+<ul>
+<li><a href="https://wiki.archlinux.org/index.php/LVM&quot;LVM在archlinux wiki上的页面&quot;" target="_blank" rel="noopener">https://wiki.archLinux.org/index.php/LVM</a></li>
+<li><a href="http://icsmile.com/2013/04/22/lvm_1.html" target="_blank" rel="noopener">http://icsmile.com/2013/04/22/lvm_1.html</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Logical_Volume_Manager_(Linux)" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Logical_Volume_Manager_(Linux)</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+            <a href="/tags/centos/" rel="tag">#centos</a>
+          
+            <a href="/tags/Lvm/" rel="tag">#Lvm</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/reset-mysql-root-password/" rel="next" title="重置mysql的密码/无密码登录mysql">
+                <i class="fa fa-chevron-left"></i> 重置mysql的密码/无密码登录mysql
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/go-lange-notebook-1/" rel="prev" title="Golang 学习笔记： 指针,函数,内嵌及接口">
+                Golang 学习笔记： 指针,函数,内嵌及接口 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LVM的特点"><span class="nav-number">1.</span> <span class="nav-text">LVM的特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LVM基本组成"><span class="nav-number">2.</span> <span class="nav-text">LVM基本组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建物理卷-PV"><span class="nav-number">3.1.</span> <span class="nav-text">创建物理卷(PV)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建卷则-VG"><span class="nav-number">3.2.</span> <span class="nav-text">创建卷则(VG)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建逻辑卷-LV"><span class="nav-number">3.3.</span> <span class="nav-text">创建逻辑卷(LV)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立文件系统与挂在逻辑卷"><span class="nav-number">4.</span> <span class="nav-text">建立文件系统与挂在逻辑卷</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置LVM"><span class="nav-number">5.</span> <span class="nav-text">配置LVM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#移动物理区域"><span class="nav-number">5.1.</span> <span class="nav-text">移动物理区域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调整逻辑分区大小"><span class="nav-number">5.2.</span> <span class="nav-text">调整逻辑分区大小</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加物理卷到卷组"><span class="nav-number">6.</span> <span class="nav-text">添加物理卷到卷组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快照"><span class="nav-number">7.</span> <span class="nav-text">快照</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

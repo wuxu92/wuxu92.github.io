@@ -1,0 +1,766 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux,tools,vps,ssh," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="今天登录前段时间买的VPS，发现motd消息中有一段如下： There were 405 failed login attempts since the last successful login 基本过几个小时再登录就有这个消息，小的几百次失败登录尝试，多个可能几千次，看来网络上真的是错综复杂，不安全呐，整天有人想着办法要“勾搭”互联网上的server。没办法只好配置一下SSHD，要不这么一天到">
+<meta name="keywords" content="Linux,tools,vps,ssh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="服务器ssh登录保护">
+<meta property="og:url" content="http://blog.wuxu92.com/protect-remote-server-by-ssh-config/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="今天登录前段时间买的VPS，发现motd消息中有一段如下： There were 405 failed login attempts since the last successful login 基本过几个小时再登录就有这个消息，小的几百次失败登录尝试，多个可能几千次，看来网络上真的是错综复杂，不安全呐，整天有人想着办法要“勾搭”互联网上的server。没办法只好配置一下SSHD，要不这么一天到">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.563Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="服务器ssh登录保护">
+<meta name="twitter:description" content="今天登录前段时间买的VPS，发现motd消息中有一段如下： There were 405 failed login attempts since the last successful login 基本过几个小时再登录就有这个消息，小的几百次失败登录尝试，多个可能几千次，看来网络上真的是错综复杂，不安全呐，整天有人想着办法要“勾搭”互联网上的server。没办法只好配置一下SSHD，要不这么一天到">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> 服务器ssh登录保护 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                服务器ssh登录保护
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-27T17:43:33+08:00" content="2016-01-27">
+              2016-01-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>今天登录前段时间买的VPS，发现motd消息中有一段如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">There were 405 failed login attempts since the last successful login</span><br></pre></td></tr></table></figure>
+<p>基本过几个小时再登录就有这个消息，小的几百次失败登录尝试，多个可能几千次，看来网络上真的是错综复杂，不安全呐，整天有人想着办法要“勾搭”互联网上的server。没办法只好配置一下SSHD，要不这么一天到晚被尝试登录也受不了。</p>
+<p>如果是购买的远程主机建议配置到普通用户的密钥登录，关闭root登录权限和密码登录权限，最好把sshd的端口改了，因为大部分尝试登录都是针对默认端口22的。下面是操作步骤。</p>
+<p>因为是远程主机所以操作要按照一定的顺序，要不然可能导致不能登录，注意的是在配置过程中不要退出已登录的回话，直到配置完再退出最初的会话。</p>
+<h2 id="创建新用户"><a href="#创建新用户" class="headerlink" title="创建新用户"></a>创建新用户</h2><p>用现在的用户名密码登录到服务器，这个session不要关闭，中间对sshd的配置及sshd服务重启不会断开这个连接的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">useradd me</span><br><span class="line">passwd me</span><br><span class="line">usemod -aG wheel me</span><br></pre></td></tr></table></figure>
+<p>这里假设已经编辑 visudo 将wheel用户组设置为拥有 sudo 权限。如果还没有的话使用 <code>sudo visudo</code> 找到相应的行取消注释即可，注意千万不要手动编辑 <code>/etc/sudoers</code> 文件，以前同学手动编辑该文件导致的惨烈后果记忆犹新。。。。</p>
+<h2 id="配置无密码登录"><a href="#配置无密码登录" class="headerlink" title="配置无密码登录"></a>配置无密码登录</h2><p>我们都知道要实现无密码登录就是在本地生成一个密钥对，然后使用用户名密码将公钥(.pub)上传到服务器，然后登陆时指定对应的私钥，就不需要输入密码了。</p>
+<h3 id="生产密钥对"><a href="#生产密钥对" class="headerlink" title="生产密钥对"></a>生产密钥对</h3><p>使用下面的命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -f me.server</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>-t表示密钥使用的算法， -f是生成的密钥对的文件名，默认回事id_rsa，不过为了和其他服务器的密钥对区分，建议使用一个直观的名字，而不是默认名字，上面的指令会询问是否使用密码，这个密码是密钥对使用的密码，建议使用一个简单的密码，这样比没有密码安全很多，也不会有额外的记忆负担</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Enter passphrase (empty for no passphrase):</span><br><span class="line">Enter same passphrase again:</span><br></pre></td></tr></table></figure>
+<p>然后回车后就会在 <code>~/.ssh/</code> 目录下生产两个文件，分别是 <code>me.server</code> 和 <code>me.server.pub</code> 它们分别是私钥和公钥文件。</p>
+<h3 id="上传公钥到服务器"><a href="#上传公钥到服务器" class="headerlink" title="上传公钥到服务器"></a>上传公钥到服务器</h3><p>很多人喜欢使用手动上传文件拷贝内容到服务器的 <code>~/.ssh/authorized_keys</code> 文件中，这样很麻烦也容易出错，其实有一个非常方便的工具 <code>ssh-copy-id</code> 命令专门用来上传公钥，使用可以查看帮助，一般如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssh-copy-id -i ./me.server.pub -p your_port me@host</span><br></pre></td></tr></table></figure>
+<p>使用 <code>-i</code> 指定公钥文件，否则默认使用 id_rsa.pub 就不对了，是哟个 <code>-p</code> 指定sshd的端口，现在我们还没有修改服务端的端口就使用默认端口22或者不写就可以了，最后是用户名和服务器地址。</p>
+<p>这个指令会询问登录密码，输入密码就可以了，指令会自动将公钥上传到服务器，并将内容追加到指定用户的 <code>~/.ssh/authorized_keys</code> 文件中，你可以在服务器中查看该文件</p>
+<h3 id="使用私钥登录"><a href="#使用私钥登录" class="headerlink" title="使用私钥登录"></a>使用私钥登录</h3><p>在ssh登录时指定私钥文件可以配置 <code>~/.ssh/config</code> 文件指定某个域名的私钥，或者在ssh命令指定私钥文件。ssh/config 配置格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">host alias</span><br><span class="line">        User me</span><br><span class="line">        Hostname host</span><br><span class="line">        Port 22</span><br><span class="line">        IdentityFile ~/.ssh/me.server</span><br></pre></td></tr></table></figure>
+<p>这样配置的好处是可以为连接自定义一个别名，在连接时指定这个别名如： <code>ssh alias</code> 就可以了。</p>
+<p>或许使用 <code>-i</code> 参数指定密钥文件：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssh -i ~/.ssh/me.server -p 22 me@host</span><br></pre></td></tr></table></figure>
+<h2 id="修改sshd服务配置"><a href="#修改sshd服务配置" class="headerlink" title="修改sshd服务配置"></a>修改sshd服务配置</h2><p>sshd的配置文件是 <code>/etc/ssh/sshd_config</code>,主要做下面几个配置修改</p>
+<ol>
+<li>禁止root用户登录， 找到<code>PermitRootLogin</code>配置，取消注释，将其值修改为 <code>no</code></li>
+<li>修改登录端口，在配置文件中寻找 <code>Port</code> 修改为另一的端口，注意不要与其它常用端口冲突，可以设置到10000以上的端口</li>
+<li>禁止密码登录，完全禁止使用密码登录，这样那些尝试暴力登录的工具就完全没有办法了，找到 <code>PasswordAuthentication</code> 的配置项，将其值修改为 <code>no</code></li>
+</ol>
+<p>保存退出后，重新启动服务： <code>sudo systemctl restart sshd</code> 或者 <code>sudo service sshd restart</code></p>
+<p>注意：</p>
+<ol>
+<li>修改了默认登录端口后记得修改客户端 ssh 的config文件中配置的端口要相应修改</li>
+<li>修改了端口之后一定要记得打开防火前对应的端口，否则以后就登录不了了：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo iptables -L</span><br><span class="line">sudo iptables -I INPUT -p tcp --dport 12222 -j ACCEPT</span><br><span class="line">sudo service iptables save</span><br><span class="line">sudo systemctl restart iptables</span><br></pre></td></tr></table></figure>
+<p>这样更新iptables的规则后就可以指定新端口登录了。</p>
+<p>Windows下使用 Xshell 可以保存指定 rsa 私钥和passphrase，登录也很方便。</p>
+<p>完。</p>
+<p>参考:</p>
+<ul>
+<li><a href="https://www.linux.com/learn/tutorials/843903-how-to-make-your-linux-server-more-secure%20to%20secure%20your%20server" target="_blank" rel="noopener">https://www.Linux.com/learn/tutorials/843903-how-to-make-your-linux-server-more-secure%20to%20secure%20your%20server</a></li>
+<li><a href="http://www.cyberciti.biz/faq/force-ssh-client-to-use-given-private-key-identity-file/" target="_blank" rel="noopener">http://www.cyberciti.biz/faq/force-ssh-client-to-use-given-private-key-identity-file/</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+            <a href="/tags/tools/" rel="tag">#tools</a>
+          
+            <a href="/tags/vps/" rel="tag">#vps</a>
+          
+            <a href="/tags/ssh/" rel="tag">#ssh</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/npp-chs-words-break/" rel="next" title="notepad++ 优化汉字换行">
+                <i class="fa fa-chevron-left"></i> notepad++ 优化汉字换行
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/snp-mongo-design-faults/" rel="prev" title="snp中MongoDB设计失误">
+                snp中MongoDB设计失误 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建新用户"><span class="nav-number">1.</span> <span class="nav-text">创建新用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置无密码登录"><span class="nav-number">2.</span> <span class="nav-text">配置无密码登录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生产密钥对"><span class="nav-number">2.1.</span> <span class="nav-text">生产密钥对</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传公钥到服务器"><span class="nav-number">2.2.</span> <span class="nav-text">上传公钥到服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用私钥登录"><span class="nav-number">2.3.</span> <span class="nav-text">使用私钥登录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改sshd服务配置"><span class="nav-number">3.</span> <span class="nav-text">修改sshd服务配置</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

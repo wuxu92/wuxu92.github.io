@@ -1,0 +1,752 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="golang,lang," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="effective go 中的部分笔记，这是第四部分  部分笔记摘要,参考： https://go-zh.org/doc/effective_go.html 并发通过通信共享内存并发编程中很麻烦的一点是对共享变量访问的控制，在一般环境中，使用同步互斥锁机制等实现互斥的访问，使得代码繁琐而且难以理解。Go语言提出了一个独特的机制:信道。Go将共享的值通过信道传递。在给定的时间点，只有一个Go程能访问">
+<meta name="keywords" content="golang,lang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective Go笔记：并发">
+<meta property="og:url" content="http://blog.wuxu92.com/effective-go-note-4-concurrency/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="effective go 中的部分笔记，这是第四部分  部分笔记摘要,参考： https://go-zh.org/doc/effective_go.html 并发通过通信共享内存并发编程中很麻烦的一点是对共享变量访问的控制，在一般环境中，使用同步互斥锁机制等实现互斥的访问，使得代码繁琐而且难以理解。Go语言提出了一个独特的机制:信道。Go将共享的值通过信道传递。在给定的时间点，只有一个Go程能访问">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.498Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Effective Go笔记：并发">
+<meta name="twitter:description" content="effective go 中的部分笔记，这是第四部分  部分笔记摘要,参考： https://go-zh.org/doc/effective_go.html 并发通过通信共享内存并发编程中很麻烦的一点是对共享变量访问的控制，在一般环境中，使用同步互斥锁机制等实现互斥的访问，使得代码繁琐而且难以理解。Go语言提出了一个独特的机制:信道。Go将共享的值通过信道传递。在给定的时间点，只有一个Go程能访问">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> Effective Go笔记：并发 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Effective Go笔记：并发
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
+              2015-07-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>effective go 中的部分笔记，这是第四部分 </p>
+<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
+<h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><h3 id="通过通信共享内存"><a href="#通过通信共享内存" class="headerlink" title="通过通信共享内存"></a>通过通信共享内存</h3><p>并发编程中很麻烦的一点是对共享变量访问的控制，在一般环境中，使用同步互斥锁机制等实现互斥的访问，使得代码繁琐而且难以理解。Go语言提出了一个独特的机制:信道。<br>Go将共享的值通过信道传递。在给定的时间点，只有一个Go程能访问信道中的值，在设计上杜绝了数据在同一时间点被放线程访问。</p>
+<blockquote>
+<p>不要通过共享内存来通信，而应通过通信来共享内存。</p>
+</blockquote>
+<p>为了方便理解，可以把Go的并发处理方式看做类型安全的Unix管道的实现。</p>
+<h3 id="Go程-Goroutines"><a href="#Go程-Goroutines" class="headerlink" title="Go程/Goroutines"></a>Go程/Goroutines</h3><p>Go程是Golang提出的术语，Go程有简单的模型，它是与其他Go程并发运行在同一地址空间的<strong>函数</strong>。Go程可以看作是轻量级的线程，它的开销几乎只有栈空间的分配，它的使用很廉价。<br>Go程在多线程操作系统上可以实现多路复用，后面会详细讲到。多路复用在多线程编程中非常重要。</p>
+<p>那如何运行一个Go程呢？很简单，只需要在要调用的函数前添加”go”关键字就能在Go程中运行这个函数，函数调用结束时，Go程也就自动退出。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">go</span> list.Sort()</span><br><span class="line"><span class="comment">// 使用函数字面量运行</span></span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// do something here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="信道-Channels"><a href="#信道-Channels" class="headerlink" title="信道/Channels"></a>信道/Channels</h3><p>前面已经提到了信道的概念，在多线程中，具体怎么使用呢，下面就详细介绍<strong>信道（channel）</strong>。</p>
+<p>之前讲过，在Go中切片，映射和信道都使用make来分配内存，make返回的值充当对底层数据结构的引用。信道的声明和初始化示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 前两个是无缓冲的正数类型信道</span><br><span class="line">c1 := make(chan int)</span><br><span class="line">c2 := make(chan int, 0)</span><br><span class="line">// 指向文件指针的带缓冲区的信道</span><br><span class="line">c3 := make(chan *os.File, 100)</span><br></pre></td></tr></table></figure>
+<p>若不指定第二个参数，信道就是无缓冲的同步信道。使用一个同步信道，一个示例如下：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">c1 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>) <span class="comment">// 一个不带缓冲的，同步信道</span></span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">  time.Sleep(<span class="number">500</span> * time.Millisecond)</span><br><span class="line">  <span class="comment">// send one value to channl</span></span><br><span class="line">  c1 &lt;- <span class="number">1</span></span><br><span class="line">&#125;()</span><br><span class="line"><span class="comment">// do something here</span></span><br><span class="line">fmt.Println(<span class="string">"wait for goroutine to quir"</span>)</span><br><span class="line">&lt;-c1 <span class="comment">// 主线程在此等待Go程结束,丢弃信道中的值，因为该值只是用作同步的标识</span></span><br><span class="line">fmt.Println(<span class="string">"go routine done"</span>)</span><br></pre></td></tr></table></figure>
+<p>看完无缓冲的信道，下面看一下有缓冲的信道。有缓冲的信道可以看作是信号量，操作系统里面学过信号量的东西。信号量可以看作是资源不足时用来限制线程执行，使其等待的机制。常用来限制吞吐量，限制调用的process的数量等。<br>比如要对Web请求使用Go程处理：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func Serve(queue chan *Request) &#123;</span><br><span class="line">	for req := range queue &#123;</span><br><span class="line">		sem &lt;- 1</span><br><span class="line">		// 考虑到闭包的性质，这里传入值 *Request，</span><br><span class="line">		// 如果不使用 *Request则所有Go程处理的是同一个变量req</span><br><span class="line">		go func(req *Request) &#123;</span><br><span class="line">			process(req)</span><br><span class="line">			&lt;-sem</span><br><span class="line">		&#125;(req)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 另一种方式是，重新声明一个变量</span><br><span class="line">	for req := range queue &#123;</span><br><span class="line">		// 参考js中for循环中使用timeInterval函数时要重新声明变量</span><br><span class="line">		req := req // 为该Go程创建 req 的新实例。</span><br><span class="line">		sem &lt;- 1</span><br><span class="line">		go func() &#123;</span><br><span class="line">			process(req)</span><br><span class="line">			&lt;-sem</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="信道中的信道-channels-of-channels"><a href="#信道中的信道-channels-of-channels" class="headerlink" title="信道中的信道/channels of channels"></a>信道中的信道/channels of channels</h3><p><em>这部分比较麻烦，待续</em></p>
+<h3 id="并行化-Parallelization"><a href="#并行化-Parallelization" class="headerlink" title="并行化/Parallelization"></a>并行化/Parallelization</h3><p>在多CPU核心上实现并行计算。</p>
+<blockquote>
+<p>并发是用可独立执行的组件构造程序的方法， 而并行则是为了效率在多CPU上平行地进行计算。Go仍然是种并发而非并行的语言，且Go的模型并不适合所有的并行问题</p>
+</blockquote>
+<p>目前Go运行时的实现默认并不会并行执行代码，它只为用户层代码提供单一的处理核心。 任意数量的Go程都可能在系统调用中被阻塞，而在任意时刻默认只有一个会执行用户层代码。 它应当变得更智能，而且它将来肯定会变得更智能。但现在，若你希望CPU并行执行， 就必须告诉运行时你希望同时有多少Go程能执行代码。有两种途径可以使用：</p>
+<ol>
+<li>在运行你的工作时将 GOMAXPROCS 环境变量设为你要使用的核心数</li>
+<li>导入 runtime 包并调用 runtime.GOMAXPROCS(NCPU)。 runtime.NumCPU() 的值可能很有用，它会返回当前机器的逻辑CPU核心数。 </li>
+</ol>
+<p>当然，随着调度算法和运行时的改进，将来会不再需要这种方法。</p>
+<h3 id="一个缓冲区泄漏示例-A-leak-buffer"><a href="#一个缓冲区泄漏示例-A-leak-buffer" class="headerlink" title="一个缓冲区泄漏示例/A leak buffer"></a>一个缓冲区泄漏示例/A leak buffer</h3><p>客户端Go程从某些来源，可能是网络中循环接收数据。为避免分配和释放缓冲区， 它保存了一个空闲链表，使用一个带缓冲信道表示。若信道为空，就会分配新的缓冲区。 一旦消息缓冲区就绪，它将通过 serverChan 被发送到服务器。 serverChan.</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> freeList = <span class="built_in">make</span>(<span class="keyword">chan</span> *Buffer, <span class="number">100</span>)</span><br><span class="line"><span class="keyword">var</span> serverChan = <span class="built_in">make</span>(<span class="keyword">chan</span> *Buffer)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">client</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">var</span> b *Buffer</span><br><span class="line">		<span class="comment">// 若缓冲区可用就用它，不可用就分配个新的。</span></span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> b = &lt;-freeList:</span><br><span class="line">			<span class="comment">// 获取一个，不做别的。</span></span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="comment">// 非空闲，因此分配一个新的。</span></span><br><span class="line">			b = <span class="built_in">new</span>(Buffer)</span><br><span class="line">		&#125;</span><br><span class="line">		load(b)              <span class="comment">// 从网络中读取下一条消息。</span></span><br><span class="line">		serverChan &lt;- b   <span class="comment">// 发送至服务器。</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>服务器从客户端循环接收每个消息，处理它们，并将缓冲区返回给空闲列表。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">server</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		b := &lt;-serverChan    <span class="comment">// 等待工作。</span></span><br><span class="line">		process(b)</span><br><span class="line">		<span class="comment">// 若缓冲区有空间就重用它。</span></span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> freeList &lt;- b:</span><br><span class="line">			<span class="comment">// 将缓冲区放大空闲列表中，不做别的。</span></span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="comment">// 空闲列表已满，保持就好。</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户端试图从 freeList 中获取缓冲区；若没有缓冲区可用， 它就将分配一个新的。服务器将 b 放回空闲列表 freeList 中直到列表已满，此时缓冲区将被丢弃，并被垃圾回收器回收。（select 语句中的 default 子句在没有条件符合时执行，这也就意味着 selects 永远不会被阻塞。）依靠带缓冲的信道和垃圾回收器的记录， 我们仅用短短几行代码就构建了一个可能导致缓冲区槽位泄露的空闲列表。(没懂TT)</p>
+<p>上一段的英文如下，总觉得中文的翻译不太对</p>
+<p>The client attempts to retrieve a buffer from freeList; if none is available, it allocates a fresh one. The server’s send to freeList puts b back on the free list unless the list is full, in which case the buffer is dropped on the floor to be reclaimed by the garbage collector. (The default clauses in the select statements execute when no other case is ready, meaning that the selects never block.) This implementation builds a leaky bucket free list in just a few lines, relying on the buffered channel and the garbage collector for bookkeeping.</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/golang/" rel="tag">#golang</a>
+          
+            <a href="/tags/lang/" rel="tag">#lang</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/encasulating-a-memcache-client-for-php/" rel="next" title="为PHP封装一个Memcache类">
+                <i class="fa fa-chevron-left"></i> 为PHP封装一个Memcache类
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/golang-errors/" rel="prev" title="Golang中的错误处理">
+                Golang中的错误处理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#并发"><span class="nav-number">1.</span> <span class="nav-text">并发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通过通信共享内存"><span class="nav-number">1.1.</span> <span class="nav-text">通过通信共享内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Go程-Goroutines"><span class="nav-number">1.2.</span> <span class="nav-text">Go程/Goroutines</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信道-Channels"><span class="nav-number">1.3.</span> <span class="nav-text">信道/Channels</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信道中的信道-channels-of-channels"><span class="nav-number">1.4.</span> <span class="nav-text">信道中的信道/channels of channels</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并行化-Parallelization"><span class="nav-number">1.5.</span> <span class="nav-text">并行化/Parallelization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个缓冲区泄漏示例-A-leak-buffer"><span class="nav-number">1.6.</span> <span class="nav-text">一个缓冲区泄漏示例/A leak buffer</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

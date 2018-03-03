@@ -1,0 +1,900 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="go,mongodb,db,snp," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="snp是前段时间开始的一个个人项目，受Chrome导航插件 FVD SpeedDial的启发，做一个自定义的导航页，后面会陆续写一些这个项目的文档，今天主要是总结一下到现在为止，MongoDB设计的一些失误。 snp使用MongoDB作为数据存储，MongoDB作为一个老牌的NoSQL数据库，比较适合这个项目的需求，之前一直是使用MySQL做数据库，虽然MySQL肯定也能满足需求，但是一来为了熟练">
+<meta name="keywords" content="go,mongodb,db,snp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="snp中MongoDB设计失误">
+<meta property="og:url" content="http://blog.wuxu92.com/snp-mongo-design-faults/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="snp是前段时间开始的一个个人项目，受Chrome导航插件 FVD SpeedDial的启发，做一个自定义的导航页，后面会陆续写一些这个项目的文档，今天主要是总结一下到现在为止，MongoDB设计的一些失误。 snp使用MongoDB作为数据存储，MongoDB作为一个老牌的NoSQL数据库，比较适合这个项目的需求，之前一直是使用MySQL做数据库，虽然MySQL肯定也能满足需求，但是一来为了熟练">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.567Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="snp中MongoDB设计失误">
+<meta name="twitter:description" content="snp是前段时间开始的一个个人项目，受Chrome导航插件 FVD SpeedDial的启发，做一个自定义的导航页，后面会陆续写一些这个项目的文档，今天主要是总结一下到现在为止，MongoDB设计的一些失误。 snp使用MongoDB作为数据存储，MongoDB作为一个老牌的NoSQL数据库，比较适合这个项目的需求，之前一直是使用MySQL做数据库，虽然MySQL肯定也能满足需求，但是一来为了熟练">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> snp中MongoDB设计失误 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                snp中MongoDB设计失误
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-30T12:18:46+08:00" content="2016-01-30">
+              2016-01-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/db/" itemprop="url" rel="index">
+                    <span itemprop="name">db</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>snp是前段时间开始的一个<a href="https://github.com/wuxu92/snp" target="_blank" rel="noopener">个人项目</a>，受Chrome导航插件 FVD SpeedDial的启发，做一个自定义的导航页，后面会陆续写一些这个项目的文档，今天主要是总结一下到现在为止，MongoDB设计的一些失误。</p>
+<p>snp使用MongoDB作为数据存储，MongoDB作为一个老牌的NoSQL数据库，比较适合这个项目的需求，之前一直是使用MySQL做数据库，虽然MySQL肯定也能满足需求，但是一来为了熟练一些MongoDB的使用，而来NoSQL存储对应的数据确实更加方便，就没有选用MySQL了；一开始设计时还考虑过使用SQL Lite做存储，因为SQL Lite足够小，部署比较方便，不过snp本来是一个练手的项目，学习MongoDB也是其中目的，也就没有使用SQL Lite了。</p>
+<h2 id="数据描述"><a href="#数据描述" class="headerlink" title="数据描述"></a>数据描述</h2><p>我们知道NoSQL的一个很大的优势是没有了关系型数据库的模式约束，可以在一个数据集合中快速存取不同“schema”的数据。<br><a id="more"></a><br>先介绍一下snp中主要使用的数据，如果使用关系型数据库描述，它们主要包括：</p>
+<h3 id="package数据"><a href="#package数据" class="headerlink" title="package数据"></a>package数据</h3><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Id</td>
+<td>string</td>
+<td>ObjectID</td>
+</tr>
+<tr>
+<td>Created</td>
+<td>string</td>
+<td>创建事件</td>
+</tr>
+<tr>
+<td>Title</td>
+<td>string</td>
+<td>标题</td>
+</tr>
+<tr>
+<td>Owner</td>
+<td>string</td>
+<td>创建人</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>string</td>
+<td>名字</td>
+</tr>
+<tr>
+<td>Password</td>
+<td>string</td>
+<td>密码</td>
+</tr>
+<tr>
+<td>Public</td>
+<td>bool</td>
+<td>是否公开</td>
+</tr>
+<tr>
+<td>Groups</td>
+<td>[]ObjectID</td>
+<td>组的 ObjectID 数据</td>
+</tr>
+<tr>
+<td>Theme</td>
+<td>string</td>
+<td>主题</td>
+</tr>
+<tr>
+<td>AdditionalStyle</td>
+<td>string</td>
+<td>附件样式表</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>int</td>
+<td>版本</td>
+</tr>
+</tbody>
+</table>
+<p>应为使用MongoDB，id就是不是MySQL的自增主键了，而是MongoDB自动生产的hash过的id字符串，上表中需要注意的是保存Groups的数组，我们知道NoSQL可以在一个字段存储数组，对应于MongoDB则是类似于JavaScript数组一样的数据类型。</p>
+<p>这里为什么不会直接存储Group的对象数组而是存储Group的id的数组呢？这是因为snp的设计中Group是可以包间共享的，也就是follow的概念，所以这里是使用ID的数组。</p>
+<p>我现在觉得设计失误的是组和网站的数据集合，由于常年使用关系型数据库（MySQL）的影响，在设计时使用就得思维方式，将Site单独抽象出来了一个集合。这其实是没有必要的，虽然一开始考虑过Site在Group之间的共享，但是后来发现这样是没有意义的，因为不同Group添加的网址有自己的一些属性，如添加时间，特别是组可能会编辑网址，这样如果网址共享的话，会导致一个地方修改，所有人的导航页都被修改了，这显然是不合理的。另一个方案是，可以借鉴 写时复制，在编辑时对Site做一份拷贝，这样可以减少系统中重复网址的开销，不过这样实现有些麻烦，并且省下来的那些空间并没有多少，反而导致过多的计算。</p>
+<p>下面看一下现在的Group和Site设计</p>
+<h2 id="Group和Site"><a href="#Group和Site" class="headerlink" title="Group和Site"></a>Group和Site</h2><p>Group数据</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Id</td>
+<td>string</td>
+<td>ObjectID</td>
+</tr>
+<tr>
+<td>Created</td>
+<td>string</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>Title</td>
+<td>string</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>Owner</td>
+<td>string</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>GroupLink</td>
+<td>[]ObjectID</td>
+<td>备用</td>
+</tr>
+<tr>
+<td>Followable</td>
+<td>bool</td>
+<td>是否可Follow</td>
+</tr>
+<tr>
+<td>Localized</td>
+<td>bool</td>
+<td>是否本地</td>
+</tr>
+<tr>
+<td>FollowFrom</td>
+<td>ObjectID</td>
+<td>从某Follow</td>
+</tr>
+<tr>
+<td>AdditionalStyle</td>
+<td>string</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>Sites</td>
+<td>[]ObjectID</td>
+<td>包含的网址</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>int</td>
+<td>版本</td>
+</tr>
+</tbody>
+</table>
+<p>Site数据</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Id</td>
+<td>string</td>
+<td>ObjectID</td>
+</tr>
+<tr>
+<td>Title</td>
+<td>string</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>Url</td>
+<td>string</td>
+<td>链接</td>
+</tr>
+<tr>
+<td>Created</td>
+<td>string</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>Available</td>
+<td>bool</td>
+<td>备用</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到这里设计的失误，Group中不应该存储Site的ID数组，而应该直接存储Site的对象数组，因为Site实际就是Group的成员。现在这样的设计导致在查找Group的所有网站时，需要进行更多次的数据库查找，在查找package的所有网站时导致查询次数成倍增加！！</p>
+<p>但是现在已经写了不少的接口，再进行修改需要重写那些功能，实在是麻烦，只能将错就错了。。。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/go/" rel="tag">#go</a>
+          
+            <a href="/tags/mongodb/" rel="tag">#mongodb</a>
+          
+            <a href="/tags/db/" rel="tag">#db</a>
+          
+            <a href="/tags/snp/" rel="tag">#snp</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/protect-remote-server-by-ssh-config/" rel="next" title="服务器ssh登录保护">
+                <i class="fa fa-chevron-left"></i> 服务器ssh登录保护
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/chrome-using-es6/" rel="prev" title="chrome开启ECMAScript6 支持">
+                chrome开启ECMAScript6 支持 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据描述"><span class="nav-number">1.</span> <span class="nav-text">数据描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#package数据"><span class="nav-number">1.1.</span> <span class="nav-text">package数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Group和Site"><span class="nav-number">2.</span> <span class="nav-text">Group和Site</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

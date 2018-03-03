@@ -1,0 +1,775 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="golang,go,lang," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="HTTP我们知道，go内置有http server 支持，我们只需要在代码中启动这个server就可以启动一个类似于apache的服务器。同时可以很方便的监听多个端口等等。 import (	. &quot;fmt&quot;	&quot;net/http&quot;)const (	PORT = &quot;:1024&quot;	MSG = &quot;hello, gopher&quot;)func main() &amp;#123;	http.HandleFunc(&quot;/hel">
+<meta name="keywords" content="golang,go,lang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang 学习笔记：HTTP, TCP&#x2F;IP, UDP">
+<meta property="og:url" content="http://blog.wuxu92.com/go-lang-notebook-2/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="HTTP我们知道，go内置有http server 支持，我们只需要在代码中启动这个server就可以启动一个类似于apache的服务器。同时可以很方便的监听多个端口等等。 import (	. &quot;fmt&quot;	&quot;net/http&quot;)const (	PORT = &quot;:1024&quot;	MSG = &quot;hello, gopher&quot;)func main() &amp;#123;	http.HandleFunc(&quot;/hel">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.512Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Golang 学习笔记：HTTP, TCP&#x2F;IP, UDP">
+<meta name="twitter:description" content="HTTP我们知道，go内置有http server 支持，我们只需要在代码中启动这个server就可以启动一个类似于apache的服务器。同时可以很方便的监听多个端口等等。 import (	. &quot;fmt&quot;	&quot;net/http&quot;)const (	PORT = &quot;:1024&quot;	MSG = &quot;hello, gopher&quot;)func main() &amp;#123;	http.HandleFunc(&quot;/hel">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> Golang 学习笔记：HTTP, TCP/IP, UDP | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Golang 学习笔记：HTTP, TCP/IP, UDP
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-23T12:34:50+08:00" content="2015-10-23">
+              2015-10-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><p>我们知道，go内置有http server 支持，我们只需要在代码中启动这个server就可以启动一个类似于apache的服务器。同时可以很方便的监听多个端口等等。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	. <span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">	PORT = <span class="string">":1024"</span></span><br><span class="line">	MSG = <span class="string">"hello, gopher"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.HandleFunc(<span class="string">"/hello"</span>, Hello)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		http.ListenAndServe(PORT, <span class="literal">nil</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		http.ListenAndServeTLS(<span class="string">":443"</span>,<span class="string">"cert.pem"</span>, <span class="string">"key.pem"</span>, <span class="literal">nil</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="keyword">for</span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Hello</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">	w.Header().Set(<span class="string">"Content-Type"</span>, <span class="string">"text/plain"</span>)</span><br><span class="line">	Fprintf(w, MSG)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码启动了一个server，开启了http和https支持；分别监听在1024端口和443端口。<br>有几个需要注意的地方。<br><a id="more"></a></p>
+<ol>
+<li>http.HandleFunc(string, func(http.ResponseWriter, *http.Request)) 绑定某个请求路径的处理方法</li>
+<li>使用goroutine执行监听与服务动作。启动了两个goroutine</li>
+<li>最后使用一个for循环保证主线程不会退出。因为主线程退出的话goroutine也会结束。</li>
+<li>其中的TLS支持的HTTPS服务的cert和key文件可以使用Go源码中带的文件生成<code>go run $GOROOT/src/crypto/tls/generate_cert.go -ca=true -host=&quot;localhost&quot;</code></li>
+</ol>
+<p>最后一个无限循环可以使用channel代替，可以使用sync.WaitGroup实现， sync.WaitGroup持有一个计数器，其<code>Add(int)</code>方法增加计数器，其<code>Done()</code>方法减小计数器，其<code>Wait()</code>方法会让线程阻塞等待计数器恢复0。其实现如下。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	. <span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">	<span class="string">"sync"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">	PORT = <span class="string">":1024"</span></span><br><span class="line">	MSG = <span class="string">"hello, gopher"</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">var</span> servers sync.WaitGroup</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.HandleFunc(<span class="string">"/hello"</span>, Hello)</span><br><span class="line">	Launch(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		http.ListenAndServe(PORT, <span class="literal">nil</span>)</span><br><span class="line">	&#125;)</span><br><span class="line">	</span><br><span class="line">	Launch(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		http.ListenAndServeTLS(<span class="string">":443"</span>,<span class="string">"cert.pem"</span>, <span class="string">"key.pem"</span>, <span class="literal">nil</span>)</span><br><span class="line">	&#125;)</span><br><span class="line">	</span><br><span class="line">	servers.Wait()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Launch</span><span class="params">(f <span class="keyword">func</span>()</span>)</span> &#123;</span><br><span class="line">	servers.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> servers.Done()</span><br><span class="line">		f()</span><br><span class="line">	&#125;()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Hello</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">	w.Header().Set(<span class="string">"Content-Type"</span>, <span class="string">"text/plain"</span>)</span><br><span class="line">	Fprintf(w, MSG)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用上面的方法可以添加任意多的监听端口。可以通过Server做更多的配置。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">s := &amp;http.Server&#123;</span><br><span class="line">	Addr:           <span class="string">":8080"</span>,</span><br><span class="line">	Handler:        myHandler,</span><br><span class="line">	ReadTimeout:    <span class="number">10</span> * time.Second,</span><br><span class="line">	WriteTimeout:   <span class="number">10</span> * time.Second,</span><br><span class="line">	MaxHeaderBytes: <span class="number">1</span> &lt;&lt; <span class="number">20</span>,</span><br><span class="line">&#125;</span><br><span class="line">log.Fatal(s.ListenAndServe())</span><br></pre></td></tr></table></figure>
+<h3 id="HTTP与Go程结合"><a href="#HTTP与Go程结合" class="headerlink" title="HTTP与Go程结合"></a>HTTP与Go程结合</h3><p>我们对Goroutine和HTTP都比较熟悉了，我们可以设置一个任务队列，让每一个请求都进入这个队列然后使用一定数量的Goroutine去执行逻辑。这样效率比上面的实现要高很多。</p>
+<h3 id="发送GET-POST请求"><a href="#发送GET-POST请求" class="headerlink" title="发送GET/POST请求"></a>发送GET/POST请求</h3><p>http保重提供了非常方便的发发送get请求和post请求的封装。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">resp, err := http.Get(<span class="string">"http://example.com/"</span>)</span><br><span class="line">...</span><br><span class="line">resp, err := http.Post(<span class="string">"http://example.com/upload"</span>, <span class="string">"image/jpeg"</span>, &amp;buf)</span><br><span class="line">...</span><br><span class="line">resp, err := http.PostForm(<span class="string">"http://example.com/form"</span>,</span><br><span class="line">	url.Values&#123;<span class="string">"key"</span>: &#123;<span class="string">"Value"</span>&#125;, <span class="string">"id"</span>: &#123;<span class="string">"123"</span>&#125;&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">defer</span> resp.Body.Close()  <span class="comment">// 不要忘记defer关闭资源</span></span><br><span class="line">body, err := ioutil.ReadAll(resp.Body)  <span class="comment">// 读取资源</span></span><br><span class="line">strCont := <span class="keyword">string</span>(body)</span><br></pre></td></tr></table></figure>
+<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>使用os包中的<code>Getenv(string)</code>和<code>Setenv(string, string)</code>方法获得和设置环境变量。要注意Setenv的作用域只是当前运行进程，结束后或者重新运行后环境变量会重置为系统设置值。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">Println(os.Getenv(<span class="string">"PATH"</span>))</span><br><span class="line">os.Setenv(<span class="string">"GOOO"</span>, <span class="string">"gofast"</span>)</span><br><span class="line">os.Setenv(<span class="string">"PATH"</span>, <span class="string">"."</span>)</span><br><span class="line">Println(os.Getenv(<span class="string">"PATH"</span>))</span><br></pre></td></tr></table></figure>
+<h2 id="操作系统信号"><a href="#操作系统信号" class="headerlink" title="操作系统信号"></a>操作系统信号</h2><p>当程序在命令行中运行的时候，一般使用<code>Ctrl+c</code>可以终结程序运行。对于操作系统有一定了解的话应该知道，<code>Ctrl+c</code>向运行的进程发送了一个结束进程的signal。这种方式很有用，但是有点时候暴力结束进程执行不是我们想要的逻辑，我们可以捕获这个<strong>termination signal</strong>，然后对他做一些自己的处理。注意，windows下不能捕获这些信号，只在*nix下有效。</p>
+<p>使用os/signal包提供的封装。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"os"</span></span><br><span class="line">	<span class="string">"os/signal"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">var</span> i <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> SignalHandler(<span class="built_in">make</span>(<span class="keyword">chan</span> os.Signal, <span class="number">1</span>))</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		i++</span><br><span class="line">		time.Sleep(time.Second)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SignalHandler</span><span class="params">(c <span class="keyword">chan</span> os.Signal)</span></span> &#123;</span><br><span class="line">	signal.Notify(c, os.Interrupt)</span><br><span class="line">	<span class="keyword">for</span> s:= &lt;-c;; s= &lt;-c &#123;</span><br><span class="line">		<span class="keyword">switch</span> s &#123;</span><br><span class="line">			<span class="keyword">case</span> os.Interrupt:</span><br><span class="line">				fmt.Println(<span class="string">"interrupt received"</span>, i)</span><br><span class="line">				os.Exit(<span class="number">0</span>)  <span class="comment">// 去掉这一行，那么Ctrl+c的快捷键将不能中断进程运行</span></span><br><span class="line">			<span class="keyword">default</span>:</span><br><span class="line">				fmt.Println(<span class="string">"default case"</span>)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行上面的代码，在Ctrl-c时可以看到输出 interrupt received 字符串。</p>
+<p>除了接收系统的信号，还可以向其他的进行发送信号。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">syscall.Kill(syscall.Getpid(), syscall.SIGABRT)</span><br></pre></td></tr></table></figure>
+<p>这一部分可能暂时用不上，只要知道有这种用法就可以了。</p>
+<h2 id="TCP-IP"><a href="#TCP-IP" class="headerlink" title="TCP/IP"></a>TCP/IP</h2><p>使用net提供的TCP/IP封装可以很方便的监听与请求端口。</p>
+<p>server(src/wuxu/tcpserver/main.go):</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"net"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">var</span> i <span class="keyword">int</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> listener, e := net.Listen(<span class="string">"tcp"</span>, <span class="string">":1024"</span>); e == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> conn, e := listener.Accept(); e==<span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(c net.Conn)</span></span> &#123;</span><br><span class="line">					<span class="keyword">defer</span> c.Close()</span><br><span class="line">					fmt.Fprintln(c, <span class="string">"hihi"</span>, i)</span><br><span class="line">					i++</span><br><span class="line">				&#125;(conn)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"error"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>client(src/wuxu/tcpclient/main.go)</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"net"</span></span><br><span class="line">	<span class="string">"bufio"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> conn, e := net.Dial(<span class="string">"tcp"</span>, <span class="string">"localhost:1024"</span>); e == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> conn.Close()</span><br><span class="line">		<span class="keyword">if</span> text, e := bufio.NewReader(conn).ReadString(<span class="string">'\n'</span>); e ==<span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(text)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"error"</span>, e)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="加密的TCP通信"><a href="#加密的TCP通信" class="headerlink" title="加密的TCP通信"></a>加密的TCP通信</h3><p>还可以很方便地简历加密的连接，为了加密连接我们需要两套密钥对，即服务器的公钥与私钥，客户端的公钥与私钥，使用之前的方法再在服务器和客户端的目录下，各生成一对密钥。<code>go run $GOROOT/src/crypto/tls/generate_cert.go -ca=true -host=&quot;localhost&quot;</code><br>修改代码如下：</p>
+<p>server:</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"crypto/tls"</span></span><br><span class="line">	<span class="string">"crypto/rand"</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">var</span> i <span class="keyword">int</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">var</span> config tls.Config</span><br><span class="line">	<span class="keyword">if</span> certificate, e := tls.LoadX509KeyPair(<span class="string">"cert.pem"</span>, <span class="string">"key.pem"</span>); e ==<span class="literal">nil</span> &#123;</span><br><span class="line">		config = tls.Config&#123;</span><br><span class="line">			Certificates: []tls.Certificate&#123;certificate&#125;,</span><br><span class="line">			Rand: rand.Reader,</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> listener, e := tls.Listen(<span class="string">"tcp"</span>, <span class="string">":1024"</span>, &amp;config); e == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> conn, e := listener.Accept(); e==<span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(c *tls.Conn)</span></span> &#123;</span><br><span class="line">					<span class="keyword">defer</span> c.Close()</span><br><span class="line">					fmt.Fprintln(c, <span class="string">"secure hihi"</span>, i)</span><br><span class="line">					i++</span><br><span class="line">				&#125;(conn.(*tls.Conn))</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"error"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出，引入tls包后不需要net包了，tls实现了相关得了协议的加密版本。</p>
+<p>client:</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"bufio"</span></span><br><span class="line">	<span class="string">"crypto/tls"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> config tls.Config</span><br><span class="line">	<span class="keyword">if</span> certificate, e := tls.LoadX509KeyPair(<span class="string">"cert.pem"</span>, <span class="string">"key.pem"</span>); e == <span class="literal">nil</span> &#123;</span><br><span class="line">		config = tls.Config&#123;</span><br><span class="line">			Certificates: []tls.Certificate&#123;certificate&#125;,</span><br><span class="line">			InsecureSkipVerify: <span class="literal">true</span>,</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> conn, e := tls.Dial(<span class="string">"tcp"</span>, <span class="string">"localhost:1024"</span>, &amp;config); e == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> conn.Close()</span><br><span class="line">		<span class="keyword">if</span> text, e := bufio.NewReader(conn).ReadString(<span class="string">'\n'</span>); e ==<span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(text)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"error"</span>, e)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>和使用net包的整体流程差不多，使用tls包的实现替换net包。<br>这样我们就实现了一个使用tls密钥加密的传输通道了。</p>
+<h2 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h2><p>UDP的使用和TCP类似也包括一种加密的UDP传输。具体UDP和TCP的区别就不详细说了，这部分是考试面试的重点，一般都能说个123出来。</p>
+<p>与TCP实现不一样的是，UDP要先使用<code>net.ResolveUDPAddr(string, string)</code>来获得一个<code>*net.UDPAddr</code>，然后使用<code>net.ListenUDP(&quot;udp&quot;, addr)</code>监听这个端口的UDP通信。一个简单实现如下：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	. <span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"net"</span></span><br><span class="line">	<span class="string">"os"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> MSG = ([]<span class="keyword">byte</span>)(<span class="string">"hello golong udp\n"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> addr, e := net.ResolveUDPAddr(<span class="string">"udp"</span>, <span class="string">":1026"</span>); e == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> server, e := net.ListenUDP(<span class="string">"udp"</span>, addr); e == <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="comment">// infinit loop</span></span><br><span class="line">			<span class="keyword">for</span> buffer := MakeBuffer(); ; buffer = MakeBuffer() &#123;</span><br><span class="line">				<span class="keyword">if</span> n, client, e := server.ReadFromUDP(buffer); e == <span class="literal">nil</span> &#123;</span><br><span class="line">					<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">( c *net.UDPAddr, packet []<span class="keyword">byte</span>)</span></span> &#123;</span><br><span class="line">						<span class="keyword">if</span> n, e := server.WriteToUDP(MSG, c); e == <span class="literal">nil</span> &#123;</span><br><span class="line">							Printf(<span class="string">"%v bytes written to %v\n"</span>, n, c)</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;(client, buffer[:n])</span><br><span class="line">				&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">					Println(<span class="string">"error1"</span>, e)</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			Println(<span class="string">"error2"</span>, e)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		Println(<span class="string">"error3"</span>, e)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MakeBuffer</span><span class="params">()</span> <span class="params">([]<span class="keyword">byte</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>作为server需要一个无限循环保持监听，每当收到一个客户端请求(<code>ReadFromUDP</code>)，就启动一个Goroutine服务这个请求(<code>WriteToUDP</code>)。</p>
+<p>UDP不想TCP服务可以用telnet连接，因为它是一个无连接的通信，我们需要自己写一个请求的客户端。client也比较简单，其实现如下:</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	. <span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"net"</span></span><br><span class="line">	<span class="string">"bufio"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> CRLF = ([]<span class="keyword">byte</span>)(<span class="string">"\n"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> addr, e := net.ResolveUDPAddr(<span class="string">"udp"</span>, <span class="string">"localhost:1026"</span>); e == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> server, e := net.DialUDP(<span class="string">"udp"</span>, <span class="literal">nil</span>, addr); e == <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">defer</span> server.Close()</span><br><span class="line">			<span class="comment">// 随意发送一些内容到server等待回应</span></span><br><span class="line">			<span class="comment">// 这里可以多次(for 循环写都可以)写内容到服务器</span></span><br><span class="line">			<span class="keyword">if</span> _, e := server.Write(CRLF); e == <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="keyword">if</span> text, e := bufio.NewReader(server).ReadString(<span class="string">'\n'</span>); e == <span class="literal">nil</span> &#123;</span><br><span class="line">					Printf(<span class="string">"%v"</span>, text)</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			Println(<span class="string">"error2"</span>, e)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		Println(<span class="string">"error3"</span>, e)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里注意注释里面的话，使用<code>Write()</code>方法向UDP Server发送一些内容，然后才会受到Server的返回，返回使用bufio读取。一个UDP的Dial实例可以多起发送数据和读取返回。</p>
+<h3 id="使用加密的UDP"><a href="#使用加密的UDP" class="headerlink" title="使用加密的UDP"></a>使用加密的UDP</h3><p>Golang提供了很方便的加密UDP连接，只需要提供一个密钥，就可以对传输的数据进行加密了，当然我们需要对server和client的数据都进行修改。<br>rsa encrypt server:</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	. <span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"bytes"</span></span><br><span class="line">	<span class="string">"crypto/rand"</span></span><br><span class="line">	<span class="string">"crypto/rsa"</span></span><br><span class="line">	<span class="string">"crypto/sha1"</span></span><br><span class="line">	<span class="string">"encoding/gob"</span></span><br><span class="line">	. <span class="string">"net"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> MSG = []<span class="keyword">byte</span>(<span class="string">"hello go scure udp"</span>)</span><br><span class="line"><span class="keyword">var</span> RSA_LABEL = []<span class="keyword">byte</span>(<span class="string">"server"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	Serve(<span class="string">":1025"</span>, <span class="function"><span class="keyword">func</span><span class="params">(conn *UDPConn, c *UDPAddr, packet *bytes.Buffer)</span> <span class="params">(n <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">		<span class="keyword">var</span> key rsa.PublicKey</span><br><span class="line">		<span class="keyword">if</span> e := gob.NewDecoder(packet).Decode(&amp;key); e==<span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> resp, e := rsa.EncryptOAEP(sha1.New(), rand.Reader, &amp;key, MSG, RSA_LABEL); e==<span class="literal">nil</span> &#123;</span><br><span class="line">				n, _ = conn.WriteToUDP(resp, c)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Serve</span><span class="params">(addr <span class="keyword">string</span>, f <span class="keyword">func</span>(*UDPConn, *UDPAddr, *bytes.Buffer)</span> <span class="title">int</span>)</span> &#123;</span><br><span class="line">	Launch(addr, <span class="function"><span class="keyword">func</span><span class="params">(conn *UDPConn)</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			buffer := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</span><br><span class="line">			<span class="keyword">if</span> n, client, e := conn.ReadFromUDP(buffer); e == <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(c *UDPAddr, b []<span class="keyword">byte</span>)</span></span> &#123;</span><br><span class="line">					<span class="keyword">if</span> n := f(conn, c, bytes.NewBuffer(b)); n!=<span class="number">0</span> &#123;</span><br><span class="line">						Println(n, <span class="string">"write to "</span>, c)</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;(client, buffer[:n])</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Launch</span><span class="params">(addr <span class="keyword">string</span>, f <span class="keyword">func</span>(*UDPConn)</span>)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> a, e := ResolveUDPAddr(<span class="string">"udp"</span>, addr); e == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> server, e := ListenUDP(<span class="string">"udp"</span>, a); e == <span class="literal">nil</span> &#123;</span><br><span class="line">			f(server)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>rsa used  client</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	. <span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"bytes"</span></span><br><span class="line">	<span class="string">"crypto/rand"</span></span><br><span class="line">	<span class="string">"crypto/rsa"</span></span><br><span class="line">	<span class="string">"crypto/sha1"</span></span><br><span class="line">	<span class="string">"crypto/x509"</span></span><br><span class="line">	<span class="string">"encoding/gob"</span></span><br><span class="line">	<span class="string">"encoding/pem"</span></span><br><span class="line">	<span class="string">"io/ioutil"</span></span><br><span class="line">	. <span class="string">"net"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> RSA_LABEL = []<span class="keyword">byte</span>(<span class="string">"server"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	Connect(<span class="string">"localhost:1025"</span>, <span class="function"><span class="keyword">func</span><span class="params">(server *UDPConn, priKey *rsa.PrivateKey)</span></span> &#123;</span><br><span class="line">		cipherText := MakeBuffer()</span><br><span class="line">		<span class="keyword">if</span> n, e := server.Read(cipherText); e == <span class="literal">nil</span> &#123;</span><br><span class="line">			Println(<span class="string">"cipher text"</span>, <span class="keyword">string</span>(cipherText))</span><br><span class="line">			<span class="comment">// cipherText是加密的数据，需要解密</span></span><br><span class="line">			<span class="keyword">if</span> plainText, e := rsa.DecryptOAEP(sha1.New(), rand.Reader, priKey, cipherText[:n], RSA_LABEL); e == <span class="literal">nil</span> &#123;</span><br><span class="line">				Println(<span class="string">"receive decrypt string:"</span>, <span class="keyword">string</span>(plainText))</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Connect</span><span class="params">(address <span class="keyword">string</span>, f <span class="keyword">func</span>(*UDPConn, *rsa.PrivateKey)</span>)</span> &#123;</span><br><span class="line">	LoadPrivateKey(<span class="string">"key.pem"</span>, <span class="function"><span class="keyword">func</span><span class="params">(pk *rsa.PrivateKey)</span></span> &#123; <span class="comment">// pk is private key</span></span><br><span class="line">		<span class="keyword">if</span> addr, e := ResolveUDPAddr(<span class="string">"udp"</span>, address); e ==<span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> server, e := DialUDP(<span class="string">"udp"</span>, <span class="literal">nil</span>, addr); e == <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="keyword">defer</span> server.Close()</span><br><span class="line">				SendKey(server, pk.PublicKey, <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">					f(server, pk)</span><br><span class="line">				&#125;)</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				Println(<span class="string">"err1"</span>, e)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			Println(<span class="string">"err2"</span>, e)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LoadPrivateKey</span><span class="params">(file <span class="keyword">string</span>, f <span class="keyword">func</span>(*rsa.PrivateKey)</span>)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> file, e := ioutil.ReadFile(file); e == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> block, _ := pem.Decode(file); block != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> block.Type == <span class="string">"RSA PRIVATE KEY"</span> &#123;</span><br><span class="line">				<span class="keyword">if</span> key, _ := x509.ParsePKCS1PrivateKey(block.Bytes); key !=<span class="literal">nil</span> &#123;</span><br><span class="line">					f(key)</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		Println(e)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SendKey</span><span class="params">(server *UDPConn, publicKey rsa.PublicKey, f <span class="keyword">func</span>()</span>)</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> encodedKey bytes.Buffer</span><br><span class="line">	<span class="keyword">if</span> e := gob.NewEncoder(&amp;encodedKey).Encode(publicKey); e == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> _, e = server.Write(encodedKey.Bytes()); e == <span class="literal">nil</span> &#123;</span><br><span class="line">			f()</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MakeBuffer</span><span class="params">()</span> <span class="params">(r []<span class="keyword">byte</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要注意的几点:</p>
+<ul>
+<li>RSA_LABEL 是rsa加密使用的一个label，需要客户端和服务器端一致</li>
+<li>请求流程是客户端读取一个密钥，然后获取一个publickey，使用gob序列化后发送到server， server读取出key，使用这个publicKey对返回的数据进行加密</li>
+<li>客户端读取返回后，使用密钥进行解密，读取明文</li>
+<li>客户端代码使用了大量的回调，方法字面量，理解起来有点麻烦，可以用javascript的回调的思路去理解</li>
+</ul>
+<p>done</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/golang/" rel="tag">#golang</a>
+          
+            <a href="/tags/go/" rel="tag">#go</a>
+          
+            <a href="/tags/lang/" rel="tag">#lang</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/go-lange-notebook-1/" rel="next" title="Golang 学习笔记： 指针,函数,内嵌及接口">
+                <i class="fa fa-chevron-left"></i> Golang 学习笔记： 指针,函数,内嵌及接口
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/golang-web-develope/" rel="prev" title="Go Web开发">
+                Go Web开发 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP"><span class="nav-number">1.</span> <span class="nav-text">HTTP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP与Go程结合"><span class="nav-number">1.1.</span> <span class="nav-text">HTTP与Go程结合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发送GET-POST请求"><span class="nav-number">1.2.</span> <span class="nav-text">发送GET/POST请求</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境变量"><span class="nav-number">2.</span> <span class="nav-text">环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作系统信号"><span class="nav-number">3.</span> <span class="nav-text">操作系统信号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-IP"><span class="nav-number">4.</span> <span class="nav-text">TCP/IP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加密的TCP通信"><span class="nav-number">4.1.</span> <span class="nav-text">加密的TCP通信</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP"><span class="nav-number">5.</span> <span class="nav-text">UDP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用加密的UDP"><span class="nav-number">5.1.</span> <span class="nav-text">使用加密的UDP</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

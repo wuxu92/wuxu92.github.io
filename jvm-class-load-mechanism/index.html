@@ -1,0 +1,776 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,jvm," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="前段时间，室友面试被问到了java的类加载机制。关于类加载机制之前看《深入理解Java虚拟机》的时候看过这一章，不过都忘得差不多了，只记得有一个复杂的流程：验证－准备－解析－初始化等等，今天复习一下顺便做个笔记。 Java代码编译为字节码（.class文件）后，需要加载到虚拟机之后才能运行和使用，还有很多运行在JVM平台的其他语言（如Grovvy, scala, kotlin等）也会被编译为符合J">
+<meta name="keywords" content="Java,jvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java虚拟机类加载机制">
+<meta property="og:url" content="http://blog.wuxu92.com/jvm-class-load-mechanism/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="前段时间，室友面试被问到了java的类加载机制。关于类加载机制之前看《深入理解Java虚拟机》的时候看过这一章，不过都忘得差不多了，只记得有一个复杂的流程：验证－准备－解析－初始化等等，今天复习一下顺便做个笔记。 Java代码编译为字节码（.class文件）后，需要加载到虚拟机之后才能运行和使用，还有很多运行在JVM平台的其他语言（如Grovvy, scala, kotlin等）也会被编译为符合J">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.wuxu92.com/images/lang/Java-classloader.png">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.534Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java虚拟机类加载机制">
+<meta name="twitter:description" content="前段时间，室友面试被问到了java的类加载机制。关于类加载机制之前看《深入理解Java虚拟机》的时候看过这一章，不过都忘得差不多了，只记得有一个复杂的流程：验证－准备－解析－初始化等等，今天复习一下顺便做个笔记。 Java代码编译为字节码（.class文件）后，需要加载到虚拟机之后才能运行和使用，还有很多运行在JVM平台的其他语言（如Grovvy, scala, kotlin等）也会被编译为符合J">
+<meta name="twitter:image" content="http://blog.wuxu92.com/images/lang/Java-classloader.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> Java虚拟机类加载机制 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Java虚拟机类加载机制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-03-25T20:13:43+08:00" content="2016-03-25">
+              2016-03-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/jvm/" itemprop="url" rel="index">
+                    <span itemprop="name">jvm</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>前段时间，室友面试被问到了java的类加载机制。关于类加载机制之前看《深入理解Java虚拟机》的时候看过这一章，不过都忘得差不多了，只记得有一个复杂的流程：验证－准备－解析－初始化等等，今天复习一下顺便做个笔记。</p>
+<p>Java代码编译为字节码（.class文件）后，需要加载到虚拟机之后才能运行和使用，还有很多运行在JVM平台的其他语言（如Grovvy, scala, kotlin等）也会被编译为符合JVM字节码规范的文件后被虚拟机读取运行。那么JVM是如何运行这些字节码文件的呢。</p>
+<p>与C语言的在编译时进行连接工作不同，Java中， 类型的加载和连接都是在程序运行时期完成的，Java的动态扩展的语言特性就是依赖于运行期动态加载和动态连接的特点。<br><a id="more"></a></p>
+<h2 id="类加载的时机"><a href="#类加载的时机" class="headerlink" title="类加载的时机"></a>类加载的时机</h2><p>从类被加载到执行结束卸载出内存，它的整个声明周期包括了：<strong>加载</strong>-<strong>验证</strong>-<strong>准备</strong>-<strong>解析</strong>-<strong>初始化</strong>-<strong>使用</strong>-<strong>卸载</strong> 七个阶段。其中的验证-准备-解析又统称为连接（linking）。除解析外，各个阶段并没有绝对的时间先后顺序，但是开始执行的顺序是确定的。而解析有时候可以在初始化后再开始。这些阶段通常是交叉混合式进行的。</p>
+<p>虚拟机规范并没有规定什么时候要开始类的加载过程的第一个夹断也就是“加载”，而是取决于虚拟机的具体实现。对于初始化阶段，虚拟机规范严格规定了<strong>有且只有</strong>4种情况必须立即对类进行初始化。</p>
+<ol>
+<li>遇到 <code>new</code>, <code>getstatic</code>, <code>putstatic</code> 或者 <code>invokestatic</code>4条指令的时候，如果类没有初始化过，则需要先触发其初始化。这四个指令对应的场景就是：实例化对象，读取或者设置类的静态成员，或者调用类的静态方法。</li>
+<li>使用<code>Java.lang.reflect</code>包的方法对类进行反射调用的时候</li>
+<li>当初始化一个类的时候发现其父类还没有进行过初始化，则需要先触发父类的初始化</li>
+<li>当虚拟机启动时，用户需要指定一个要执行的<strong>主类</strong>，即包含了main函数的类，虚拟机会先初始化这个主类。</li>
+</ol>
+<p>注意，通过子类来引用父类中的静态字段只会触发父类的初始化而不会触发子类的初始化。同时我们也应该理解了，类的初始化和类的实例化是两回事。<br>还要注意：<strong>常量在编译阶段会存入调用类的常量池中</strong>，本质上没有直接引用到定义常量的类，因此不会触发定义常量的类的初始化。</p>
+<h2 id="类加载的过程"><a href="#类加载的过程" class="headerlink" title="类加载的过程"></a>类加载的过程</h2><h3 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h3><p>加载（loading）是类加载的第一个阶段，在这个阶段，虚拟机主要完成三件事：</p>
+<ol>
+<li>通过一个类的全限定名来获取定一次类的二进制字节流</li>
+<li>通过这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</li>
+<li>在java堆中生成一个代表这个类的 Java.lang.Class 对象，作为方法去访问这些数据的入口</li>
+</ol>
+<p>类的全限定名就是类的包名加类名，一般来说包名和文件夹路径名统一，类名与文件名统一。但是获取的二进制流并没有限定为是class文件，可能是ZIP包，可能是网络流也可能是运行时计算生成的（代理）。这个阶段有很大的灵活性。开发人员可以定义自己的类加载器去控制字节流的获取方法，虽然一般只使用系统的类加载器，后面会将类加载器的工作原理。</p>
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>虽然Java的编译器在编译时会检查如数组越界，错误的类型转换等工作，但是Class文件不一定是由Java便以来的，可能是有其他语言编译的字节码，甚至可以是十六进制编辑器编辑过的文件。所以在虚拟机执行字节码之前，需要对class文件进行验证。</p>
+<p>虽然这一工作很重要，在类加载子系统中占了很大一部分，但是虚拟机规范并没有规定验证具体要做什么工作，只是说如果验证到不符合Class文件的存储格式就抛出 <code>Java.lang.VerifyError</code> 异常或其子异常。这一工作取决于虚拟机的具体实现。一般会进行下面四个方面的验证：</p>
+<ol>
+<li>文件格式验证。如是否魔数（<code>0xCAFEBABE</code>）开头，主次版本号，常量池中的类型等，很多验证</li>
+<li>元数据验证，如是否有父类，是否继承了不允许被继承的类（final修饰的类，如String类），抽象类验证等</li>
+<li>字节码验证，进行数据流和控制流分析，保证类的方法运行时不会危害虚拟机安全</li>
+<li>符号引用验证，在虚拟机将符号引用转换为直接引用的时候进行验证，保证解析动作正常执行。</li>
+</ol>
+<p>验证阶段是一个重要的阶段，但是这个阶段不是必要的，如果所有文件被反复使用和验证过，可以通过虚拟机的  <code>-Xverufy:none</code> 参数关闭验证，缩短虚拟机类加载的时间。</p>
+<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><p>准备阶段正式为类变量分配内存（分配在方法区）并设置类变量初始值（数据类型的零值）。在这里进行内存分配的仅包括类变量（被static修饰的变量），而不包括实例变量，实例变量将在对象实例化时随着对象一起分配在java堆中。</p>
+<p>对于常量属性会在准备阶段就设置值，而其他属性则只会设置零值。</p>
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><p>解析是虚拟机将常量池内的符号引用替换为直接引用的过程。解析动作主要针对类或接口、字段、类方法、接口方法四类符号引用进行。</p>
+<p>关于解析阶段不详细介绍，比较复杂</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>类初始化是类加载过程的最后一步，到初始化阶段真正开始执行类中定义的Java程序代码（前面的自定义类加载器也算）。在初始化阶段根据程序员通过程序制定的计划初始化类变量。可以理解为初始化阶段执行了一个类构造器 <code>&lt;clinit&gt;()</code> 方法的过程。</p>
+<p><code>&lt;clinit&gt;()</code>方法是由编译器自动收集类中的所有类变量的赋值动作和静态语句块中语句合并产生的。静态语句块只能访问定义在静态语句块之前的变量，在前面的静态语句块中可以赋值但是不能访问。</p>
+<p>如果类没有静态语句块也没有对变来那个的赋值，编译器就不会生成 <code>&lt;clinit&gt;()</code>方法。虚拟机会保证一个类的 clinit 方法在多线程环境下被正确地加锁和同步。只有一个线程去执行类的 <code>&lt;clinit&gt;()</code>方法。</p>
+<h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2><p>Java的类加载器最早是为 Applet 需求开发出来的，现在 Applet已经很少用了，类加载器却在 类层次划分、OSGi、热部署、代码加密等领域大放异彩。</p>
+<p>类加载器虽然只用于实现类的加载动作，但在java程序中起的作用远不限于加载阶段。任何一个类需要类本身和加载这个类的类加载<strong>二者</strong>才能确立其在虚拟机中的唯一性。即使两者使用同一个Class文件，只要类加载器不同，那两个类就不想等，也就是不同类加载器加载的同一个class文件的实例使用Equals、instanceof等方法的结果是不会相等的。</p>
+<h3 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h3><p>Java虚拟机角度来看，存在两种不同的类加载器，一种是启动类加载器（Bootstrap ClassLoader）,这个类加载器是虚拟机的一部分，另一种就是其他类加载器，独立于虚拟机，并且全部继承自抽象类<code>Java.lang.ClassLoader</code>。</p>
+<p>从开发者角度看，一般会使用下面三种类加载器：</p>
+<ol>
+<li>启动类加载器，同上，负责加载 JAVA_HOME/lib 目录中，或是 -Xbootclasspath 指定路径下的类。该加载器无法被java程序直接引用</li>
+<li>扩展类加载器，有<code>sun.misc.Launcher$ExtClassLoader</code>实现，加载 JAVA_HOME/lib/ext 目录中的类库。开发者可以直接使用该类</li>
+<li>应用程序类加载器，这个类有 <code>sun.misc.Launcher$AppClassLoader</code>实现，一般称为系统类加载器，是默认的用户类加载器，通过 ClassLoader.getSystemClassLoader()方法返回。</li>
+</ol>
+<p>应用程序由这三种类加载器配合进行加载，还可以自定义类加载器，只要继承 ClassLoader 接口，实现其 <code>LoadClass()</code> 方法即可。</p>
+<p>在JDK 1.2中，引入了类加载器的<strong>双亲委派模型</strong>，双亲委派模型要求除了顶层的启动类加载器外，其余的类加载应该有自己的父类加载器。加载器之间的父子关系通常使用组合而不是继承来实现。</p>
+<p><img src="/images/lang/Java-classloader.png" alt=""></p>
+<p>其工作工程是，如果一个类加载器收到类加载请求，它首先不会自己尝试去加载这个类，而是把请求委派为父类加载器去完成，只有当父类加载器返回自己无法完成请求时，子类加载器才会自己加载。</p>
+<p>双亲委派模型使得Java类随着它的类加载器一起具备了带有优先级的层次关系。这样用户定义的类不会随意覆盖Java库中定义的类。双亲委派模型对于Java程序的稳定运行很重要。其实现其实很简单，只是先检查是否已经加载过，没有则调用父加载器的loadClass方法，如果父类加载器失败了调用自己的findClass()方法进行加载。</p>
+<h3 id="破坏双亲委派模型"><a href="#破坏双亲委派模型" class="headerlink" title="破坏双亲委派模型"></a>破坏双亲委派模型</h3><p>双亲委派模型并不是一个强制的编程约束，而是java设计者推荐的实现方法，实际上自己定义的类加载可以不实现该模型，这样就破坏了双亲委托模型。</p>
+<p>实际上很多的Java组件都通过破坏双亲委派模型实现自己的功能，Java设计团队通过引入一个 <strong>线程上下文类加载器</strong>实现，这个类加载器可以通过 <code>Java.lang.Thread</code> 类的 <code>setContectClassLoader()</code> 方法进行设置，如果创建线程时都没有设置过，那么这类加载器默认就是应用程序类加载器。</p>
+<p>JNDI服务，JDBC， JCE，JBI等（SPI：service provider interface）都使用线程上下文类加载器去加载所需要的代码，也就是父类加载器请求子类加载器去完成类加载动作。</p>
+<p>像代码热替换，模块热部署等都是通过破坏双亲委派模型实现的，OSGi是现在业界事实上的java模块化标准，在后续的Java版本中会优化其模块化功能。关于OSGi的内容，我也没用过，就不记了。</p>
+<p>参考：</p>
+<ul>
+<li>深入理解Java虚拟机-JVM高级特性与最佳实践</li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag">#Java</a>
+          
+            <a href="/tags/jvm/" rel="tag">#jvm</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/intro-of-kmp/" rel="next" title="kmp：字符串子串判断">
+                <i class="fa fa-chevron-left"></i> kmp：字符串子串判断
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/php-iconv-ignore-option/" rel="prev" title="php字符集转转换失败的问题">
+                php字符集转转换失败的问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#类加载的时机"><span class="nav-number">1.</span> <span class="nav-text">类加载的时机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类加载的过程"><span class="nav-number">2.</span> <span class="nav-text">类加载的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加载"><span class="nav-number">2.1.</span> <span class="nav-text">加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证"><span class="nav-number">2.2.</span> <span class="nav-text">验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备"><span class="nav-number">2.3.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解析"><span class="nav-number">2.4.</span> <span class="nav-text">解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化"><span class="nav-number">2.5.</span> <span class="nav-text">初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类加载器"><span class="nav-number">3.</span> <span class="nav-text">类加载器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#双亲委派模型"><span class="nav-number">3.1.</span> <span class="nav-text">双亲委派模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#破坏双亲委派模型"><span class="nav-number">3.2.</span> <span class="nav-text">破坏双亲委派模型</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

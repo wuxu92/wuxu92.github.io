@@ -1,0 +1,775 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="C,array,pointer," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="尽管现在很多的高级语言，脚本语言提供了非常非常方便实用的数组，队列(list)，字典（map）等数据结构，但是理解C语言的数组和指针是掌握这些高级数据结构的基础。即使不经常写底层的数组，也应该熟练掌握。 初始化数组的初始化比较简单不罗嗦了，这里介绍一下数组的指定项目初始化方法，这是c99添加的特性，个人觉得很有意思。 // 普通的初始化方法int year[6] = &amp;#123;31, 28, 3">
+<meta name="keywords" content="C,array,pointer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C数组和指针">
+<meta property="og:url" content="http://blog.wuxu92.com/array-and-pointer/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="尽管现在很多的高级语言，脚本语言提供了非常非常方便实用的数组，队列(list)，字典（map）等数据结构，但是理解C语言的数组和指针是掌握这些高级数据结构的基础。即使不经常写底层的数组，也应该熟练掌握。 初始化数组的初始化比较简单不罗嗦了，这里介绍一下数组的指定项目初始化方法，这是c99添加的特性，个人觉得很有意思。 // 普通的初始化方法int year[6] = &amp;#123;31, 28, 3">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.wuxu92.com/images/clang.gif">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.477Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C数组和指针">
+<meta name="twitter:description" content="尽管现在很多的高级语言，脚本语言提供了非常非常方便实用的数组，队列(list)，字典（map）等数据结构，但是理解C语言的数组和指针是掌握这些高级数据结构的基础。即使不经常写底层的数组，也应该熟练掌握。 初始化数组的初始化比较简单不罗嗦了，这里介绍一下数组的指定项目初始化方法，这是c99添加的特性，个人觉得很有意思。 // 普通的初始化方法int year[6] = &amp;#123;31, 28, 3">
+<meta name="twitter:image" content="http://blog.wuxu92.com/images/clang.gif">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> C数组和指针 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                C数组和指针
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-14T12:34:50+08:00" content="2015-12-14">
+              2015-12-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p><img src="/images/clang.gif" alt=""><br>尽管现在很多的高级语言，脚本语言提供了非常非常方便实用的数组，队列(list)，字典（map）等数据结构，但是理解C语言的数组和指针是掌握这些高级数据结构的基础。即使不经常写底层的数组，也应该熟练掌握。</p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>数组的初始化比较简单不罗嗦了，这里介绍一下数组的指定项目初始化方法，这是c99添加的特性，个人觉得很有意思。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 普通的初始化方法</span><br><span class="line">int year[6] = &#123;31, 28, 31, 30, 31, 30&#125;;</span><br><span class="line">// 可以在初始化时指定要初始化的项及其值如：</span><br><span class="line">int year[6] = &#123; [1] = 28, [3] = 30, 31, 30, [1] = 29&#125;;</span><br><span class="line">// 初始化结果为： [0, 29, 0, 30, 31, 30]</span><br></pre></td></tr></table></figure>
+<p>看起来还算好理解，就是指定下标对其赋值。某个指定赋值后的为指定项目用来对后续的元素初始化，未初始化的项会初始化为0（只要对数组进行了初始化就会把剩余的部分初始化为0，这是一般行为）。甚至可以对一项多次指定赋值，以最后一次为准。</p>
+<blockquote>
+<p>再提一次，花括号列表的形式只能用于初始化，不能用于对数组赋值。</p>
+</blockquote>
+<p>对数组指针使用sizeof的时候会计算到第一个 <code>\0</code> 处，常用 <code>sizeof arr / sizeof arr[0]</code> 计算数组的大小。但是实际上这样做可能会导致问题。<br><a id="more"></a></p>
+<h2 id="多维数组"><a href="#多维数组" class="headerlink" title="多维数组"></a>多维数组</h2><p>多维数组的初始化可以嵌套的字面量方法表示，也就是多层花括号的嵌套。多数数组的字两面初始化方法可以省略内部的花括号，只保留最外一层的花括号，只要保证数量的个数正确即可，如果数量不对，后面没有数值的元素会被初始化为0。这样做并没有什么好处，使用的时候建议使用嵌套的花括号方式，程序更好理解。</p>
+<p>对于定义时省略维度的数组，遍历时使用sizeof确定数组的长度：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">double arr[][2] = &#123;1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 6.8, 7.8, 8.9, 9.9&#125;;</span><br><span class="line">int len = sizeof(arr) / (2 * sizeof(double)); // use len to iterate arr</span><br></pre></td></tr></table></figure>
+<h2 id="指针和数组"><a href="#指针和数组" class="headerlink" title="指针和数组"></a>指针和数组</h2><blockquote>
+<p>数组名同时也是该数组首元素的地址。或者说数组名是指向数组首元素地址的常量（不可变）。</p>
+</blockquote>
+<p>所有的数组操作的内容基本都是根据这一条扩展来的。</p>
+<p>指针是一类数据类型，不同基本数据类型的指针类型是不同的类型。声明指针时要指明它所指向的对象的类型，这样才能正确处理存储的字节数。</p>
+<ul>
+<li>指针的数值就是它所指向的对象的地址。地址的内部表示方式是由硬件决定的，所以并不关心这个值具体是多少。</li>
+<li>在指针前运用运算符 <code>*</code> 就可以得到该指针所指向的对象的值</li>
+<li>对指针加1等价于指针的值加上它指向的对象的字节大小</li>
+</ul>
+<p><code>*ptr++</code> 这是很常见的用法，这是因为一元操作符<code>*</code> 和 <code>++</code> 有相等的优先级，但是它们的结合时是从右向左的，这意味着 <code>++</code> 是作用于 ptr 的，即指针自增1，<code>total += *ptr++;</code> 表示将当前ptr的值加到 total 再使ptr指向下一个元素（a++）的动作在指令执行之后。虽然 <code>*ptr++</code> 很常见，但是更推荐容易理解的 <code>*(ptr++)</code>。</p>
+<p>注意区分：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(*ptr)++;</span><br><span class="line">*(ptr++)</span><br><span class="line">*ptr++</span><br><span class="line">*(++ptr);</span><br><span class="line">*++ptr;</span><br></pre></td></tr></table></figure>
+<p>对于指针最常见的错误就是对未初始化的指针取值：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">char *s;</span><br><span class="line">s = &quot;hello world&quot;;</span><br></pre></td></tr></table></figure>
+<p>一定要注意，指针在定义时并不会初始化，也就是说s可能指向任何地方，也就是说 “hello world”可能被存储到任何地方（编译器可能会检测出这种错误）而导致程序奔溃。记住：创建一个指针时，系统值分配了用来存储指针本身的内存空间，并没有分配用来存储指向的对象（数据）的空间。</p>
+<p>初始化指针有两种方法，一种是对变量取地址后对指针变量赋值，一种是使用malloc函数将返回值赋值给指针变量。</p>
+<h2 id="保护数组内容"><a href="#保护数组内容" class="headerlink" title="保护数组内容"></a>保护数组内容</h2><p>有时候要我们要求传递给函数作为参数的指针指向的对象（比如数组的元素）的值不被修改，在 K&amp;R C 中，避免这种错误的唯一方法就是警惕不出错，哈哈。不过在 ANSI C中，可以在函数原型和定义中的形式参量声明中使用关键字 const。比如函数 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int sum(const int *a, int len);</span><br></pre></td></tr></table></figure>
+<p>const告诉编译器，第一个参数指向的数组作为包含常量数据的数组对待，如果意外地想在函数内部修改内容，比如使用 <code>a[i]++</code> 这样的表达式，编译器会认为是一个错误并生成一条错误信息。这一条非常有利于我们理解头文件中的函数声明。</p>
+<p>使用const声明的指针变量pt，只是不能<strong>使用pt修改</strong>指针指向的对象的值，但是可以让这个指针指向新的对象的地址，或者通过另一个普通指针修改对象的值。比如上面的例子，只是不允许 <code>a[i]++</code> 这样的表达式，但是可以是 <code>a = b; // b是一个int *</code> 。</p>
+<p>将常量或者非常量数据的地址赋值给常量的指针是合法的，但是只有非常量数据的地址才能赋值给普通指针（非常量指针）。这样就不会用指针来修改认为是常量的数据了。这样导致使用const修饰的函数参数可以接受普通数组和常量数组的名称作为实际参数，而没有使用const修饰的函数参数则只能使用普通数组，而不能使用const修饰的数组。</p>
+<p>可以用const声明并初始化指针，确保指针不会指向别处，关键在于 const 的位置。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">double r = &#123;88, 89, 100.1&#125;;</span><br><span class="line">double const *p = r;</span><br><span class="line">p[1] = 89;					// 不允许</span><br><span class="line">p = &amp;r[2];					// 允许</span><br><span class="line"></span><br><span class="line">double * const pc = r;</span><br><span class="line">pc = &amp;r[2];				// 不允许</span><br><span class="line">*pc = 89;				// 允许修改指向对象的值</span><br><span class="line"></span><br><span class="line">const doule * const pp = r;</span><br><span class="line">pp = &amp;r[2];				// 不允许</span><br><span class="line">pp[1] = 89;				// 不允许</span><br></pre></td></tr></table></figure>
+<h2 id="指针与多维数组"><a href="#指针与多维数组" class="headerlink" title="指针与多维数组"></a>指针与多维数组</h2><p>多维数组也都是可以使用指针来操作的，最基础的要理解下面两个定义：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int (*pz)[2];</span><br><span class="line">int * pax[2];</span><br></pre></td></tr></table></figure>
+<p>这在之前的一篇文章中也提到过了，这里在解释一下：在表达式中 [] 的优先级比 * 要高，高优先级意味着先结合，所以第一个使用圆括号改变表达式的结合性。</p>
+<p>第一个表达式定义pz为一个指向一个包含2个int值的数组的<strong>指针</strong>。这是比较常见的定义，常用于二维数组的外循环，而第二个表达式分析如下：首先方括号与 pax 结合，表示 pax是包含两个元素的数组，然后和 <em> 结合，表示 pax 是两个指针组成<strong>的数组</strong>，最后用int来定义，表示pax是由两个指向int值的指针构成的数组， 即等价于： `（int </em>) pax[2]`。</p>
+<p>所以 pz表示一个指针，pax表示一个数组。但是，数组名实际上又就是一个指针，所以这两个很容易混淆，这两个声明都会创建两个指向单个int值的指针，但是前面的版本通过圆括号使 pz 首先和 *　结合，从而创建一个指向包含两个int值的数组的数组的指针（数组的每个元素是两个int值，其实是一个二维数组）的指针。这一段是比较难以理解的（我自己也不知道有没有理解对）。</p>
+<p>可以有下面的用法（只是一个示例）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">double daar[][2] = &#123;1.1, 2.2, 3.3, 4.4, 5.5, 6.6&#125;; </span><br><span class="line">double (*dpt)[2];</span><br><span class="line">dpz = daar;  // double **pp = daar; error</span><br></pre></td></tr></table></figure>
+<h2 id="变长数组（VAL"><a href="#变长数组（VAL" class="headerlink" title="变长数组（VAL)"></a>变长数组（VAL)</h2><p>C99标准引入了变长数组，它允许使用变量作为数组的各维。我们已经多次使用变长的数组了，要注意变长数组的一些限制：变长数组<strong>必须是自动存储类的</strong>，这意味他们必须是在函数内部，或者作为函数参量声明的，而且这种数组<strong>声明时不可以进行初始化</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int a = 5;</span><br><span class="line">int b = 4;</span><br><span class="line">int arr[a][b];</span><br></pre></td></tr></table></figure>
+<p>这样的数组声明并不难理解，主要是要考虑变长数组作为函数参数的情况。我们知道不同（类型相同各维度长度不同）的数组被认为是不同的数据类型，那么在函数声明中应该怎么写呢，下面是一个变长数组参数的函数示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int sum2d(int rows, int cols, int ar[rows][cols];</span><br></pre></td></tr></table></figure>
+<p>还记得之前讲过的变量作用域的部分么，这里也是使用变量作用域分析的,即rows, cols的声明必须在其被使用（作为数组维度长度）之前。</p>
+<p>根绝C99的规定，可以省略函数原型中的名称，用星号(*) 代替省略的维度：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int sum2d(int, int, int ar[*][*]);</span><br></pre></td></tr></table></figure>
+<h2 id="复合字面量-compound-literal"><a href="#复合字面量-compound-literal" class="headerlink" title="复合字面量(compound literal)"></a>复合字面量(compound literal)</h2><p>这个在之前的某一篇已经提到过了，也翻译为复合文字常量，我觉得字面量这个名词更好理解。</p>
+<p>对于数组来说，复合字面量就是在数组的初始化列表前面加上用圆括号括起来的类型名。例如下面的一个复合字面量，创建了一个包含两个int值的无名称数组。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(int [2])&#123;10, 20&#125;;</span><br><span class="line">int *p1;</span><br><span class="line">p1 = (int [])&#123;10, 20, 30, 40, 50 &#125;;</span><br><span class="line"></span><br><span class="line">int (*p2)[4];</span><br><span class="line">p2 = (int [2][4]) &#123;1,2,3,4&#125;, &#123;5,6,7,8&#125;;</span><br></pre></td></tr></table></figure>
+<p>复合字面量可以直接作为函数的实际参数使用，这是复合字面量用的最多的地方。</p>
+<p>完</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag">#C</a>
+          
+            <a href="/tags/array/" rel="tag">#array</a>
+          
+            <a href="/tags/pointer/" rel="tag">#pointer</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hai-xu-yao-xue-xi-yi-ge/" rel="next" title="为什么还要学习一个">
+                <i class="fa fa-chevron-left"></i> 为什么还要学习一个
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/apue-files-and-dirs/" rel="prev" title="APUE：文件和目录">
+                APUE：文件和目录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化"><span class="nav-number">1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多维数组"><span class="nav-number">2.</span> <span class="nav-text">多维数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指针和数组"><span class="nav-number">3.</span> <span class="nav-text">指针和数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保护数组内容"><span class="nav-number">4.</span> <span class="nav-text">保护数组内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指针与多维数组"><span class="nav-number">5.</span> <span class="nav-text">指针与多维数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变长数组（VAL"><span class="nav-number">6.</span> <span class="nav-text">变长数组（VAL)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复合字面量-compound-literal"><span class="nav-number">7.</span> <span class="nav-text">复合字面量(compound literal)</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,741 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CSAPP,Memory," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="在C语言程序中，与存储器有关的错误属于那些最令人惊恐的错误之一，因为它们在时间上和空间上经常是在距离错误一段距离之后才表现出来。将错误的数据写到错误的位置，你的程序可能在最终失败之前运行了好几个小时，且程序终止的位置离导致错误的位置已经很远了。 间接引用坏指针再进程的虚拟地址空间中有较大的区域没有映射到任何有意义的数据，如果我们试图间接引用一个指向这些区域的指针，那么操作系统就会以段异常中止程序。">
+<meta name="keywords" content="CSAPP,Memory">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C程序中常见的与存储器有关的错误">
+<meta property="og:url" content="http://blog.wuxu92.com/common-mem-related-bugs-in-c/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="在C语言程序中，与存储器有关的错误属于那些最令人惊恐的错误之一，因为它们在时间上和空间上经常是在距离错误一段距离之后才表现出来。将错误的数据写到错误的位置，你的程序可能在最终失败之前运行了好几个小时，且程序终止的位置离导致错误的位置已经很远了。 间接引用坏指针再进程的虚拟地址空间中有较大的区域没有映射到任何有意义的数据，如果我们试图间接引用一个指向这些区域的指针，那么操作系统就会以段异常中止程序。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.482Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C程序中常见的与存储器有关的错误">
+<meta name="twitter:description" content="在C语言程序中，与存储器有关的错误属于那些最令人惊恐的错误之一，因为它们在时间上和空间上经常是在距离错误一段距离之后才表现出来。将错误的数据写到错误的位置，你的程序可能在最终失败之前运行了好几个小时，且程序终止的位置离导致错误的位置已经很远了。 间接引用坏指针再进程的虚拟地址空间中有较大的区域没有映射到任何有意义的数据，如果我们试图间接引用一个指向这些区域的指针，那么操作系统就会以段异常中止程序。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> C程序中常见的与存储器有关的错误 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                C程序中常见的与存储器有关的错误
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-02T12:34:50+08:00" content="2015-12-02">
+              2015-12-02
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>在C语言程序中，与存储器有关的错误属于那些最令人惊恐的错误之一，因为它们在时间上和空间上经常是在距离错误一段距离之后才表现出来。将错误的数据写到错误的位置，你的程序可能在最终失败之前运行了好几个小时，且程序终止的位置离导致错误的位置已经很远了。</p>
+<h2 id="间接引用坏指针"><a href="#间接引用坏指针" class="headerlink" title="间接引用坏指针"></a>间接引用坏指针</h2><p>再进程的虚拟地址空间中有较大的区域没有映射到任何有意义的数据，如果我们试图间接引用一个指向这些区域的指针，那么操作系统就会以段异常中止程序。而且虚拟存储器的某些区域是只读的，试图写这些区域会以保护异常中止这个程序。</p>
+<p>间接引用换指针一个常见的（初学者常犯的）的示例就是 <code>scanf</code> 错误，写成如 <code>scanf(&quot;%d&quot;, val)</code>；这种情况下，scanf把val的内容解释为一个地址，并试图将一个字写入到这个位置，在<strong>最好的</strong>情况下，程序以异常中止，如果val正好指向虚拟存储器的某个合法读/写区域，就会覆盖该区域而导致灾难性的后果。（我们知道块内局部变量并不会自动初始化，所以局部变量val可能指向任何值）。<br><a id="more"></a></p>
+<h2 id="读未初始化的存储器"><a href="#读未初始化的存储器" class="headerlink" title="读未初始化的存储器"></a>读未初始化的存储器</h2><p>虽然 bss 存储器位置（未初始化的全局C变量）总是被加载器初始化为零，但是对于堆存储器（局部变量）却并不是这样的。如下面的用法（只是一个示例）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int *y = (int *)malloc(n * sizeof(int));</span><br></pre></td></tr></table></figure>
+<p>这样定义的y指向一个int型数组，但是与使用 int[] 定义声明的变量不同，malloc分配的存储器区域并<strong>不</strong>会自动初始化为0，而是该区域原来存储的变量的内容，不能直接对其进行数组相关的操作（取值/写值）。当然可以用 <code>calloc</code> 替代它来初始化。</p>
+<h2 id="允许栈缓冲区溢出"><a href="#允许栈缓冲区溢出" class="headerlink" title="允许栈缓冲区溢出"></a>允许栈缓冲区溢出</h2><p>如果一个程序不检查输入串的大小就写入栈中的目标缓冲区，那么这个程序就会有缓冲区溢出错误。常用 <code>gets(char *)</code> 就存在这样的隐患，内核中都是用 <code>fgets(char *, int size, FILE *stream)</code> 替代gets。<br>对于一个健壮的程序一定要注意读取输入时是否会导致栈溢出，前段时间引起关注的ssh 心脏出血事故就是由于缓冲区溢出导致的。</p>
+<h2 id="假设指针和它们指向的对象是相同大写的"><a href="#假设指针和它们指向的对象是相同大写的" class="headerlink" title="假设指针和它们指向的对象是相同大写的"></a>假设指针和它们指向的对象是相同大写的</h2><p>这个比较好理解，指针是由大小的，指针指向的变量也是有大小的，它们之间没有什么联系。虽然一般指针的存储空间和int类型变量的存储空间一样大，但是在有的处理器中int的指针大于int。所以在使用存储器空间分配的时候要注意指针和指针所指向的变量的大小是不同的。</p>
+<h2 id="造成错位错误"><a href="#造成错位错误" class="headerlink" title="造成错位错误"></a>造成错位错误</h2><p>错位（off-by-one)是一种很常见的覆盖错误来源，看下面的示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int **makeArray(int n, int m) &#123;</span><br><span class="line">	int i;</span><br><span class="line">	int **A = (int **)malloc(n * sizeof(int *)(;</span><br><span class="line">	for(i=0; i&lt;=n; i++) &#123;</span><br><span class="line">		A[i] = (int *)malloc(m * sizeof(int));</span><br><span class="line">	&#125;</span><br><span class="line">	return A;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于有一定经验的人一眼就能看出for循环的最后一次执行会试图初始化数组的第 n+1 个元素而覆盖A数组后面的某个存储器，这会导致不可预知的错误。</p>
+<h2 id="引用指针，而不是它指向的对象"><a href="#引用指针，而不是它指向的对象" class="headerlink" title="引用指针，而不是它指向的对象"></a>引用指针，而不是它指向的对象</h2><p>如果不太注意C操作符的优先级和结合性，我们就会错误地操作指针，而不是指针所指向的对象。一个常见的操作如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// type of variable stirng is char *</span><br><span class="line">char ch = *string++;</span><br><span class="line"></span><br><span class="line">// type of size is int *</span><br><span class="line">*size--;</span><br></pre></td></tr></table></figure>
+<p>上面的用法在C的字符串处理库函数中经常用到，这里主要要考虑dereference和一元操作符的优先级和结合性，它们的优先级相同，从右向左结合，所以这里的一元操作符的操作对象是指针自身而不是指针指向的对象。也就是ch存储的是 <code>*string</code>的值，然后 string 指针指向下一个元素。</p>
+<p>在开发中应该使用括号避免这种难以理解，有可能产生无意识的错误的代码，使用 <code>（*size)--</code> 这样返回的是 size指针所指向的int变量减一的值。</p>
+<h2 id="误·解指针运算"><a href="#误·解指针运算" class="headerlink" title="误·解指针运算"></a>误·解指针运算</h2><p>一种常见的错误是忘记了指针的算术操作是以它们指向的对象的大小为单位进行的。比如 <code>int *size</code> 操作 <code>size++</code> 就指向了数组的下一个元素而不是要 <code>size += sizeof(int);</code> 这样就加到第5个元素（假设int为4字节）去了。</p>
+<p>这对于比较熟练的开发人员可能不太会出现，新手则应该多加注意。</p>
+<h2 id="引用不存在的变量"><a href="#引用不存在的变量" class="headerlink" title="引用不存在的变量"></a>引用不存在的变量</h2><p>没有经验的程序员可能不理解栈的规则，有时会引用<strong>不再</strong>合法的本地变量。比如下面的代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int *ref() &#123;</span><br><span class="line">	int val;</span><br><span class="line">	val = 1;</span><br><span class="line">	// ... ; do something here</span><br><span class="line"></span><br><span class="line">	return &amp;val; // return int *</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里返回的指针是栈里面的一个局部变量，尽管函数返回时它仍是一个合法的存储器地址，但是它已经不再指向一个合法的变量了，当以后的程序调用其它的函数时，存储器将重用它们的栈帧。如果后面的程序分配某个值给这个指针（的解引用），那么它可能实际上正在修改<strong>另一个函数</strong>的栈帧的一个条目。</p>
+<h2 id="引用空闲堆块中的数据"><a href="#引用空闲堆块中的数据" class="headerlink" title="引用空闲堆块中的数据"></a>引用空闲堆块中的数据</h2><p>引用一个释放了的堆块中的数据显然会导致错误。这个其实比较简单了，free过的引用在再次分配空间及初始化之前不要再使用。</p>
+<h2 id="引起存储器泄漏"><a href="#引起存储器泄漏" class="headerlink" title="引起存储器泄漏"></a>引起存储器泄漏</h2><p>存储器泄漏是缓慢隐形的杀手，当程序员不小心忘记释放已经分配的块，而在堆里创建了垃圾时就会发生这种问题。例如malloc之后忘记free就返回了。</p>
+<p>对于使用存储不大，且很快就返回（结束运行）的程序这也许不会有太大的问题，因为程序结束运行会回收这些存储，但是对于守护进程和服务器程序来说，它们需要长时间运行（根据定义它们不会终止），任何的内存泄露问题都会积少成多而把系统的资源消耗殆尽，对它们来说内存泄漏是特别严重的问题。</p>
+<p>完</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CSAPP/" rel="tag">#CSAPP</a>
+          
+            <a href="/tags/Memory/" rel="tag">#Memory</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Why-the-Worst-Get-on-Top/" rel="next" title="计划经济与集体主义的当政者">
+                <i class="fa fa-chevron-left"></i> 计划经济与集体主义的当政者
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/system-level-io/" rel="prev" title="系统级I/O">
+                系统级I/O <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#间接引用坏指针"><span class="nav-number">1.</span> <span class="nav-text">间接引用坏指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读未初始化的存储器"><span class="nav-number">2.</span> <span class="nav-text">读未初始化的存储器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#允许栈缓冲区溢出"><span class="nav-number">3.</span> <span class="nav-text">允许栈缓冲区溢出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#假设指针和它们指向的对象是相同大写的"><span class="nav-number">4.</span> <span class="nav-text">假设指针和它们指向的对象是相同大写的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#造成错位错误"><span class="nav-number">5.</span> <span class="nav-text">造成错位错误</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引用指针，而不是它指向的对象"><span class="nav-number">6.</span> <span class="nav-text">引用指针，而不是它指向的对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#误·解指针运算"><span class="nav-number">7.</span> <span class="nav-text">误·解指针运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引用不存在的变量"><span class="nav-number">8.</span> <span class="nav-text">引用不存在的变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引用空闲堆块中的数据"><span class="nav-number">9.</span> <span class="nav-text">引用空闲堆块中的数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引起存储器泄漏"><span class="nav-number">10.</span> <span class="nav-text">引起存储器泄漏</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

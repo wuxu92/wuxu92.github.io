@@ -1,0 +1,779 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="C,CPP(C,Primer,Plus)," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="联合（union）联合是一个能在同一存储空间里（但是不是同时）存储不同类型数据的数据类型。用来存储某种即没有规律，事先未知顺序的混合数据类型。联合使用于结构同样的方式建立，也需要一个联合模板和联合变量，下面是一个例子： union hold &amp;#123;	int digit;	double bigfl;	char letter;&amp;#125;;union hold fit; 一个hold结构可以含">
+<meta name="keywords" content="C,CPP(C,Primer,Plus)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C 联合、枚举及函数指针">
+<meta property="og:url" content="http://blog.wuxu92.com/c-union-enum-and-func-ptr/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="联合（union）联合是一个能在同一存储空间里（但是不是同时）存储不同类型数据的数据类型。用来存储某种即没有规律，事先未知顺序的混合数据类型。联合使用于结构同样的方式建立，也需要一个联合模板和联合变量，下面是一个例子： union hold &amp;#123;	int digit;	double bigfl;	char letter;&amp;#125;;union hold fit; 一个hold结构可以含">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.wuxu92.com/images/clang.gif">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.494Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C 联合、枚举及函数指针">
+<meta name="twitter:description" content="联合（union）联合是一个能在同一存储空间里（但是不是同时）存储不同类型数据的数据类型。用来存储某种即没有规律，事先未知顺序的混合数据类型。联合使用于结构同样的方式建立，也需要一个联合模板和联合变量，下面是一个例子： union hold &amp;#123;	int digit;	double bigfl;	char letter;&amp;#125;;union hold fit; 一个hold结构可以含">
+<meta name="twitter:image" content="http://blog.wuxu92.com/images/clang.gif">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> C 联合、枚举及函数指针 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                C 联合、枚举及函数指针
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-07T12:34:50+08:00" content="2015-12-07">
+              2015-12-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p><img src="/images/clang.gif" alt=""></p>
+<h2 id="联合（union）"><a href="#联合（union）" class="headerlink" title="联合（union）"></a>联合（union）</h2><p>联合是一个能在同一存储空间里（但是<strong>不是同时</strong>）存储不同类型数据的数据类型。用来存储某种即没有规律，事先未知顺序的混合数据类型。联合使用于结构同样的方式建立，也需要一个联合模板和联合变量，下面是一个例子：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">union hold &#123;</span><br><span class="line">	int digit;</span><br><span class="line">	double bigfl;</span><br><span class="line">	char letter;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">union hold fit;</span><br></pre></td></tr></table></figure>
+<p>一个hold结构可以含有一个int型数值<strong>或者</strong>一个double型数值<strong>或者</strong>一个char型数值。一个联合的变量可以存储模板中声明的成员<strong>的某一个</strong>。编译器分配空间时，会分析各成员需要的空间，然后按最大需求分配。因为联合<strong>一个时刻只存储一个值</strong>，所以初始化与结构并不一样。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fit.letter = &apos;A&apos;;</span><br><span class="line">fit.digit = 127;</span><br><span class="line">union hold holdA = &#123; .bigfl = 10.08 &#125;;</span><br></pre></td></tr></table></figure>
+<p>要注意的是，<strong>需要程序员维护存储在联合变量的是哪一个成员</strong>，有时候使用了一个成员保存值，而使用另一个成员来查看这些内容，这有时很有用，但需要是程序员管理下进行的，否则会导致错误。</p>
+<h2 id="枚举（enumerated-type）"><a href="#枚举（enumerated-type）" class="headerlink" title="枚举（enumerated type）"></a>枚举（enumerated type）</h2><p>枚举类型声明代表整数常量的符号名称，通过使用关键字 enum 可以创建一个新的类型，并可以指定它<strong>可以</strong>具有的值，实际上enum常量是int类型的，因此在任何使用int类型的地方都可以使用它。枚举使得程序有更高的可读性，它的语法与结构很相似。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">enum spectrum &#123; red, orange, yellow, blue &#125;;</span><br><span class="line">enum spectrum color;</span><br><span class="line"></span><br><span class="line">// 可以当作int使用</span><br><span class="line">for (color = red; color &lt;= blue; color++)</span><br><span class="line">	...</span><br></pre></td></tr></table></figure>
+<p>类型声明中的 red, orange 等我们称之为 <strong>枚举常量</strong>，规定枚举常量都是int类型的，而定义的变量 color 称为枚举变量，可以较为宽松地限定为任意一种整数类型，常有编译器决定，比如我们这里color的范围在0-3之间，可以选择为unsigned char表示。要注意对枚举变量的一元操作符在C++中是不允许的，如果代码可能迁移到C++则不应该这样用。</p>
+<p>枚举常量默认从0开始递增，也可以为枚举列表中的常量指定特定的值。如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">enum level &#123; low = 100, medium = 101, high &#125;;</span><br></pre></td></tr></table></figure>
+<p>这样后面没有指定值的常量会赋予后续的值（即high为102）。Go中有更加强大的 <a href="http://wuxu92.github.io/go-iota-spc/" target="_blank" rel="noopener">itoa</a> 生成更加复杂的赋值模式。</p>
+<blockquote>
+<p>可以字啊同一个作用域内对一个变量和一个标记使用同一个名字而不会发生错误，但是不能在同一作用域内使用名字相同的两个标记或者变量。</p>
+</blockquote>
+<h2 id="typedef"><a href="#typedef" class="headerlink" title="typedef"></a>typedef</h2><p>typedef 是一种高级数据特性，它能够为某一类型创建自己的名字，与#define有3个不同之处</p>
+<ul>
+<li>typedef 给出的符号名称仅限于对类型，而不是对值</li>
+<li>typedef 的解释有编译器执行，而不是预处理器（也就是说 #define 由预处理器执行</li>
+<li>虽然typedesf的范围有限，但在受限范围内，typedef比 #define更灵活</li>
+</ul>
+<p>下面是一个使用示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef unsigned int BYTE;</span><br><span class="line">BYTE x, y[2], *z</span><br></pre></td></tr></table></figure>
+<p>typedef 的作用域取决于typedef语句所在的位置，它的作用域与变量相似。通常typedef定义的类型使用大写字母，以提醒用户这个类型名称实际上以一个符号缩写（当然也可以使用小写字母）。</p>
+<p>实际上，在 &lt;sys/types.h&gt; 中定义的很多很多类型，比如 time_t, size_t 都是使用typedef定义的整数类型。这是由于C标准留给具体实现来决定使用哪种类型。</p>
+<p>注意typedef和#define的区别：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef char * STRING</span><br><span class="line">STRING name, sign; // char *name, *sign;</span><br><span class="line"></span><br><span class="line">// define</span><br><span class="line">#define STRING char *</span><br><span class="line">STRING name, sign; // char *name, sign;</span><br></pre></td></tr></table></figure>
+<p>一种更常用的 typedef 场景是对strut 结构体创建新的类型：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef struct book &#123;</span><br><span class="line">	char title[20];</span><br><span class="line">	float price;</span><br><span class="line">&#125; Book;</span><br><span class="line">Book cspp;</span><br></pre></td></tr></table></figure>
+<p>这样使用更见方便，也更见常见。</p>
+<h2 id="一些奇特的声明"><a href="#一些奇特的声明" class="headerlink" title="一些奇特的声明"></a>一些奇特的声明</h2><p>这里记录几个比较有用的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int *reisks[10];		// 表示具有10个元素的数组，每个元素是一个指向int的指针</span><br><span class="line">int (*risks)[10];		// 一个指针，指向具有10个元素的int数组</span><br><span class="line">int *oof[3][4];			// 一个 3×4的数组，每个元素是一个指向int的指针</span><br><span class="line">int (* uuf)[3][4];		// 一个指针，指向 3×4的int数组</span><br><span class="line">int (* uof[3])[4];		// 一个具有3个元素的数组，每个元素是一个指向具有4个元素的int数组的指针</span><br></pre></td></tr></table></figure>
+<p>理解这部分，需要知道， [] 和 () 具有相同的优先级，其优先级比 * 高，且 [] 和 () 都是从左到右进行结合的。这一块确实是比较难以理解的，过一段时间又会混乱掉。</p>
+<p>再看一下复杂的函数返回值类型：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">char * fump();			// 返回指向char的指针**的函数**</span><br><span class="line">char (* frump)();		// 指向返回类型为char的**函数的指针**</span><br><span class="line">char (* flump[3])();	// 由3个指针组成**的数组**，每个指针指向返回类型为char**的函数**</span><br></pre></td></tr></table></figure>
+<p>一个技巧是，首先确定类型，是数组、指针还是函数，在确认其他的。</p>
+<p>更复杂的typedef应用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef int arr5[5];		// arr5 是一个有5个元素的int数组类型</span><br><span class="line">typedef arr5 * p_arr5; 		// p_arr5是指向具有5个元素的int数组的指针 的类型</span><br><span class="line">typedef p_arr5 arrp10[10];	// 一个具有10个元素的数组类型，每个元素是一个指向有5个元素的int数组</span><br></pre></td></tr></table></figure>
+<h2 id="函数和指针"><a href="#函数和指针" class="headerlink" title="函数和指针"></a>函数和指针</h2><p>上面一节中，函数指针是比较难懂的，之前也确实没有用过C中的函数指针，在Go，JS甚至PHP中都用过相似的概念，这里学习一下C中的函数指针。</p>
+<p>对于一个函数的指针，必须声明它指向的函数的类型，在C中函数的类型包括返回类型及函数的参数类型。考虑下面的函数声明：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void ToUpper(char *);</span><br></pre></td></tr></table></figure>
+<p>描述这个函数声明就是：一个具有char * 类型的参量，返回类型是void的函数，那么要声明这种函数的指针，可以如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void (*pf)(char *)</span><br></pre></td></tr></table></figure>
+<p>pf 就是一个指向 ToUpper类型函数的指针了。其前一个括号是结合符，后一个括号是表示这是一个函数指针，并且用于说明其参数类型。这是可以用 <code>*pf</code> 代替函数名 ToUpper。 第一个括号是不可省略的，之前的文章里已经提到过，<code>void *pf(char *)</code>表示一个返回一个指针的函数。</p>
+<p>有了函数指针后，可以把适当类型的函数的标识（地址）赋值给它，函数名即是函数的地址：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">char mis[12] = &quot;how are you&quot;;</span><br><span class="line">pf = ToUpper;  // 不需要 ToUpper()</span><br><span class="line">(*pf)(mis);</span><br><span class="line"></span><br><span class="line">pf(mis);</span><br></pre></td></tr></table></figure>
+<p>像上面的两种使用方式在ANSI C中都可以，第一种是C和Unix开发者使用的，第二种是Berkeley的Unix扩展这采用的，而K &amp;R C不允许使用第二种形式，ANSI C保持了对两种方式的兼容。一个使用函数指针的示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void ToUpper(char *str) &#123;</span><br><span class="line">    while (*str != 0) &#123;</span><br><span class="line">        if (*str &gt;= &apos;a&apos; &amp;&amp; *str &lt;= &apos;z&apos;)</span><br><span class="line">            *str -= 32;</span><br><span class="line">        str++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void ToLower(char *str) &#123;</span><br><span class="line">    while (*str != 0) &#123;</span><br><span class="line">        if (*str &gt;= &apos;A&apos; &amp;&amp; *str &lt;= &apos;Z&apos;)</span><br><span class="line">            *str += 32;</span><br><span class="line">        str++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void show(void (*fp)(char *),char *str) &#123;</span><br><span class="line">    fp(str);</span><br><span class="line">    printf(&quot;str after fp: %s\n&quot;, str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">     char *hi = &quot;how are you?&quot;;</span><br><span class="line">     void (*fp)(char *);</span><br><span class="line">     fp = ToUpper;	// 类型相同的函数才能赋值给该指针</span><br><span class="line">     show(fp, hi);	// 函数指针作为参数</span><br><span class="line">     fp = ToLower;</span><br><span class="line">     show(fp, hi);</span><br><span class="line">     return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以使用typedef简化函数指针的声明，比如使用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef void(*V_FP_CHARP) (char *);</span><br><span class="line">void show(V_FP_CHARP, char *);</span><br><span class="line"></span><br><span class="line">V_FP_CHARP pfun;</span><br></pre></td></tr></table></figure>
+<p>这样的typedef用法和之前简单的 <code>typedef unsigned char BYTE</code> 形式不太一样，不过结合前面对函数指针的介绍，应该也可以理解了。</p>
+<p>完。</p>
+<p>参考：</p>
+<ul>
+<li>除了 C Primer Plus，然而并没有</li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag">#C</a>
+          
+            <a href="/tags/CPP-C/" rel="tag">#CPP(C</a>
+          
+            <a href="/tags/Primer/" rel="tag">#Primer</a>
+          
+            <a href="/tags/Plus/" rel="tag">#Plus)</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/c-struct-of-cpp/" rel="next" title="C语言中的结构">
+                <i class="fa fa-chevron-left"></i> C语言中的结构
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/using-pointer-as-parameter/" rel="prev" title="C中使用指针作为参数的一些问题">
+                C中使用指针作为参数的一些问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#联合（union）"><span class="nav-number">1.</span> <span class="nav-text">联合（union）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#枚举（enumerated-type）"><span class="nav-number">2.</span> <span class="nav-text">枚举（enumerated type）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#typedef"><span class="nav-number">3.</span> <span class="nav-text">typedef</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些奇特的声明"><span class="nav-number">4.</span> <span class="nav-text">一些奇特的声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数和指针"><span class="nav-number">5.</span> <span class="nav-text">函数和指针</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,1128 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="php,lang,php7,translate," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="整理来自英文版：https://github.com/tpunt/PHP7-Reference 和官方迁移文档整理的中文版本： https://github.com/wuxu92/PHP7-Reference-cn  PHP 7 在 2015年12月3日 发布了. 它带来了大量的新特性，改变和一些不向后兼容的变更（backwards compatibility breakages），这些改变概述">
+<meta name="keywords" content="php,lang,php7,translate">
+<meta property="og:type" content="article">
+<meta property="og:title" content="整理-PHP7新特性与改动">
+<meta property="og:url" content="http://blog.wuxu92.com/php-7-reference-cn/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="整理来自英文版：https://github.com/tpunt/PHP7-Reference 和官方迁移文档整理的中文版本： https://github.com/wuxu92/PHP7-Reference-cn  PHP 7 在 2015年12月3日 发布了. 它带来了大量的新特性，改变和一些不向后兼容的变更（backwards compatibility breakages），这些改变概述">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.557Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="整理-PHP7新特性与改动">
+<meta name="twitter:description" content="整理来自英文版：https://github.com/tpunt/PHP7-Reference 和官方迁移文档整理的中文版本： https://github.com/wuxu92/PHP7-Reference-cn  PHP 7 在 2015年12月3日 发布了. 它带来了大量的新特性，改变和一些不向后兼容的变更（backwards compatibility breakages），这些改变概述">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> 整理-PHP7新特性与改动 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                整理-PHP7新特性与改动
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-03-02T20:49:16+08:00" content="2016-03-02">
+              2016-03-02
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/lang/" itemprop="url" rel="index">
+                    <span itemprop="name">lang</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><blockquote>
+<p>整理来自英文版：<a href="https://github.com/tpunt/PHP7-Reference" target="_blank" rel="noopener">https://github.com/tpunt/PHP7-Reference</a> 和官方迁移文档<br>整理的中文版本： <a href="https://github.com/wuxu92/PHP7-Reference-cn" target="_blank" rel="noopener">https://github.com/wuxu92/PHP7-Reference-cn</a></p>
+</blockquote>
+<p>PHP 7 在 <a href="http://php.net/archive/2015.php#id2015-12-03-1" target="_blank" rel="noopener">2015年12月3日</a> 发布了. 它带来了大量的新特性，改变和一些不向后兼容的变更（backwards compatibility breakages），这些改变概述如下：</p>
+<p><strong><a href="/php-7-reference-cn/#u6027_u80FD">性能</a></strong></p>
+<p><strong><a href="/php-7-reference-cn/#u7279_u6027">特性</a></strong></p>
+<ul>
+<li><a href="/php-7-reference-cn/#u7EC4_u5408_u6BD4_u8F83_u64CD_u4F5C_u7B26">组合比较操作符</a></li>
+<li><a href="/php-7-reference-cn/#u7A7A_u5F15_u7528_u5408_u5E76_u64CD_u4F5C_u7B26">空指针合并操作符</a></li>
+<li><a href="/php-7-reference-cn/#u6807_u91CF_u7C7B_u578B_u58F0_u660E">标量类型声明</a></li>
+<li><a href="/php-7-reference-cn/#u8FD4_u56DE_u503C_u7C7B_u578B_u58F0_u660E">返回值类型声明</a></li>
+<li><a href="/php-7-reference-cn/#u533F_u540D_u7C7B">匿名类</a></li>
+<li><a href="/php-7-reference-cn/#Unicode_u7F16_u7801_u70B9_u8F6C_u4E49_u8BED_u6CD5">Unicode编码点转移语法</a></li>
+<li><a href="/php-7-reference-cn/#Closure_3A_3Acall_28_29">闭包 <code>call()</code> 方法</a></li>
+<li><a href="/php-7-reference-cn/#u5E26_u8FC7_u6EE4_u7684_unserialize_28_29">带过滤的 <code>unserialize()</code></a></li>
+<li><a href="/php-7-reference-cn/#IntlChar__u7C7B"><code>IntlChar</code> 类</a></li>
+<li><a href="/php-7-reference-cn/#u9884_u671F">期望</a></li>
+<li><a href="/php-7-reference-cn/#Group_use_Declarations">组和 <code>use</code> 声明</a></li>
+<li><a href="/php-7-reference-cn/#u751F_u6210_u5668_u8FD4_u56DE_u8868_u8FBE_u5F0F">生成器返回表达式</a></li>
+<li><a href="/php-7-reference-cn/#u751F_u6210_u5668_u59D4_u6258">生成器委托</a></li>
+<li><a href="/php-7-reference-cn/#u4F7F_u7528_intdiv_28_29__u505A_u6574_u6570_u9664_u6CD5">整形除使用 <code>intdiv()</code></a></li>
+<li><a href="/php-7-reference-cn/#session_start_28_29__u9009_u9879"><code>session_start()</code> 参数</a></li>
+<li><a href="/php-7-reference-cn/#preg_replace_callback_array_28_29__u51FD_u6570"><code>preg_replace_callback_array()</code> 函数</a></li>
+<li><a href="/php-7-reference-cn/#CSPRNG_uFF08_u5BC6_u7801_u5B66_u5B89_u5168_u4F2A_u968F_u673A_u6570_u6784_u5EFA_u5668_uFF09_u51FD_u6570">CSPRNG 函数</a></li>
+<li><a href="/php-7-reference-cn/#u652F_u6301_define_28_29__u5B9A_u4E49_u6570_u7EC4_u5E38_u91CF">支持 <code>define()</code> 定义数组常量</a></li>
+<li><a href="/php-7-reference-cn/#u53CD_u5C04_u589E_u5F3A">新增的反射类</a></li>
+</ul>
+<p><strong><a href="/php-7-reference-cn/#u6539_u53D8">改动</a></strong></p>
+<ul>
+<li><a href="/php-7-reference-cn/#u653E_u677E_u4FDD_u7559_u5B57_u7684_u9650_u5236">放松保留字的限制</a></li>
+<li><a href="/php-7-reference-cn/#u7EDF_u4E00_u53D8_u91CF_u8BED_u6CD5">同一变量格式</a></li>
+<li><a href="/php-7-reference-cn/#u5F15_u64CE_u4E2D_u7684_u5F02_u5E38">引擎中的异常</a></li>
+<li><a href="/php-7-reference-cn/#u53EF_u629B_u51FA_u7684_u63A5_u53E3">可抛出的接口</a></li>
+<li><a href="/php-7-reference-cn/#u6574_u6570_u8BED_u4E49">整形语义</a></li>
+<li><a href="/php-7-reference-cn/#JSOND_u66FF_u4EE3_u4E86JSON_u6269_u5C55">JSON 扩展替代 JSOND</a></li>
+<li><a href="/php-7-reference-cn/#ZPP__u6EA2_u51FA_u65F6_u5931_u8D25">ZPP Failure on Overflow</a></li>
+<li><a href="/php-7-reference-cn/#u4FEE_u6B63_foreach_28_29__u7684_u884C_u4E3A">修复 <code>foreach()</code>的行为</a></li>
+<li><a href="/php-7-reference-cn/#u4FEE_u6539_list_28_29__u7684_u884C_u4E3A">修改 <code>list()</code>的行为</a></li>
+<li><a href="/php-7-reference-cn/#u6539_u53D8_u9664_u6570_u4E3A0_u7684_u8BED_u4E49">改变被0整除的语义</a></li>
+<li><a href="/php-7-reference-cn/#u4FEE_u590D_u81EA_u5B9A_u4E49session_handler_u7684_u8FD4_u56DE_u503C">修复自定义Session Handler返回值</a></li>
+<li><a href="/php-7-reference-cn/#u8FD4_u56DE_u53EA_u7528PHP_4_u98CE_u683C_u7684_u6784_u9020_u51FD_u6570">标记PHP 4风格的构造函数过期</a></li>
+<li><a href="/php-7-reference-cn/#u79FB_u9664date-timezone_u7684_u8B66_u544A">移除 date.timezone 警告</a></li>
+<li><a href="/php-7-reference-cn/#u53BB_u9664_u53EF_u66FF_u4EE3_u7684PHP_u6807_u7B7E">移除可替换PHP标签</a></li>
+<li><a href="/php-7-reference-cn/#u79FB_u9664Switch_u8BED_u53E5_u4E2D_u7684_u591A_u9ED8_u8BA4_u5757">移除Switch语句中的多默认块</a></li>
+<li><a href="/php-7-reference-cn/#u79FB_u9664_u53C2_u6570_u5217_u8868_u4E2D_u91CD_u540D_u53C2_u6570_u7684_u91CD_u5B9A_u4E49">移除重复名字参数的重定义</a></li>
+<li><a href="/php-7-reference-cn/#u79FB_u9664_u5DF2_u7ECFDead_u7684_u670D_u52A1_u5668API">移除Dead Server APIs</a></li>
+<li><a href="/php-7-reference-cn/#u79FB_u9664_u6570_u5B57_u5B57_u7B26_u4E32_u7684_u5341_u516D_u8FDB_u5236_u652F_u6301">移除数字字符串中的十六进制支持</a></li>
+<li><a href="/php-7-reference-cn/#u79FB_u9664_u8FC7_u671F_u7684_u529F_u80FD">移除已标记过期的函数</a></li>
+<li><a href="/php-7-reference-cn/#Reclassification_and_Removal_of_E_STRICT_Notices">再分级与移除 E_STRICT 通知</a></li>
+<li><a href="/php-7-reference-cn/#u4E3Apassword_hash_28_29_u51FD_u6570_u8BBE_u7F6E_u76D0_u7684_u9009_u9879_u8FC7_u671F">反对使用<code>password_hash()</code>的盐选项</a></li>
+<li><a href="/php-7-reference-cn/#u65E0_u6548_u7684_u516B_u8FDB_u5236_u5B57_u9762_u91CF_u7684_u9519_u8BEF">无效的八进制字面量错误</a></li>
+<li><a href="/php-7-reference-cn/#substr_28_29_u8FD4_u56DE_u503C_u4FEE_u6539"><code>substr()</code> 返回值改动</a></li>
+</ul>
+<p><strong><a href="/php-7-reference-cn/#FAQ">FAQ</a></strong></p>
+<ul>
+<li><a href="/php-7-reference-cn/#PHP_6_u53D1_u751F_u4E86_u4EC0_u4E48">PHP 6发生了什么?</a></li>
+</ul>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>毫无争议，PHP 7带来的最大的变化就是极大的性能提升，这得益于对Zend引擎的重构，新的引擎使用了更加紧凑的数据结构和更少的堆分配/回收操作。</p>
+<p>在实际项目使用中，性能的提升效果不是固定的，虽然很多应用在使用PHP 7之后活的了超过100%的性能加速，同时还只使用更少的内存消耗！</p>
+<p>重构后的代码基础也为将来的优化（比如JIT编译）提供了更多的可能，所以，可以预计在接下来的PHP版本仍然会看到不错的性能提升。<br><a id="more"></a><br>PHP 7性能对比图标：</p>
+<ul>
+<li><a href="https://www.zend.com/en/resources/php7_infographic" target="_blank" rel="noopener">Turbocharging the Web with PHP 7</a></li>
+<li><a href="http://talks.php.net/oz15#/drupalbench" target="_blank" rel="noopener">Benchmarks from Rasmus’s Sydney Talk</a></li>
+</ul>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><h3 id="组合比较操作符"><a href="#组合比较操作符" class="headerlink" title="组合比较操作符"></a>组合比较操作符</h3><p>组合比较符（也称太空船操作符）用于对两个操作数进行三路比较的简化符号，它返回一个整数，其值为以下之一：</p>
+<ul>
+<li>一个正整数（当左操作数大于右操作数时）</li>
+<li>0（当两个操作数相等时）</li>
+<li>一个负整数（当右操作数大于左操作数时）</li>
+</ul>
+<p>该操作符和等式运算符（<code>==</code>，<code>!=</code>，<code>===</code>，<code>!==</code>）等有相同的优先级，并且和其它松比较操作符（<code>&lt;</code>, <code>&gt;=</code>等）有相同的行为，同样组合比较付也是非组合的，不允许对操作数进行链式调用（像 <code>1 &lt;=&gt; 2 &lt;=&gt; 3</code>）。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// compares strings lexically</span></span><br><span class="line">var_dump(<span class="string">'PHP'</span> &lt;=&gt; <span class="string">'Node'</span>); <span class="comment">// int(1)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// compares numbers by size</span></span><br><span class="line">var_dump(<span class="number">123</span> &lt;=&gt; <span class="number">456</span>); <span class="comment">// int(-1)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// compares corresponding array elements with one-another</span></span><br><span class="line">var_dump([<span class="string">'a'</span>, <span class="string">'b'</span>] &lt;=&gt; [<span class="string">'a'</span>, <span class="string">'b'</span>]); <span class="comment">// int(0)</span></span><br></pre></td></tr></table></figure>
+<p>对象是不可比较的，所以对对象使用组合比较符会导致未定义的行为。</p>
+<p>RFC: <a href="https://wiki.php.net/rfc/combined-comparison-operator" target="_blank" rel="noopener">Combined Comparison Operator</a></p>
+<h3 id="空引用合并操作符"><a href="#空引用合并操作符" class="headerlink" title="空引用合并操作符"></a>空引用合并操作符</h3><p>空引用合并操作符（或者称isset三元操作符）是<code>isset()</code>检测的三元操作符的简化符号。空引用检测在应用中是经常需要的操作，为了这个目的引入了这个新的语法</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// PHP 7 之前</span></span><br><span class="line">$route = <span class="keyword">isset</span>($_GET[<span class="string">'route'</span>]) ? $_GET[<span class="string">'route'</span>] : <span class="string">'index'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7+</span></span><br><span class="line">$route = $_GET[<span class="string">'route'</span>] ?? <span class="string">'index'</span>;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这有点类似于其他语言的 <code>?:</code> 合并操作符</p>
+</blockquote>
+<p>RFC: <a href="https://wiki.php.net/rfc/isset_ternary" target="_blank" rel="noopener">Null Coalesce Operator</a></p>
+<h3 id="标量类型声明"><a href="#标量类型声明" class="headerlink" title="标量类型声明"></a>标量类型声明</h3><p>标量类型声明有两种模式： <strong>强制</strong>（默认）和<strong>严格</strong>。下面类型的参数现在能够强制执行（无论是强制模式还是严格模式）：字符串（<code>string</code>），整数(<code>int</code>），浮点数（<code>float</code>），以及布尔值（<code>bool</code>）。它们扩充了PHP 5中引入的其他类型：类名（class names），接口(interfaces)，数组(<code>array</code>)和回调(<code>callable</code>)类型。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 强制模式</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sumOfInts</span><span class="params">(int ...$ints)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> array_sum($ints);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var_dump(sumOfInts(<span class="number">2</span>, <span class="string">'3'</span>, <span class="number">4.1</span>)); <span class="comment">// int(9)</span></span><br></pre></td></tr></table></figure>
+<p>要使用严格模式，一个 <code>declare()</code>声明指令必须放在文件的顶部，这意味着声明严格标量是基于文件可配置的。这个指令不仅影响参数的类型声明，也影响到函数的返回值声明（参考<a href="返回值类型声明">返回值类型声明</a>，内置的PHP函数以及扩展中加载的函数）。</p>
+<p>如果类型检查失败了，一个 <code>TypeError</code>异常会（见<a href="#引擎中的异常">引擎中的异常</a>）抛出，在严格模式下，唯一的例外是，当整数当作一个浮点数提供到上下文时，整数到浮点数的自动类型转换（反过来不允许）。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">declare</span>(strict_types=<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">multiply</span><span class="params">(float $x, float $y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> $x * $y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span><span class="params">(int $x, int $y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> $x + $y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var_dump(multiply(<span class="number">2</span>, <span class="number">3.5</span>)); <span class="comment">// float(7)</span></span><br><span class="line">var_dump(add(<span class="string">'2'</span>, <span class="number">3</span>)); <span class="comment">// Fatal error: Uncaught TypeError: Argument 1 passed to add() must be of the type integer, string given...</span></span><br></pre></td></tr></table></figure>
+<p>注意，<strong>只有</strong>在<em>调用上下文</em>执行类型检查时才会适用这些规则，这意味着严格类型检查只在函数/方法调用时使用，而在它们的定义处不使用。在上面的例子中，两个函数可以定义在严格或者强制模式的文件中，但是，只要是它们在声明了严格模式的文件中被调用，就会使用严格类型规则。</p>
+<p><strong>BC Breaks（Backward compatibility breaks：打破向后兼容）</strong></p>
+<ul>
+<li>现在 <code>int</code>, <code>string</code>, <code>float</code>, and <code>bool</code> 不再允许作为类名出现。</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/scalar_type_hints_v5" target="_blank" rel="noopener">Scalar Type Declarations</a></p>
+<h3 id="返回值类型声明"><a href="#返回值类型声明" class="headerlink" title="返回值类型声明"></a>返回值类型声明</h3><p>返回类型声明允许为函数，方法或者闭包指定返回值的类型了，支持下列作为返回值类型： <code>string</code>,<br><code>int</code>, <code>float</code>, <code>bool</code>, <code>array</code>, <code>callable</code>, <code>self</code> (仅方法), <code>parent</code><br>(仅方法), <code>Closure</code>, 类名和接口名。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">arraysSum</span><span class="params">(array ...$arrays)</span>: <span class="title">array</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> array_map(<span class="function"><span class="keyword">function</span><span class="params">(array $array)</span>: <span class="title">int</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> array_sum($array);</span><br><span class="line">    &#125;, $arrays);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">print_r(arraysSum([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>], [<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>], [<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>]));</span><br><span class="line"><span class="comment">/* Output</span></span><br><span class="line"><span class="comment">Array</span></span><br><span class="line"><span class="comment">(</span></span><br><span class="line"><span class="comment">    [0] =&gt; 6</span></span><br><span class="line"><span class="comment">    [1] =&gt; 15</span></span><br><span class="line"><span class="comment">    [2] =&gt; 24</span></span><br><span class="line"><span class="comment">)</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<p>在子类化的情况下，返回值类型必须是不变的。这意味着一个方法被子类重写或者被实现时，它的返回值类型必须和父类中的类型完全匹配。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span> : <span class="title">A</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> A;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span> <span class="keyword">extends</span> <span class="title">C</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">// overriding method C::test() : A</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span> : <span class="title">B</span> // <span class="title">Fatal</span> <span class="title">error</span> <span class="title">due</span> <span class="title">to</span> <span class="title">variance</span> <span class="title">mismatch</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> B;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>覆盖的方法 <code>D::test() : B</code>导致了一个 <code>E_COMPILE_ERROR</code>，因为返回值类型不允许修改，<code>D::test()</code>方法必须使用返回值类型为 <code>A</code>。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">SomeInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span> : <span class="title">A</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">implements</span> <span class="title">SomeInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span> : <span class="title">A</span> // <span class="title">all</span> <span class="title">good</span>!</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>; <span class="comment">// Fatal error: Uncaught TypeError: Return value of B::test() must be an instance of A, null returned...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这一次，实现的方法在执行时抛出了 <code>TypeError</code> 异常（参见 <a href="#引擎中的异常">引擎中的异常</a>），这是因为 <code>null</code> 不是一个正确的返回类型的值，只有类A的实例作为返回值才是允许的。</p>
+<p>RFC: <a href="https://wiki.php.net/rfc/return_types" target="_blank" rel="noopener">Return Type Declarations</a></p>
+<h3 id="匿名类"><a href="#匿名类" class="headerlink" title="匿名类"></a>匿名类</h3><p>在简单的，没有对象实例要创建的时候，匿名类是非常有用的。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// PHP 7 之前</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Logger</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">log</span><span class="params">($msg)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> $msg;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$util-&gt;setLogger(<span class="keyword">new</span> Logger());</span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7+</span></span><br><span class="line">$util-&gt;setLogger(<span class="keyword">new</span> <span class="class"><span class="keyword">class</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">log</span><span class="params">($msg)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> $msg;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>同样可以传递参数到匿名类的构造函数，继承其它类或者实现某些接口，还可以像普通类一样使用 traits：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span> </span>&#123;&#125;</span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">SomeInterface</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">trait</span> SomeTrait &#123;&#125;</span><br><span class="line"></span><br><span class="line">var_dump(new class(10) extends SomeClass implements SomeInterface &#123;</span><br><span class="line">    <span class="keyword">private</span> $num;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($num)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;num = $num;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">use</span> <span class="title">SomeTrait</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Output:</span></span><br><span class="line"><span class="comment">object(class<span class="doctag">@anonymous</span>)#1 (1) &#123;</span></span><br><span class="line"><span class="comment">  ["Command line code0x104c5b612":"class<span class="doctag">@anonymous</span>":private]=&gt;</span></span><br><span class="line"><span class="comment">  int(10)</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<p>在一个类中嵌套的匿名类没有对外部类的私有或者受保护的字段和方法的访问权限。为了使用外部类的 protected属性或者方法，匿名类可以通过继承外部类实现。为了使用外部类的私有的或者受保护的属性或方法，需要将外部类作为匿名类的构造函数的参数：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Outer</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $prop = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">protected</span> $prop2 = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">func1</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">func2</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        return new class($this-&gt;prop) extends Outer &#123;</span><br><span class="line">            <span class="keyword">private</span> $prop3;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($prop)</span></span></span><br><span class="line"><span class="function">            </span>&#123;</span><br><span class="line">                <span class="keyword">$this</span>-&gt;prop3 = $prop;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">func3</span><span class="params">()</span></span></span><br><span class="line"><span class="function">            </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;prop2 + <span class="keyword">$this</span>-&gt;prop3 + <span class="keyword">$this</span>-&gt;func1();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> (<span class="keyword">new</span> Outer)-&gt;func2()-&gt;func3(); <span class="comment">// 6</span></span><br></pre></td></tr></table></figure>
+<p>RFC: <a href="https://wiki.php.net/rfc/anonymous_classes" target="_blank" rel="noopener">Anonymous Classes</a></p>
+<h3 id="Unicode编码点转义语法"><a href="#Unicode编码点转义语法" class="headerlink" title="Unicode编码点转义语法"></a>Unicode编码点转义语法</h3><p>这可以打印一个使用双引号或者heredoc包围的UTF-8编码的Unicode编码点（codepoint）。可以接受任何有效的codepoint，并且先导的 <code>0</code>是可以省略的。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">echo</span> <span class="string">"\u&#123;aa&#125;"</span>; <span class="comment">// ª</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">"\u&#123;0000aa&#125;"</span>; <span class="comment">// ª (same as before but with optional leading 0's)</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">"\u&#123;9999&#125;"</span>; <span class="comment">// 香</span></span><br></pre></td></tr></table></figure>
+<p>RFC: <a href="https://wiki.php.net/rfc/unicode_escape" target="_blank" rel="noopener">Unicode Codepoint Escape Syntax</a></p>
+<h3 id="Closure-call"><a href="#Closure-call" class="headerlink" title="Closure::call()"></a>Closure::call()</h3><p>闭包的新的 <code>call()</code>方法是用于简单干练地绑定一个方法到对象上闭包并调用它。新的方法有更好的性能并且省去了在调用前创建一个中间闭包的代码，使代码更加紧凑。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;<span class="keyword">private</span> $x = <span class="number">1</span>;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7 之前</span></span><br><span class="line">$getXCB = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;x;&#125;;</span><br><span class="line">$getX = $getXCB-&gt;bindTo(<span class="keyword">new</span> A, <span class="string">'A'</span>); <span class="comment">// intermediate closure</span></span><br><span class="line"><span class="keyword">echo</span> $getX(); <span class="comment">// 1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7+</span></span><br><span class="line">$getX = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;x;&#125;;</span><br><span class="line"><span class="keyword">echo</span> $getX-&gt;call(<span class="keyword">new</span> A); <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+<p>RFC: <a href="https://wiki.php.net/rfc/closure_apply" target="_blank" rel="noopener">Closure::call</a></p>
+<h3 id="带过滤的-unserialize"><a href="#带过滤的-unserialize" class="headerlink" title="带过滤的 unserialize()"></a>带过滤的 <code>unserialize()</code></h3><p>这个特性旨在为反序列化不可信数据时提供更好的安全性。它通过允许开发者以白名单的形式来规定可以反序列化的类，以此防止潜在的代码注入。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// converts all objects into __PHP_Incomplete_Class object</span></span><br><span class="line">$data = unserialize($foo, [<span class="string">"allowed_classes"</span> =&gt; <span class="keyword">false</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// converts all objects into __PHP_Incomplete_Class object except those of MyClass and MyClass2</span></span><br><span class="line">$data = unserialize($foo, [<span class="string">"allowed_classes"</span> =&gt; [<span class="string">"MyClass"</span>, <span class="string">"MyClass2"</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// default behaviour (same as omitting the second argument) that accepts all classes</span></span><br><span class="line">$data = unserialize($foo, [<span class="string">"allowed_classes"</span> =&gt; <span class="keyword">true</span>]);</span><br></pre></td></tr></table></figure>
+<p>RFC: <a href="https://wiki.php.net/rfc/secure_unserialize" target="_blank" rel="noopener">Filtered unserialize()</a></p>
+<h3 id="IntlChar-类"><a href="#IntlChar-类" class="headerlink" title="IntlChar 类"></a><code>IntlChar</code> 类</h3><p>新的 <code>IntChar</code> 类型旨在暴露更多的ICU功能，这个类自身定义了许多静态方法用于操作多字符集的unicode字符。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">printf(<span class="string">'%x'</span>, IntlChar::CODEPOINT_MAX); <span class="comment">// 10ffff</span></span><br><span class="line"><span class="keyword">echo</span> IntlChar::charName(<span class="string">'@'</span>); <span class="comment">// COMMERCIAL AT</span></span><br><span class="line">var_dump(IntlChar::ispunct(<span class="string">'!'</span>)); <span class="comment">// bool(true)</span></span><br></pre></td></tr></table></figure>
+<p>为了使用这个类，必须安装 <code>Intl</code>扩展。</p>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>Classes in the global namespace must not be called <code>IntlChar</code>.</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/intl.char" target="_blank" rel="noopener">IntlChar class</a></p>
+<h3 id="预期"><a href="#预期" class="headerlink" title="预期"></a>预期</h3><p>预期是向后兼容并增强之前的 <code>assert()</code>函数。它使得在生产环境中启用断言的成本为零，并且提供当断言失败时抛出特定异常的能力。</p>
+<p><code>assert()</code>函数的原型如下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void assert (mixed $expression [, mixed $message]);</span><br></pre></td></tr></table></figure>
+<p>在旧的API中，如果 <code>$expression</code>是一个字符串，那么它会被计算，如果第一个参数falsy，那么断言失败。第二个参数可以是一个字符串（导致触发一个 AssertionError）或者是一个包含错误消息的自定义异常对象。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">ini_set(<span class="string">'assert.exception'</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CustomError</span> <span class="keyword">extends</span> <span class="title">AssertionError</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">assert(<span class="keyword">false</span>, <span class="keyword">new</span> CustomError(<span class="string">'Some error message'</span>));</span><br></pre></td></tr></table></figure>
+<p>这个特性与 PHP.ini 中的两个设置有关</p>
+<ul>
+<li>zend.assertions = 1</li>
+<li>assert.exception = 0</li>
+</ul>
+<p><strong>zend.assertions</strong> 有三个值:</p>
+<ul>
+<li><strong>1</strong> = 生产并执行代码 (开发模式)</li>
+<li><strong>0</strong> = 生成代码并在执行时跳过</li>
+<li><strong>-1</strong> = 不生产代码 (零开销, 生产模式)</li>
+</ul>
+<p><strong>assert.exception</strong> 意味着断言失败时抛出一个异常，为了与旧的 <code>assert()</code>函数保持兼容，此选项默认是关闭的。</p>
+<p>RFC: <a href="https://wiki.php.net/rfc/expectations" target="_blank" rel="noopener">Expectations</a></p>
+<h3 id="Group-use-Declarations"><a href="#Group-use-Declarations" class="headerlink" title="Group use Declarations"></a>Group <code>use</code> Declarations</h3><p>现在的<code>use</code>声明允许根据父命令空间一次导入多个值，这一特性是为了减少引入同一命名空间下的类、函数或者常量时造成的代码冗余。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// PHP 7 之前</span></span><br><span class="line"><span class="keyword">use</span> <span class="title">some</span>\<span class="title">namespace</span>\<span class="title">ClassA</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">some</span>\<span class="title">namespace</span>\<span class="title">ClassB</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">some</span>\<span class="title">namespace</span>\<span class="title">ClassC</span> <span class="title">as</span> <span class="title">C</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">function</span> <span class="title">some</span>\<span class="title">namespace</span>\<span class="title">fn_a</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">function</span> <span class="title">some</span>\<span class="title">namespace</span>\<span class="title">fn_b</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">function</span> <span class="title">some</span>\<span class="title">namespace</span>\<span class="title">fn_c</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">const</span> <span class="title">some</span>\<span class="title">namespace</span>\<span class="title">ConstA</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">const</span> <span class="title">some</span>\<span class="title">namespace</span>\<span class="title">ConstB</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">const</span> <span class="title">some</span>\<span class="title">namespace</span>\<span class="title">ConstC</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7+</span></span><br><span class="line"><span class="keyword">use</span> <span class="title">some</span>\<span class="title">namespace</span>\&#123;<span class="title">ClassA</span>, <span class="title">ClassB</span>, <span class="title">ClassC</span> <span class="title">as</span> <span class="title">C</span>&#125;;</span><br><span class="line"><span class="keyword">use</span> <span class="title">function</span> <span class="title">some</span>\<span class="title">namespace</span>\&#123;<span class="title">fn_a</span>, <span class="title">fn_b</span>, <span class="title">fn_c</span>&#125;;</span><br><span class="line"><span class="keyword">use</span> <span class="title">const</span> <span class="title">some</span>\<span class="title">namespace</span>\&#123;<span class="title">ConstA</span>, <span class="title">ConstB</span>, <span class="title">ConstC</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>RFC: <a href="https://wiki.php.net/rfc/group_use_declarations" target="_blank" rel="noopener">Group use Declarations</a></p>
+<h3 id="生成器返回表达式"><a href="#生成器返回表达式" class="headerlink" title="生成器返回表达式"></a>生成器返回表达式</h3><p>这个特性基于PHP 5.5引入的生成器功能，该功能允许在一个生成器（generator）内使用一个<code>return</code>语句，以此使返回的最后一个表达式返回（不允许返回引用）。这个值可以使用新的 <code>Generator::getReturn()</code>方法获取，不过需要在生成器已经返回之后使用（即generator returned之后）。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// IIFE syntax now possible - see the Uniform Variable Syntax subsection in the Changes section</span></span><br><span class="line">$gen = (<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">3</span>;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> ($gen <span class="keyword">as</span> $val) &#123;</span><br><span class="line">    <span class="keyword">echo</span> $val, PHP_EOL;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 此时generator已经关闭</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> $gen-&gt;getReturn(), PHP_EOL;</span><br><span class="line"></span><br><span class="line"><span class="comment">// output:</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
+<p>能够明确地返回生成器的最终值是一个很便利的功能，因为generator返回最终的值（也许来自某种形式的协同计算）能够被执行生成器的客户端专门处理。这和客户端代码需要首先检查最终值是否已经产生然后在使用最终的值相比，更加简单了</p>
+<p>RFC: <a href="https://wiki.php.net/rfc/generator-return-expressions" target="_blank" rel="noopener">Generator Return Expressions</a></p>
+<h3 id="生成器委托"><a href="#生成器委托" class="headerlink" title="生成器委托"></a>生成器委托</h3><p>生成器现在能自动委托给另一个生成器、可遍历对象或者数组，直接使用 <code>yield from</code>，而不需要在最外层的生成器书写模版了。</p>
+<p>生成器委托基于生成器能返回表达式的能力。使用新的语法 <code>yield from &lt;expr&gt;</code>, <expr>还可以是可遍历对象或数组。 <expr>将会被遍历，之后在返回调用的生成器继续执行。这个特性允许 <code>yield</code>表达式被切分更细，从而促进代码更加干净，有更好的可复用性。</expr></expr></p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">gen</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">yield</span> from gen2();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">gen2</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">4</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$gen = gen();</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> ($gen <span class="keyword">as</span> $val)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">echo</span> $val, PHP_EOL;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> $gen-&gt;getReturn();</span><br><span class="line"></span><br><span class="line"><span class="comment">// output</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 3</span></span><br><span class="line"><span class="comment">// 4</span></span><br></pre></td></tr></table></figure>
+<p>RFC: <a href="https://wiki.php.net/rfc/generator-delegation" target="_blank" rel="noopener">Generator Delegation</a></p>
+<h3 id="使用-intdiv-做整数除法"><a href="#使用-intdiv-做整数除法" class="headerlink" title="使用 intdiv() 做整数除法"></a>使用 <code>intdiv()</code> 做整数除法</h3><p>引入函数<code>intdiv()</code>用于处理需要返回一个整数的整数除法操作。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">var_dump(intdiv(<span class="number">10</span>, <span class="number">3</span>)); <span class="comment">// int(3)</span></span><br></pre></td></tr></table></figure>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>全局命令空间下的函数不能命名为 <code>intdiv</code>.</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/intdiv" target="_blank" rel="noopener">intdiv()</a></p>
+<h3 id="session-start-选项"><a href="#session-start-选项" class="headerlink" title="session_start() 选项"></a><code>session_start()</code> 选项</h3><p>这个特性允许传入一个选项的数组到 <code>session_start()</code>函数，这用于设置基于会话的 php.ini 选项：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">session_start([<span class="string">'cache_limiter'</span> =&gt; <span class="string">'private'</span>]); <span class="comment">// sets the session.cache_limiter option to private</span></span><br></pre></td></tr></table></figure>
+<p>这个特性也引入了一个新的php.ini设置（<code>session.lazy_write</code>）,默认情况下设置为 true，意味着session数据只在发生变化时才写入。</p>
+<p>RFC: <a href="https://wiki.php.net/rfc/session-lock-ini" target="_blank" rel="noopener">Introduce session_start() Options</a></p>
+<h3 id="preg-replace-callback-array-函数"><a href="#preg-replace-callback-array-函数" class="headerlink" title="preg_replace_callback_array() 函数"></a><code>preg_replace_callback_array()</code> 函数</h3><p>使用新的 <code>preg_replace_callback()</code>函数能写出更加干净的代码。在PHP 7之前，每一个正则表达式都需要执行一次的回调函数（<code>preg_replace_callback()</code>函数的第二个参数）常常需要写很多的分支判断。</p>
+<p>现在能用关联数组注册回调了，使用正则表达式作为键，使对应的回调作为值注册到正则表达式。</p>
+<p>函数签名如下:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string preg_replace_callback_array(array $regexesAndCallbacks, string $input);</span><br></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">$tokenStream = []; <span class="comment">// [tokenName, lexeme] pairs</span></span><br><span class="line"></span><br><span class="line">$input = <span class="string">&lt;&lt;&lt;'end'</span></span><br><span class="line"><span class="string"><span class="subst">$a</span> = 3; // variable initialisation</span></span><br><span class="line"><span class="string">end;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7 之前</span></span><br><span class="line">preg_replace_callback(</span><br><span class="line">    [</span><br><span class="line">        <span class="string">'~\$[a-z_][a-z\d_]*~i'</span>,</span><br><span class="line">        <span class="string">'~=~'</span>,</span><br><span class="line">        <span class="string">'~[\d]+~'</span>,</span><br><span class="line">        <span class="string">'~;~'</span>,</span><br><span class="line">        <span class="string">'~//.*~'</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="params">($match)</span> <span class="title">use</span> <span class="params">(&amp;$tokenStream)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (strpos($match[<span class="number">0</span>], <span class="string">'$'</span>) === <span class="number">0</span>) &#123;</span><br><span class="line">            $tokenStream[] = [<span class="string">'T_VARIABLE'</span>, $match[<span class="number">0</span>]];</span><br><span class="line">        &#125; <span class="keyword">elseif</span> (strpos($match[<span class="number">0</span>], <span class="string">'='</span>) === <span class="number">0</span>) &#123;</span><br><span class="line">            $tokenStream[] = [<span class="string">'T_ASSIGN'</span>, $match[<span class="number">0</span>]];</span><br><span class="line">        &#125; <span class="keyword">elseif</span> (ctype_digit($match[<span class="number">0</span>])) &#123;</span><br><span class="line">            $tokenStream[] = [<span class="string">'T_NUM'</span>, $match[<span class="number">0</span>]];</span><br><span class="line">        &#125; <span class="keyword">elseif</span> (strpos($match[<span class="number">0</span>], <span class="string">';'</span>) === <span class="number">0</span>) &#123;</span><br><span class="line">            $tokenStream[] = [<span class="string">'T_TERMINATE_STMT'</span>, $match[<span class="number">0</span>]];</span><br><span class="line">        &#125; <span class="keyword">elseif</span> (strpos($match[<span class="number">0</span>], <span class="string">'//'</span>) === <span class="number">0</span>) &#123;</span><br><span class="line">            $tokenStream[] = [<span class="string">'T_COMMENT'</span>, $match[<span class="number">0</span>]];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    $input</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7+</span></span><br><span class="line">preg_replace_callback_array(</span><br><span class="line">    [</span><br><span class="line">        <span class="string">'~\$[a-z_][a-z\d_]*~i'</span> =&gt; <span class="function"><span class="keyword">function</span> <span class="params">($match)</span> <span class="title">use</span> <span class="params">(&amp;$tokenStream)</span> </span>&#123;</span><br><span class="line">            $tokenStream[] = [<span class="string">'T_VARIABLE'</span>, $match[<span class="number">0</span>]];</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">'~=~'</span> =&gt; <span class="function"><span class="keyword">function</span> <span class="params">($match)</span> <span class="title">use</span> <span class="params">(&amp;$tokenStream)</span> </span>&#123;</span><br><span class="line">            $tokenStream[] = [<span class="string">'T_ASSIGN'</span>, $match[<span class="number">0</span>]];</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">'~[\d]+~'</span> =&gt; <span class="function"><span class="keyword">function</span> <span class="params">($match)</span> <span class="title">use</span> <span class="params">(&amp;$tokenStream)</span> </span>&#123;</span><br><span class="line">            $tokenStream[] = [<span class="string">'T_NUM'</span>, $match[<span class="number">0</span>]];</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">'~;~'</span> =&gt; <span class="function"><span class="keyword">function</span> <span class="params">($match)</span> <span class="title">use</span> <span class="params">(&amp;$tokenStream)</span> </span>&#123;</span><br><span class="line">            $tokenStream[] = [<span class="string">'T_TERMINATE_STMT'</span>, $match[<span class="number">0</span>]];</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">'~//.*~'</span> =&gt; <span class="function"><span class="keyword">function</span> <span class="params">($match)</span> <span class="title">use</span> <span class="params">(&amp;$tokenStream)</span> </span>&#123;</span><br><span class="line">            $tokenStream[] = [<span class="string">'T_COMMENT'</span>, $match[<span class="number">0</span>]];</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    $input</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>Functions in the global namespace must not be called <code>preg_replace_callback_array</code>.</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/preg_replace_callback_array" target="_blank" rel="noopener">Add preg_replace_callback_array Function</a></p>
+<h3 id="CSPRNG（密码学安全伪随机数构建器）函数"><a href="#CSPRNG（密码学安全伪随机数构建器）函数" class="headerlink" title="CSPRNG（密码学安全伪随机数构建器）函数"></a>CSPRNG（密码学安全伪随机数构建器）函数</h3><p>这一特性引入了两个新的函数，用于生成安全加密的整数和字符串。它们暴露出简单的API，并且它们是平台独立的。</p>
+<p>函数签名:<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string random_bytes(int length);</span><br><span class="line">int random_int(int min, int max);</span><br></pre></td></tr></table></figure></p>
+<p>如果不能找到可用的随机性来源，两个函数都会抛出一个 <code>Error</code> 异常。</p>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>全局命名空间下的函数不能命名为 <code>random_int</code> 或者 <code>random_bytes</code>.</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/easy_userland_csprng" target="_blank" rel="noopener">Easy User-land CSPRNG</a></p>
+<h3 id="支持-define-定义数组常量"><a href="#支持-define-定义数组常量" class="headerlink" title="支持 define() 定义数组常量"></a>支持 <code>define()</code> 定义数组常量</h3><p>在PHP 5.6 引入了使用 <code>const</code>关键字定义数组常量，在PHP 7中，可以使用 <code>define()</code>函数定义数组常量了。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">define(<span class="string">'ALLOWED_IMAGE_EXTENSIONS'</span>, [<span class="string">'jpg'</span>, <span class="string">'jpeg'</span>, <span class="string">'gif'</span>, <span class="string">'png'</span>]);</span><br></pre></td></tr></table></figure>
+<p>RFC: no RFC available</p>
+<h3 id="反射增强"><a href="#反射增强" class="headerlink" title="反射增强"></a>反射增强</h3><p>PHP 7引入了两个新的反射类，第一个是 <code>ReflectionGenerator</code>，用于generator的内省（introspection）。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReflectionGenerator</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> __construct(Generator $gen)</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">array</span> getTrace($options = DEBUG_BACKTRACE_PROVIDE_OBJECT)</span><br><span class="line">    <span class="keyword">public</span> int getExecutingLine(void)</span><br><span class="line">    <span class="keyword">public</span> string getExecutingFile(void)</span><br><span class="line">    <span class="keyword">public</span> ReflectionFunctionAbstract getFunction(void)</span><br><span class="line">    <span class="keyword">public</span> Object getThis(void)</span><br><span class="line">    <span class="keyword">public</span> Generator getExecutingGenerator(void)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二个是 <code>ReflectionType</code>，更好的支持常量和返回值类型声明的特性。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReflectionType</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> bool allowsNull(void)</span><br><span class="line">    <span class="keyword">public</span> bool isBuiltin(void)</span><br><span class="line">    <span class="keyword">public</span> string __toString(void)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时，<code>ReflectionParameter</code>引入了两个新的方法：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReflectionParameter</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">public</span> bool hasType(void)</span><br><span class="line">    <span class="keyword">public</span> ReflectionType getType(void)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>ReflectionFunctionAbstract</code>也引入了两个新方法:</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReflectionFunctionAbstract</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">public</span> bool hasReturnType(void)</span><br><span class="line">    <span class="keyword">public</span> ReflectionType getReturnType(void)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>Classes in the global namespace must not be called <code>ReflectionGenerator</code> or<br><code>ReflectionType</code>.</li>
+</ul>
+<p>RFC: no RFC available</p>
+<h2 id="改变"><a href="#改变" class="headerlink" title="改变"></a>改变</h2><h3 id="放松保留字的限制"><a href="#放松保留字的限制" class="headerlink" title="放松保留字的限制"></a>放松保留字的限制</h3><p>现在，全局保留字允许作为类，接口和traits的属性，常量和方法名。这减少了当新的关键字被引入和避免API命名限制时导致的对向后兼容的破坏。</p>
+<p>这个改变在使用连贯接口创建内部DSLs时很有用。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 'new', 'private', and 'for' were previously unusable</span></span><br><span class="line">Project::new(<span class="string">'Project Name'</span>)-&gt;private()-&gt;for(<span class="string">'purpose here'</span>)-&gt;with(<span class="string">'username here'</span>);</span><br></pre></td></tr></table></figure>
+<p>唯一的限制是，<code>class</code>关键字仍然不能用作常量名，因为这样可能和类名解析语法（<code>ClassName::class</code>）冲突。</p>
+<p>RFC: <a href="https://wiki.php.net/rfc/context_sensitive_lexer" target="_blank" rel="noopener">Context Sensitive Lexer</a></p>
+<h3 id="统一变量语法"><a href="#统一变量语法" class="headerlink" title="统一变量语法"></a>统一变量语法</h3><p>这一改变为PHP变量操作符带来更强的正交性，它允许很多以前不允许的新的操作符组合用法，并因此引入了相比旧的方法更加简洁的代码。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// nesting ::</span></span><br><span class="line">$foo::$bar::$baz <span class="comment">// access the property $baz of the $foo::$bar property</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// nesting ()</span></span><br><span class="line">foo()() <span class="comment">// invoke the return of foo()</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// operators on expressions enclosed in ()</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;&#125;)() <span class="comment">// IIFE(Immediately-Invoked Function Expression) syntax from JS</span></span><br></pre></td></tr></table></figure>
+<p>这种随意组合变量操作符的能力来自于转变直接变量，属性和方法应用的求值语义。新的行为更加符合直觉并且允许从左到右的求值顺序。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">                        <span class="comment">// old meaning            // new meaning</span></span><br><span class="line">$$foo[<span class="string">'bar'</span>][<span class="string">'baz'</span>]     $&#123;$foo[<span class="string">'bar'</span>][<span class="string">'baz'</span>]&#125;     ($$foo)[<span class="string">'bar'</span>][<span class="string">'baz'</span>]</span><br><span class="line">$foo-&gt;$bar[<span class="string">'baz'</span>]       $foo-&gt;&#123;$bar[<span class="string">'baz'</span>]&#125;       ($foo-&gt;$bar)[<span class="string">'baz'</span>]</span><br><span class="line">$foo-&gt;$bar[<span class="string">'baz'</span>]()     $foo-&gt;&#123;$bar[<span class="string">'baz'</span>]&#125;()     ($foo-&gt;$bar)[<span class="string">'baz'</span>]()</span><br><span class="line">Foo::$bar[<span class="string">'baz'</span>]()      Foo::&#123;$bar[<span class="string">'baz'</span>]&#125;()      (Foo::$bar)[<span class="string">'baz'</span>]()</span><br></pre></td></tr></table></figure>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>依赖于旧的求值顺序的代码需要使用大括号重写来明确求值的顺序（见上面示例的中间一列）。这样才能同时向前兼容 PHP 7.x 和向后兼容PHP 5.x</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/uniform_variable_syntax" target="_blank" rel="noopener">Uniform Variable Syntax</a></p>
+<h3 id="引擎中的异常"><a href="#引擎中的异常" class="headerlink" title="引擎中的异常"></a>引擎中的异常</h3><p>引擎中的异常将许多致命和可恢复的致命错误转换为普通异常。这允许应用通过自定义错误处理程序实现优雅降级。同时像<code>finally</code>子句和析构函数这样的 cleanup-driven 特性将能被执行。通过使用应用错误的异常，将执行堆栈跟踪并产生更多的调试信息。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span><span class="params">(float ...$numbers)</span> : <span class="title">float</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> array_sum($numbers);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    $total = sum(<span class="number">3</span>, <span class="number">4</span>, <span class="keyword">null</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (TypeError $typeErr) &#123;</span><br><span class="line">    <span class="comment">// handle type error here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新的异常层级结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">interface Throwable</span><br><span class="line">    |- Exception implements Throwable</span><br><span class="line">        |- ...</span><br><span class="line">    |- Error implements Throwable</span><br><span class="line">        |- TypeError extends Error</span><br><span class="line">        |- ParseError extends Error</span><br><span class="line">        |- AssertionError extends Error</span><br><span class="line">        |- ArithmeticError extends Error</span><br><span class="line">            |- DivisionByZeroError extends ArithmeticError</span><br></pre></td></tr></table></figure>
+<p>查看 <a href="#可抛出的接口">可抛出的接口</a> 节了解更多关于新的异常结构的信息。</p>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>用于处理可恢复致命错误的用户错误处理程序将不会有效，因为异常不再被抛出。</li>
+<li><code>eval()</code>执行代码的解析错误现在作为异常抛出，这要求它们使用 <code>try...catch</code>块包围。</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/engine_exceptions_for_php7" target="_blank" rel="noopener">Exceptions in the Engine</a></p>
+<h3 id="可抛出的接口"><a href="#可抛出的接口" class="headerlink" title="可抛出的接口"></a>可抛出的接口</h3><p>因为引入了<a href="#引擎中的异常">引擎中的异常</a>，这一改变影响了PHP的异常层次结构。这不是简单地将致命的和可会度的致命错误替换为已经存在的<code>Exception</code>类层次结构，而是实现了一个新的一个新的层次结构以防止PHP 5.x的代码中的全部捕捉（catch-all：<code>catch (Exception $e)</code>）子句会捕捉到这种新的异常。</p>
+<p>新的异常层次如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">interface Throwable</span><br><span class="line">    |- Exception implements Throwable</span><br><span class="line">        |- ...</span><br><span class="line">    |- Error implements Throwable</span><br><span class="line">        |- TypeError extends Error</span><br><span class="line">        |- ParseError extends Error</span><br><span class="line">        |- AssertionError extends Error</span><br><span class="line">        |- ArithmeticError extends Error</span><br><span class="line">            |- DivisionByZeroError extends ArithmeticError</span><br></pre></td></tr></table></figure>
+<p>这里的 <code>Throwable</code>接口被 <code>Exception</code> 和 <code>Error</code>积累实现，接口的定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">interface Throwable</span><br><span class="line">&#123;</span><br><span class="line">    final public string getMessage ( void )</span><br><span class="line">    final public mixed getCode ( void )</span><br><span class="line">    final public string getFile ( void )</span><br><span class="line">    final public int getLine ( void )</span><br><span class="line">    final public array getTrace ( void )</span><br><span class="line">    final public string getTraceAsString ( void )</span><br><span class="line">    public string __toString ( void )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Throwable</code> 不能被用户定义的类实现，一个用户定义的异常类应该继承之前的PHP版本中就已经存在的异常类。</p>
+<p>RFC: <a href="https://wiki.php.net/rfc/throwable-interface" target="_blank" rel="noopener">Throwable Interface</a></p>
+<h3 id="整数语义"><a href="#整数语义" class="headerlink" title="整数语义"></a>整数语义</h3><p>为了使更加符合直觉和平台独立，一些基于整数的行为的语言发生了变化。下面是这些改变的列表：</p>
+<ul>
+<li>将 <code>NAN</code> 和 <code>INF</code> 转换为整数将总是返回0。</li>
+<li>位移操作现在禁止使用负数。(将会返回一个 bool(false)并触发一个 E_WARNING）</li>
+<li>按位左移的位数超过了整数的位数将总是返回0。</li>
+<li>按位右移的位数超过了整数的位数将总是返回0或者-1(视整数符号而定)</li>
+</ul>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>任何依赖于上面的旧的语义的代码将不能工作。</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/integer_semantics" target="_blank" rel="noopener">Integer Semantics</a></p>
+<h3 id="JSOND替代了JSON扩展"><a href="#JSOND替代了JSON扩展" class="headerlink" title="JSOND替代了JSON扩展"></a>JSOND替代了JSON扩展</h3><p>旧的的JSON扩展的许可不再是自由的（non-free），在基于Linux的发布版本中导致了很多问题。该扩展现在已经被JSOND替代，新的JSOND有一定的<a href="https://github.com/bukka/php-jsond-bench/blob/master/reports/0001/summary.md" target="_blank" rel="noopener">性能提升</a>，同时导致一些向后兼容问题。</p>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>数据不能以小数点结束 (比如 <code>34.</code> 必须修改为 <code>34.0</code> 或者 <code>34</code>)</li>
+<li>指数 <code>e</code> 不能紧跟在小数点后面(比如 <code>3.e3</code> 必须修改为 <code>3.0e3</code> 或者 <code>3e3</code>)</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/jsond" target="_blank" rel="noopener">Replace current json extension with jsond</a></p>
+<h3 id="ZPP-溢出时失败"><a href="#ZPP-溢出时失败" class="headerlink" title="ZPP 溢出时失败"></a>ZPP 溢出时失败</h3><p>当讲一个浮点数作为参数传递给一个期待整数的函数时，会进行浮点数到整数的强制转换。如果浮点数的值过大，将会被默认（silently）进行截断（这可能导致符号和精度的损失）。这可能导致一些很难发现的bug。这个改动就是为了当发生从浮点数到整数的隐式类型转换时提醒开发者，如果转换失败会返回<code>null</code>并触发一个<code>E_WARNING</code>。</p>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>那些在旧版本PHP能工作的代码现在可能会触发 E_WARNING异常并并导致失败，如果类型转换的结果直接被传递给其他函数的话（因为现在的版本在转换失败时返回null）。</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/zpp_fail_on_overflow" target="_blank" rel="noopener">ZPP Failure on Overflow</a></p>
+<h3 id="修正-foreach-的行为"><a href="#修正-foreach-的行为" class="headerlink" title="修正 foreach() 的行为"></a>修正 <code>foreach()</code> 的行为</h3><p>PHP的　<code>foreach()</code>循环有很多奇怪的边缘条件，这些都是实现驱动的，这导致在迭代数组的拷贝或者引用时，如果使用迭代修改操作如<code>current()</code> 和 <code>reset()</code>，或者修改正在迭代的数组，会有很多未定义的和不一致的行为。</p>
+<p>这一修改会消除边界条件的未定义行为，并且使得语义更加可预测和直观。</p>
+<p><code>foreach()</code> 按值遍历数组</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">$array = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line">$array2 = &amp;$array;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>($array <span class="keyword">as</span> $val) &#123;</span><br><span class="line">    <span class="keyword">unset</span>($array[<span class="number">1</span>]); <span class="comment">// modify array being iterated over</span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&#123;$val&#125; - "</span>, current($array), PHP_EOL;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7 之前的输出</span></span><br><span class="line"><span class="number">1</span> - <span class="number">3</span></span><br><span class="line"><span class="number">3</span> -</span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7+ 的输出</span></span><br><span class="line"><span class="number">1</span> - <span class="number">1</span></span><br><span class="line"><span class="number">2</span> - <span class="number">1</span></span><br><span class="line"><span class="number">3</span> - <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>当按值迭代语法使用时，被迭代的数组不是被实时修改的，<code>current()</code>现在有了明确定义的行为，它将一直指向数组的开始处。</p>
+<p><code>foreach()</code> 按引用编译数组和对象，与按值遍历对象</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">$array = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>($array <span class="keyword">as</span> &amp;$val) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&#123;$val&#125; - "</span>, current($array), PHP_EOL;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//PHP 7 之前的结果</span></span><br><span class="line"><span class="number">1</span> - <span class="number">2</span></span><br><span class="line"><span class="number">2</span> - <span class="number">3</span></span><br><span class="line"><span class="number">3</span> -</span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7+ 结果</span></span><br><span class="line"><span class="number">1</span> - <span class="number">1</span></span><br><span class="line"><span class="number">2</span> - <span class="number">1</span></span><br><span class="line"><span class="number">3</span> - <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p><code>current()</code>函数不再被 <code>foreach()</code>在数组的迭代所影响。 并且嵌套的按引用传递的 <code>foreach()</code> 迭代能彼此独立工作：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">$array = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>($array <span class="keyword">as</span> &amp;$val) &#123;</span><br><span class="line">    <span class="keyword">echo</span> $val, PHP_EOL;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> ($array <span class="keyword">as</span> &amp;$val2) &#123;</span><br><span class="line">        <span class="keyword">unset</span>($array[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">echo</span> $val, PHP_EOL;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7 之前的结果</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7+ 的结果</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>任何依赖于旧的（怪异的和未文档化的）语义的嗲吗将不再能正常工作。</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/php7_foreach" target="_blank" rel="noopener">Fix “foreach” behavior</a></p>
+<h3 id="修改-list-的行为"><a href="#修改-list-的行为" class="headerlink" title="修改 list() 的行为"></a>修改 <code>list()</code> 的行为</h3><p>旧的文档中，<code>list()</code>函数不支持strings，然而在少数的情况下，字符串仍可以使用：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// array dereferencing</span></span><br><span class="line">$str[<span class="number">0</span>] = <span class="string">'ab'</span>;</span><br><span class="line"><span class="keyword">list</span>($a, $b) = $str[<span class="number">0</span>];</span><br><span class="line"><span class="keyword">echo</span> $a; <span class="comment">// a</span></span><br><span class="line"><span class="keyword">echo</span> $b; <span class="comment">// b</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// object dereferencing</span></span><br><span class="line">$obj = <span class="keyword">new</span> StdClass();</span><br><span class="line">$obj-&gt;prop = <span class="string">'ab'</span>;</span><br><span class="line"><span class="keyword">list</span>($a, $b) = $obj-&gt;prop;</span><br><span class="line"><span class="keyword">echo</span> $a; <span class="comment">// a</span></span><br><span class="line"><span class="keyword">echo</span> $b; <span class="comment">// b</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// function return</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">func</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'ab'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">list</span>($a, $b) = func();</span><br><span class="line">var_dump($a, $b);</span><br><span class="line"><span class="keyword">echo</span> $a; <span class="comment">// a</span></span><br><span class="line"><span class="keyword">echo</span> $b; <span class="comment">// b</span></span><br></pre></td></tr></table></figure>
+<p>现在上面所列出来的情况下都<strong>不允许</strong>对stirng使用 <code>list()</code>。</p>
+<p>并且空的 <code>list()</code>现在会导致一个致命错误，对变量的赋值修改为从左到右了：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">$a = [<span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line"><span class="keyword">list</span>($a, $b) = $a;</span><br><span class="line"></span><br><span class="line"><span class="comment">// OLD: $a = 1, $b = 2</span></span><br><span class="line"><span class="comment">// NEW: $a = 1, $b = null + "Undefined index 1"</span></span><br><span class="line"></span><br><span class="line">$b = [<span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line"><span class="keyword">list</span>($a, $b) = $b;</span><br><span class="line"></span><br><span class="line"><span class="comment">// OLD: $a = null + "Undefined index 0", $b = 2</span></span><br><span class="line"><span class="comment">// NEW: $a = 1, $b = 2</span></span><br></pre></td></tr></table></figure>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>使 <code>list()</code> 等于任何非直接字符串不再允许。在上面的例子中 <code>$a</code> 和 <code>$b</code> 的值都将是<code>null</code>。</li>
+<li>调用<code>list()</code>而没有任何的变量将导致一个致命的错误。</li>
+<li>任何依赖于旧的从右至左赋值的代码将不再正常工作。</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/fix_list_behavior_inconsistency" target="_blank" rel="noopener">Fix list() behavior inconsistency</a></p>
+<p>RFC: <a href="https://wiki.php.net/rfc/abstract_syntax_tree" target="_blank" rel="noopener">Abstract syntax tree</a></p>
+<h3 id="改变除数为0的语义"><a href="#改变除数为0的语义" class="headerlink" title="改变除数为0的语义"></a>改变除数为0的语义</h3><p>在PHP 7之前，当除数是0时，不管是对除法（/）还是取余（%）运算符，都会触发一个 E_WARNING 同时返回false。在很多情况下，对于一个算术运算符返回一个布尔值是没有意义的（荒谬的），所以在PHP 7中该行为被改正过来了。</p>
+<p>除数为0的行为将返回一个浮点数，即 +INF，-INF或者NAN中的一个。取余操作符的 E_WARNING 被移除（和新的<code>intdiv()</code>函数看齐），而是抛出一个 <code>DivisionByZeroError</code> 异常。此外，当一个有效的整形参数被提供而导致一个不正确的结果（由整数溢出导致）时，<code>intdiv()</code>函数也会抛出一个 <code>ArithmeticError</code>异常。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">var_dump(<span class="number">3</span>/<span class="number">0</span>); <span class="comment">// float(INF) + E_WARNING</span></span><br><span class="line">var_dump(<span class="number">0</span>/<span class="number">0</span>); <span class="comment">// float(NAN) + E_WARNING</span></span><br><span class="line"></span><br><span class="line">var_dump(<span class="number">0</span>%<span class="number">0</span>); <span class="comment">// DivisionByZeroError</span></span><br><span class="line"></span><br><span class="line">intdiv(PHP_INT_MIN, <span class="number">-1</span>); <span class="comment">// ArithmeticError</span></span><br></pre></td></tr></table></figure>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>除法操作将不会再返回false（在算术运算中，这可能被转换为0）</li>
+<li>在除数为0时，取余操作现在可能抛出一个异常而不是返回<code>false</code>。</li>
+</ul>
+<p>RFC: No RFC available</p>
+<h3 id="修复自定义session-handler的返回值"><a href="#修复自定义session-handler的返回值" class="headerlink" title="修复自定义session handler的返回值"></a>修复自定义session handler的返回值</h3><p>当实现一个自定义的session处理程序时，<code>SessionHandlerInterface</code>的预测函数期待一个<code>true</code>或者<code>false</code>作为返回值，但它的行为并不符合预期。由于之前实现中的一个错误，只有一个<code>-1</code>返回值被认为是false，这意味着即使用于代表失败的布尔值<code>false</code>也会认为是成功了。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileSessionHandler</span> <span class="keyword">implements</span> <span class="title">SessionHandlerInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $savePath;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">open</span><span class="params">($savePath, $sessionName)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>; <span class="comment">// always fail</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">close</span><span class="params">()</span></span>&#123;<span class="keyword">return</span> <span class="keyword">true</span>;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">read</span><span class="params">($id)</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">write</span><span class="params">($id, $data)</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">destroy</span><span class="params">($id)</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">gc</span><span class="params">($maxlifetime)</span></span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">session_set_save_handler(<span class="keyword">new</span> FileSessionHandler());</span><br><span class="line"></span><br><span class="line">session_start(); <span class="comment">// doesn't cause an error in pre PHP 7 code</span></span><br></pre></td></tr></table></figure>
+<p>现在，上面的代码会因为一个致命的错误而失败。当<code>-1</code>作为返回值时让然会失败，虽然<code>0</code>和<code>true</code>仍然被认为是成功。而返回其他的任何值都会导致失败并触发一个 E_WARNING。</p>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>如果返回<code>false</code>的话，现在会实际上失败。</li>
+<li>如果布尔值， 0， -1之外的任何值作为返回值，将会导致失败并触发一个警告信息。</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/session.user.return-value" target="_blank" rel="noopener">Fix handling of custom session handler return values</a></p>
+<h3 id="返回只用PHP-4风格的构造函数"><a href="#返回只用PHP-4风格的构造函数" class="headerlink" title="返回只用PHP 4风格的构造函数"></a>返回只用PHP 4风格的构造函数</h3><p>PHP 4风格的构造函数在PHP 5中被保留，和新的<code>__construct()</code>一起工作。现在PHP 4 风格的构造函数被弃用了，在创建对象是只有一个方法：<code>__construct()</code>被调用。这是因为判断PHP 4风格的构造函数是够被调用的条件导致了额外的认知开销，可能使一些没有经验的开发者感到困惑（confusing）</p>
+<p>例如，如果一个类定义在命名空间类，或者<code>__construct</code>方法存在，那么一个PHP 4风格的构造函数被识别为一个普通方法。如果它被定义在<code>__construct()</code>方法之前，那么会触发一个 <code>E_STRICT</code> 消息，但仍然会被当作一个普通方法。命名空间中的类不识别和类同名的函数作为构造函数，而PHP 7中即使不是在命名空间中定义的类也不会将与函数同名的函数识别为构造函数，而只将 <code>__construct()</code>作为构造函数。</p>
+<p>在 PHP 7中，如果类没有在命名空间下，并且没有定义<code>__construct()</code> 方法，那么PHP 4风格的构造函数被用作构造函数，但是会触发一个 <code>E_DEPRECATED</code>。在PHP 8中，PHP 4风格的构造器将总是被识别为普通方法，并且<code>E_DEPRECATED</code>消息将消失。</p>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>自定义的错误处理函数可能被 <code>E_DEPRECATED</code>警告所影响。为了修复这个问题，简单的讲构造器名更新为 <code>__construct()</code>即可。</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/remove_php4_constructors" target="_blank" rel="noopener">Remove PHP 4 Constructors</a></p>
+<h3 id="移除date-timezone的警告"><a href="#移除date-timezone的警告" class="headerlink" title="移除date.timezone的警告"></a>移除date.timezone的警告</h3><p>如果默认时区没有设置之前调用了任何与日期和事件相关的函数时，会触发一个警告消息。简单的做法是将INI设置的<code>date.timezone</code>为一个有效的时区，但是这要求用户有一个php.ini文件并事先配置它。因为这指示一个触发警告的的设置，并且默认总是设置为 UTC，所以这个警告信息将会被移除。</p>
+<p>RFC: <a href="https://wiki.php.net/rfc/date.timezone_warning_removal" target="_blank" rel="noopener">Remove the date.timezone warning</a></p>
+<h3 id="去除可替代的PHP标签"><a href="#去除可替代的PHP标签" class="headerlink" title="去除可替代的PHP标签"></a>去除可替代的PHP标签</h3><p>可替代的PHP标签 <code>&lt;%</code> (and <code>&lt;%=</code>), <code>%&gt;</code>, <code>&lt;script language=&quot;php&quot;&gt;</code>, 和<br><code>&lt;/script&gt;</code> 被移除了。</p>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>那些依赖于上面这些可替换标签的代码需要更新为普通的或者短的开闭标签，这可以手动修改或者使用<a href="https://gist.github.com/nikic/74769d74dad8b9ef221b" target="_blank" rel="noopener">自动脚本</a>转换。</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/remove_alternative_php_tags" target="_blank" rel="noopener">Remove alternative PHP tags</a></p>
+<h3 id="移除Switch语句中的多默认块"><a href="#移除Switch语句中的多默认块" class="headerlink" title="移除Switch语句中的多默认块"></a>移除Switch语句中的多默认块</h3><p>在以前，switch语句中可以有多个<code>defaul</code>t块（只有最后一个<code>default</code>块被执行），这种没用的功能现在被移除了，多个<code>default</code>块将会导致一个致命的错误。</p>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>任何在switch语句中使用了多个<code>default</code>块的代码现在将导致一个致命错误</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/switch.default.multiple" target="_blank" rel="noopener">Make defining multiple default cases in a switch a syntax error</a></p>
+<h3 id="移除参数列表中重名参数的重定义"><a href="#移除参数列表中重名参数的重定义" class="headerlink" title="移除参数列表中重名参数的重定义"></a>移除参数列表中重名参数的重定义</h3><p>在以前的版本的函数定义中，可以有重复名字的参数，这个能力现在被移除了，如果存在重名的参数现在将导致一个致命错误。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span><span class="params">($version, $version)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> $version;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> foo(<span class="number">5</span>, <span class="number">7</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Pre PHP 7 result</span></span><br><span class="line"><span class="number">7</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7+ result</span></span><br><span class="line">Fatal error: Redefinition of parameter $version in /redefinition-of-parameters.php</span><br></pre></td></tr></table></figure>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>有重名参数的函数现在将导致一个错误。</li>
+</ul>
+<h3 id="移除已经Dead的服务器API"><a href="#移除已经Dead的服务器API" class="headerlink" title="移除已经Dead的服务器API"></a>移除已经Dead的服务器API</h3><p>下列SAPIs已经从核心中移除，大部分已经从PECL中移除了：</p>
+<ul>
+<li>sapi/aolserver</li>
+<li>sapi/apache</li>
+<li>sapi/apache_hooks</li>
+<li>sapi/apache2filter</li>
+<li>sapi/caudium</li>
+<li>sapi/continuity</li>
+<li>sapi/isapi</li>
+<li>sapi/milter</li>
+<li>sapi/nsapi</li>
+<li>sapi/phttpd</li>
+<li>sapi/pi3web</li>
+<li>sapi/roxen</li>
+<li>sapi/thttpd</li>
+<li>sapi/tux</li>
+<li>sapi/webjames</li>
+<li>ext/mssql</li>
+<li>ext/MySQL</li>
+<li>ext/sybase_ct</li>
+<li>ext/ereg</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/removal_of_dead_sapis_and_exts" target="_blank" rel="noopener">Removal of dead or not yet PHP7 ported SAPIs and extensions</a></p>
+<h3 id="移除数字字符串的十六进制支持"><a href="#移除数字字符串的十六进制支持" class="headerlink" title="移除数字字符串的十六进制支持"></a>移除数字字符串的十六进制支持</h3><p>一个十六进制数字的字符串不再认为是数字的（numerical）。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">var_dump(is_numeric(<span class="string">'0x123'</span>));</span><br><span class="line">var_dump(<span class="string">'0x123'</span> == <span class="string">'291'</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">'0x123'</span> + <span class="string">'0x123'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7 之前</span></span><br><span class="line">bool(<span class="keyword">true</span>)</span><br><span class="line">bool(<span class="keyword">true</span>)</span><br><span class="line"><span class="number">582</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7+</span></span><br><span class="line">bool(<span class="keyword">false</span>)</span><br><span class="line">bool(<span class="keyword">false</span>)</span><br><span class="line"><span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>这么做的原因是为了推进在语言层面对处理十六进制字符串的一致性。例如，下面指定的转换并不会视为十六进制数字符串：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">var_dump((int) <span class="string">'0x123'</span>); <span class="comment">// int(0)</span></span><br></pre></td></tr></table></figure>
+<p>作为替代，字符串的十六进制字符应该用<code>filter_var()</code>函数来验证和转换：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">var_dump(filter_var(<span class="string">'0x123'</span>, FILTER_VALIDATE_INT, FILTER_FLAG_ALLOW_HEX)); <span class="comment">// int(291)</span></span><br></pre></td></tr></table></figure>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>这一改变影响了 <code>is_numeric()</code> 函数和很多操作符，包括 <code>==</code>, <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>, <code>**</code>, <code>++</code>, 和 <code>--</code></li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/remove_hex_support_in_numeric_strings" target="_blank" rel="noopener">Remove hex support in numeric strings</a></p>
+<h3 id="移除过期的功能"><a href="#移除过期的功能" class="headerlink" title="移除过期的功能"></a>移除过期的功能</h3><p>所有标记为过期的功能都被移除了，最值得一提的包括：</p>
+<ul>
+<li>原生mysql扩展(ext/MySQL)</li>
+<li>ereg扩展 (ext/ereg)</li>
+<li>Assigning <code>new</code> by reference</li>
+<li>在不合适的<code>$this</code>上下文调用一个非静态方法。 (例如从类外调用 <code>Foo::bar()</code>，而 <code>bar()</code> 不是一个静态方法)</li>
+</ul>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>任何在PHP 5中运行有已过期警告的代码都将不能工作。(you were warned!)</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/remove_deprecated_functionality_in_php7" target="_blank" rel="noopener">Remove deprecated functionality in PHP 7</a></p>
+<h3 id="Reclassification-and-Removal-of-E-STRICT-Notices"><a href="#Reclassification-and-Removal-of-E-STRICT-Notices" class="headerlink" title="Reclassification and Removal of E_STRICT Notices"></a>Reclassification and Removal of E_STRICT Notices</h3><p>E_STRICT消息总是灰色领域的意思。 这一改变溢出了这一错误分类。 无论是说移除 <code>E_STRICT</code>消息，或者说是将它改为 <code>E_DEPRECATED</code>,或是修改为 E_NOTICE了，或者是提升为一个E_WARNING了。</p>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>因为E_STRICT是最低的严重错误类别，任何错误提升为<code>E_WARNING</code>都可能导致破坏自定义的错误处理程序。</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/reclassify_e_strict" target="_blank" rel="noopener">Reclassify E_STRICT notices</a></p>
+<h3 id="为password-hash-函数设置盐的选项过期"><a href="#为password-hash-函数设置盐的选项过期" class="headerlink" title="为password_hash()函数设置盐的选项过期"></a>为<code>password_hash()</code>函数设置盐的选项过期</h3><p>随着在PHP 5.5中引入了新的密码哈希API，许多人开始实现它并自己生产盐。不幸的是，生成的这些盐许多都是来自密码学不安全的函数，比如 <code>mt_rand()</code>，这使得这些盐远比默认生成的盐要弱！（是的，使用这个新的API来哈希密码默认会使用盐）。为了防止开发正生成不安全的盐，生成盐的选项在PHP 7中被deprecated了。</p>
+<p>RFC: no RFC available</p>
+<h3 id="无效的八进制字面量的错误"><a href="#无效的八进制字面量的错误" class="headerlink" title="无效的八进制字面量的错误"></a>无效的八进制字面量的错误</h3><p>无效的八进制字面量现在会导致一个解析错误而不是静默被截断而被忽略。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">echo</span> <span class="number">0678</span>; <span class="comment">// Parse error:  Invalid numeric literal in...</span></span><br></pre></td></tr></table></figure>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>任何无效的八进制字面量会导致解析错误。</li>
+</ul>
+<p>RFC: no RFC available</p>
+<h3 id="substr-返回值修改"><a href="#substr-返回值修改" class="headerlink" title="substr()返回值修改"></a><code>substr()</code>返回值修改</h3><p>当进行截断的开始位置等于字符的长度时，<code>substr()</code>现在将返回一个空的字符串而不是<code>false</code>。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">var_dump(substr(<span class="string">'a'</span>, <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7 之前</span></span><br><span class="line">bool(<span class="keyword">false</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// PHP 7+</span></span><br><span class="line">string(<span class="number">0</span>) <span class="string">""</span></span><br></pre></td></tr></table></figure>
+<p>然而，在其他情况<code>substr()</code>仍然可能返回<code>false</code>。</p>
+<p><strong>BC Breaks</strong></p>
+<ul>
+<li>那些严格检查返回值为<code>bool(false)</code>的代码现在可能是语义无效的了。</li>
+</ul>
+<p>RFC: no RFC available</p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><h3 id="PHP-6发生了什么"><a href="#PHP-6发生了什么" class="headerlink" title="PHP 6发生了什么"></a>PHP 6发生了什么</h3><p>PHP 6 was the major PHP version that never came to light. It was supposed to<br>feature full support for Unicode in the core, but this effort was too ambitious<br>with too many complications arising. The predominant reasons why version 6 was<br>skipped for this new major version are as follows:</p>
+<ul>
+<li><strong>To prevent confusion</strong>. Many resources were written about PHP 6 and much<br>of the community knew what was featured in it. PHP 7 is a completely<br>different beast with entirely different focuses (specifically on performance)<br>and entirely different feature sets. Thus, a version has been skipped to<br>prevent any confusion or misconceptions surrounding what PHP 7 is.</li>
+<li><strong>To let sleeping dogs lie</strong>. PHP 6 was seen as a failure and a large amount<br>of PHP 6 code still remains in the PHP repository. It was therefore seen as<br>best to move past version 6 and start afresh on the next major version, version<br>7.</li>
+</ul>
+<p>RFC: <a href="https://wiki.php.net/rfc/php6" target="_blank" rel="noopener">Name of Next Release of PHP</a></p>
+<p>Other RFCs:</p>
+<ul>
+<li><a href="http://php.net/manual/zh/migration70.new-features.php" target="_blank" rel="noopener">http://php.net/manual/zh/migration70.new-features.php</a></li>
+<li><a href="http://php.net/manual/zh/migration70.incompatible.php" target="_blank" rel="noopener">http://php.net/manual/zh/migration70.incompatible.php</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/php/" rel="tag">#php</a>
+          
+            <a href="/tags/lang/" rel="tag">#lang</a>
+          
+            <a href="/tags/php7/" rel="tag">#php7</a>
+          
+            <a href="/tags/translate/" rel="tag">#translate</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/effective-go-review/" rel="next" title="再看Effective Go">
+                <i class="fa fa-chevron-left"></i> 再看Effective Go
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/intro-of-https/" rel="prev" title="了解https通信">
+                了解https通信 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#性能"><span class="nav-number">1.</span> <span class="nav-text">性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特性"><span class="nav-number">2.</span> <span class="nav-text">特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#组合比较操作符"><span class="nav-number">2.1.</span> <span class="nav-text">组合比较操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空引用合并操作符"><span class="nav-number">2.2.</span> <span class="nav-text">空引用合并操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标量类型声明"><span class="nav-number">2.3.</span> <span class="nav-text">标量类型声明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回值类型声明"><span class="nav-number">2.4.</span> <span class="nav-text">返回值类型声明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#匿名类"><span class="nav-number">2.5.</span> <span class="nav-text">匿名类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unicode编码点转义语法"><span class="nav-number">2.6.</span> <span class="nav-text">Unicode编码点转义语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Closure-call"><span class="nav-number">2.7.</span> <span class="nav-text">Closure::call()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#带过滤的-unserialize"><span class="nav-number">2.8.</span> <span class="nav-text">带过滤的 unserialize()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IntlChar-类"><span class="nav-number">2.9.</span> <span class="nav-text">IntlChar 类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预期"><span class="nav-number">2.10.</span> <span class="nav-text">预期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Group-use-Declarations"><span class="nav-number">2.11.</span> <span class="nav-text">Group use Declarations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成器返回表达式"><span class="nav-number">2.12.</span> <span class="nav-text">生成器返回表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成器委托"><span class="nav-number">2.13.</span> <span class="nav-text">生成器委托</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-intdiv-做整数除法"><span class="nav-number">2.14.</span> <span class="nav-text">使用 intdiv() 做整数除法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#session-start-选项"><span class="nav-number">2.15.</span> <span class="nav-text">session_start() 选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#preg-replace-callback-array-函数"><span class="nav-number">2.16.</span> <span class="nav-text">preg_replace_callback_array() 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSPRNG（密码学安全伪随机数构建器）函数"><span class="nav-number">2.17.</span> <span class="nav-text">CSPRNG（密码学安全伪随机数构建器）函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#支持-define-定义数组常量"><span class="nav-number">2.18.</span> <span class="nav-text">支持 define() 定义数组常量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反射增强"><span class="nav-number">2.19.</span> <span class="nav-text">反射增强</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改变"><span class="nav-number">3.</span> <span class="nav-text">改变</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#放松保留字的限制"><span class="nav-number">3.1.</span> <span class="nav-text">放松保留字的限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#统一变量语法"><span class="nav-number">3.2.</span> <span class="nav-text">统一变量语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引擎中的异常"><span class="nav-number">3.3.</span> <span class="nav-text">引擎中的异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可抛出的接口"><span class="nav-number">3.4.</span> <span class="nav-text">可抛出的接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整数语义"><span class="nav-number">3.5.</span> <span class="nav-text">整数语义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSOND替代了JSON扩展"><span class="nav-number">3.6.</span> <span class="nav-text">JSOND替代了JSON扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZPP-溢出时失败"><span class="nav-number">3.7.</span> <span class="nav-text">ZPP 溢出时失败</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修正-foreach-的行为"><span class="nav-number">3.8.</span> <span class="nav-text">修正 foreach() 的行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-list-的行为"><span class="nav-number">3.9.</span> <span class="nav-text">修改 list() 的行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改变除数为0的语义"><span class="nav-number">3.10.</span> <span class="nav-text">改变除数为0的语义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修复自定义session-handler的返回值"><span class="nav-number">3.11.</span> <span class="nav-text">修复自定义session handler的返回值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回只用PHP-4风格的构造函数"><span class="nav-number">3.12.</span> <span class="nav-text">返回只用PHP 4风格的构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除date-timezone的警告"><span class="nav-number">3.13.</span> <span class="nav-text">移除date.timezone的警告</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#去除可替代的PHP标签"><span class="nav-number">3.14.</span> <span class="nav-text">去除可替代的PHP标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除Switch语句中的多默认块"><span class="nav-number">3.15.</span> <span class="nav-text">移除Switch语句中的多默认块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除参数列表中重名参数的重定义"><span class="nav-number">3.16.</span> <span class="nav-text">移除参数列表中重名参数的重定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除已经Dead的服务器API"><span class="nav-number">3.17.</span> <span class="nav-text">移除已经Dead的服务器API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除数字字符串的十六进制支持"><span class="nav-number">3.18.</span> <span class="nav-text">移除数字字符串的十六进制支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除过期的功能"><span class="nav-number">3.19.</span> <span class="nav-text">移除过期的功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reclassification-and-Removal-of-E-STRICT-Notices"><span class="nav-number">3.20.</span> <span class="nav-text">Reclassification and Removal of E_STRICT Notices</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为password-hash-函数设置盐的选项过期"><span class="nav-number">3.21.</span> <span class="nav-text">为password_hash()函数设置盐的选项过期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无效的八进制字面量的错误"><span class="nav-number">3.22.</span> <span class="nav-text">无效的八进制字面量的错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#substr-返回值修改"><span class="nav-number">3.23.</span> <span class="nav-text">substr()返回值修改</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ"><span class="nav-number">4.</span> <span class="nav-text">FAQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PHP-6发生了什么"><span class="nav-number">4.1.</span> <span class="nav-text">PHP 6发生了什么</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>

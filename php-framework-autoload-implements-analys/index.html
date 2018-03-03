@@ -1,0 +1,771 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="php,framework," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="之前一片文章分析过PHP中实现自动加载的方法，这几天在看lavaral的代码，发现其自动加载机制和Yii 2 的自动加载是同样的。这里索性把这种常用的自动加载实现做个简单的总结。 关于自动加载和命名空间，是很多PHP开发者绕不过去的领域，虽然很多旧的教程并不会提及这一块，但是可以看到随着PHP的不断发展，命名被用的越来越广泛，PSR-0 和 PSR-4 规范的通过也是业界的一种发展趋势。关于自动加">
+<meta name="keywords" content="php,framework">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHP框架中自动加载机制实现分析">
+<meta property="og:url" content="http://blog.wuxu92.com/php-framework-autoload-implements-analys/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="之前一片文章分析过PHP中实现自动加载的方法，这几天在看lavaral的代码，发现其自动加载机制和Yii 2 的自动加载是同样的。这里索性把这种常用的自动加载实现做个简单的总结。 关于自动加载和命名空间，是很多PHP开发者绕不过去的领域，虽然很多旧的教程并不会提及这一块，但是可以看到随着PHP的不断发展，命名被用的越来越广泛，PSR-0 和 PSR-4 规范的通过也是业界的一种发展趋势。关于自动加">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T07:56:46.558Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PHP框架中自动加载机制实现分析">
+<meta name="twitter:description" content="之前一片文章分析过PHP中实现自动加载的方法，这几天在看lavaral的代码，发现其自动加载机制和Yii 2 的自动加载是同样的。这里索性把这种常用的自动加载实现做个简单的总结。 关于自动加载和命名空间，是很多PHP开发者绕不过去的领域，虽然很多旧的教程并不会提及这一块，但是可以看到随着PHP的不断发展，命名被用的越来越广泛，PSR-0 和 PSR-4 规范的通过也是业界的一种发展趋势。关于自动加">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> PHP框架中自动加载机制实现分析 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                PHP框架中自动加载机制实现分析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-09-06T12:34:50+08:00" content="2015-09-06">
+              2015-09-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/framework/" itemprop="url" rel="index">
+                    <span itemprop="name">framework</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>之前一片文章分析过PHP中实现自动加载的方法，这几天在看lavaral的代码，发现其自动加载机制和Yii 2 的自动加载是同样的。这里索性把这种常用的自动加载实现做个简单的总结。</p>
+<p>关于自动加载和命名空间，是很多PHP开发者绕不过去的领域，虽然很多旧的教程并不会提及这一块，但是可以看到随着PHP的不断发展，命名被用的越来越广泛，PSR-0 和 PSR-4 规范的通过也是业界的一种发展趋势。<br>关于自动加载和命名空间在项目中的使用，我还和勇哥进行过多次“和颜悦色”、“亲切友好”的交流，我是希望公司都能推广使用更好的自动加载机制（现在使用的自动加载确实有点麻烦），并且希望在项目中使用命名空间，最好符合PSR-0的规范。但是由于公司很多人都没有使用命名空间的习惯，所以讲过多次交流，勇哥没削我，我也没法说服他去推广。。。。。<br>但是希望所有的php开发者在尽早都使用命名空间。</p>
+<p>废话不多说了，下面开始吧。</p>
+<ol>
+<li>自动加载机制</li>
+<li>PSR-0和PSR-4规范</li>
+<li>laravel中自动流程</li>
+</ol>
+<a id="more"></a>
+<h2 id="自动加载机制"><a href="#自动加载机制" class="headerlink" title="自动加载机制"></a>自动加载机制</h2><p>关于php中的自动加载机制，在之前的 <a href="http://wuxu92.github.io/php-using-spl-autoloader/" target="_blank" rel="noopener">一篇文章</a> 已经简单的介绍了。php在5.3版本才引入命名空间，由一种松散凌乱的语言慢慢向标准化进化，自动加载机制就是重要的一部分。</p>
+<p>在之前的文章中，介绍了实现自动加载的方法，通过<code>spl_autoload_register</code>函数给系统注册一个autoloader，这些加载器通过我们自定义的函数去寻找类对应的php文件，找到文件后使用<code>require</code>方法引入文件。</p>
+<p>这样做可以实现基本的类加载，但是不同的人去注册自动加载方法会各不相同，导致不同的php项目的加载机制实现还是五花八门，这对于模块化的开发是灾难性的，因为不同模块的加载机制都不同，整合到一起更本没法工作。</p>
+<h2 id="PSR-0-和-PSR-4"><a href="#PSR-0-和-PSR-4" class="headerlink" title="PSR-0 和 PSR-4"></a>PSR-0 和 PSR-4</h2><p>鉴于这些问题的存在，<a href="http://www.php-fig.org/" target="_blank" rel="noopener">php-fig</a>,即PHP Framework Interop Group/php框架互操作小组，推出了一系列的推荐规范。其中包括推荐的，也是已经被接受的自动加载规范。<br>其实PHP发展了这么多年，一直缺少一个官方的语言规范(language specification)，知道最近才有一个<a href="https://github.com/php/php-langspec" target="_blank" rel="noopener">社区维护的spec</a>。php-fig就推出了一些列的recommendation，详情参见： <a href="http://www.php-fig.org/psr/" target="_blank" rel="noopener">http://www.php-fig.org/psr/</a></p>
+<p>其实在php-fig的已接受规范中，有两个是关于自动加载的，即<a href="http://www.php-fig.org/psr/psr-0/" target="_blank" rel="noopener">PSR-0</a>和<a href="http://www.php-fig.org/psr/psr-4/" target="_blank" rel="noopener">PSR-4</a>。为什么一个工作组推出的规范会有两个不同的版本呢？这还是因为php常年的不够规范导致的。</p>
+<p>PSR-0是比较早的一个规范，在2014年10月21日被官方标注为一个过时的规范了，现在官方推荐使用的是PSR-4规范。但是由于一些项目已经在使用PSR-0规范实现类加载了，而且又没有升级到PSR-4兼容的实现，所以在一般的php框架都会同时支持psr-0和psr-4的自动加载实现。</p>
+<h3 id="PSR-0"><a href="#PSR-0" class="headerlink" title="PSR-0"></a>PSR-0</h3><p>虽然PSR-0是一个deprecated的规范，在这里还是要介绍一下，PSR-0有如下的强制要求：</p>
+<ol>
+<li>A fully-qualified namespace and class must have the following structure \<vendor name="">(<namespace>)*<class name=""></class></namespace></vendor></li>
+<li>Each namespace must have a top-level namespace (“Vendor Name”).</li>
+<li>Each namespace can have as many sub-namespaces as it wishes.</li>
+<li>Each namespace separator is converted to a DIRECTORY_SEPARATOR when loading from the file system.</li>
+<li>Each _ character in the CLASS NAME is converted to a DIRECTORY_SEPARATOR. The _ character has no special meaning in the namespace.</li>
+<li>The fully-qualified namespace and class is suffixed with .php when loading from the file system.</li>
+<li>Alphabetic characters in vendor names, namespaces, and class names may be of any combination of lower case and upper case.</li>
+</ol>
+<p>其中要注意的几点：1. namespace的顶级名是Vendor Name。 2.类名中的下划线会被翻译成路径分隔符</p>
+<p>PSR-0的一种实现： <a href="http://gist.github.com/221634" target="_blank" rel="noopener">http://gist.github.com/221634</a> 这在之前的文章中已经提过了。</p>
+<h3 id="PSR-4"><a href="#PSR-4" class="headerlink" title="PSR-4"></a>PSR-4</h3><p>按照php-fig的<a href="http://www.php-fig.org/psr/psr-4/meta/" target="_blank" rel="noopener">一篇文章</a>的说法，PSR-4是PSR-0的一种补充，而不是为了代替PSR-0规范。PSR-4的提出是考虑PSR-0会导致文件夹组织层级太深，具体在上面的链接有介绍。</p>
+<blockquote>
+<p>The purpose is to specify the rules for an interoperable PHP autoloader that maps namespaces to file system paths, and that can co-exist with any other SPL registered autoloader. This would be an addition to, not a replacement for, PSR-0.</p>
+</blockquote>
+<p>PSR-4中的规范：</p>
+<ol>
+<li>The fully qualified class name MUST have a top-level namespace name, also known as a “vendor namespace”.</li>
+<li>The fully qualified class name MAY have one or more sub-namespace names.</li>
+<li>The fully qualified class name MUST have a terminating class name.</li>
+<li>Underscores have no special meaning in any portion of the fully qualified class name.</li>
+<li>Alphabetic characters in the fully qualified class name MAY be any combination of lower case and upper case.</li>
+<li>All class names MUST be referenced in a case-sensitive fashion.</li>
+</ol>
+<p>需要注意的就是PSR-4中下划线没有特殊意义了，不再被翻译为路径分隔符，显然这是更加优雅的，因为下划线是在php 5.2及之前还不支持命名空间时的一种妥协方法。<br>在PSR-4中添加一条就是自动加载的实现不能抛出异常或者导致error，也不要有返回值。</p>
+<blockquote>
+<p>Autoloader implementations MUST NOT throw exceptions, MUST NOT raise errors of any level, and SHOULD NOT return a value.</p>
+</blockquote>
+<p>一种PSR-4的<a href="http://www.php-fig.org/psr/psr-4/examples/" target="_blank" rel="noopener">实现</a></p>
+<h2 id="Laravel中的自动加载实现"><a href="#Laravel中的自动加载实现" class="headerlink" title="Laravel中的自动加载实现"></a>Laravel中的自动加载实现</h2><p>作为Laravel入口文件（public/index.php）的第一个语句，就是引入自动加载。<code>require __DIR__.&#39;/../bootstrap/autoload.php&#39;;</code> 我们今天先不管其他的部分，只看这一句话引入的文件到底做了什么工作。</p>
+<p>进入bootstrap/打开autoload.php 文件，其实这个文件又引入了另外一个autoload，这个autoload是按路径索引找到vendor目录下的autoload文件： <code>require __DIR__.&#39;/../vendor/autoload.php&#39;;</code>。 我们在前面介绍PSR的时候提到过这个vendor的概念。在框架中，或者一个使用PSR规范的项目中，vendor目录用来存放框架，各种类库的目录，各个命名空间的顶级目录（top-level）。</p>
+<p>一般来说vendor目录下的各个文件夹代表各个不同的组件，可能组件的概念不太正确，可以看作被框架使用的来自不同项目组[开源]的项目，比如composer是个文件夹，swiftmailer是一个文件夹，他们是各自独立的组件。一般来说vendor目录下除了这些文件夹外会有一个autoload.php文件，这个是为各个组件提供自动加载的。</p>
+<p>打开这个autoload.php 文件会发现，其实这个文件也非常简单。它引入了composer的autoload_real文件。并调用composer自动加载器的一个静态方法：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require_once</span> <span class="keyword">__DIR__</span> . <span class="string">'/composer'</span> . <span class="string">'/autoload_real.php'</span>;</span><br><span class="line"><span class="keyword">return</span> ComposerAutoloaderInitfd5743bc2bb9a7cd13b302b82eb0d158::getLoader();</span><br></pre></td></tr></table></figure>
+<p>可以发现，这个类的名字后面跟了一段很长的散列值，这是在使用composer安装项目是生成的，为了保证这个类的全局唯一？估计是这样的吧。</p>
+<p>打开/vendor/composer/autoload_real.php这个文件。查看源码，可以看到里面定义了一个composer自动加载器类，其中最重要的静态方法<code>getLoader</code>方法包含了很多的自动加载机制实现。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getLoader</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> !== <span class="keyword">self</span>::$loader) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>::$loader;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    spl_autoload_register(<span class="keyword">array</span>(<span class="string">'ComposerAutoloaderInitfd5743bc2bb9a7cd13b302b82eb0d158'</span>, <span class="string">'loadClassLoader'</span>), <span class="keyword">true</span>, <span class="keyword">true</span>);</span><br><span class="line">    <span class="keyword">self</span>::$loader = $loader = <span class="keyword">new</span> \Composer\Autoload\ClassLoader();</span><br><span class="line">    spl_autoload_unregister(<span class="keyword">array</span>(<span class="string">'ComposerAutoloaderInitfd5743bc2bb9a7cd13b302b82eb0d158'</span>, <span class="string">'loadClassLoader'</span>));</span><br><span class="line"></span><br><span class="line">    $map = <span class="keyword">require</span> <span class="keyword">__DIR__</span> . <span class="string">'/autoload_namespaces.php'</span>;</span><br><span class="line">    <span class="keyword">foreach</span> ($map <span class="keyword">as</span> $namespace =&gt; $path) &#123;</span><br><span class="line">        $loader-&gt;set($namespace, $path);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $map = <span class="keyword">require</span> <span class="keyword">__DIR__</span> . <span class="string">'/autoload_psr4.php'</span>;</span><br><span class="line">    <span class="keyword">foreach</span> ($map <span class="keyword">as</span> $namespace =&gt; $path) &#123;</span><br><span class="line">        $loader-&gt;setPsr4($namespace, $path);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $classMap = <span class="keyword">require</span> <span class="keyword">__DIR__</span> . <span class="string">'/autoload_classmap.php'</span>;</span><br><span class="line">    <span class="keyword">if</span> ($classMap) &#123;</span><br><span class="line">        $loader-&gt;addClassMap($classMap);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $loader-&gt;register(<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">    $includeFiles = <span class="keyword">require</span> <span class="keyword">__DIR__</span> . <span class="string">'/autoload_files.php'</span>;</span><br><span class="line">    <span class="keyword">foreach</span> ($includeFiles <span class="keyword">as</span> $file) &#123;</span><br><span class="line">        composerRequirefd5743bc2bb9a7cd13b302b82eb0d158($file);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> $loader;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的自动加载实现依赖于ClassLoader类，真正的加载逻辑由这个类实现，在autoload_real中相当于注册了namespace, psr4, files, classmap等各个自动加载的配置。</p>
+<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2></span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/php/" rel="tag">#php</a>
+          
+            <a href="/tags/framework/" rel="tag">#framework</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/update-gitlab-7-14-1/" rel="next" title="更新gitlab到7.14.1">
+                <i class="fa fa-chevron-left"></i> 更新gitlab到7.14.1
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/php-fpm-504-error/" rel="prev" title="PHP-FPM出现504错误">
+                PHP-FPM出现504错误 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#自动加载机制"><span class="nav-number">1.</span> <span class="nav-text">自动加载机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PSR-0-和-PSR-4"><span class="nav-number">2.</span> <span class="nav-text">PSR-0 和 PSR-4</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PSR-0"><span class="nav-number">2.1.</span> <span class="nav-text">PSR-0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PSR-4"><span class="nav-number">2.2.</span> <span class="nav-text">PSR-4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Laravel中的自动加载实现"><span class="nav-number">3.</span> <span class="nav-text">Laravel中的自动加载实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#待续"><span class="nav-number">4.</span> <span class="nav-text">待续</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+</body>
+</html>
