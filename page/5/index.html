@@ -207,6 +207,115 @@
 
     
     
+      
+      
+
+      
+    
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/effective-go-review/" itemprop="url">
+                  再看Effective Go
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-02-29T22:50:15+08:00" content="2016-02-29">
+              2016-02-29
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li>若有名为 owner （小写，未导出）的字段，其获取器应当名为 Owner（大写，可导出）而非 GetOwner。大写字母即为可导出的这种规定为区分方法和字段提供了便利。 若要提供设置器方法，SetOwner 是个不错的选择</li>
+<li>按照约定，只包含一个方法的接口应当以该方法的名称加上-er后缀来命名，如 Reader、Writer。</li>
+<li>Go中约定使用驼峰记法 MixedCaps 或 mixedCaps</li>
+<li>Go的正式语法使用分号来结束语句；和C不同的是，这些分号并不在源码中出现。所以Go并不是没有分号，只是和JS一样会自动添加分号。</li>
+<li>对于字符串，range 能够提供更多便利。它能通过解析UTF-8， 将每个独立的Unicode码点分离出来。错误的编码（非UTF8编码）将占用一个字节，并以符文U+FFFD来代替。</li>
+<li>若 <code>switch</code> 后面没有表达式，它将匹配值为 <code>true</code> 的case，因此，我们可以将 if-else-if-else 链写成一个 switch</li>
+<li>被推迟函数的实参（如果该函数为方法则还包括接收者）在<strong>推迟执行时就会求值</strong>，而不是在调用执行时才求值。这样无需担心变量值在函数执行时被改变。// 记得JS中<code>setInterval</code>的一个例子吗？</li>
+<li><code>new(T)</code> 会为类型为 <code>T</code> 的新项分配已置零的内存空间， 并返回它的地址，也就是一个类型为 <code>*T</code> 的值
+          <div class="post-more-link text-center">
+            <a class="btn" href="/effective-go-review/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -1133,148 +1242,12 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/some-useful-tools/" itemprop="url">
-                  一些常用的工具
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-20T17:13:52+08:00" content="2016-01-20">
-              2016-01-20
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/tools/" itemprop="url" rel="index">
-                    <span itemprop="name">tools</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>一些常用的工具分列：</p>
-<h2 id="Web管理界面"><a href="#Web管理界面" class="headerlink" title="Web管理界面"></a>Web管理界面</h2><p><strong>adminMongo</strong>：一个基于Web的MongoDB管理工具， <a href="https://github.com/mrvautin/adminMongo" target="_blank" rel="noopener">https://github.com/mrvautin/adminMongo</a>，功能没有phpMyAdmin那么强，但是勉强可用，Windows下的mongo shell 太弱鸡了。</p>
-<p><strong>RockMongo</strong>：一个PHP开发的Web管理工具，看起来和phpMyAdmin很像，应该比adminMongo好用，网站： <a href="http://www.rockmongo.com/" target="_blank" rel="noopener">http://www.rockmongo.com/</a></p>
-<p><strong>个人觉得，这些mongodb的管理工具远不如Linux下的命令行客户端方便</strong></p>
-<h2 id="Chrome插件"><a href="#Chrome插件" class="headerlink" title="Chrome插件"></a>Chrome插件</h2><p>最常用的一些插件</p>
-<ol>
-<li>Advertising Terminator</li>
-<li>Chromium Wheel Smooth Scroller</li>
-<li>CSS3 Generator</li>
-<li>Enable Copy</li>
-<li>Extension Manager(aka Switcher)</li>
-<li>Flashcontrol</li>
-<li>Force Custom Fonts</li>
-<li>Free Download Manager Chrome extension</li>
-<li>Hasher</li>
-<li>HTTP  Headers</li>
-<li>HTTPS Everywhere</li>
-<li>JSONView</li>
-<li>LastPass: Free Password Manager</li>
-<li>PHP Ninja Manual</li>
-<li>Postman</li>
-<li>Proxy SwitchyOmega</li>
-<li>Smooth Key Scroll</li>
-<li>Speed Dial[FVD - New Tab Page, 3D…</li>
-<li>Stylish</li>
-<li>uBlock Origin</li>
-<li>Vimium</li>
-<li>Vue.js devtools</li>
-<li>WhatFont</li>
-<li>WordsBaking+</li>
-</ol>
-<h2 id="Windows增强"><a href="#Windows增强" class="headerlink" title="Windows增强"></a>Windows增强</h2><ol>
-<li><a href="http://cn.ejie.me/" target="_blank" rel="noopener">Clover</a>，资源管理器标签化工具，早期的Windows10兼容性不太好经常会崩溃，现在没有问题了</li>
-<li><a href="http://www.appinn.com/altrun/" target="_blank" rel="noopener">ALTRun</a> 快速启动工具，虽然很久没有维护了，但是功能很强大，各版本Windows都兼容</li>
-<li><a href="https://www.proxifier.com/" target="_blank" rel="noopener">Proxifier</a>，全局代理设置工具，再也不需要去各个软件下找设置代理的方法了，还可以为本身不支持代理的软件设置代理</li>
-<li><a href="www.yingdev.com/projects/wgestures">Wgesture</a>，全局手势工具，可以对不同软件定义手势行为，非常方便</li>
-<li><a href="https://www.netsarang.com/xshell_download.html" target="_blank" rel="noopener">XShell</a>， SSH客户端，学生和家庭免费使用，好用，方便</li>
-<li><a href="https://justgetflux.com/" target="_blank" rel="noopener">f.lux</a> 屏幕自动调节色温，这个见仁见智，有人喜欢，有人不喜欢，个人使用了挺长时间了</li>
-<li><a href="https://www.sublimetext.com" target="_blank" rel="noopener">Sublime Text</a>，强大的文本编辑器，也可以当作IDE使用，推荐给别人没有不喜欢的，可玩性非常高</li>
-<li><a href="http://www.4t-niagara.com/" target="_blank" rel="noopener">4t Tray Minimizer</a>，一个为Windows的窗口添加增强功能的工具，能添加置顶、收缩、透明等效果。</li>
-</ol>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1315,7 +1288,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-count">171</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1329,7 +1302,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">146</span>
+              <span class="site-state-item-count">144</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

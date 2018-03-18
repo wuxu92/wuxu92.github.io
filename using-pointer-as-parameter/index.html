@@ -59,7 +59,7 @@
 <meta property="og:site_name" content="Wu Xu">
 <meta property="og:description" content="这个问题其实比较常见了，但是经常会出错，就是C中函数的参数是值传递的，即使对于指针，也是值传递。很多高级语言在这一点是相通的。 今天看到这个问题是在 c-fqa.com 上的一个问题，看下面的代码： void f(int *ip) &amp;#123;	static int dummy = 5;	// static make dummy accessiable for whole file	ip = &amp;a">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-03T07:56:46.594Z">
+<meta property="og:updated_time" content="2018-03-18T15:58:40.117Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C中使用指针作为参数的一些问题">
 <meta name="twitter:description" content="这个问题其实比较常见了，但是经常会出错，就是C中函数的参数是值传递的，即使对于指针，也是值传递。很多高级语言在这一点是相通的。 今天看到这个问题是在 c-fqa.com 上的一个问题，看下面的代码： void f(int *ip) &amp;#123;	static int dummy = 5;	// static make dummy accessiable for whole file	ip = &amp;a">
@@ -307,16 +307,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/should-not-cast-the-result-of-malloc/" rel="next" title="malloc的强制类型转换">
-                <i class="fa fa-chevron-left"></i> malloc的强制类型转换
+              <a href="/c-union-enum-and-func-ptr/" rel="next" title="C 联合、枚举及函数指针">
+                <i class="fa fa-chevron-left"></i> C 联合、枚举及函数指针
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/c-preprocessor/" rel="prev" title="预处理器">
-                预处理器 <i class="fa fa-chevron-right"></i>
+              <a href="/should-not-cast-the-result-of-malloc/" rel="prev" title="malloc的强制类型转换">
+                malloc的强制类型转换 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -385,7 +385,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-count">171</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -399,7 +399,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">146</span>
+              <span class="site-state-item-count">144</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

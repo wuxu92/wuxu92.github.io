@@ -207,6 +207,145 @@
 
     
     
+      
+      
+
+      
+    
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/request-rate-limit-and-access-deny/" itemprop="url">
+                  服务器访问频率限制和IP限制
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-06-29T10:01:43+08:00" content="2016-06-29">
+              2016-06-29
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>最近公司部署在阿里云上的服务器被恶意攻击了，大概几百台肉鸡不停地向某个接口发送请求。由于一些各种原因，过多的请求导致服务器CPU占用率几乎是一直在100%。虽然应用勉强还能使用，但是这样被请求服务器真是压力非常大。</p>
+<p>由于公司现在还没有专职的运维去处理这些请求所以只好自己动手先做一些限制，大概两个思路：</p>
+<ol>
+<li>对接口的请求限速</li>
+<li>2.封禁一批IP</li>
+</ol>
+<h2 id="基础环境"><a href="#基础环境" class="headerlink" title="基础环境"></a>基础环境</h2><p>先记录一下服务器的基本环境，双核，4G内存，Ubuntu 14.04，现在的web server是lighttpd，数据库是mysql。</p>
+<h2 id="接口限速"><a href="#接口限速" class="headerlink" title="接口限速"></a>接口限速</h2><p>由于现在部署的代码使用旧的框架，本身没有对接口限速的功能，只能从web server方面入手。</p>
+<p>现在的web server是lighttpd，lighttpd的特点是轻快，内存占用小，但是模块化不是很好，似乎在lighttpd上面做 rate limiting 不是那么方便，我觉得可以使用使用一个围魏救赵的方案：</p>
+<p>搭建一个nginx作为前端server，在nginx这里做rate limit，nginx把请求发送到lighttpd，lighttpd不对外暴露端口，只接受来自nginx的请求。</p>
+<p>在lighttpd的配置文件(/etc/lighttpd/lighttpd.conf)中加上</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">server.port = 80001</span><br></pre></td></tr></table></figure>
+<p>重启lighttpd，记得在防火墙中Drop所有8001端口的请求。</p>
+<p>安装好nginx（推荐编译安装openresty）后，配置转发如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">upstream lighttpd &#123;</span><br><span class="line">	server 127.0.0.1:8001</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server</span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">	location / &#123;</span><br><span class="line">		proxy_redirect off;</span><br><span class="line">        proxy_set_header Host $host;</span><br><span class="line">        proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; </span><br><span class="line">        proxy_pass http://lighttpd;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>启动nginx后，原来所有的请求都会发送到nginx了，而对用户来说，感觉不到任何的变化。</p>
+<p>有了nginx之后我们可以使用 <a href="http://nginx.org/en/docs/http/ngx_http_limit_req_module.html" target="_blank" rel="noopener">ngx_http_limit_req_module</a> 这个模块做限速了，具体内容可以参考nginx的文档。</p>
+<h3 id="定义限制请求域"><a href="#定义限制请求域" class="headerlink" title="定义限制请求域"></a>定义限制请求域</h3><p>rate limit首先要定义一个或多个zone，然后在特定的context使用它们。这些定义一般定义在http上下文中。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http ｛</span><br><span class="line">	## 对每一个IP的请求限制为1次每秒</span><br><span class="line">	limit_req_zone $binary_remote_addr zone=perip:10m rate=1r/s;</span><br><span class="line"></span><br><span class="line">	## 对一个server_name下的请求限制为10次每秒（这个数值有点低，一般会改大很多）</span><br><span class="line">	limit_req_zone $server_name zone=perserver:10m rate=10r/s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="使用请求限制"><a href="#使用请求限制" class="headerlink" title="使用请求限制"></a>使用请求限制</h3><p>可以在 http, server,location 上下文使用上面定义的域，使用方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">	...</span><br><span class="line">	limit_req zone=perip burst=5 nodelay;</span><br><span class="line">    limit_req zone=perserver burst=10;</span><br><span class="line"></span><br><span class="line">	location /api &#123;</span><br><span class="line">		limit_req zone=perip burst=3 nodelay;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>限速的配置是可继承的，当前级别没有配置就会从父级配置中继承：</p>
+<blockquote>
+<p>These directives are inherited from the previous level if and only if there are no limit_req directives on the current level</p>
+</blockquote>
+<p>关于 nodelay的配置，说明如下：</p>
+<blockquote>
+<p>If delaying of excessive requests while requests are being limited is not desired, the parameter nodelay should be used</p>
+</blockquote>
+<h2 id="IP-限制"><a href="#IP-限制" class="headerlink" title="IP 限制"></a>IP 限制</h2><p>第二个思路是找出频繁请求的那些IP，在防火墙或者 web server 级别做限制，拒绝它们的请求。</p>
+<p>首先通过请求日志（access_log）找出请求次数最多的前50个IP：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk &apos;&#123;print $1&#125;&apos; /path/to/web-server-log/access.log | sort|uniq -c | sort -nr | head -n 50</span><br></pre></td></tr></table></figure>
+<p>我只是在nginx或者lighttpd层做限制，iptables在我手上很容易玩坏，不是很熟悉，就在web server做配置了：</p>
+<h3 id="nginx限制IP访问"><a href="#nginx限制IP访问" class="headerlink" title="nginx限制IP访问"></a>nginx限制IP访问</h3><p>nginx的配置很简单，在指定上下文deny掉指定的IP就可以了，如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">location / &#123;</span><br><span class="line">    deny  192.168.1.2;</span><br><span class="line">    allow 192.168.1.1/24;</span><br><span class="line">    allow 127.0.0.1;</span><br><span class="line">    deny  all;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="lighttpd限制IP访问"><a href="#lighttpd限制IP访问" class="headerlink" title="lighttpd限制IP访问"></a>lighttpd限制IP访问</h3><p>lighttpd的限制也非常方便，只不过要先对上面获得的50个ip做一些简单的处理，然后在ilghttpd.conf中加入下面的配置：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$HTTP[&quot;remoteip&quot;] != &quot;1.231.2.1|23.24.54.213|ip-3|ip-4|more-ip&quot; &#123;</span><br><span class="line"> url.access-deny = ( &quot;&quot; )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>第一种方法应该是更好的，或者说是必须的，但是我调了一下，限速的参数可能调太小了，导致正常的访问都不太好用了，之后需要继续调优参数。</p>
+<p>第二种限制IP的方法也可以有，可以用一个计划任务隔一段时间就跑一批IP扔到禁止列表中，不过要是能加到iptables中，对服务器的压力就更小了，这个后面可以尝试一下。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -1157,110 +1296,12 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/jvm-class-load-mechanism/" itemprop="url">
-                  Java虚拟机类加载机制
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-03-25T20:13:43+08:00" content="2016-03-25">
-              2016-03-25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/jvm/" itemprop="url" rel="index">
-                    <span itemprop="name">jvm</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>前段时间，室友面试被问到了java的类加载机制。关于类加载机制之前看《深入理解Java虚拟机》的时候看过这一章，不过都忘得差不多了，只记得有一个复杂的流程：验证－准备－解析－初始化等等，今天复习一下顺便做个笔记。</p>
-<p>Java代码编译为字节码（.class文件）后，需要加载到虚拟机之后才能运行和使用，还有很多运行在JVM平台的其他语言（如Grovvy, scala, kotlin等）也会被编译为符合JVM字节码规范的文件后被虚拟机读取运行。那么JVM是如何运行这些字节码文件的呢。</p>
-<p>与C语言的在编译时进行连接工作不同，Java中， 类型的加载和连接都是在程序运行时期完成的，Java的动态扩展的语言特性就是依赖于运行期动态加载和动态连接的特点。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/jvm-class-load-mechanism/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1301,7 +1342,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-count">171</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1315,7 +1356,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">146</span>
+              <span class="site-state-item-count">144</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

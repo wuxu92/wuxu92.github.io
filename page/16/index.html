@@ -207,6 +207,11 @@
 
     
     
+      
+      
+
+      
+    
 
     
       
@@ -284,6 +289,119 @@
           <span itemprop="articleBody">
             
               <p>一直拖着没写，估计不会写了</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/php-using-spl-autoloader/" itemprop="url">
+                  PHP中自动加载的几种实现
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-08-11T12:34:50+08:00" content="2015-08-11">
+              2015-08-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>PHP自动加载是一个很有用的技巧，我们应该在项目中尽量使用autoload来减少维护类加载的工作。 </p>
+<h2 id="使用-autoload"><a href="#使用-autoload" class="headerlink" title="使用__autoload"></a>使用__autoload</h2><p>在使用PHP的项目中，如何实现自动加载对于新人总是一个很疑惑的问题，一般写过的一些PHP，或者用过一些框架的同学都知道通过实现__autoload()函数来实现简单的自动加载：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function __autoload($classname) &#123;</span><br><span class="line">    $filename = &quot;./&quot;. $classname .&quot;.php&quot;;</span><br><span class="line">    include_once($filename);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不过这样的方式缺点也能明显就是只能定义一种加载策略，或者把这个函数实现的很复杂来实现多样的自动加载策略。</p>
+<h2 id="使用spl-autoload-register"><a href="#使用spl-autoload-register" class="headerlink" title="使用spl_autoload_register"></a>使用spl_autoload_register</h2><p>现在推荐使用的是<code>spl_autoload_register()</code>来注册自动加载器，它可以用来注册多个自动加载策略。它的函数签名是:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">bool spl_autoload_register ([ callable $autoload_function [, bool $throw = true [, bool $prepend = false ]]] )</span><br></pre></td></tr></table></figure>
+<p>一般来说，我们只关注第一个参数，他是一个callable类型的function，一般简单的传入一个函数名称的字符串，也可以传入类名和方法名的数组，也可以传入一个匿名函数（PHP 5.3之后）。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function my_autoloader($class) &#123;</span><br><span class="line">    include &apos;classes/&apos; . $class . &apos;.class.php&apos;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">spl_autoload_register(&apos;my_autoloader&apos;);</span><br><span class="line"></span><br><span class="line">// Or, using an anonymous function as of PHP 5.3.0</span><br><span class="line">spl_autoload_register(function ($class) &#123;</span><br><span class="line">    include &apos;classes/&apos; . $class . &apos;.class.php&apos;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>在PHP 5.3 引入命名空间后，我们还可以使用<a href="http://php.net/manual/en/function.spl-autoload-register.php#92514" target="_blank" rel="noopener">一种更方便的自动加载策略</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">spl_autoload_extensions(&quot;.php&quot;); // comma-separated list</span><br><span class="line">spl_autoload_register();</span><br><span class="line"></span><br><span class="line">// 等价于</span><br><span class="line">function my_autoload ($pClassName) &#123;</span><br><span class="line">    include(__DIR__ . &quot;/&quot; . $pClassName . &quot;.php&quot;);</span><br><span class="line">&#125;</span><br><span class="line">spl_autoload_register(&quot;my_autoload&quot;);</span><br></pre></td></tr></table></figure>
+<p>据说第一种可以效率更高。</p>
+<h2 id="使用SplClassLoader"><a href="#使用SplClassLoader" class="headerlink" title="使用SplClassLoader"></a>使用SplClassLoader</h2><p>SplClassLoader是Jonathan H. Wage，Roman S. Borschel等人开发的一个用于PHP 5.3根据命名空间和类名实现自动加载的类。使用比较方便，这里推荐使用。其实现并不复杂使用一个类，源码如下（去掉了注释）:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class SplClassLoader</span><br><span class="line">&#123;</span><br><span class="line">    private $_fileExtension = &apos;.php&apos;;</span><br><span class="line">    private $_namespace;</span><br><span class="line">    private $_includePath;</span><br><span class="line">    private $_namespaceSeparator = &apos;\\&apos;;</span><br><span class="line"></span><br><span class="line">    public function __construct($ns = null, $includePath = null) &#123;</span><br><span class="line">        $this-&gt;_namespace = $ns;</span><br><span class="line">        $this-&gt;_includePath = $includePath;</span><br><span class="line">    &#125;</span><br><span class="line">    public function setNamespaceSeparator($sep) &#123;</span><br><span class="line">        $this-&gt;_namespaceSeparator = $sep;</span><br><span class="line">    &#125;</span><br><span class="line">    public function getNamespaceSeparator() &#123;</span><br><span class="line">        return $this-&gt;_namespaceSeparator;</span><br><span class="line">    &#125;</span><br><span class="line">    public function setIncludePath($includePath) &#123;</span><br><span class="line">        $this-&gt;_includePath = $includePath;</span><br><span class="line">    &#125;</span><br><span class="line">    public function getIncludePath() &#123;</span><br><span class="line">        return $this-&gt;_includePath;</span><br><span class="line">    &#125;</span><br><span class="line">    public function setFileExtension($fileExtension) &#123;</span><br><span class="line">        $this-&gt;_fileExtension = $fileExtension;</span><br><span class="line">    &#125;</span><br><span class="line">    public function getFileExtension() &#123;</span><br><span class="line">        return $this-&gt;_fileExtension;</span><br><span class="line">    &#125;</span><br><span class="line">    public function register() &#123;</span><br><span class="line">        spl_autoload_register(array($this, &apos;loadClass&apos;));</span><br><span class="line">    &#125;</span><br><span class="line">    public function unregister() &#123;</span><br><span class="line">        spl_autoload_unregister(array($this, &apos;loadClass&apos;));</span><br><span class="line">    &#125;</span><br><span class="line">    public function loadClass($className) &#123;</span><br><span class="line">        if (null === $this-&gt;_namespace || $this-&gt;_namespace.$this-&gt;_namespaceSeparator === substr($className, 0, strlen($this-&gt;_namespace.$this-&gt;_namespaceSeparator))) &#123;</span><br><span class="line">            $fileName = &apos;&apos;;</span><br><span class="line">            $namespace = &apos;&apos;;</span><br><span class="line">            if (false !== ($lastNsPos = strripos($className, $this-&gt;_namespaceSeparator))) &#123;</span><br><span class="line">                $namespace = substr($className, 0, $lastNsPos);</span><br><span class="line">                $className = substr($className, $lastNsPos + 1);</span><br><span class="line">                $fileName = str_replace($this-&gt;_namespaceSeparator, DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;</span><br><span class="line">            &#125;</span><br><span class="line">            $fileName .= str_replace(&apos;_&apos;, DIRECTORY_SEPARATOR, $className) . $this-&gt;_fileExtension;</span><br><span class="line"></span><br><span class="line">            // @add wuxu 验证文件是否存在，要不可能会抛出异常</span><br><span class="line">            $fileName = ($this-&gt;_includePath !== null ? $this-&gt;_includePath . DIRECTORY_SEPARATOR : &apos;&apos;) . $fileName;</span><br><span class="line"></span><br><span class="line">            if (file_exists($fileName)) require $fileName;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完整的代码见 <a href="https://gist.github.com/jwage/221634" title="https://gist.github.com/jwage/221634" target="_blank" rel="noopener">GitHub Gist</a>。<br>（还有一些在此基础上的修改版本，比如：<a href="https://gist.github.com/jwage/221634）" target="_blank" rel="noopener">https://gist.github.com/jwage/221634）</a></p>
+<p>它的使用方式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// Example which loads classes for the Doctrine Common package in the</span><br><span class="line">// Doctrine\Common namespace.</span><br><span class="line">$classLoader = new SplClassLoader(&apos;Doctrine\Common&apos;, &apos;/path/to/doctrine&apos;);</span><br><span class="line">$classLoader-&gt;register();</span><br></pre></td></tr></table></figure>
+<p>这是一个实现使用命名空间的PHP项目的自动加载的方式（PSR-0），使用上面的注册代码，可以注册一个Doctrine\Common的namespace，它对应的根目录是/path/to/doctrine。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这样对于实现一个使用命名空间的项目非常重要。<br>接下来会写一篇如何在一个项目中使用namespace（PSR-0）来使项目的结构更加科学。</p>
 
             
           </span>
@@ -1019,125 +1137,6 @@
             
               
                 
-                <a class="post-title-link" href="/golang-errors/" itemprop="url">
-                  Golang中的错误处理
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-24T12:34:50+08:00" content="2015-07-24">
-              2015-07-24
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>Go语言提供了一套“新颖的”错误系统，与Java中的异常系统不一样，Go中没有抛出异常的概念</p>
-<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>如果有一定面向对象语言编程经验的话，肯定会对异常/错误系统有一定的了解。如果使用Java比较多的话，一定会认为抛异常是编程语言天生的一部分，因为在Java中抛异常真的是太家常便饭，无处不在了；但是在Go语言中，根本没有异常这个东西！</p>
-<p>看一段官方的QA是怎么解释这个问题的：</p>
-<blockquote>
-<p>We believe that coupling exceptions to a control structure, as in the try-catch-finally idiom,<strong> results in convoluted code</strong>. It also tends to encourage programmers to label too many ordinary errors, such as failing to open a file, as exceptional.</p>
-<p>Go takes a different approach. For plain error handling, Go’s multi-value returns make it easy to report an error without overloading the return value. A canonical error type, coupled with Go’s other features, makes error handling pleasant but quite different from that in other languages.</p>
-<p>Go also has a couple of built-in functions to signal and recover from truly exceptional conditions. The recovery mechanism is executed only as part of a function’s state being torn down after an error, which is sufficient to handle catastrophe but requires no extra control structures and, when used well, can result in clean error-handling code.</p>
-</blockquote>
-<p>多值返回为Go提供了一个新的错误处理机制，如果对为什么Go不提供异常体系感兴趣可以在 <a href="https://golang.org/doc/articles/defer_panic_recover.html" target="_blank" rel="noopener">这里</a> 找到更多的细节。</p>
-<p>在之前文章中，已经使用过Go语言的多值返回来返回详细的错误描述。按照规定，<strong>错误的类型通常为error，这是一个内建的简单接口</strong>。</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> error <span class="keyword">interface</span> &#123;</span><br><span class="line">	Error() <span class="keyword">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以通过实现这个接口定制错误，例如打开文件时的错误:</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> PathError <span class="keyword">struct</span> &#123;</span><br><span class="line">	Op <span class="keyword">string</span></span><br><span class="line">	Path <span class="keyword">string</span></span><br><span class="line">	Err error	<span class="comment">// 由系统调用返回</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fanc (pe *PathError) Error() <span class="keyword">string</span> &#123;</span><br><span class="line">	<span class="comment">// 返回定制的错误信息</span></span><br><span class="line">	<span class="keyword">return</span> pe.Op + <span class="string">" "</span> + pe.Path + <span class="string">": "</span> + pe.Err.Error()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>effective go中有一个示例非常有利于我们理解错误的使用,这段代码的作用是创建一个文件，如果创建失败，检查是不是磁盘空间不足，如果是则删除掉一些临时文件，再尝试创建一次：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for try:=0; try&lt;2; try++ &#123;</span><br><span class="line">	file, err := os.Create(filename)</span><br><span class="line">	if err == nill &#123;</span><br><span class="line">		return  //没有错误</span><br><span class="line">	&#125;</span><br><span class="line">	// 检查是不是空间不足</span><br><span class="line">	if e,ok := err.(*os.PathError); ok &amp;&amp; e.Err == syscall.ENOSPC &#123;</span><br><span class="line">		deleteTempFiles()  	// 删除一些临时文件</span><br><span class="line">		continue 			// 再创建一次</span><br><span class="line">	&#125;</span><br><span class="line">	return</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以查看源码中PathError的实现 <a href="https://golang.org/src/os/error.go" title="https://golang.org/src/os/error.go" target="_blank" rel="noopener">https://golang.org/src/os/error.go</a></p>
-<h2 id="Panic函数"><a href="#Panic函数" class="headerlink" title="Panic函数"></a>Panic函数</h2><p>函数可以通过将error作为额外的返回值来向调用者报告错误，对于一些“致命”的错误，他们导致程序不能继续运行了，Go内建了一个Panic函数，它会产生一个运行时错误并重孩子程序。该函数接受一个任意类型的实参在程序终止时打印。</p>
-<p>只需要在需要它的地方调用一下<code>panix()</code>就可以了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func init() &#123;</span><br><span class="line">	if user == &quot;&quot; &#123;</span><br><span class="line">		panic(&quot;user变量必须有值&quot;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这是一个示例，但是如果是设计库函数则应该避免使用panic，一个常见的使用panic的场景是初始化，如上面的示例。</p>
-<h2 id="恢复"><a href="#恢复" class="headerlink" title="恢复"></a>恢复</h2><p>panic函数被调用后，程序将终止当前函数的执行。并开始追溯Go程的栈，运行任何被推迟的函数。我如果回溯到栈顶，程序会终止。<br>我们可以通过使用内建的recover函数来重新取回Go程的控制权。<br>调用recover将停止回溯，并返回传入panic的是西安。因为回溯只有被推迟执行的函数中的代码在执行，所以recover也只能在被推迟的函数中才有效。</p>
-<p>一个应用：在服务器中终止失败的Go程而无需杀死其他正在执行的Go程：</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">server</span><span class="params">(workChan &lt;-<span class="keyword">chan</span> *Work)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> work := <span class="keyword">range</span> workChan &#123;</span><br><span class="line">		<span class="keyword">go</span> safelyDo(work)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">safelyDo</span><span class="params">(work *Work)</span></span> &#123;</span><br><span class="line">	<span class="comment">// defer 函数是被推迟执行的</span></span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">if</span> err := <span class="built_in">recover</span>(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">			log.Println(<span class="string">"work failed:"</span>, err)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	do(work)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如果do函数中调用panic函数，回溯会执行defer的函数，这时recover会起作用，打印错误信息后退出Go程。<br>可以使用上面的思路简化错误处理。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/z-expand-anchor-element-to-fill-parent/" itemprop="url">
                   A标签(Anchor Tag)占满父元素的实现
                 </a>
@@ -1246,8 +1245,8 @@
             
               
                 
-                <a class="post-title-link" href="/encasulating-a-memcache-client-for-php/" itemprop="url">
-                  为PHP封装一个Memcache类
+                <a class="post-title-link" href="/golang-errors/" itemprop="url">
+                  Golang中的错误处理
                 </a>
               
             
@@ -1257,8 +1256,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
-              2015-07-20
+            <time itemprop="dateCreated" datetime="2015-07-24T12:34:50+08:00" content="2015-07-24">
+              2015-07-24
             </time>
           </span>
 
@@ -1299,8 +1298,30 @@
         
           <span itemprop="articleBody">
             
-              <p>在php中经常会使用memcache或者memcached来做缓存系统，为了方便操作经常会对PHP提供的接口进行一层封装 </p>
-<p>todo</p>
+              <p>Go语言提供了一套“新颖的”错误系统，与Java中的异常系统不一样，Go中没有抛出异常的概念</p>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>如果有一定面向对象语言编程经验的话，肯定会对异常/错误系统有一定的了解。如果使用Java比较多的话，一定会认为抛异常是编程语言天生的一部分，因为在Java中抛异常真的是太家常便饭，无处不在了；但是在Go语言中，根本没有异常这个东西！</p>
+<p>看一段官方的QA是怎么解释这个问题的：</p>
+<blockquote>
+<p>We believe that coupling exceptions to a control structure, as in the try-catch-finally idiom,<strong> results in convoluted code</strong>. It also tends to encourage programmers to label too many ordinary errors, such as failing to open a file, as exceptional.</p>
+<p>Go takes a different approach. For plain error handling, Go’s multi-value returns make it easy to report an error without overloading the return value. A canonical error type, coupled with Go’s other features, makes error handling pleasant but quite different from that in other languages.</p>
+<p>Go also has a couple of built-in functions to signal and recover from truly exceptional conditions. The recovery mechanism is executed only as part of a function’s state being torn down after an error, which is sufficient to handle catastrophe but requires no extra control structures and, when used well, can result in clean error-handling code.</p>
+</blockquote>
+<p>多值返回为Go提供了一个新的错误处理机制，如果对为什么Go不提供异常体系感兴趣可以在 <a href="https://golang.org/doc/articles/defer_panic_recover.html" target="_blank" rel="noopener">这里</a> 找到更多的细节。</p>
+<p>在之前文章中，已经使用过Go语言的多值返回来返回详细的错误描述。按照规定，<strong>错误的类型通常为error，这是一个内建的简单接口</strong>。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> error <span class="keyword">interface</span> &#123;</span><br><span class="line">	Error() <span class="keyword">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以通过实现这个接口定制错误，例如打开文件时的错误:</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> PathError <span class="keyword">struct</span> &#123;</span><br><span class="line">	Op <span class="keyword">string</span></span><br><span class="line">	Path <span class="keyword">string</span></span><br><span class="line">	Err error	<span class="comment">// 由系统调用返回</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fanc (pe *PathError) Error() <span class="keyword">string</span> &#123;</span><br><span class="line">	<span class="comment">// 返回定制的错误信息</span></span><br><span class="line">	<span class="keyword">return</span> pe.Op + <span class="string">" "</span> + pe.Path + <span class="string">": "</span> + pe.Err.Error()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>effective go中有一个示例非常有利于我们理解错误的使用,这段代码的作用是创建一个文件，如果创建失败，检查是不是磁盘空间不足，如果是则删除掉一些临时文件，再尝试创建一次：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for try:=0; try&lt;2; try++ &#123;</span><br><span class="line">	file, err := os.Create(filename)</span><br><span class="line">	if err == nill &#123;</span><br><span class="line">		return  //没有错误</span><br><span class="line">	&#125;</span><br><span class="line">	// 检查是不是空间不足</span><br><span class="line">	if e,ok := err.(*os.PathError); ok &amp;&amp; e.Err == syscall.ENOSPC &#123;</span><br><span class="line">		deleteTempFiles()  	// 删除一些临时文件</span><br><span class="line">		continue 			// 再创建一次</span><br><span class="line">	&#125;</span><br><span class="line">	return</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以查看源码中PathError的实现 <a href="https://golang.org/src/os/error.go" title="https://golang.org/src/os/error.go" target="_blank" rel="noopener">https://golang.org/src/os/error.go</a></p>
+<h2 id="Panic函数"><a href="#Panic函数" class="headerlink" title="Panic函数"></a>Panic函数</h2><p>函数可以通过将error作为额外的返回值来向调用者报告错误，对于一些“致命”的错误，他们导致程序不能继续运行了，Go内建了一个Panic函数，它会产生一个运行时错误并重孩子程序。该函数接受一个任意类型的实参在程序终止时打印。</p>
+<p>只需要在需要它的地方调用一下<code>panix()</code>就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func init() &#123;</span><br><span class="line">	if user == &quot;&quot; &#123;</span><br><span class="line">		panic(&quot;user变量必须有值&quot;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一个示例，但是如果是设计库函数则应该避免使用panic，一个常见的使用panic的场景是初始化，如上面的示例。</p>
+<h2 id="恢复"><a href="#恢复" class="headerlink" title="恢复"></a>恢复</h2><p>panic函数被调用后，程序将终止当前函数的执行。并开始追溯Go程的栈，运行任何被推迟的函数。我如果回溯到栈顶，程序会终止。<br>我们可以通过使用内建的recover函数来重新取回Go程的控制权。<br>调用recover将停止回溯，并返回传入panic的是西安。因为回溯只有被推迟执行的函数中的代码在执行，所以recover也只能在被推迟的函数中才有效。</p>
+<p>一个应用：在服务器中终止失败的Go程而无需杀死其他正在执行的Go程：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">server</span><span class="params">(workChan &lt;-<span class="keyword">chan</span> *Work)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> work := <span class="keyword">range</span> workChan &#123;</span><br><span class="line">		<span class="keyword">go</span> safelyDo(work)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">safelyDo</span><span class="params">(work *Work)</span></span> &#123;</span><br><span class="line">	<span class="comment">// defer 函数是被推迟执行的</span></span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">if</span> err := <span class="built_in">recover</span>(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">			log.Println(<span class="string">"work failed:"</span>, err)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	do(work)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果do函数中调用panic函数，回溯会执行defer的函数，这时recover会起作用，打印错误信息后退出Go程。<br>可以使用上面的思路简化错误处理。</p>
 
             
           </span>
@@ -1428,7 +1449,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/15/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/17/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/15/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/17/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1469,7 +1490,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-count">171</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1483,7 +1504,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">146</span>
+              <span class="site-state-item-count">144</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

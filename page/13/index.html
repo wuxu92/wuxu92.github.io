@@ -207,6 +207,110 @@
 
     
     
+      
+      
+
+      
+    
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/go-lange-notebook-1/" itemprop="url">
+                  Golang 学习笔记： 指针,函数,内嵌及接口
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-22T12:34:50+08:00" content="2015-10-22">
+              2015-10-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="指针和值"><a href="#指针和值" class="headerlink" title="指针和值"></a>指针和值</h2><p>自定义类型的实例化对象有值类型和指针类型的区别（个人理解），比如下面：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Unicorn <span class="keyword">struct</span> &#123;</span><br><span class="line">  Name <span class="keyword">string</span></span><br><span class="line">  Age <span class="keyword">int</span></span><br><span class="line">  weight <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line">larry := <span class="built_in">new</span>(Unicorn)  <span class="comment">// *Unicorn, pointer type</span></span><br><span class="line">larry := &amp;Unicorn&#123;&#125;	   <span class="comment">// 这和上面一样 </span></span><br><span class="line"></span><br><span class="line">la := Unicorn&#123;&#125;		<span class="comment">// value type</span></span><br></pre></td></tr></table></figure>
+<h2 id="定义函数"><a href="#定义函数" class="headerlink" title="定义函数"></a>定义函数</h2><p>定义函数很简单：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">message</span><span class="params">(name <span class="keyword">string</span>)</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	message := fmt.Sprintf(<span class="string">"hello, %v"</span>, name)</span><br><span class="line">	<span class="keyword">return</span> message</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/go-lange-notebook-1/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -1175,112 +1279,12 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/traveling-at-qingdao/" itemprop="url">
-                  十一前青岛游记（一）
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-03T12:34:50+08:00" content="2015-10-03">
-              2015-10-03
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/life/" itemprop="url" rel="index">
-                    <span itemprop="name">life</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>从掌游离职之后连续四五天和老师忙着写项目的申请书，算下来连续工作了十多天，实在感觉有点累，就想着马上那就中秋、十一放假了，不如出去玩两天吧。很早之前就想去青岛玩，想去看看青岛的大教堂，喝上正宗的青岛原浆，既然这几天时间正好就去青岛吧。</p>
-<p>从北京去青岛非常的方便，大部分车都是高铁了，只剩下一趟Z车次，Z7从北京到青岛，Z8从青岛回北京。秉承一贯的夜间卧铺到目的地然后开始玩的策略，就选了Z7。找了一下就27号晚上还有卧铺，所以就定27号吧。</p>
-<p>以前出去玩也还是喜欢一个人出去，虽然并没有什么经验，但是总觉得和很熟的人一起去别的城市旅游味道差了一些。本来出去玩就是换个陌生的环境，自己休息的嘛，又和熟人一起走那有什么意思呢？</p>
-<p>所以谋划这次出行并没有和朋友说，室友知道后还因为没有叫他们一起说了我一顿 -_-||…</p>
-<p>这个时间去青岛是旺季已经过去了，正好28，29还是上班时间，应该人不多，酒店也很好定，在携程上面搞定了。。。。像之前一样还是在携程上发了一个结伴的帖子，虽然有报名的，但是这次并不很想结伴了，就没管它们了。</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/traveling-at-qingdao/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/12/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/14/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/12/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/14/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1321,7 +1325,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-count">171</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1335,7 +1339,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">146</span>
+              <span class="site-state-item-count">144</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

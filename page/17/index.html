@@ -207,6 +207,221 @@
 
     
     
+      
+      
+
+      
+    
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/effective-go-note-3/" itemprop="url">
+                  Effective Go笔记：空白标识符，接口检查与内嵌
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
+              2015-07-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>effective go 中的部分笔记，这是第三部分 </p>
+<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
+<h2 id="空白标识符"><a href="#空白标识符" class="headerlink" title="空白标识符"></a>空白标识符</h2><p>空白标识符是指”_”，是一个特殊的变量标识，在之前的for…range 循环中已经使用过。</p>
+<h3 id="为未使用的变量或者包使用"><a href="#为未使用的变量或者包使用" class="headerlink" title="为未使用的变量或者包使用"></a>为未使用的变量或者包使用</h3><p>在Go中如果定义了一个变量没有使用，或者导入一个没有使用的包会在编译时报错，未使用的包会让程序体积变大并拖慢编译速度，初始化了而不是用的变量会留下某种隐患。<br>但是某些时候我们确实需要丢弃一些没有的变量，比如在for range循环中，可能需要丢弃键或者值，或者程序写到中途某些变量已经定义只是还没有使用等等，这时就需要空白标识符了。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 检查某个路径是否存在</span></span><br><span class="line"><span class="keyword">if</span> _, err := os.Stat(paht); os.IsNotExist(err) &#123;</span><br><span class="line">	fmt.Println(<span class="string">"path not exist"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于未使用的变量和未使用的导入包，可以把它们先赋值给空白标识符”_”关闭编译器的错误，在使用了这些变量后再删掉这些代码：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">fd = <span class="number">32</span></span><br><span class="line">....</span><br><span class="line">_ = fd</span><br><span class="line"><span class="keyword">var</span> _ = fmt.Printf  <span class="comment">// 用于调试使用，结束时删除</span></span><br></pre></td></tr></table></figure>
+<h2 id="接口检查"><a href="#接口检查" class="headerlink" title="接口检查"></a>接口检查</h2><p>如果只需要判断某个类型是否实现了某个接口而不需要实际使用接口本身，可以使用空白标识符：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if _, ok := val.(Milk); ok &#123;</span><br><span class="line">	fmt.Printf(&quot;value %v has implement interface milk&quot;, val)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 接口检查示例</span><br><span class="line">type iMilk interface &#123; </span><br><span class="line">  getName() string</span><br><span class="line">&#125;</span><br><span class="line">type Milk struct &#123; </span><br><span class="line">  name string</span><br><span class="line">&#125;</span><br><span class="line">func (m Milk) getName() string &#123;</span><br><span class="line">  return m.name</span><br><span class="line">&#125;</span><br><span class="line">func main() &#123;</span><br><span class="line">  var m interface &#123;&#125;</span><br><span class="line">  m = Milk&#123;&quot;yili&quot;&#125;</span><br><span class="line">  if _,ok := m.(iMilk); ok &#123;</span><br><span class="line">    fmt.Printf(&quot;value %v has implement iMilk\n &quot;, m)</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    fmt.Println(&quot;has not implememt&quot;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="内嵌-Embedding"><a href="#内嵌-Embedding" class="headerlink" title="内嵌/Embedding"></a>内嵌/Embedding</h2><p>Go语言并不提供典型的类与继承系统，所以也没有子类化的概念。继承是一个重要的概念，但是很多时候更推荐的做法是使用组合，Go提供的内嵌和组合概念差不多，可以将类型<strong>内嵌</strong>到结构体或者接口中，实现某种组合功能。</p>
+<p>一种典型的内嵌的ReadWriter接口的定义：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Reader <span class="keyword">interface</span> &#123;</span><br><span class="line">	Read(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> Writer <span class="keyword">interface</span> &#123;</span><br><span class="line">	Write(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 一个结合了Reader和Writer的接口</span></span><br><span class="line"><span class="keyword">type</span> ReadWriter <span class="keyword">interface</span> &#123;</span><br><span class="line">	Reader</span><br><span class="line">	Writer</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以内嵌到一个结构体中</span></span><br><span class="line"><span class="keyword">type</span> ReadWriter <span class="keyword">struct</span> &#123;</span><br><span class="line">	r *Reader</span><br><span class="line">	w *Writer</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>内嵌的接口一般需要实现被内嵌接口的方法，满足其需求，比如要提供Read方法：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(re *ReadWriter)</span> <span class="title">Read</span><span class="params">(p []<span class="keyword">byte</span>)</span> <span class="params">(n <span class="keyword">int</span>, err error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> rw.r.Read(p)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而通过直接内嵌结构体，我们就能避免如此繁琐。 <strong>内嵌类型的方法可以直接引用</strong>。<br>当内嵌一个类型时，该类型的方法会成为外部类型的方法， 但当它们被调用时，该方法的接收者是内部类型，而非外部的。在我们的例子中，当 bufio.ReadWriter 的 Read 方法被调用时， 它与之前写的转发方法具有同样的效果；接收者是 ReadWriter 的 reader 字段，而非 ReadWriter 本身：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Logger struct &#123;</span><br><span class="line">  content string</span><br><span class="line">&#125;</span><br><span class="line">func (l Logger) Log(s string) &#123;</span><br><span class="line">  l.content += s</span><br><span class="line">  fmt.Println(s)</span><br><span class="line">&#125;</span><br><span class="line">type infoLog struct &#123;</span><br><span class="line">  count int</span><br><span class="line">  *Logger</span><br><span class="line">&#125;</span><br><span class="line">func main() &#123;</span><br><span class="line">	var logger = infoLog&#123;0, &amp;Logger&#123;&quot;sss&quot;&#125; &#125;</span><br><span class="line">	// 可以直接调用内嵌类型的方法</span><br><span class="line">	logger.Log(&quot;embedding function invoke&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>内嵌类型可能会引起命名冲突的问题。更深层次的命名字段或方法会被覆盖。若相同的嵌套层级上出现同名冲突，通常会产生一个错误。但是如果冲突的名字不会被使用就没有问题……</p>
+<p><em>并发部分有点多，单独做一篇吧</em></p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/encasulating-a-memcache-client-for-php/" itemprop="url">
+                  为PHP封装一个Memcache类
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
+              2015-07-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>在php中经常会使用memcache或者memcached来做缓存系统，为了方便操作经常会对PHP提供的接口进行一层封装 </p>
+<p>todo</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -443,119 +658,6 @@
 <p>显然1，3是openresty编译的，第二个才是我们安装luajit支持，我们需要给这个.so生成一个软链接，让vim能找到它：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo ln -s /usr/local/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2</span><br></pre></td></tr></table></figure>
 <p>这样再运行vim就不会有问题了～也有Lua支持了，不过Vim的自动补全还没用过呢，学会了再做记录吧。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/effective-go-note-3/" itemprop="url">
-                  Effective Go笔记：空白标识符，接口检查与内嵌
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
-              2015-07-20
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>effective go 中的部分笔记，这是第三部分 </p>
-<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
-<h2 id="空白标识符"><a href="#空白标识符" class="headerlink" title="空白标识符"></a>空白标识符</h2><p>空白标识符是指”_”，是一个特殊的变量标识，在之前的for…range 循环中已经使用过。</p>
-<h3 id="为未使用的变量或者包使用"><a href="#为未使用的变量或者包使用" class="headerlink" title="为未使用的变量或者包使用"></a>为未使用的变量或者包使用</h3><p>在Go中如果定义了一个变量没有使用，或者导入一个没有使用的包会在编译时报错，未使用的包会让程序体积变大并拖慢编译速度，初始化了而不是用的变量会留下某种隐患。<br>但是某些时候我们确实需要丢弃一些没有的变量，比如在for range循环中，可能需要丢弃键或者值，或者程序写到中途某些变量已经定义只是还没有使用等等，这时就需要空白标识符了。</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 检查某个路径是否存在</span></span><br><span class="line"><span class="keyword">if</span> _, err := os.Stat(paht); os.IsNotExist(err) &#123;</span><br><span class="line">	fmt.Println(<span class="string">"path not exist"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>对于未使用的变量和未使用的导入包，可以把它们先赋值给空白标识符”_”关闭编译器的错误，在使用了这些变量后再删掉这些代码：</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">fd = <span class="number">32</span></span><br><span class="line">....</span><br><span class="line">_ = fd</span><br><span class="line"><span class="keyword">var</span> _ = fmt.Printf  <span class="comment">// 用于调试使用，结束时删除</span></span><br></pre></td></tr></table></figure>
-<h2 id="接口检查"><a href="#接口检查" class="headerlink" title="接口检查"></a>接口检查</h2><p>如果只需要判断某个类型是否实现了某个接口而不需要实际使用接口本身，可以使用空白标识符：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if _, ok := val.(Milk); ok &#123;</span><br><span class="line">	fmt.Printf(&quot;value %v has implement interface milk&quot;, val)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 接口检查示例</span><br><span class="line">type iMilk interface &#123; </span><br><span class="line">  getName() string</span><br><span class="line">&#125;</span><br><span class="line">type Milk struct &#123; </span><br><span class="line">  name string</span><br><span class="line">&#125;</span><br><span class="line">func (m Milk) getName() string &#123;</span><br><span class="line">  return m.name</span><br><span class="line">&#125;</span><br><span class="line">func main() &#123;</span><br><span class="line">  var m interface &#123;&#125;</span><br><span class="line">  m = Milk&#123;&quot;yili&quot;&#125;</span><br><span class="line">  if _,ok := m.(iMilk); ok &#123;</span><br><span class="line">    fmt.Printf(&quot;value %v has implement iMilk\n &quot;, m)</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    fmt.Println(&quot;has not implememt&quot;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="内嵌-Embedding"><a href="#内嵌-Embedding" class="headerlink" title="内嵌/Embedding"></a>内嵌/Embedding</h2><p>Go语言并不提供典型的类与继承系统，所以也没有子类化的概念。继承是一个重要的概念，但是很多时候更推荐的做法是使用组合，Go提供的内嵌和组合概念差不多，可以将类型<strong>内嵌</strong>到结构体或者接口中，实现某种组合功能。</p>
-<p>一种典型的内嵌的ReadWriter接口的定义：</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Reader <span class="keyword">interface</span> &#123;</span><br><span class="line">	Read(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> Writer <span class="keyword">interface</span> &#123;</span><br><span class="line">	Write(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 一个结合了Reader和Writer的接口</span></span><br><span class="line"><span class="keyword">type</span> ReadWriter <span class="keyword">interface</span> &#123;</span><br><span class="line">	Reader</span><br><span class="line">	Writer</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以内嵌到一个结构体中</span></span><br><span class="line"><span class="keyword">type</span> ReadWriter <span class="keyword">struct</span> &#123;</span><br><span class="line">	r *Reader</span><br><span class="line">	w *Writer</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>内嵌的接口一般需要实现被内嵌接口的方法，满足其需求，比如要提供Read方法：</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(re *ReadWriter)</span> <span class="title">Read</span><span class="params">(p []<span class="keyword">byte</span>)</span> <span class="params">(n <span class="keyword">int</span>, err error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> rw.r.Read(p)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>而通过直接内嵌结构体，我们就能避免如此繁琐。 <strong>内嵌类型的方法可以直接引用</strong>。<br>当内嵌一个类型时，该类型的方法会成为外部类型的方法， 但当它们被调用时，该方法的接收者是内部类型，而非外部的。在我们的例子中，当 bufio.ReadWriter 的 Read 方法被调用时， 它与之前写的转发方法具有同样的效果；接收者是 ReadWriter 的 reader 字段，而非 ReadWriter 本身：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Logger struct &#123;</span><br><span class="line">  content string</span><br><span class="line">&#125;</span><br><span class="line">func (l Logger) Log(s string) &#123;</span><br><span class="line">  l.content += s</span><br><span class="line">  fmt.Println(s)</span><br><span class="line">&#125;</span><br><span class="line">type infoLog struct &#123;</span><br><span class="line">  count int</span><br><span class="line">  *Logger</span><br><span class="line">&#125;</span><br><span class="line">func main() &#123;</span><br><span class="line">	var logger = infoLog&#123;0, &amp;Logger&#123;&quot;sss&quot;&#125; &#125;</span><br><span class="line">	// 可以直接调用内嵌类型的方法</span><br><span class="line">	logger.Log(&quot;embedding function invoke&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>内嵌类型可能会引起命名冲突的问题。更深层次的命名字段或方法会被覆盖。若相同的嵌套层级上出现同名冲突，通常会产生一个错误。但是如果冲突的名字不会被使用就没有问题……</p>
-<p><em>并发部分有点多，单独做一篇吧</em></p>
 
             
           </span>
@@ -931,6 +1033,115 @@
             
               
                 
+                <a class="post-title-link" href="/effective-go-note-1/" itemprop="url">
+                  Effective Go笔记：函数，数据，初始化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
+              2015-07-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>effective go 中的部分笔记，这是第一部分 </p>
+<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>Go的函数有一个很特别的性质那就是多值返回，这样做有一个很方便的地方是可以把错误值返回，这样做和后面会讲到的取消异常也是有关的。</p>
+<p>一个Go函数的签名可能是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func (file *File) Write(b []byte) (n int, err error)</span><br></pre></td></tr></table></figure>
+<p>这是一个典型的Go函数签名，初看起来比较复杂，一点点分析：</p>
+<ol>
+<li>func关键字，类似php中的function</li>
+<li>(file <em>File) 表示这是一个添加到</em>File接口上的方法。这也是Go比较有意思的地方，通过<em>附着</em>接口方法的方式实现接口</li>
+<li>Write 很简单就是方法名了，大写开头的方法表示共有的导出方法，如果是小写的方法名是不能导出的</li>
+<li>(b []byte)方法的参数，形参名为b，类型为[]byte</li>
+<li>(n int, err error) 返回类型，如果是多指返回则使用小括号括起来，如果是一个返回值就不需要了。比较有意思的是返回值也可以作为有命名返回值，比如这里的n和err，这样表示把函数作用域内的n和err变量返回，这样返回语句只需要写return，而不需要显式说明具体变量</li>
+</ol>
+<h3 id="Defer"><a href="#Defer" class="headerlink" title="Defer"></a>Defer</h3><p>Defer 是Go的关键字，用于预设一个函数调用，一个使用Defer调用的函数会<strong>在执行defer的函数返回之前</strong>立即执行，常用来释放资源，比如解锁互斥和关闭文件<br>使用defer推迟的函数会按照<strong>后进先出</strong>的顺序执行。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/effective-go-note-1/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/vim-commands/" itemprop="url">
                   vim 常用的命令模式
                 </a>
@@ -1122,227 +1333,12 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/effective-go-note-1/" itemprop="url">
-                  Effective Go笔记：函数，数据，初始化
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
-              2015-07-18
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>effective go 中的部分笔记，这是第一部分 </p>
-<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
-<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>Go的函数有一个很特别的性质那就是多值返回，这样做有一个很方便的地方是可以把错误值返回，这样做和后面会讲到的取消异常也是有关的。</p>
-<p>一个Go函数的签名可能是：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func (file *File) Write(b []byte) (n int, err error)</span><br></pre></td></tr></table></figure>
-<p>这是一个典型的Go函数签名，初看起来比较复杂，一点点分析：</p>
-<ol>
-<li>func关键字，类似php中的function</li>
-<li>(file <em>File) 表示这是一个添加到</em>File接口上的方法。这也是Go比较有意思的地方，通过<em>附着</em>接口方法的方式实现接口</li>
-<li>Write 很简单就是方法名了，大写开头的方法表示共有的导出方法，如果是小写的方法名是不能导出的</li>
-<li>(b []byte)方法的参数，形参名为b，类型为[]byte</li>
-<li>(n int, err error) 返回类型，如果是多指返回则使用小括号括起来，如果是一个返回值就不需要了。比较有意思的是返回值也可以作为有命名返回值，比如这里的n和err，这样表示把函数作用域内的n和err变量返回，这样返回语句只需要写return，而不需要显式说明具体变量</li>
-</ol>
-<h3 id="Defer"><a href="#Defer" class="headerlink" title="Defer"></a>Defer</h3><p>Defer 是Go的关键字，用于预设一个函数调用，一个使用Defer调用的函数会<strong>在执行defer的函数返回之前</strong>立即执行，常用来释放资源，比如解锁互斥和关闭文件<br>使用defer推迟的函数会按照<strong>后进先出</strong>的顺序执行。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/effective-go-note-1/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/using-ambari-to-setup-a-hadoop-cluster/" itemprop="url">
-                  使用ambari搭建并管理一个hadoop集群
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-04-27T12:34:50+08:00" content="2015-04-27">
-              2015-04-27
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>这部分包含的内容：</p>
-<ol>
-<li>什么是ambari</li>
-<li>如何安装Ambari</li>
-<li>安装hadoop集群的准备工作</li>
-<li>如何使用Ambari搭建一个集群</li>
-<li>其他</li>
-</ol>
-<h2 id="什么是Ambari"><a href="#什么是Ambari" class="headerlink" title="什么是Ambari"></a>什么是Ambari</h2><p><a href="http://ambari.apache.org/" target="_blank" rel="noopener">Ambari</a>是的apache基金会下的一个开源项目。其目标是简化Hadoop集群的管理。通过Ambari提供工具可以方便的配置、管理、监控Hadoop集群。Ambari提供了一个直观的，易用的Hadoop管理web界面。Ambari现在最新的版本为2.0.0，但是网上比较多的资料都是1.2-1.7的。</p>
-<p>作为一个开源项目，Hadoop在的配置与管理一直非常的不友好，要配置一个Hadoop集群经常会出现各种问题，并且对于集群的监控也比较麻烦，这也是像cloudera、hortonworks这类的提供Hadoop服务的公司可以存在的理由。</p>
-<p>Ambari架构采用的是Server/Client的模式，主要组件：ambari-agent、ambari-server和ambari-web。ambari-agent是一个无状态的， 采集所在节点的信息并且汇总发心跳汇报给ambari-server， 处理ambari-server的执行请求。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/using-ambari-to-setup-a-hadoop-cluster/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span>
+    <a class="extend prev" rel="prev" href="/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/18/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1383,7 +1379,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-count">171</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1397,7 +1393,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">146</span>
+              <span class="site-state-item-count">144</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

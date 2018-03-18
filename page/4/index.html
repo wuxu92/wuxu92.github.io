@@ -207,6 +207,109 @@
 
     
     
+      
+      
+
+      
+    
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/jvm-class-load-mechanism/" itemprop="url">
+                  Java虚拟机类加载机制
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-03-25T20:13:43+08:00" content="2016-03-25">
+              2016-03-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/jvm/" itemprop="url" rel="index">
+                    <span itemprop="name">jvm</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>前段时间，室友面试被问到了java的类加载机制。关于类加载机制之前看《深入理解Java虚拟机》的时候看过这一章，不过都忘得差不多了，只记得有一个复杂的流程：验证－准备－解析－初始化等等，今天复习一下顺便做个笔记。</p>
+<p>Java代码编译为字节码（.class文件）后，需要加载到虚拟机之后才能运行和使用，还有很多运行在JVM平台的其他语言（如Grovvy, scala, kotlin等）也会被编译为符合JVM字节码规范的文件后被虚拟机读取运行。那么JVM是如何运行这些字节码文件的呢。</p>
+<p>与C语言的在编译时进行连接工作不同，Java中， 类型的加载和连接都是在程序运行时期完成的，Java的动态扩展的语言特性就是依赖于运行期动态加载和动态连接的特点。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/jvm-class-load-mechanism/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -1160,116 +1263,12 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/effective-go-review/" itemprop="url">
-                  再看Effective Go
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-02-29T22:50:15+08:00" content="2016-02-29">
-              2016-02-29
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <ol>
-<li>若有名为 owner （小写，未导出）的字段，其获取器应当名为 Owner（大写，可导出）而非 GetOwner。大写字母即为可导出的这种规定为区分方法和字段提供了便利。 若要提供设置器方法，SetOwner 是个不错的选择</li>
-<li>按照约定，只包含一个方法的接口应当以该方法的名称加上-er后缀来命名，如 Reader、Writer。</li>
-<li>Go中约定使用驼峰记法 MixedCaps 或 mixedCaps</li>
-<li>Go的正式语法使用分号来结束语句；和C不同的是，这些分号并不在源码中出现。所以Go并不是没有分号，只是和JS一样会自动添加分号。</li>
-<li>对于字符串，range 能够提供更多便利。它能通过解析UTF-8， 将每个独立的Unicode码点分离出来。错误的编码（非UTF8编码）将占用一个字节，并以符文U+FFFD来代替。</li>
-<li>若 <code>switch</code> 后面没有表达式，它将匹配值为 <code>true</code> 的case，因此，我们可以将 if-else-if-else 链写成一个 switch</li>
-<li>被推迟函数的实参（如果该函数为方法则还包括接收者）在<strong>推迟执行时就会求值</strong>，而不是在调用执行时才求值。这样无需担心变量值在函数执行时被改变。// 记得JS中<code>setInterval</code>的一个例子吗？</li>
-<li><code>new(T)</code> 会为类型为 <code>T</code> 的新项分配已置零的内存空间， 并返回它的地址，也就是一个类型为 <code>*T</code> 的值
-          <div class="post-more-link text-center">
-            <a class="btn" href="/effective-go-review/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1310,7 +1309,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">170</span>
+              <span class="site-state-item-count">171</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1324,7 +1323,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">146</span>
+              <span class="site-state-item-count">144</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
