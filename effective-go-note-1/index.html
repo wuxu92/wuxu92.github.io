@@ -59,7 +59,7 @@
 <meta property="og:site_name" content="Wu Xu">
 <meta property="og:description" content="effective go 中的部分笔记，这是第一部分  部分笔记摘要,参考： https://go-zh.org/doc/effective_go.html 函数Go的函数有一个很特别的性质那就是多值返回，这样做有一个很方便的地方是可以把错误值返回，这样做和后面会讲到的取消异常也是有关的。 一个Go函数的签名可能是： func (file *File) Write(b []byte) (n int">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-03T07:56:46.496Z">
+<meta property="og:updated_time" content="2018-03-18T08:14:12.656Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective Go笔记：函数，数据，初始化">
 <meta name="twitter:description" content="effective go 中的部分笔记，这是第一部分  部分笔记摘要,参考： https://go-zh.org/doc/effective_go.html 函数Go的函数有一个很特别的性质那就是多值返回，这样做有一个很方便的地方是可以把错误值返回，这样做和后面会讲到的取消异常也是有关的。 一个Go函数的签名可能是： func (file *File) Write(b []byte) (n int">
@@ -300,18 +300,30 @@
 <li>若将某个数组传入某个函数，将会收到数组的一份副本而不是指针</li>
 <li>数组的大小是其类型的一部分，即[10]int 和 [11]int 是两种类型</li>
 </ol>
-<p><strong>注意</strong> <figure class="highlight plain"><figcaption><span>a []int```这样的声明并不是声明一个数组，而是一个切片，```var arr [4]int```这样才是定义了一个数组~</span></figcaption><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">### 切片 ###</span><br><span class="line">切片是对数组的封装，为数据序列提供更加通用的而方便的接口。切片在动态编程语言中也非常常用。</span><br><span class="line">切片保存了对底层数组的引用。切片使用引用传递。</span><br><span class="line">切片的容量在底层数组的范围内是可变的，切片的容量使用内建函数cap获得，切片长度使用内建函数len获得。</span><br><span class="line"></span><br><span class="line">#### 二维切片 ####</span><br><span class="line">二维切片有两种方法进行初始化，一种是先初始化顶层切片，再分别对每一行分配切片，一种是一次性分配(make)所有空间，再使用分片操作切分到各个行</span><br></pre></td></tr></table></figure></p>
-<p>picture := make([][]int8, 10)<br>for i := range picture {<br>  picture[i] = make([]int8, 10)<br>}<br>picture2 := make([][]int8, 10)<br>pixels := make([]int8, 10*10)<br>for i:= range picture2 {<br>  picture2[i], pixels = pixels[:10], pixels[10:]<br>}<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">### 映射/map ###</span><br><span class="line">映射是非常强大的内建数据结构，可以用来关联不同的数据类型，键可以是任何支持相等性操作的类型，比如int, float, string, pointer,interface, struct, araay。不过**切片和映射不能用作键**，因为他们不支持相等性操作。</span><br><span class="line">映射的定义语法：</span><br></pre></td></tr></table></figure></p>
-<p>var weekDay = map[int]string {<br>    1: “monday”,<br>    2: “tuesday”,<br>    3: “wednesday”,<br>    4: “thursday”,<br>    5: “friday”,    // 注意最后的,不能省略<br>}<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">对映射的访问类似于动态语言，使用键作为下标访问</span><br></pre></td></tr></table></figure></p>
-<p>weekDay[1]<br>// 判断某一项是否存在,使用‘逗号ok’惯用法<br>// 如果ok为false，表示不存在，val置零，如果为true，表示存在<br>val, ok = weekDay[4]<br>if ok {<br>}<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">可以使用内建函数delete删除映射的键值对</span><br></pre></td></tr></table></figure></p>
-<p>delete(weekDay, 1)<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">### 打印/print ###</span><br><span class="line">Go提供和C语言类似的格式化打印函数printf族，不过功能更加丰富。这些函数在fmt包中，fmt也是最常用的包之一。</span><br></pre></td></tr></table></figure></p>
-<p>// 一下输出等价<br>fmt.Printf(“Hello %d\n”, 23)<br>fmt.Fprint(os.Stdout, “Hello “, 23, “\n”)<br>fmt.Println(“Hello”, 23)<br>fmt.Println(fmt.Sprint(“Hello “, 23))<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">常用的占位符： %d, %x, %v, $f, %q ; %v是通用格式，v代表value。*改进的格式 %+v 会为结构体的每个字段添上字段名，而另一种格式 %#v 将完全按照Go的语法打印值*</span><br><span class="line"></span><br><span class="line">**若你想控制自定义类型的默认格式，只需为该类型定义一个具有 String() string 签名的方法。**这和java中的toString()功能相似。</span><br></pre></td></tr></table></figure></p>
-<p>// 下面的String方法会导致递归， 需要对m使用类型转换<br>type MyString string<br>func (m MyString) String() string {<br>    return fmt.Sprintf(“MyString=%s”, m) // 错误：会无限递归。转换为string(m)即可<br>}<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">### 关于append的补充 ###</span><br><span class="line">append函数的签名是：</span><br></pre></td></tr></table></figure></p>
-<p>func append(slice []T, item …T) []T<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">append 会在切片末尾追加元素并返回结果。我们必须返回结果， 原因是层数组可能会被改变。可以发现append方法的签名中使用类型占位符T，但是我们Go程序中并不能使用泛型。。。。</span><br><span class="line"></span><br><span class="line">## 初始化/Initialization ##</span><br><span class="line">### 常量/constants ###</span><br><span class="line">Go中常量也是不变量，在编译时创建，即便他们是函数中定义的局部变量也是这样。常量只能是数字，字符，字符串，布尔值。常量定义中不能有函数调用。</span><br><span class="line">枚举常量使用枚举器**iota**创建。使用它很容易创建复杂的值的集合。一个官方示例：</span><br></pre></td></tr></table></figure></p>
-<p>type ByteSize float64</p>
-<p>const (<br>    // 通过赋予空白标识符来忽略第一个值<br>    // 这里这样做好像有问题。。关于iota再写吧，这里不深入了<br>    _           = iota // ignore first value by assigning to blank identifier<br>    KB ByteSize = 1 &lt;&lt; (10 * iota)<br>    MB<br>    GB<br>    TB<br>    PB<br>    EB<br>    ZB<br>    YB<br>)<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">### 变量/vaiables ###</span><br><span class="line">可以使用var()声明多个变量：</span><br></pre></td></tr></table></figure></p>
-<p>var (<br> home = os.Getenv(“HOME”)<br> user = os.Getenv(“USER”)<br>)<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">### init函数 ###</span><br><span class="line">每一个源文件可以定义一个无参数的init函数来设置一些状态。甚至每个文件**可以有多个init函数**。init执行完才是初始化(包/文件)的结束。常用init函数来检查或者校正程序的状态。</span><br></pre></td></tr></table></figure></p>
-<p>func init() {<br>    // do some thing here<br>}<br><code>`</code></p>
+<p><strong>注意</strong> <code>var a []int</code>这样的声明并不是声明一个数组，而是一个切片，<code>var arr [4]int</code>这样才是定义了一个数组~</p>
+<h3 id="切片"><a href="#切片" class="headerlink" title="切片"></a>切片</h3><p>切片是对数组的封装，为数据序列提供更加通用的而方便的接口。切片在动态编程语言中也非常常用。<br>切片保存了对底层数组的引用。切片使用引用传递。<br>切片的容量在底层数组的范围内是可变的，切片的容量使用内建函数cap获得，切片长度使用内建函数len获得。</p>
+<h4 id="二维切片"><a href="#二维切片" class="headerlink" title="二维切片"></a>二维切片</h4><p>二维切片有两种方法进行初始化，一种是先初始化顶层切片，再分别对每一行分配切片，一种是一次性分配(make)所有空间，再使用分片操作切分到各个行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">picture := make([][]int8, 10)</span><br><span class="line">for i := range picture &#123;</span><br><span class="line">  picture[i] = make([]int8, 10)</span><br><span class="line">&#125;</span><br><span class="line">picture2 := make([][]int8, 10)</span><br><span class="line">pixels := make([]int8, 10*10)</span><br><span class="line">for i:= range picture2 &#123;</span><br><span class="line">  picture2[i], pixels = pixels[:10], pixels[10:]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="映射-map"><a href="#映射-map" class="headerlink" title="映射/map"></a>映射/map</h3><p>映射是非常强大的内建数据结构，可以用来关联不同的数据类型，键可以是任何支持相等性操作的类型，比如int, float, string, pointer,interface, struct, araay。不过<strong>切片和映射不能用作键</strong>，因为他们不支持相等性操作。<br>映射的定义语法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var weekDay = map[int]string &#123;</span><br><span class="line">	1: &quot;monday&quot;,</span><br><span class="line">	2: &quot;tuesday&quot;,</span><br><span class="line">	3: &quot;wednesday&quot;,</span><br><span class="line">	4: &quot;thursday&quot;,</span><br><span class="line">	5: &quot;friday&quot;,	// 注意最后的,不能省略</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对映射的访问类似于动态语言，使用键作为下标访问</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">weekDay[1]</span><br><span class="line">// 判断某一项是否存在,使用‘逗号ok’惯用法</span><br><span class="line">// 如果ok为false，表示不存在，val置零，如果为true，表示存在</span><br><span class="line">val, ok = weekDay[4]</span><br><span class="line">if ok &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以使用内建函数delete删除映射的键值对</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">delete(weekDay, 1)</span><br></pre></td></tr></table></figure>
+<h3 id="打印-print"><a href="#打印-print" class="headerlink" title="打印/print"></a>打印/print</h3><p>Go提供和C语言类似的格式化打印函数printf族，不过功能更加丰富。这些函数在fmt包中，fmt也是最常用的包之一。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 一下输出等价</span><br><span class="line">fmt.Printf(&quot;Hello %d\n&quot;, 23)</span><br><span class="line">fmt.Fprint(os.Stdout, &quot;Hello &quot;, 23, &quot;\n&quot;)</span><br><span class="line">fmt.Println(&quot;Hello&quot;, 23)</span><br><span class="line">fmt.Println(fmt.Sprint(&quot;Hello &quot;, 23))</span><br></pre></td></tr></table></figure>
+<p>常用的占位符： %d, %x, %v, $f, %q ; %v是通用格式，v代表value。<em>改进的格式 %+v 会为结构体的每个字段添上字段名，而另一种格式 %#v 将完全按照Go的语法打印值</em></p>
+<p><strong>若你想控制自定义类型的默认格式，只需为该类型定义一个具有 String() string 签名的方法。</strong>这和java中的toString()功能相似。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 下面的String方法会导致递归， 需要对m使用类型转换</span><br><span class="line">type MyString string</span><br><span class="line">func (m MyString) String() string &#123;</span><br><span class="line">	return fmt.Sprintf(&quot;MyString=%s&quot;, m) // 错误：会无限递归。转换为string(m)即可</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="关于append的补充"><a href="#关于append的补充" class="headerlink" title="关于append的补充"></a>关于append的补充</h3><p>append函数的签名是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func append(slice []T, item ...T) []T</span><br></pre></td></tr></table></figure>
+<p>append 会在切片末尾追加元素并返回结果。我们必须返回结果， 原因是层数组可能会被改变。可以发现append方法的签名中使用类型占位符T，但是我们Go程序中并不能使用泛型。。。。</p>
+<h2 id="初始化-Initialization"><a href="#初始化-Initialization" class="headerlink" title="初始化/Initialization"></a>初始化/Initialization</h2><h3 id="常量-constants"><a href="#常量-constants" class="headerlink" title="常量/constants"></a>常量/constants</h3><p>Go中常量也是不变量，在编译时创建，即便他们是函数中定义的局部变量也是这样。常量只能是数字，字符，字符串，布尔值。常量定义中不能有函数调用。<br>枚举常量使用枚举器<strong>iota</strong>创建。使用它很容易创建复杂的值的集合。一个官方示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type ByteSize float64</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">    // 通过赋予空白标识符来忽略第一个值</span><br><span class="line">	// 这里这样做好像有问题。。关于iota再写吧，这里不深入了</span><br><span class="line">    _           = iota // ignore first value by assigning to blank identifier</span><br><span class="line">    KB ByteSize = 1 &lt;&lt; (10 * iota)</span><br><span class="line">    MB</span><br><span class="line">    GB</span><br><span class="line">    TB</span><br><span class="line">    PB</span><br><span class="line">    EB</span><br><span class="line">    ZB</span><br><span class="line">    YB</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="变量-vaiables"><a href="#变量-vaiables" class="headerlink" title="变量/vaiables"></a>变量/vaiables</h3><p>可以使用var()声明多个变量：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var (</span><br><span class="line"> home = os.Getenv(&quot;HOME&quot;)</span><br><span class="line"> user = os.Getenv(&quot;USER&quot;)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="init函数"><a href="#init函数" class="headerlink" title="init函数"></a>init函数</h3><p>每一个源文件可以定义一个无参数的init函数来设置一些状态。甚至每个文件<strong>可以有多个init函数</strong>。init执行完才是初始化(包/文件)的结束。常用init函数来检查或者校正程序的状态。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func init() &#123;</span><br><span class="line">	// do some thing here</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </span>
       
     </div>
@@ -331,16 +343,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/go-iota-spc/" rel="next" title="Golang 中iota的用法">
-                <i class="fa fa-chevron-left"></i> Golang 中iota的用法
+              <a href="/using-ambari-to-setup-a-hadoop-cluster/" rel="next" title="使用ambari搭建并管理一个hadoop集群">
+                <i class="fa fa-chevron-left"></i> 使用ambari搭建并管理一个hadoop集群
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/vim-commands/" rel="prev" title="vim 常用的命令模式">
-                vim 常用的命令模式 <i class="fa fa-chevron-right"></i>
+              <a href="/go-iota-spc/" rel="prev" title="Golang 中iota的用法">
+                Golang 中iota的用法 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -416,14 +428,14 @@
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">23</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
@@ -503,7 +515,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#函数"><span class="nav-number">1.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Defer"><span class="nav-number">1.1.</span> <span class="nav-text">Defer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据-data"><span class="nav-number">2.</span> <span class="nav-text">数据/data</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#new"><span class="nav-number">2.1.</span> <span class="nav-text">new</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造函数与复合字面量"><span class="nav-number">2.2.</span> <span class="nav-text">构造函数与复合字面量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#make"><span class="nav-number">2.3.</span> <span class="nav-text">make</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组"><span class="nav-number">2.4.</span> <span class="nav-text">数组</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#函数"><span class="nav-number">1.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Defer"><span class="nav-number">1.1.</span> <span class="nav-text">Defer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据-data"><span class="nav-number">2.</span> <span class="nav-text">数据/data</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#new"><span class="nav-number">2.1.</span> <span class="nav-text">new</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造函数与复合字面量"><span class="nav-number">2.2.</span> <span class="nav-text">构造函数与复合字面量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#make"><span class="nav-number">2.3.</span> <span class="nav-text">make</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组"><span class="nav-number">2.4.</span> <span class="nav-text">数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#切片"><span class="nav-number">2.5.</span> <span class="nav-text">切片</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#二维切片"><span class="nav-number">2.5.1.</span> <span class="nav-text">二维切片</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#映射-map"><span class="nav-number">2.6.</span> <span class="nav-text">映射/map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打印-print"><span class="nav-number">2.7.</span> <span class="nav-text">打印/print</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于append的补充"><span class="nav-number">2.8.</span> <span class="nav-text">关于append的补充</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化-Initialization"><span class="nav-number">3.</span> <span class="nav-text">初始化/Initialization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常量-constants"><span class="nav-number">3.1.</span> <span class="nav-text">常量/constants</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变量-vaiables"><span class="nav-number">3.2.</span> <span class="nav-text">变量/vaiables</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#init函数"><span class="nav-number">3.3.</span> <span class="nav-text">init函数</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">

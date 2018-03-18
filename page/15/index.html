@@ -207,11 +207,6 @@
 
     
     
-      
-      
-
-      
-    
 
     
       
@@ -235,8 +230,8 @@
             
               
                 
-                <a class="post-title-link" href="/compile-openresty-in-centos/" itemprop="url">
-                  编译安装openresty
+                <a class="post-title-link" href="/notes-of-go-by-example-part-5/" itemprop="url">
+                  Go by Example(五)：杂烩1
                 </a>
               
             
@@ -256,8 +251,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
+                  <a href="/categories/lang/" itemprop="url" rel="index">
+                    <span itemprop="name">lang</span>
                   </a>
                 </span>
 
@@ -286,11 +281,14 @@
 
       
         
-          <p>openresty是章亦春（agentzh）维护的项目，早期由淘宝网赞助，后来作者加入cloudflare公司后，也就由该公司支持了。这是一个扩展nginx的项目，在nginx的基础上添加很多作者开发的模块。该项目目前有很多公司在使用。</p>
-<p>openresty项目主页 <a href="http://openresty.org/cn/" title="http://openresty.org/cn/" target="_blank" rel="noopener">http://openresty.org/cn/</a>， <a href="http://github.com/agentzh/openresty.org" title="http://github.com/agentzh/openresty.org" target="_blank" rel="noopener">GITHUB</a>。</p>
-<p>我们要安装一个openresty作为webserver同时把它配置成与nginx使用方式相同。</p>
+          <h2 id="排序包-sort"><a href="#排序包-sort" class="headerlink" title="排序包/sort"></a>排序包/sort</h2><p>go内置的sort包提供了内置类型和用户自定义类型的排序功能。需要注意的sort包的方法对传入的参数排序后直接修改参数，而不是返回一个新的数组。可以这么理解：一般传入排序的是一个数组，数组一般作为引用传递，而对于引用传递的修改直接反映在原数组上。<br>sort包提供对数组排序的函数，函数名为待排序数组元素类型加s，参数为待排序数组，比如</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strs := []string&#123;&quot;bcd&quot;, &quot;abk&quot;, &quot;opq&quot;, &quot;hij&quot;&#125;</span><br><span class="line">sort.Strings(strs)</span><br><span class="line">// strs has been sorted</span><br><span class="line">sort.StringsAreSorted(strs) // true</span><br></pre></td></tr></table></figure>
+<p>同样对于int数组的排序方法为<code>sort.Ints(ints)</code> sort包还提供了一个判断数组是否排序的系列方法，其方法名为参数类型加s加AreSorted(); 比如 <code>IntsAreSorted(ints), StringsAreSorted(strs)</code></p>
+<h2 id="给自定义类型排序"><a href="#给自定义类型排序" class="headerlink" title="给自定义类型排序"></a>给自定义类型排序</h2><p>类似于java与其他面向对象语言可以为实现了sortable接口的对象数组进行排序，go也提供了为自定义类型数组进行排序的方法。<code>sort.Sort(myArray)</code>中myArray是一个自定义的类型，它是某种类型的数组类型。比如:</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> myType []<span class="keyword">string</span></span><br></pre></td></tr></table></figure>
+<p>要实现排序，也需要为这种类型绑定一些方法，就像实现sortable接口的方法一样。实际上绑定这些方法也是实现go内置定义的 <a href="https://golang.org/pkg/sort/#Interface" title="https://golang.org/pkg/sort/#Interface" target="_blank" rel="noopener">sort.Interface</a>, 要实现Len（） int, Swap和Less() bool三个方法。<br>
           <div class="post-more-link text-center">
-            <a class="btn" href="/compile-openresty-in-centos/" rel="contents">
+            <a class="btn" href="/notes-of-go-by-example-part-5/" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1431,8 +1429,8 @@
             
               
                 
-                <a class="post-title-link" href="/remove-last-letter-of-each-line/" itemprop="url">
-                  使用后期静态绑定实现MVC的Model的基类
+                <a class="post-title-link" href="/php-using-spl-autoloader/" itemprop="url">
+                  PHP中自动加载的几种实现
                 </a>
               
             
@@ -1452,8 +1450,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/framework/" itemprop="url" rel="index">
-                    <span itemprop="name">framework</span>
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
                   </a>
                 </span>
 
@@ -1484,7 +1482,24 @@
         
           <span itemprop="articleBody">
             
-              <p>一直拖着没写，估计不会写了</p>
+              <p>PHP自动加载是一个很有用的技巧，我们应该在项目中尽量使用autoload来减少维护类加载的工作。 </p>
+<h2 id="使用-autoload"><a href="#使用-autoload" class="headerlink" title="使用__autoload"></a>使用__autoload</h2><p>在使用PHP的项目中，如何实现自动加载对于新人总是一个很疑惑的问题，一般写过的一些PHP，或者用过一些框架的同学都知道通过实现__autoload()函数来实现简单的自动加载：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function __autoload($classname) &#123;</span><br><span class="line">    $filename = &quot;./&quot;. $classname .&quot;.php&quot;;</span><br><span class="line">    include_once($filename);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不过这样的方式缺点也能明显就是只能定义一种加载策略，或者把这个函数实现的很复杂来实现多样的自动加载策略。</p>
+<h2 id="使用spl-autoload-register"><a href="#使用spl-autoload-register" class="headerlink" title="使用spl_autoload_register"></a>使用spl_autoload_register</h2><p>现在推荐使用的是<code>spl_autoload_register()</code>来注册自动加载器，它可以用来注册多个自动加载策略。它的函数签名是:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">bool spl_autoload_register ([ callable $autoload_function [, bool $throw = true [, bool $prepend = false ]]] )</span><br></pre></td></tr></table></figure>
+<p>一般来说，我们只关注第一个参数，他是一个callable类型的function，一般简单的传入一个函数名称的字符串，也可以传入类名和方法名的数组，也可以传入一个匿名函数（PHP 5.3之后）。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function my_autoloader($class) &#123;</span><br><span class="line">    include &apos;classes/&apos; . $class . &apos;.class.php&apos;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">spl_autoload_register(&apos;my_autoloader&apos;);</span><br><span class="line"></span><br><span class="line">// Or, using an anonymous function as of PHP 5.3.0</span><br><span class="line">spl_autoload_register(function ($class) &#123;</span><br><span class="line">    include &apos;classes/&apos; . $class . &apos;.class.php&apos;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>在PHP 5.3 引入命名空间后，我们还可以使用<a href="http://php.net/manual/en/function.spl-autoload-register.php#92514" target="_blank" rel="noopener">一种更方便的自动加载策略</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">spl_autoload_extensions(&quot;.php&quot;); // comma-separated list</span><br><span class="line">spl_autoload_register();</span><br><span class="line"></span><br><span class="line">// 等价于</span><br><span class="line">function my_autoload ($pClassName) &#123;</span><br><span class="line">    include(__DIR__ . &quot;/&quot; . $pClassName . &quot;.php&quot;);</span><br><span class="line">&#125;</span><br><span class="line">spl_autoload_register(&quot;my_autoload&quot;);</span><br></pre></td></tr></table></figure>
+<p>据说第一种可以效率更高。</p>
+<h2 id="使用SplClassLoader"><a href="#使用SplClassLoader" class="headerlink" title="使用SplClassLoader"></a>使用SplClassLoader</h2><p>SplClassLoader是Jonathan H. Wage，Roman S. Borschel等人开发的一个用于PHP 5.3根据命名空间和类名实现自动加载的类。使用比较方便，这里推荐使用。其实现并不复杂使用一个类，源码如下（去掉了注释）:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class SplClassLoader</span><br><span class="line">&#123;</span><br><span class="line">    private $_fileExtension = &apos;.php&apos;;</span><br><span class="line">    private $_namespace;</span><br><span class="line">    private $_includePath;</span><br><span class="line">    private $_namespaceSeparator = &apos;\\&apos;;</span><br><span class="line"></span><br><span class="line">    public function __construct($ns = null, $includePath = null) &#123;</span><br><span class="line">        $this-&gt;_namespace = $ns;</span><br><span class="line">        $this-&gt;_includePath = $includePath;</span><br><span class="line">    &#125;</span><br><span class="line">    public function setNamespaceSeparator($sep) &#123;</span><br><span class="line">        $this-&gt;_namespaceSeparator = $sep;</span><br><span class="line">    &#125;</span><br><span class="line">    public function getNamespaceSeparator() &#123;</span><br><span class="line">        return $this-&gt;_namespaceSeparator;</span><br><span class="line">    &#125;</span><br><span class="line">    public function setIncludePath($includePath) &#123;</span><br><span class="line">        $this-&gt;_includePath = $includePath;</span><br><span class="line">    &#125;</span><br><span class="line">    public function getIncludePath() &#123;</span><br><span class="line">        return $this-&gt;_includePath;</span><br><span class="line">    &#125;</span><br><span class="line">    public function setFileExtension($fileExtension) &#123;</span><br><span class="line">        $this-&gt;_fileExtension = $fileExtension;</span><br><span class="line">    &#125;</span><br><span class="line">    public function getFileExtension() &#123;</span><br><span class="line">        return $this-&gt;_fileExtension;</span><br><span class="line">    &#125;</span><br><span class="line">    public function register() &#123;</span><br><span class="line">        spl_autoload_register(array($this, &apos;loadClass&apos;));</span><br><span class="line">    &#125;</span><br><span class="line">    public function unregister() &#123;</span><br><span class="line">        spl_autoload_unregister(array($this, &apos;loadClass&apos;));</span><br><span class="line">    &#125;</span><br><span class="line">    public function loadClass($className) &#123;</span><br><span class="line">        if (null === $this-&gt;_namespace || $this-&gt;_namespace.$this-&gt;_namespaceSeparator === substr($className, 0, strlen($this-&gt;_namespace.$this-&gt;_namespaceSeparator))) &#123;</span><br><span class="line">            $fileName = &apos;&apos;;</span><br><span class="line">            $namespace = &apos;&apos;;</span><br><span class="line">            if (false !== ($lastNsPos = strripos($className, $this-&gt;_namespaceSeparator))) &#123;</span><br><span class="line">                $namespace = substr($className, 0, $lastNsPos);</span><br><span class="line">                $className = substr($className, $lastNsPos + 1);</span><br><span class="line">                $fileName = str_replace($this-&gt;_namespaceSeparator, DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;</span><br><span class="line">            &#125;</span><br><span class="line">            $fileName .= str_replace(&apos;_&apos;, DIRECTORY_SEPARATOR, $className) . $this-&gt;_fileExtension;</span><br><span class="line"></span><br><span class="line">            // @add wuxu 验证文件是否存在，要不可能会抛出异常</span><br><span class="line">            $fileName = ($this-&gt;_includePath !== null ? $this-&gt;_includePath . DIRECTORY_SEPARATOR : &apos;&apos;) . $fileName;</span><br><span class="line"></span><br><span class="line">            if (file_exists($fileName)) require $fileName;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完整的代码见 <a href="https://gist.github.com/jwage/221634" title="https://gist.github.com/jwage/221634" target="_blank" rel="noopener">GitHub Gist</a>。<br>（还有一些在此基础上的修改版本，比如：<a href="https://gist.github.com/jwage/221634）" target="_blank" rel="noopener">https://gist.github.com/jwage/221634）</a></p>
+<p>它的使用方式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// Example which loads classes for the Doctrine Common package in the</span><br><span class="line">// Doctrine\Common namespace.</span><br><span class="line">$classLoader = new SplClassLoader(&apos;Doctrine\Common&apos;, &apos;/path/to/doctrine&apos;);</span><br><span class="line">$classLoader-&gt;register();</span><br></pre></td></tr></table></figure>
+<p>这是一个实现使用命名空间的PHP项目的自动加载的方式（PSR-0），使用上面的注册代码，可以注册一个Doctrine\Common的namespace，它对应的根目录是/path/to/doctrine。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这样对于实现一个使用命名空间的项目非常重要。<br>接下来会写一篇如何在一个项目中使用namespace（PSR-0）来使项目的结构更加科学。</p>
 
             
           </span>
@@ -1559,14 +1574,14 @@
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">23</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

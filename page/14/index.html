@@ -207,11 +207,6 @@
 
     
     
-      
-      
-
-      
-    
 
     
       
@@ -1325,8 +1320,8 @@
             
               
                 
-                <a class="post-title-link" href="/notes-of-go-by-example-part-5/" itemprop="url">
-                  Go by Example(五)：杂烩1
+                <a class="post-title-link" href="/compile-openresty-in-centos/" itemprop="url">
+                  编译安装openresty
                 </a>
               
             
@@ -1346,8 +1341,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/lang/" itemprop="url" rel="index">
-                    <span itemprop="name">lang</span>
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
                   </a>
                 </span>
 
@@ -1376,14 +1371,11 @@
 
       
         
-          <h2 id="排序包-sort"><a href="#排序包-sort" class="headerlink" title="排序包/sort"></a>排序包/sort</h2><p>go内置的sort包提供了内置类型和用户自定义类型的排序功能。需要注意的sort包的方法对传入的参数排序后直接修改参数，而不是返回一个新的数组。可以这么理解：一般传入排序的是一个数组，数组一般作为引用传递，而对于引用传递的修改直接反映在原数组上。<br>sort包提供对数组排序的函数，函数名为待排序数组元素类型加s，参数为待排序数组，比如</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strs := []string&#123;&quot;bcd&quot;, &quot;abk&quot;, &quot;opq&quot;, &quot;hij&quot;&#125;</span><br><span class="line">sort.Strings(strs)</span><br><span class="line">// strs has been sorted</span><br><span class="line">sort.StringsAreSorted(strs) // true</span><br></pre></td></tr></table></figure>
-<p>同样对于int数组的排序方法为<code>sort.Ints(ints)</code> sort包还提供了一个判断数组是否排序的系列方法，其方法名为参数类型加s加AreSorted(); 比如 <code>IntsAreSorted(ints), StringsAreSorted(strs)</code></p>
-<h2 id="给自定义类型排序"><a href="#给自定义类型排序" class="headerlink" title="给自定义类型排序"></a>给自定义类型排序</h2><p>类似于java与其他面向对象语言可以为实现了sortable接口的对象数组进行排序，go也提供了为自定义类型数组进行排序的方法。<code>sort.Sort(myArray)</code>中myArray是一个自定义的类型，它是某种类型的数组类型。比如:</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> myType []<span class="keyword">string</span></span><br></pre></td></tr></table></figure>
-<p>要实现排序，也需要为这种类型绑定一些方法，就像实现sortable接口的方法一样。实际上绑定这些方法也是实现go内置定义的 <a href="https://golang.org/pkg/sort/#Interface" title="https://golang.org/pkg/sort/#Interface" target="_blank" rel="noopener">sort.Interface</a>, 要实现Len（） int, Swap和Less() bool三个方法。<br>
+          <p>openresty是章亦春（agentzh）维护的项目，早期由淘宝网赞助，后来作者加入cloudflare公司后，也就由该公司支持了。这是一个扩展nginx的项目，在nginx的基础上添加很多作者开发的模块。该项目目前有很多公司在使用。</p>
+<p>openresty项目主页 <a href="http://openresty.org/cn/" title="http://openresty.org/cn/" target="_blank" rel="noopener">http://openresty.org/cn/</a>， <a href="http://github.com/agentzh/openresty.org" title="http://github.com/agentzh/openresty.org" target="_blank" rel="noopener">GITHUB</a>。</p>
+<p>我们要安装一个openresty作为webserver同时把它配置成与nginx使用方式相同。</p>
           <div class="post-more-link text-center">
-            <a class="btn" href="/notes-of-go-by-example-part-5/" rel="contents">
+            <a class="btn" href="/compile-openresty-in-centos/" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1458,14 +1450,14 @@
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">23</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

@@ -207,11 +207,6 @@
 
     
     
-      
-      
-
-      
-    
 
     
       
@@ -585,6 +580,120 @@
             
               
                 
+                <a class="post-title-link" href="/using-pointer-as-parameter/" itemprop="url">
+                  C中使用指针作为参数的一些问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-08T12:34:50+08:00" content="2015-12-08">
+              2015-12-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>这个问题其实比较常见了，但是经常会出错，就是C中函数的参数是值传递的，即使对于指针，也是值传递。很多高级语言在这一点是相通的。</p>
+<p>今天看到这个问题是在 c-fqa.com 上的一个问题，看下面的代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int *ip) &#123;</span><br><span class="line">	static int dummy = 5;	// static make dummy accessiable for whole file</span><br><span class="line">	ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int *ip;</span><br><span class="line">f(ip);</span><br></pre></td></tr></table></figure>
+<p>这时候ip指向哪里呢？实际上ip可能指向任何地址。因为ip没有初始化，传递给f函数调用的参数只是指针值的<strong>拷贝</strong>，对拷贝的修改并不会改变 ip 本身的内容。要达到本来的目的，需要传入 ip的地址，也就是指针的指针作为参数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int **ipp) &#123;</span><br><span class="line">	static int dummy = 5;	// if no static here, then ip can be anywhere, *ip can be any value</span><br><span class="line">	*ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int  *ip;</span><br><span class="line">f(&amp;ip);</span><br></pre></td></tr></table></figure>
+<p>另一种方法是把结果的指针作为函数的返回值，这是更常用的方式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int *f() &#123;</span><br><span class="line">	static int dummy = 5;</span><br><span class="line">	return &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line">int *ip = f();</span><br></pre></td></tr></table></figure>
+<p>另一个例子是，定制一个 malloc 的自己的版本：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void mymalloc(void *retp, size_t size) &#123;</span><br><span class="line">	retp = malloc(size);</span><br><span class="line">	if (retp == NULL) &#123;</span><br><span class="line">		fprintf(stderr, &quot;out of memory\n&quot;);</span><br><span class="line">		exit(EXIT_FAILURE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看起来没有什么问题，但是在调用这个函数时并不能正常工作，因为被调用函数接受的指针是调用者传入的指针的拷贝。</p>
+<blockquote>
+<p>C always uses pass by value. You can simulate pass by reference yourself, by defining functions which accept pointers and then using the &amp; operator when calling, and the compiler will essentially simulate it for you when you pass an array to a function </p>
+</blockquote>
+<p>这些内容在Java和Go中也是通用的，指针作为参数实际上也是值传递的哦。</p>
+<p>参考：</p>
+<ul>
+<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passptrinit.html</a></li>
+<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passbyref.html</a></li>
+</ul>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/should-not-cast-the-result-of-malloc/" itemprop="url">
                   malloc的强制类型转换
                 </a>
@@ -668,120 +777,6 @@
 <li><a href="http://stackoverflow.com/questions/571945/getting-a-stack-overflow-exception-when-declaring-a-large-array" target="_blank" rel="noopener">http://stackoverflow.com/questions/571945/getting-a-stack-overflow-exception-when-declaring-a-large-array</a></li>
 <li><a href="http://www.gnu.org/software/libc/manual/html_node/Basic-Allocation.html" target="_blank" rel="noopener">http://www.gnu.org/software/libc/manual/html_node/Basic-Allocation.html</a></li>
 <li><a href="http://c-faq.com/malloc/mallocnocast.html" target="_blank" rel="noopener">http://c-faq.com/malloc/mallocnocast.html</a></li>
-</ul>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/using-pointer-as-parameter/" itemprop="url">
-                  C中使用指针作为参数的一些问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-08T12:34:50+08:00" content="2015-12-08">
-              2015-12-08
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>这个问题其实比较常见了，但是经常会出错，就是C中函数的参数是值传递的，即使对于指针，也是值传递。很多高级语言在这一点是相通的。</p>
-<p>今天看到这个问题是在 c-fqa.com 上的一个问题，看下面的代码：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int *ip) &#123;</span><br><span class="line">	static int dummy = 5;	// static make dummy accessiable for whole file</span><br><span class="line">	ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int *ip;</span><br><span class="line">f(ip);</span><br></pre></td></tr></table></figure>
-<p>这时候ip指向哪里呢？实际上ip可能指向任何地址。因为ip没有初始化，传递给f函数调用的参数只是指针值的<strong>拷贝</strong>，对拷贝的修改并不会改变 ip 本身的内容。要达到本来的目的，需要传入 ip的地址，也就是指针的指针作为参数：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int **ipp) &#123;</span><br><span class="line">	static int dummy = 5;	// if no static here, then ip can be anywhere, *ip can be any value</span><br><span class="line">	*ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int  *ip;</span><br><span class="line">f(&amp;ip);</span><br></pre></td></tr></table></figure>
-<p>另一种方法是把结果的指针作为函数的返回值，这是更常用的方式：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int *f() &#123;</span><br><span class="line">	static int dummy = 5;</span><br><span class="line">	return &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line">int *ip = f();</span><br></pre></td></tr></table></figure>
-<p>另一个例子是，定制一个 malloc 的自己的版本：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void mymalloc(void *retp, size_t size) &#123;</span><br><span class="line">	retp = malloc(size);</span><br><span class="line">	if (retp == NULL) &#123;</span><br><span class="line">		fprintf(stderr, &quot;out of memory\n&quot;);</span><br><span class="line">		exit(EXIT_FAILURE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>看起来没有什么问题，但是在调用这个函数时并不能正常工作，因为被调用函数接受的指针是调用者传入的指针的拷贝。</p>
-<blockquote>
-<p>C always uses pass by value. You can simulate pass by reference yourself, by defining functions which accept pointers and then using the &amp; operator when calling, and the compiler will essentially simulate it for you when you pass an array to a function </p>
-</blockquote>
-<p>这些内容在Java和Go中也是通用的，指针作为参数实际上也是值传递的哦。</p>
-<p>参考：</p>
-<ul>
-<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passptrinit.html</a></li>
-<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passbyref.html</a></li>
 </ul>
 
             
@@ -1077,6 +1072,159 @@
             
               
                 
+                <a class="post-title-link" href="/linux-ip-command/" itemprop="url">
+                  Linux ip/ss 命令详解
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-04T12:34:50+08:00" content="2015-12-04">
+              2015-12-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p><img src="/images/linux-logo.png" alt=""><br>CentOS 7正式废弃了很多旧的工具包，比如历史悠久的ifconfig, netstat等网络相关的命令，还有locate这些命令也没有了。新的系统使用ip, ss, net等命令替代了之前的网络操作命令。</p>
+<p>新的命令设计的比较复杂，其帮助文档看起来都头晕，这里记录一下一下常见的操作。</p>
+<h2 id="ip-命令"><a href="#ip-命令" class="headerlink" title="ip 命令"></a>ip 命令</h2><p>没有了ifconfig命令之后，ip命令是其替代品。ip命令的作用如下：</p>
+<blockquote>
+<p>ip - show / manipulate routing, devices, policy routing and tunnels</p>
+</blockquote>
+<p>命令使用格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip [ OPTIONS ] OBJECT &#123; COMMAND | help &#125;</span><br><span class="line">       ip [ -force ] -batch filename</span><br><span class="line">       OBJECT := &#123; link | addr | addrlabel | route | rule | neigh | ntable | tunnel | tuntap |</span><br><span class="line">               maddr | mroute | mrule | monitor | xfrm | netns | l2tp | tcp_metrics &#125;</span><br><span class="line">       OPTIONS := &#123; -V[ersion] | -s[tatistics] | -r[esolve] | -f[amily] &#123; inet | inet6 | ipx |</span><br><span class="line">               dnet | link &#125; | -o[neline] &#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到二级命令非常多，很难记。最常用的是 <code>ip addr</code> 也可以简写为 <code>ip a</code>（ip命令中更有很多这种简写方法）。操作网络地址相关内容，比如列出ip地址，添加ip地址，删除ip等待。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip addr show</span><br><span class="line"># Only show TCP/IP IPv4</span><br><span class="line">ip -4 a</span><br><span class="line"># Only show TCP/IP IPv4</span><br><span class="line">ip -6 a</span><br><span class="line"></span><br><span class="line"># show eth0 interface</span><br><span class="line">ip a show eth0</span><br><span class="line"></span><br><span class="line"># show on running interface</span><br><span class="line">ip link ls up</span><br><span class="line"></span><br><span class="line"># add/del ip address</span><br><span class="line">ip a add &#123;ip_addr/mask&#125; dev &#123;intereface&#125; [label label_name] // 可选的设置一个label</span><br><span class="line">ip addr add 192.168.0.123/24 dev eth0</span><br><span class="line"></span><br><span class="line">#remove ip address</span><br><span class="line">ip a del &#123;ip_addr&#125; dev &#123;interface&#125;</span><br><span class="line">ip addr del 192.168.0.123 dev eth0</span><br><span class="line"></span><br><span class="line"># flush ip address; delete all the IP addresses matches</span><br><span class="line"># 可以flush一个地址或者一个label标记的所有地址</span><br><span class="line">ip a flush label &quot;label&quot;</span><br><span class="line">ip -s a f to 192.168.2.0/24   // -s 输出统计信息 to limit to given IP address/prefix</span><br><span class="line"></span><br><span class="line"># up or down a device</span><br><span class="line">ip link set dev &#123;interface&#125; &#123;up|down&#125;</span><br><span class="line">ip l set dev eth0 down</span><br></pre></td></tr></table></figure>
+<p><code>ip link set</code> 命令可以设置很多的值，看一下自动补全提示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ip l set &lt;tab&gt;</span><br><span class="line">address     -- specify unicast link layer (MAC) ad</span><br><span class="line">arp         -- change ARP flag on device</span><br><span class="line">brd         -- specify broadcast link layer (MAC) </span><br><span class="line">broadcast   -- specify broadcast link layer (MAC) </span><br><span class="line">dev         -- specify device</span><br><span class="line">down        -- change state do down</span><br><span class="line">dynamic     -- change DYNAMIC flag on device</span><br><span class="line">mtu         -- specify maximum transmit unit</span><br><span class="line">multicast   -- change MULTICAST flag on device</span><br><span class="line">name        -- change name of device</span><br><span class="line">peer        -- specify peer link layer (MAC) addre</span><br><span class="line">promisc     -- set promiscious mode</span><br><span class="line">txqlen      -- specify length of transmit queue</span><br><span class="line">txqueuelen  -- specify length of transmit queue</span><br><span class="line">up          -- change state to up</span><br></pre></td></tr></table></figure>
+<p>一般用法都是 <code>ip link set {cmd} dev {interface}</code>。比如设置mtu：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip link set mtu 3000 dev eth0</span><br></pre></td></tr></table></figure>
+<p>ip命令还能查看与邻近节点（neighbour）的可达性：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip n show         // same as ip neigh show</span><br><span class="line">ip n add &#123;ip_addr&#125; lladdr &#123;MAC/LLADDRESS&#125; dev &#123;interface&#125; nud &#123;perm|noarp|stale|reachable&#125;</span><br><span class="line">ip n del &#123;ip_addr&#125; dev eth0</span><br></pre></td></tr></table></figure>
+<p>会输出附近节点的arp信息。可以手动添加这些arp条目。</p>
+<p>路由表信息也由ip命令提供，使用route/r 子命令操作：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># list route table</span><br><span class="line">ip r</span><br><span class="line">ip r list 192.168.0.0/24</span><br><span class="line">ip r add &#123;default&#125; &#123;network/mask&#125; dev &#123;interface&#125;</span><br><span class="line">ip r add (default) &#123;network/mask&#125; via &#123;gateway_ip&#125;</span><br><span class="line">ip r del default</span><br><span class="line">ip r del network/mask dev wth0</span><br></pre></td></tr></table></figure>
+<p>ip命令远比上面介绍的部分复杂，这里不能一一列出了，使用一个带tab补全的终端非常有用，另外虽然ifconfig命令没有了，但是基于图形用户界面的 <code>nmtui</code> (network management text user interface) 还是预装了，可以用它来配置ip/DNS等。如果没有安装，使用下面的命令安装： <code>sudo yum install NetworkManager-tui -y</code>。</p>
+<h2 id="ss-命令"><a href="#ss-命令" class="headerlink" title="ss 命令"></a>ss 命令</h2><p>ss是另一个很重要的工具，ss是socket statistics的缩写，用于代替之前使用netstat命令。ss能够显示比netstat更多的信息并且速度也更快。netstat是从 /proc 下的文件中读取信息再整理显示的，而 ss 命令直接从内核空间获取信息。</p>
+<p>ss的man页面介绍如下：</p>
+<blockquote>
+<p>ss - another utility to investigate sockets</p>
+</blockquote>
+<p>直接执行 ss 会列出当前所有已建立的非监听的（non-listening）连接，一个常用的参数 <code>-ntl</code>，参数意义为：</p>
+<ul>
+<li><code>-n</code> –numeric，显示端口数字而不是服务名字，比如显示 80 而不是 http</li>
+<li><code>-t</code> –tcp， 即显示 tcp 套接字，同理常用 -u 表示 udo 套接字</li>
+<li><code>-l</code> –listening，也好理解，默认不显示监听的套接字，这个参数指明只显示监听中的套接字</li>
+<li><code>-4</code> –ipv4也是常用的，在查看服务监听状态时，常指定 -4 或者 -6 结果更加清晰</li>
+<li><code>-p</code> –processes,显示使用这个套接字的进程id，<strong>这个参数需要 sudo 权限</strong></li>
+<li><code>-s</code> –summary，显示套接字使用的统计信息</li>
+<li><code>-o</code> –options，显示相关的时间信息</li>
+</ul>
+<p>还可以更具套接字状态过滤输出，比如下面的命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ss -t4 state established</span><br><span class="line">ss -t4 state time-wait</span><br></pre></td></tr></table></figure>
+<p>连接的状态有很多中，常用如下：</p>
+<ol>
+<li>established</li>
+<li>syn-sent</li>
+<li>syn-recv</li>
+<li>time-wait</li>
+<li>closed</li>
+<li>closing</li>
+<li>all</li>
+<li>connected</li>
+</ol>
+<p>还可以通过指定dport和sport过滤输出：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 还可以使用 or，666</span><br><span class="line">ss -nt dst :443 or dst :80</span><br><span class="line">// dport 大于1024的连接</span><br><span class="line">ss -nt dst gt :1024</span><br></pre></td></tr></table></figure>
+<p>当然更常用的过滤是 grep 啦，哈哈哈。</p>
+<p>要监控网络流量的动态，可以用top相关命令，也可以用watch工具：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">watch -n 1 &quot;ss -t4&quot;</span><br></pre></td></tr></table></figure>
+<p>这样每秒中会刷新一次ss的结果。</p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
+<li><a href="http://www.cyberciti.biz/faq/linux-ip-command-examples-usage-syntax/" target="_blank" rel="noopener">http://www.cyberciti.biz/faq/Linux-ip-command-examples-usage-syntax/</a></li>
+<li><a href="http://www.binarytides.com/linux-ss-command/" target="_blank" rel="noopener">http://www.binarytides.com/Linux-ss-command/</a></li>
+</ul>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/compile-and-install-php7/" itemprop="url">
                   编译安装PHP7正式版
                 </a>
@@ -1314,14 +1462,14 @@
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">23</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
