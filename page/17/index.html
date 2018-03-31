@@ -235,6 +235,125 @@
             
               
                 
+                <a class="post-title-link" href="/golang-errors/" itemprop="url">
+                  Golang中的错误处理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-24T12:34:50+08:00" content="2015-07-24">
+              2015-07-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>Go语言提供了一套“新颖的”错误系统，与Java中的异常系统不一样，Go中没有抛出异常的概念</p>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>如果有一定面向对象语言编程经验的话，肯定会对异常/错误系统有一定的了解。如果使用Java比较多的话，一定会认为抛异常是编程语言天生的一部分，因为在Java中抛异常真的是太家常便饭，无处不在了；但是在Go语言中，根本没有异常这个东西！</p>
+<p>看一段官方的QA是怎么解释这个问题的：</p>
+<blockquote>
+<p>We believe that coupling exceptions to a control structure, as in the try-catch-finally idiom,<strong> results in convoluted code</strong>. It also tends to encourage programmers to label too many ordinary errors, such as failing to open a file, as exceptional.</p>
+<p>Go takes a different approach. For plain error handling, Go’s multi-value returns make it easy to report an error without overloading the return value. A canonical error type, coupled with Go’s other features, makes error handling pleasant but quite different from that in other languages.</p>
+<p>Go also has a couple of built-in functions to signal and recover from truly exceptional conditions. The recovery mechanism is executed only as part of a function’s state being torn down after an error, which is sufficient to handle catastrophe but requires no extra control structures and, when used well, can result in clean error-handling code.</p>
+</blockquote>
+<p>多值返回为Go提供了一个新的错误处理机制，如果对为什么Go不提供异常体系感兴趣可以在 <a href="https://golang.org/doc/articles/defer_panic_recover.html" target="_blank" rel="noopener">这里</a> 找到更多的细节。</p>
+<p>在之前文章中，已经使用过Go语言的多值返回来返回详细的错误描述。按照规定，<strong>错误的类型通常为error，这是一个内建的简单接口</strong>。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> error <span class="keyword">interface</span> &#123;</span><br><span class="line">	Error() <span class="keyword">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以通过实现这个接口定制错误，例如打开文件时的错误:</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> PathError <span class="keyword">struct</span> &#123;</span><br><span class="line">	Op <span class="keyword">string</span></span><br><span class="line">	Path <span class="keyword">string</span></span><br><span class="line">	Err error	<span class="comment">// 由系统调用返回</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fanc (pe *PathError) Error() <span class="keyword">string</span> &#123;</span><br><span class="line">	<span class="comment">// 返回定制的错误信息</span></span><br><span class="line">	<span class="keyword">return</span> pe.Op + <span class="string">" "</span> + pe.Path + <span class="string">": "</span> + pe.Err.Error()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>effective go中有一个示例非常有利于我们理解错误的使用,这段代码的作用是创建一个文件，如果创建失败，检查是不是磁盘空间不足，如果是则删除掉一些临时文件，再尝试创建一次：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for try:=0; try&lt;2; try++ &#123;</span><br><span class="line">	file, err := os.Create(filename)</span><br><span class="line">	if err == nill &#123;</span><br><span class="line">		return  //没有错误</span><br><span class="line">	&#125;</span><br><span class="line">	// 检查是不是空间不足</span><br><span class="line">	if e,ok := err.(*os.PathError); ok &amp;&amp; e.Err == syscall.ENOSPC &#123;</span><br><span class="line">		deleteTempFiles()  	// 删除一些临时文件</span><br><span class="line">		continue 			// 再创建一次</span><br><span class="line">	&#125;</span><br><span class="line">	return</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以查看源码中PathError的实现 <a href="https://golang.org/src/os/error.go" title="https://golang.org/src/os/error.go" target="_blank" rel="noopener">https://golang.org/src/os/error.go</a></p>
+<h2 id="Panic函数"><a href="#Panic函数" class="headerlink" title="Panic函数"></a>Panic函数</h2><p>函数可以通过将error作为额外的返回值来向调用者报告错误，对于一些“致命”的错误，他们导致程序不能继续运行了，Go内建了一个Panic函数，它会产生一个运行时错误并重孩子程序。该函数接受一个任意类型的实参在程序终止时打印。</p>
+<p>只需要在需要它的地方调用一下<code>panix()</code>就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func init() &#123;</span><br><span class="line">	if user == &quot;&quot; &#123;</span><br><span class="line">		panic(&quot;user变量必须有值&quot;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一个示例，但是如果是设计库函数则应该避免使用panic，一个常见的使用panic的场景是初始化，如上面的示例。</p>
+<h2 id="恢复"><a href="#恢复" class="headerlink" title="恢复"></a>恢复</h2><p>panic函数被调用后，程序将终止当前函数的执行。并开始追溯Go程的栈，运行任何被推迟的函数。我如果回溯到栈顶，程序会终止。<br>我们可以通过使用内建的recover函数来重新取回Go程的控制权。<br>调用recover将停止回溯，并返回传入panic的是西安。因为回溯只有被推迟执行的函数中的代码在执行，所以recover也只能在被推迟的函数中才有效。</p>
+<p>一个应用：在服务器中终止失败的Go程而无需杀死其他正在执行的Go程：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">server</span><span class="params">(workChan &lt;-<span class="keyword">chan</span> *Work)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> work := <span class="keyword">range</span> workChan &#123;</span><br><span class="line">		<span class="keyword">go</span> safelyDo(work)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">safelyDo</span><span class="params">(work *Work)</span></span> &#123;</span><br><span class="line">	<span class="comment">// defer 函数是被推迟执行的</span></span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">if</span> err := <span class="built_in">recover</span>(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">			log.Println(<span class="string">"work failed:"</span>, err)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	do(work)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果do函数中调用panic函数，回溯会执行defer的函数，这时recover会起作用，打印错误信息后退出Go程。<br>可以使用上面的思路简化错误处理。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/effective-go-note-3/" itemprop="url">
                   Effective Go笔记：空白标识符，接口检查与内嵌
                 </a>
@@ -348,6 +467,131 @@
             
               
                 
+                <a class="post-title-link" href="/z-compile-vim-with-lua-support-in-centos-7/" itemprop="url">
+                  CentOS 编译安装vim 7.4添加Lua支持
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
+              2015-07-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>一些vim插件需要提供Lua支持，特别是常见的补全插件，前段时间安装的[yadr](https</p>
+<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>首先，编译安装嘛，先下载源码， 可是呢这两sourceforge挂掉了，vim是托管在sf上的，导致下载页面也不能访问了，甚至vim的官网 <a href="http://www.vim.org" target="_blank" rel="noopener">www.vim.org</a> 也不能访问了，幸好vim在github上有一个备份  <a href="https://github.com/vim/vim" title="https://github.com/vim/vim" target="_blank" rel="noopener">https://github.com/vim/vim</a> 或者直接访问vim.org的ftp站： <a href="ftp://ftp.vim.org/pub/vim/unix/" title="ftp://ftp.vim.org/pub/vim/unix/" target="_blank" rel="noopener">ftp://ftp.vim.org/pub/vim/Unix/</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用下面之一的方法下载源码</span><br><span class="line">// git下载的话体积会大一些，好处是以后可以方便地更新</span><br><span class="line">git clone git@github.com:vim/vim.git</span><br><span class="line">wget -O ftp://ftp.vim.org/pub/vim/Unix/vim-7.4.tar.bz2</span><br><span class="line">wget ftp://ftp.vim.org/pub/vim/Unix/vim-7.4.tar.bz2</span><br><span class="line"></span><br><span class="line">tar xjvf vim-7.4.tar.bz2</span><br><span class="line">cd vim74</span><br></pre></td></tr></table></figure>
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>vim的编译其实很简单，就configure-&gt;make-&gt;make install 这样的流程。但是要添加 Lua支持，就有一些麻烦了。</p>
+<p>configure的配置大概是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configure --prefix=/data/vim74 --with-features=huge --with-luajit --enable-luainterp=yes</span><br></pre></td></tr></table></figure>
+<p>首先如果不在 configure配置那手动打开 <code>--enable-fail-if-missing</code> 这个选项，你会发现，configure没有问题，make没有问题，make install也OK，但是运行生成的vim： <code>vim --version</code>会发现Lua前面还是一个”-“（表示没有Lua支持）<br>因为其实configure那根本就没有找到lua的支持，只是默认跳过了 <code>--enable-luainterp=yes</code> 选项。。。<br>所以应该这样运行configure：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configure --prefix=/data/vim74 --with-features=huge --with-luajit --enable-luainterp=yes --enable-fail-if-missing</span><br></pre></td></tr></table></figure>
+<p>如果你的机器没有安装lua 和luajit的话会在检查lua支持那里中断了。</p>
+<h3 id="安装Lua和LuaJit"><a href="#安装Lua和LuaJit" class="headerlink" title="安装Lua和LuaJit"></a>安装Lua和LuaJit</h3><p>Lua的安装倒是比较方便，官方repo里面就有，当然要想安装新版的也可以自己编译安装。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo yum install lua lua-devel -y</span><br></pre></td></tr></table></figure>
+<p>luajit不在centos的官方repo里面，我们需要编译安装;</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget http://luajit.org/download/LuaJIT-2.0.4.tar.gz</span><br><span class="line">tar -xzvf LuaJIT-2.0.4.tar.gz</span><br><span class="line">cd LuaJIT-2.0.4</span><br><span class="line">// 使用默认安装路径</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h2 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h2><p>安装好lua支持后，再运行configure就不会报错了</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configure --prefix=/data/vim74 --with-features=huge --with-luajit --enable-luainterp=yes --enable-fail-if-missing</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>运行编译的vim：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/data/vim74/bin/vim</span><br></pre></td></tr></table></figure>
+<p>可能你会发现这样的错误:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/data/vim74/bin/vim: error while loading shared libraries: libluajit-5.1.so.2: cannot open shared object file: No such file or directory</span><br></pre></td></tr></table></figure>
+<p>显然是安装的luajit有问题。我们找一下luajit这个.so文件在哪里</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo find / -name libluajit-5.1.so.2</span><br></pre></td></tr></table></figure>
+<p>发现下面有这个文件：</p>
+<ol>
+<li>/home/wuxu/tars/ngx_openresty-1.7.10.2/build/luajit-root/data/openresty/luajit/lib/libluajit-5.1.so.2</li>
+<li>/usr/local/lib/libluajit-5.1.so.2</li>
+<li>/data/openresty/luajit/lib/libluajit-5.1.so.2</li>
+</ol>
+<p>显然1，3是openresty编译的，第二个才是我们安装luajit支持，我们需要给这个.so生成一个软链接，让vim能找到它：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo ln -s /usr/local/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2</span><br></pre></td></tr></table></figure>
+<p>这样再运行vim就不会有问题了～也有Lua支持了，不过Vim的自动补全还没用过呢，学会了再做记录吧。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/encasulating-a-memcache-client-for-php/" itemprop="url">
                   为PHP封装一个Memcache类
                 </a>
@@ -403,6 +647,107 @@
             
               <p>在php中经常会使用memcache或者memcached来做缓存系统，为了方便操作经常会对PHP提供的接口进行一层封装 </p>
 <p>todo</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/go-efficient-string-concat/" itemprop="url">
+                  Go 快速拼接字符串
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
+              2015-07-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>对于频繁的字符串操作，可以使用bytes.Buffer接口提供的方法快速拼接 </p>
+<p>和一般语言类似，Go也为string重载了”+”操作符，可以使用它进行字符串拼接，但是在C#和Java中对于大量的字符串拼接操作推荐使用StringBuilder这样的类，同样对于Go中的大量字符串拼接也不推荐直接使用”+”操作。</p>
+<p>可以使用bytes.Buffer提供的方法进行快速拼接：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"bytes"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">concat</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> buffer bytes.Buffer</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>; i&lt;<span class="number">1000</span>; i++ &#123;</span><br><span class="line">		buffer.WriteString(<span class="string">"abcd"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	str := buffer.String()</span><br><span class="line">	<span class="comment">// do something to str</span></span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">return</span> str</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样可以获得O(n)的时间复杂度。</p>
+<p>参考： <a href="http://stackoverflow.com/questions/1760757/" title="http://stackoverflow.com/questions/1760757/" target="_blank" rel="noopener">stackoverflow.com/</a></p>
 
             
           </span>
@@ -575,8 +920,8 @@
             
               
                 
-                <a class="post-title-link" href="/z-compile-vim-with-lua-support-in-centos-7/" itemprop="url">
-                  CentOS 编译安装vim 7.4添加Lua支持
+                <a class="post-title-link" href="/compile-and-install-php7-beta1/" itemprop="url">
+                  编译安装PHP7 beta1
                 </a>
               
             
@@ -586,8 +931,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
-              2015-07-20
+            <time itemprop="dateCreated" datetime="2015-07-19T12:34:50+08:00" content="2015-07-19">
+              2015-07-19
             </time>
           </span>
 
@@ -626,41 +971,16 @@
 
       
         
-          <span itemprop="articleBody">
-            
-              <p>一些vim插件需要提供Lua支持，特别是常见的补全插件，前段时间安装的[yadr](https</p>
-<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>首先，编译安装嘛，先下载源码， 可是呢这两sourceforge挂掉了，vim是托管在sf上的，导致下载页面也不能访问了，甚至vim的官网 <a href="http://www.vim.org" target="_blank" rel="noopener">www.vim.org</a> 也不能访问了，幸好vim在github上有一个备份  <a href="https://github.com/vim/vim" title="https://github.com/vim/vim" target="_blank" rel="noopener">https://github.com/vim/vim</a> 或者直接访问vim.org的ftp站： <a href="ftp://ftp.vim.org/pub/vim/unix/" title="ftp://ftp.vim.org/pub/vim/unix/" target="_blank" rel="noopener">ftp://ftp.vim.org/pub/vim/Unix/</a></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用下面之一的方法下载源码</span><br><span class="line">// git下载的话体积会大一些，好处是以后可以方便地更新</span><br><span class="line">git clone git@github.com:vim/vim.git</span><br><span class="line">wget -O ftp://ftp.vim.org/pub/vim/Unix/vim-7.4.tar.bz2</span><br><span class="line">wget ftp://ftp.vim.org/pub/vim/Unix/vim-7.4.tar.bz2</span><br><span class="line"></span><br><span class="line">tar xjvf vim-7.4.tar.bz2</span><br><span class="line">cd vim74</span><br></pre></td></tr></table></figure>
-<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>vim的编译其实很简单，就configure-&gt;make-&gt;make install 这样的流程。但是要添加 Lua支持，就有一些麻烦了。</p>
-<p>configure的配置大概是这样的：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configure --prefix=/data/vim74 --with-features=huge --with-luajit --enable-luainterp=yes</span><br></pre></td></tr></table></figure>
-<p>首先如果不在 configure配置那手动打开 <code>--enable-fail-if-missing</code> 这个选项，你会发现，configure没有问题，make没有问题，make install也OK，但是运行生成的vim： <code>vim --version</code>会发现Lua前面还是一个”-“（表示没有Lua支持）<br>因为其实configure那根本就没有找到lua的支持，只是默认跳过了 <code>--enable-luainterp=yes</code> 选项。。。<br>所以应该这样运行configure：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configure --prefix=/data/vim74 --with-features=huge --with-luajit --enable-luainterp=yes --enable-fail-if-missing</span><br></pre></td></tr></table></figure>
-<p>如果你的机器没有安装lua 和luajit的话会在检查lua支持那里中断了。</p>
-<h3 id="安装Lua和LuaJit"><a href="#安装Lua和LuaJit" class="headerlink" title="安装Lua和LuaJit"></a>安装Lua和LuaJit</h3><p>Lua的安装倒是比较方便，官方repo里面就有，当然要想安装新版的也可以自己编译安装。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo yum install lua lua-devel -y</span><br></pre></td></tr></table></figure>
-<p>luajit不在centos的官方repo里面，我们需要编译安装;</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget http://luajit.org/download/LuaJIT-2.0.4.tar.gz</span><br><span class="line">tar -xzvf LuaJIT-2.0.4.tar.gz</span><br><span class="line">cd LuaJIT-2.0.4</span><br><span class="line">// 使用默认安装路径</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<h2 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h2><p>安装好lua支持后，再运行configure就不会报错了</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configure --prefix=/data/vim74 --with-features=huge --with-luajit --enable-luainterp=yes --enable-fail-if-missing</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>运行编译的vim：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/data/vim74/bin/vim</span><br></pre></td></tr></table></figure>
-<p>可能你会发现这样的错误:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/data/vim74/bin/vim: error while loading shared libraries: libluajit-5.1.so.2: cannot open shared object file: No such file or directory</span><br></pre></td></tr></table></figure>
-<p>显然是安装的luajit有问题。我们找一下luajit这个.so文件在哪里</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo find / -name libluajit-5.1.so.2</span><br></pre></td></tr></table></figure>
-<p>发现下面有这个文件：</p>
-<ol>
-<li>/home/wuxu/tars/ngx_openresty-1.7.10.2/build/luajit-root/data/openresty/luajit/lib/libluajit-5.1.so.2</li>
-<li>/usr/local/lib/libluajit-5.1.so.2</li>
-<li>/data/openresty/luajit/lib/libluajit-5.1.so.2</li>
-</ol>
-<p>显然1，3是openresty编译的，第二个才是我们安装luajit支持，我们需要给这个.so生成一个软链接，让vim能找到它：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo ln -s /usr/local/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2</span><br></pre></td></tr></table></figure>
-<p>这样再运行vim就不会有问题了～也有Lua支持了，不过Vim的自动补全还没用过呢，学会了再做记录吧。</p>
-
-            
-          </span>
+          <p>前段时间去php.net上闲逛发现PHP7的beta1版本出来了，就尝试着编译安装了一下</p>
+<p>之前在鸟哥的博客里看到了他们做的PHP的性能测试，相对于PHP5.6都是有很大的提升的，并且PHP的主版本号已经是2004年发布PHP5后，11年来首次更新，肯定PHP７是有很大的改变的，下面那就来试试PHP7的beta版吧，正式版大概在今年年底会发布。</p>
+<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>测试版本的PHP下载页面： <a href="https://downloads.php.net/~ab/" title="https://downloads.php.net/~ab/" target="_blank" rel="noopener">https://downloads.php.net/~ab/</a></p>
+<p>php7 beta1: <a href="https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz" title="https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz" target="_blank" rel="noopener">https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</span><br><span class="line">或者</span><br><span class="line">curl -O https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</span><br></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/compile-and-install-php7-beta1/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -806,106 +1126,6 @@
             
               
                 
-                <a class="post-title-link" href="/compile-and-install-php7-beta1/" itemprop="url">
-                  编译安装PHP7 beta1
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-19T12:34:50+08:00" content="2015-07-19">
-              2015-07-19
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>前段时间去php.net上闲逛发现PHP7的beta1版本出来了，就尝试着编译安装了一下</p>
-<p>之前在鸟哥的博客里看到了他们做的PHP的性能测试，相对于PHP5.6都是有很大的提升的，并且PHP的主版本号已经是2004年发布PHP5后，11年来首次更新，肯定PHP７是有很大的改变的，下面那就来试试PHP7的beta版吧，正式版大概在今年年底会发布。</p>
-<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>测试版本的PHP下载页面： <a href="https://downloads.php.net/~ab/" title="https://downloads.php.net/~ab/" target="_blank" rel="noopener">https://downloads.php.net/~ab/</a></p>
-<p>php7 beta1: <a href="https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz" title="https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz" target="_blank" rel="noopener">https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</a></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</span><br><span class="line">或者</span><br><span class="line">curl -O https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</span><br></pre></td></tr></table></figure>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/compile-and-install-php7-beta1/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/effective-go-note-2/" itemprop="url">
                   Effective Go笔记：方法，接口与其他类型
                 </a>
@@ -991,225 +1211,6 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import &quot;net/http&quot;</span><br><span class="line"></span><br><span class="line">type milkServer struct &#123;</span><br><span class="line">	n int</span><br><span class="line">&#125;</span><br><span class="line">// 注意参数中的http不能少，参考Go的包机制</span><br><span class="line">func (m *MilkServer) ServeHTTP(w http.ResponseWriter, req *http.Request) &#123;</span><br><span class="line">	m.n++</span><br><span class="line">	// do some thing</span><br><span class="line">	fmt.Fprintf(w, &quot;request count at %d\n&quot;, m.n)</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 添加绑定</span><br><span class="line">m := new(Milk)</span><br><span class="line">http.Handle(&quot;/count&quot;, m)</span><br><span class="line">// 也可以直接绑定一个与ServeHTTP签名相同的函数</span><br><span class="line">func ArgsFunc(w http.ResponseWriter, req *http.Request) &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line">http.HandleFunc(&quot;args&quot;, ArgsFunc)</span><br></pre></td></tr></table></figure>
 <p>当然也可以绑定到一个信道上面，然后使用信道新更新一些内部状态：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Chan chan *http.Request</span><br><span class="line">func (c Chan) ServeHTTP(w http.ResponseWriter, req *http.Request) &#123;</span><br><span class="line">	c &lt;- req</span><br><span class="line">	fmt.Fprint(w, &quot;request received&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/effective-go-note-1/" itemprop="url">
-                  Effective Go笔记：函数，数据，初始化
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
-              2015-07-18
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>effective go 中的部分笔记，这是第一部分 </p>
-<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
-<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>Go的函数有一个很特别的性质那就是多值返回，这样做有一个很方便的地方是可以把错误值返回，这样做和后面会讲到的取消异常也是有关的。</p>
-<p>一个Go函数的签名可能是：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func (file *File) Write(b []byte) (n int, err error)</span><br></pre></td></tr></table></figure>
-<p>这是一个典型的Go函数签名，初看起来比较复杂，一点点分析：</p>
-<ol>
-<li>func关键字，类似php中的function</li>
-<li>(file <em>File) 表示这是一个添加到</em>File接口上的方法。这也是Go比较有意思的地方，通过<em>附着</em>接口方法的方式实现接口</li>
-<li>Write 很简单就是方法名了，大写开头的方法表示共有的导出方法，如果是小写的方法名是不能导出的</li>
-<li>(b []byte)方法的参数，形参名为b，类型为[]byte</li>
-<li>(n int, err error) 返回类型，如果是多指返回则使用小括号括起来，如果是一个返回值就不需要了。比较有意思的是返回值也可以作为有命名返回值，比如这里的n和err，这样表示把函数作用域内的n和err变量返回，这样返回语句只需要写return，而不需要显式说明具体变量</li>
-</ol>
-<h3 id="Defer"><a href="#Defer" class="headerlink" title="Defer"></a>Defer</h3><p>Defer 是Go的关键字，用于预设一个函数调用，一个使用Defer调用的函数会<strong>在执行defer的函数返回之前</strong>立即执行，常用来释放资源，比如解锁互斥和关闭文件<br>使用defer推迟的函数会按照<strong>后进先出</strong>的顺序执行。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/effective-go-note-1/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/vim-commands/" itemprop="url">
-                  vim 常用的命令模式
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
-              2015-07-18
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>vim中常用的命令，日常更新 </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">!ls  使用感叹号开头调用系统命令</span><br><span class="line">~	 切换当前光标所在字符的大小写</span><br></pre></td></tr></table></figure>
-<h2 id="buffer相关"><a href="#buffer相关" class="headerlink" title="buffer相关"></a>buffer相关</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:ls</span><br><span class="line">:bn :bnext</span><br><span class="line">:bp :bprev</span><br><span class="line">:bd :bdelete</span><br><span class="line">:b1 :buffer1</span><br><span class="line">:bufdo cmd 在所有缓冲区执行命令</span><br></pre></td></tr></table></figure>
-<h2 id="参数列表"><a href="#参数列表" class="headerlink" title="参数列表"></a>参数列表</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:args 列出参数列表或者设置参数列表</span><br><span class="line">:args **/*.postfix</span><br><span class="line">:write :w</span><br><span class="line">:edit! :e!放弃修改重新载入文件</span><br><span class="line">:qall :qa</span><br><span class="line">:wall :wa</span><br></pre></td></tr></table></figure>
-<h2 id="多窗口"><a href="#多窗口" class="headerlink" title="多窗口"></a>多窗口</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:sp [file] 水平分割</span><br><span class="line">:vsp [filw] 垂直分割</span><br><span class="line">:clo &lt;C-w&gt;c 关闭当前窗口</span><br><span class="line">:no[ly] &lt;C-v&gt;o 关闭当前之外的所有窗口</span><br></pre></td></tr></table></figure>
-<p><strong>切换窗口</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;C-w&gt;&lt;C-w&gt; 在串口中切换，连续按两次Ctrl+w</span><br><span class="line">&lt;C-w&gt;h|j|k|l 切换到左/下/上/右的窗口</span><br></pre></td></tr></table></figure>
-<p><strong>改变窗口大小</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;C-w&gt;=</span><br><span class="line">&lt;C-w&gt;_  最大化当前窗口的高度</span><br><span class="line">&lt;C-w&gt;|  最大化当前窗口的宽度</span><br><span class="line">[n]&lt;C-w&gt;_   设置</span><br><span class="line">[n]&lt;C-w&gt;|</span><br></pre></td></tr></table></figure>
-<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:tabedit :tabe &#123;filename&#125; 如果filename为空则打开一个新的标签页</span><br><span class="line">:tabclose :tabc </span><br><span class="line">:tabonly  :tabo  关闭当前标签之外的所有标签</span><br></pre></td></tr></table></figure>
-<p><strong>标签切换</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:tabnext  :tabn &#123;N&#125;  Ngt</span><br><span class="line">:tabn gt</span><br><span class="line">:tabp gT</span><br><span class="line">:tabmove [N] 移动标签页</span><br></pre></td></tr></table></figure>
-<h2 id="打开及保存文件"><a href="#打开及保存文件" class="headerlink" title="打开及保存文件"></a>打开及保存文件</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:edit full/path/name</span><br><span class="line">:edit %:h&lt;tab&gt;filename 	使用缓冲区文件的完整路径打开文件, :h去掉当前文件名，tab键补全</span><br><span class="line">:edit path 打开文件管理窗口</span><br><span class="line">:find filename 在path下查找文件</span><br><span class="line">: set path+=/path/to/workspace  将工作区添加到vim的path中用于寻找</span><br><span class="line">:e 是 :edit的缩写</span><br><span class="line">:Explore :E 打开当前的目录管理器</span><br><span class="line">:Sexplore  explore的切分</span><br><span class="line">:Vexplore</span><br></pre></td></tr></table></figure>
-<p><strong>文件操作</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:!mkdir -p %:h    前缓冲区创建目录，然后在:w，解决某些不能保存的问题</span><br><span class="line">:w !sudo tee % &gt; /dev/null 由于保存用非sudo打开的无权限文件的保存</span><br></pre></td></tr></table></figure>
 
             
           </span>
@@ -1379,21 +1380,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">171</span>
+              <span class="site-state-item-count">173</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">144</span>
+              <span class="site-state-item-count">145</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

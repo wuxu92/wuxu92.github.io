@@ -235,6 +235,203 @@
             
               
                 
+                <a class="post-title-link" href="/my-git-config/" itemprop="url">
+                  我的git配置
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-06T12:34:50+08:00" content="2015-11-06">
+              2015-11-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/self/" itemprop="url" rel="index">
+                    <span itemprop="name">self</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p><img src="/images/post/git.jpg" alt=""></p>
+<p>gitconfig的配置非常重要，有时候换到一台新机器由于没有自己配置搞得很不顺手，干脆把gitconfig摘出来，方便以后配置。<br>主要是命令别名的配置。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[user]</span><br><span class="line">        name = wuxu92</span><br><span class="line">        email = wuxu92@163.com</span><br><span class="line">[<span class="built_in">alias</span>]</span><br><span class="line">        lg = <span class="built_in">log</span> --graph --pretty=format:<span class="string">'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset [%an]'</span> --abbrev-commit --date=relative</span><br><span class="line">        ls = ls --show-control-chars --color=auto</span><br><span class="line">        go = <span class="string">"! bash -c \"git pull &amp;&amp; git add .; if [ \\\"\\\" == \\\"\\\" ]; then git commit -a; else git commit -am \\\\¡\\\\¡; fi; git push origin master:yy</span></span><br><span class="line"><span class="string">our-id;\""</span></span><br><span class="line">        ci= commit</span><br><span class="line">        co = checkout</span><br><span class="line">        br = branch</span><br><span class="line">        st = status</span><br><span class="line">        list = <span class="built_in">log</span> --pretty=format:\<span class="string">"%h %ad | %s%d [%an]\" --graph --date=short</span></span><br><span class="line"><span class="string">        undo = reset --hard</span></span><br><span class="line"><span class="string">        llog = log --date=local</span></span><br><span class="line"><span class="string">        changes = diff --name-status -r</span></span><br><span class="line"><span class="string">        diffst = diff --stat -r</span></span><br><span class="line"><span class="string">        conf    = diff --name-only --diff-filter=U</span></span><br><span class="line"><span class="string">[http]</span></span><br><span class="line"><span class="string"># proxy = 127.0.0.1:1080</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[https]</span></span><br><span class="line"><span class="string"># proxy = 127.0.0.1:1080</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[push]</span></span><br><span class="line"><span class="string">        default = simple</span></span><br></pre></td></tr></table></figure>
+<p>注意git go 的别名需要自己修改一下your-id</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/npwg-data-serialisation/" itemprop="url">
+                  Go 网络编程-数据序列化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-04T12:34:50+08:00" content="2015-11-04">
+              2015-11-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><img src="/images/golang/gopher-banner-small.jpg" alt=""></p>
+<p>这一篇主要是关于Go序列化数据。数据序列化在网络编程中非常重要，在网络传输数据时，如果数据是对象，数组等等，需要先把对象序列化为才能传递，同时接收方需要进行反序列化才能使用这些数据。一个比较常见的是json数据。 序列化和反序列化操作又成为 marshalling 和 unmarshalling 。</p>
+<h2 id="序列化方法"><a href="#序列化方法" class="headerlink" title="序列化方法"></a>序列化方法</h2><p>序列化其实简单地说就是一种把变量似乎用字节流表示出来的规范，我们可以定义自己的规范，只要接收方能使用相应的方法反序列化出来原来的对象就可以了。但是我们要考虑序列化方法的通用性，希望对任意的数据可以使用同样的序列化和反序列化方法实现。<br>早期很著名的系列化方法是 XDR(external data representation),它最早用于Sun的RPC中。Go没有对不透数据的marshalling 和 unmarshalling 有明确的支持。RPC包中没有使用XDR，而是使用<code>gob</code>。<br>要实现对数据统一的序列化方法，需要实现一套 <strong>自描述数据</strong>的规范。像xml就是一类自描述的数据，能通过节点属性对数据进行描述。xml还有很强的扩展性。这也是为什么很多项目中会使用xml作为数据传输的格式。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/npwg-data-serialisation/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/jp-drama-lines/" itemprop="url">
                   台词
                 </a>
@@ -1161,226 +1358,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/golang-db-access/" itemprop="url">
-                  Go mysql数据库操作
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-26T12:34:50+08:00" content="2015-10-26">
-              2015-10-26
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/db/" itemprop="url" rel="index">
-                    <span itemprop="name">db</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>Go官方并不提供数据库驱动，而只是为开发数据库驱动定义了一些标准接口。我们要使用mysql数据库得使用第三方维护的mysql驱动。Go中支持MySQL的驱动目前比较多，有如下几种，有些是支持database/sql标准，而有些是采用了自己的实现接口,常用的有如下几种:</p>
-<p><a href="https://github.com/go-sql-driver/mysql" target="_blank" rel="noopener">https://github.com/go-sql-driver/MySQL</a> 支持database/sql，全部采用go写。<br><a href="https://github.com/ziutek/mymysql" target="_blank" rel="noopener">https://github.com/ziutek/mymysql</a> 支持database/sql，也支持自定义的接口，全部采用go写。<br><a href="https://github.com/Philio/GoMySQL" target="_blank" rel="noopener">https://github.com/Philio/GoMySQL</a> 不支持database/sql，自定义接口，全部采用go写。<br>也推荐使用第一个，主要理由：</p>
-<ul>
-<li>维护的比较好</li>
-<li>完全支持database/sql接口</li>
-<li>支持keepalive，保持长连接</li>
-</ul>
-<p>有了驱动，其实golang使用mysql和其他语言没有太大的区别，虽然具体的方法调用与类组织不太一样。</p>
-<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>使用10.4.16.95上的mariadb数据库，新建一个golang的数据库，添加两张测试用的表。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> golang;</span><br><span class="line"><span class="keyword">use</span> golang;</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`userinfo`</span> (</span><br><span class="line">  <span class="string">`uid`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`username`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`uid`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`userdetail`</span> (</span><br><span class="line">  <span class="string">`uid`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span>,</span><br><span class="line">  <span class="string">`intro`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`profile`</span> <span class="built_in">text</span></span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1;</span><br></pre></td></tr></table></figure>
-<p>先ssh登录服务器(因为安全考虑，不开放mysql的root用户的远程登录权限)，用root用户本地登录mysql新建一个用于测试的可远程登录的用户：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssh wuxu@10.4.16.95</span><br><span class="line">MySQL -uroot -p</span><br><span class="line">// enter root password</span><br><span class="line">create user golang@&apos;%&apos; identified by &apos;golangMysql&apos;;</span><br><span class="line">grant privileges on *.golang to golang@&apos;%&apos;;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
-<p>这样就可以用golang登录新建的数据库了</p>
-<h2 id="Golang操作mysql"><a href="#Golang操作mysql" class="headerlink" title="Golang操作mysql"></a>Golang操作mysql</h2><p>先get数据库驱动,在命令行运行<code>go get github.com/go-sql-driver/MySQL</code>,会自动使用git从github下载mysql驱动工程到<code>$GOPATH/src/</code>。</p>
-<p>基本的插入，更新，删除，查找方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import (</span><br><span class="line">	_ &quot;github.com/go-sql-driver/MySQL&quot;</span><br><span class="line">	&quot;database/sql&quot;</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	// mysql是一个注册过的数据库驱动了,在驱动的init函数中注册</span><br><span class="line">	db, err := sql.Open(&quot;MySQL&quot;, &quot;golang:golangMysql@tcp(10.4.16.95:3306)/golang?charset=utf8&quot;)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	fmt.Println(&quot;connected&quot;)</span><br><span class="line">	</span><br><span class="line">	stmt, err := db.Prepare(&quot;insert userinfo set username=?&quot;)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	// fmt.Println(stmt)</span><br><span class="line">	res, err := stmt.Exec(&quot;wuxu&quot;)  // 使用占位符&apos;?&apos;防止sql注入，这是一个不定参数函数，传入的参数与prepare阶段设置的占位符相等</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	id, err := res.LastInsertId()</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	fmt.Println(id)</span><br><span class="line">	</span><br><span class="line">	stmt, _ = db.Prepare(&quot;update userinfo set username=? where username=?&quot;)</span><br><span class="line">	</span><br><span class="line">	res, err =  stmt.Exec(&quot;wuxu01&quot;, &quot;wuxu&quot;)</span><br><span class="line">	aff, err := res.RowsAffected()</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	fmt.Println(aff)</span><br><span class="line">	</span><br><span class="line">	rows, err := db.Query(&quot;select * from userinfo&quot;)</span><br><span class="line">	</span><br><span class="line">	for rows.Next() &#123;</span><br><span class="line">		var id int</span><br><span class="line">		var usename string</span><br><span class="line">		err = rows.Scan(&amp;id, &amp;usename)</span><br><span class="line">		CheckErr(err)</span><br><span class="line">		</span><br><span class="line">		fmt.Println(id, usename)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	stmt, _ = db.Prepare(&quot;delete from userinfo where uid&gt;?&quot;)</span><br><span class="line">	res, _ = stmt.Exec(4)</span><br><span class="line">	aff, _ = res.RowsAffected()</span><br><span class="line">	fmt.Println(&quot;affected&quot;, aff)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func CheckErr(e error) &#123;</span><br><span class="line">	if e != nil &#123;</span><br><span class="line">		panic(e)</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>与以往的mysql操作相似，也是一个连接对象，对于插入，删除等要先prepare，然后执行Exec，在exec阶段绑定占位符变量。<br>比较独特的是Exec返回的Result指针，它包含LastInsertId和 RowsAffedted 两个方法。</p>
-<p>注意数据连接的dsn(data source name)和php或者其他语言的比较不一样。我们使用的是 <code>user:password@protocol(host:port)/dbname?charset=utf8</code> 的形式。驱动本身支持更多形式的dsn：</p>
-<ul>
-<li>user@Unix(/path/to/socket)/dbname?charset=utf8</li>
-<li>user:password@tcp(localhost:5555)/dbname?charset=utf8</li>
-<li>user:password@/dbname</li>
-<li>user:password@tcp([::]:80)/dbname   // ipv6</li>
-</ul>
-<p>整个数据库操作的流程大概如下：</p>
-<p>sql.Open()函数用来打开一个注册过的数据库驱动<br>db.Prepare()函数用来返回准备要执行的sql操作， 然后返回准备完毕的执行状态。<br>db.Query()函数用来直接执行Sql返回Rows结果。<br>stmt.Exec()函数用来执行stmt准备好的SQL语句。</p>
-<p>数据库驱动的注册在数据库驱动包导入时执行，注册的逻辑写在包的init函数中。导入驱动包只需要 <code>import _ &quot;driver/package&quot;</code>，因为只需要执行其<code>init()</code>，而不需要调用包中导出的方法，调用的是go语言规定的sql接口。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/go-lang-notebook-2/" itemprop="url">
-                  Golang 学习笔记：HTTP, TCP/IP, UDP
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-23T12:34:50+08:00" content="2015-10-23">
-              2015-10-23
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><p>我们知道，go内置有http server 支持，我们只需要在代码中启动这个server就可以启动一个类似于apache的服务器。同时可以很方便的监听多个端口等等。</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	. <span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">	PORT = <span class="string">":1024"</span></span><br><span class="line">	MSG = <span class="string">"hello, gopher"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.HandleFunc(<span class="string">"/hello"</span>, Hello)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		http.ListenAndServe(PORT, <span class="literal">nil</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		http.ListenAndServeTLS(<span class="string">":443"</span>,<span class="string">"cert.pem"</span>, <span class="string">"key.pem"</span>, <span class="literal">nil</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="keyword">for</span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Hello</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">	w.Header().Set(<span class="string">"Content-Type"</span>, <span class="string">"text/plain"</span>)</span><br><span class="line">	Fprintf(w, MSG)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这段代码启动了一个server，开启了http和https支持；分别监听在1024端口和443端口。<br>有几个需要注意的地方。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/go-lang-notebook-2/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1427,21 +1404,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">171</span>
+              <span class="site-state-item-count">173</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">144</span>
+              <span class="site-state-item-count">145</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

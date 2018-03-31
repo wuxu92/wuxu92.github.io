@@ -235,6 +235,212 @@
             
               
                 
+                <a class="post-title-link" href="/lvm-extend-record/" itemprop="url">
+                  一次LVM扩容记录
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-10-04T16:34:50+08:00" content="2016-10-04">
+              2016-10-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>之前写了一片重新装了一个Fedora 24的博客，那次装的时候为了系统速度比较快，把fedora装在了SSD上面，但我用的还是几年前买的三星的120GB的SSD，容量是捉襟见肘啊，只能从原来的windows系统分了35GB的空间给fedora，使用fedora自动分配后，挂载的可用空间只有29GB了，随着系统用的越来越久，剩余空间也就越来越少了，到现在只有10多G的可用空间了。幸好装Fedora的时候使用的LVM，这样可以很方便的进行扩容了。</p>
+<h2 id="Shrink-Windows-Disk"><a href="#Shrink-Windows-Disk" class="headerlink" title="Shrink Windows Disk"></a>Shrink Windows Disk</h2><p>首先从windows的分区压缩一些空间出来，当然LVM是支持从不同磁盘扩容的，但是为了速度还是从SSD中压缩空间吧，这样window留70G左右，剩余40G给Fedora，能压出来15G左右（因为影音类文件都放在另一个硬盘，所以45GB左右的Linux空间可以用比较长时间了）。<br>但是windows压缩空间有一个限制，那就是使用系统的压缩空间时，如果有一些不可移动文件占据了空间，那就只能从没有这类文件的位置开始压缩空间。。也就是说虽然C盘有30G的剩余空间，却不能压缩出30G，像我的情况就只能压缩出6G。。。这时候可以自己捣鼓也可以使用一个软件 AOMEI Partition Assistant 进行扩容，使用非常方便。但是！有一个问题，那就是需要重启进入一个XXX PreOS的界面自动重新分区，双系统重新分区后。。会导致Grub引导失效，只能进入 Grub Rescue 界面。</p>
+<h2 id="修复引导"><a href="#修复引导" class="headerlink" title="修复引导"></a>修复引导</h2><p>还好Grub的修复还是有很多路子的，也许可以从Grub Recue中捣鼓，但是更方便的做一个Fedora Linux进入系统重新安装grub。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/lvm-extend-record/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/my-configure-of-fedora-24/" itemprop="url">
+                  从头开始配置一个Fedora 24的双系统
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-07-18T14:35:20+08:00" content="2016-07-18">
+              2016-07-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>大概两年前用过很长一段时间的Fedora+win7的双系统，最早用的fedora版本还是14、15的样子，长期使用过18-20，后面几代都只在虚拟机里试玩了一下，因为配置起来一套顺手的桌面其实很麻烦，f24之后一直想再装一下fedora，在virtual box里面玩了一会觉得太卡就决定装双系统，花了两天时间基本弄得顺手了。</p>
+<p>在今年，我的windows下的工具大多更换了，从印象笔记到为知笔记，同步使用了坚果云，音乐一直是网易云音乐，幸好这些工具都有Linux版本的，装起来倒也不太费事，使用也还顺手。配置这个系统主要是一下几个方面：</p>
+<ul>
+<li>gnome shell theme. 就是gnome的主题，包括gtk主题，shell主题，图标等等，我现在使用 zukitre的gtk+主题， shadow的Icons， OSX-EICap的cursor， Zuki-shell的shell theme。这些都是在gnome-tweak-tool里面配置</li>
+<li>gnome-extension. 就是gnome-shell的扩展，这个非常重要，gnome的扩展性非常强，一些常用的扩展可以极大的方便操作，最常用的包括：applications menu, background logo, caffeine, coverflow alt-tab, dynamic top bar, launch new instance, media player indicator, openweather, place status indicator, simple dock, suspend button, topiconcs, user themes等</li>
+<li>输入法，切换到fcitx和rime，除了sublime外基本都可以正常使用</li>
+<li>工具类：网易云音乐，坚果云同步，为知笔记，WPS，mysqlworkbench， chrome，shadowsocks，vlc player，Atom, 甚至texstudio都有很好的支持</li>
+<li>鼠标手势，在windows下习惯了 Wgesture的全局手势，一开在Fedora下很不习惯，后来找到一个开源的 easystroke gesture recognition的软件，使用和Wgesture基本差不多，非常非常方便</li>
+<li>使用Roxterm替换gnome的terminal，roxterm是我最喜欢的一个终端工具，定制之后非常方便</li>
+</ul>
+<p>最后的效果：</p>
+<p><img src="/images/linux/fedora.jpg" alt=""></p>
+<p>下面是安装时记录的一些问题，确实从头开始配置各种工具容易遇到非常多的问题，这里也是遇到一个记录一下，记得比较乱也不整理了，到时候再遇到能找到就可以了：<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/my-configure-of-fedora-24/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/request-rate-limit-and-access-deny/" itemprop="url">
                   服务器访问频率限制和IP限制
                 </a>
@@ -1091,211 +1297,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/intro-of-sass/" itemprop="url">
-                  Sass介绍
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-04-04T15:38:41+08:00" content="2016-04-04">
-              2016-04-04
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>前面几天一直忙着改论文，终于捯饬一篇出来投出去了，接下来可以有一段时间休息了。可以把这几天玩的东西整理整理了。这段时间主要玩的东西是Sass和Docker。其实这两样在以前都有一点点接触过，Sass和LESS大概在学CSS之后不久就有了解，只是觉得还要装一个编译器挺麻烦的，还不如直接写CSS；Docker也是大概大四的时候接触到，当时在服务器上装了一下，可是由于当时的网络实在不好，拉取镜像总是很慢或者失败，就没玩了。</p>
-<p>这一篇主要记录一下Sass的简单认识。我们知道Sass是CSS的一个预处理器，也可以看作是一种更强大的CSS扩展编程语言，其官网 <a href="http://Sass-lang.com/" target="_blank" rel="noopener">http://Sass-lang.com/</a> 可以看出来Sass的目标是一种编程语言，让CSS的编写更加方便，更加像一门编程语言。其实还有一种也很常见的CSS预处理语言： <a href="http://lesscss.org/" target="_blank" rel="noopener">LESS</a>。LESS 也被广泛使用，LESS的特性是可以直接被浏览器使用，而LESS文件通常比编译出来的CSS文件小很多，这可以带来一定的性能优势，但是需要在客户端解析，这又导致一定的性能开销。关于LESS和Sass有很多比较，就不啰嗦了，反正我只玩了一下Sass，对LESS不甚了解。据说新版的Bootstrap会转向Sass，看来Sass是一个不错的选择。</p>
-<h2 id="安装和使用"><a href="#安装和使用" class="headerlink" title="安装和使用"></a>安装和使用</h2><p>这类预处理工具多由ruby开发，实在的，现在很多工具类应用都用ruby或者nodejs开发了，尤其是面向开发者使用工具。ruby和nodejs有很大的优势，倒是python见得少了些。要安装Sass编译器需要先安装ruby，然后用gem安装Sass。在Linux下面还是比较方便的，在Windows下就有些麻烦了，并且国内的网对gem库并不那么友好，常需要切到淘宝的镜像才能快速解决。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/intro-of-sass/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/php-iconv-ignore-option/" itemprop="url">
-                  php字符集转转换失败的问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-03-30T17:58:03+08:00" content="2016-03-30">
-              2016-03-30
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>今天科委的项目有子系统报错说有几条数据上传不了，各种排查终于搞好了。</p>
-<p>首先是ESB的服务器他们重启了，然后IP没配对，端口没配对，我们curl一直是失败的，导致我们的nginx返回 504 gateway timeout。这个问题之前<a href="/php-fpm-504-error/">有一篇文章</a>已经说过了。php执行curl的时间超过了nginx配置的响应时间，就会报 upstream time out 然后给客户端返回 504 。</p>
-<p>等ESB服务起好了，深圳那边有一条数据始终传不上了，诡异的是ESB根本没有收到数据。我把我们转发的PHP的日志记录改了好多次，终于发现是在某一步上传的内容被置空了，所以在我们转发的时候，其实并没有把子系统的数据发到 ESB。</p>
-<p>调试了一下，发现是 iconv 执行失败了。 不同的系统对接麻烦的就是字符集的问题，我们的项目一直都是用 UTF-8的，可是很多的java项目都使用GBK，东华的ESB系统也是使用GBK编码的，所以我们收到数据后要执行一次字符集转换才能转发到ESB：</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">$xml = iconv(<span class="string">'UTF-8'</span>, <span class="string">'GBK'</span>, $xml);</span><br></pre></td></tr></table></figure>
-<p>就是这一步，iconv转换失败的时候会返回false而不是报错，也没有日志记录，所以 $xml 被置为 false 了。。。。。至于为什么会失败，我也不知道，应该是有某种特殊编码把，有一个办法可以跳过这个转换失败,就是在目标字符集加一个选项：</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">$xml = iconv(<span class="string">'UTF-8'</span>, <span class="string">'GBK//IGNORE'</span>, $xml);</span><br></pre></td></tr></table></figure>
-<p>领略到我大 PHP 神奇的方法调用了么~~~</p>
-<p>参考：</p>
-<ul>
-<li><a href="http://php.net/manual/en/function.iconv.php" target="_blank" rel="noopener">http://php.net/manual/en/function.iconv.php</a></li>
-</ul>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1342,21 +1343,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">171</span>
+              <span class="site-state-item-count">173</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">144</span>
+              <span class="site-state-item-count">145</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

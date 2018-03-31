@@ -235,6 +235,159 @@
             
               
                 
+                <a class="post-title-link" href="/linux-ip-command/" itemprop="url">
+                  Linux ip/ss 命令详解
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-04T12:34:50+08:00" content="2015-12-04">
+              2015-12-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p><img src="/images/linux-logo.png" alt=""><br>CentOS 7正式废弃了很多旧的工具包，比如历史悠久的ifconfig, netstat等网络相关的命令，还有locate这些命令也没有了。新的系统使用ip, ss, net等命令替代了之前的网络操作命令。</p>
+<p>新的命令设计的比较复杂，其帮助文档看起来都头晕，这里记录一下一下常见的操作。</p>
+<h2 id="ip-命令"><a href="#ip-命令" class="headerlink" title="ip 命令"></a>ip 命令</h2><p>没有了ifconfig命令之后，ip命令是其替代品。ip命令的作用如下：</p>
+<blockquote>
+<p>ip - show / manipulate routing, devices, policy routing and tunnels</p>
+</blockquote>
+<p>命令使用格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip [ OPTIONS ] OBJECT &#123; COMMAND | help &#125;</span><br><span class="line">       ip [ -force ] -batch filename</span><br><span class="line">       OBJECT := &#123; link | addr | addrlabel | route | rule | neigh | ntable | tunnel | tuntap |</span><br><span class="line">               maddr | mroute | mrule | monitor | xfrm | netns | l2tp | tcp_metrics &#125;</span><br><span class="line">       OPTIONS := &#123; -V[ersion] | -s[tatistics] | -r[esolve] | -f[amily] &#123; inet | inet6 | ipx |</span><br><span class="line">               dnet | link &#125; | -o[neline] &#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到二级命令非常多，很难记。最常用的是 <code>ip addr</code> 也可以简写为 <code>ip a</code>（ip命令中更有很多这种简写方法）。操作网络地址相关内容，比如列出ip地址，添加ip地址，删除ip等待。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip addr show</span><br><span class="line"># Only show TCP/IP IPv4</span><br><span class="line">ip -4 a</span><br><span class="line"># Only show TCP/IP IPv4</span><br><span class="line">ip -6 a</span><br><span class="line"></span><br><span class="line"># show eth0 interface</span><br><span class="line">ip a show eth0</span><br><span class="line"></span><br><span class="line"># show on running interface</span><br><span class="line">ip link ls up</span><br><span class="line"></span><br><span class="line"># add/del ip address</span><br><span class="line">ip a add &#123;ip_addr/mask&#125; dev &#123;intereface&#125; [label label_name] // 可选的设置一个label</span><br><span class="line">ip addr add 192.168.0.123/24 dev eth0</span><br><span class="line"></span><br><span class="line">#remove ip address</span><br><span class="line">ip a del &#123;ip_addr&#125; dev &#123;interface&#125;</span><br><span class="line">ip addr del 192.168.0.123 dev eth0</span><br><span class="line"></span><br><span class="line"># flush ip address; delete all the IP addresses matches</span><br><span class="line"># 可以flush一个地址或者一个label标记的所有地址</span><br><span class="line">ip a flush label &quot;label&quot;</span><br><span class="line">ip -s a f to 192.168.2.0/24   // -s 输出统计信息 to limit to given IP address/prefix</span><br><span class="line"></span><br><span class="line"># up or down a device</span><br><span class="line">ip link set dev &#123;interface&#125; &#123;up|down&#125;</span><br><span class="line">ip l set dev eth0 down</span><br></pre></td></tr></table></figure>
+<p><code>ip link set</code> 命令可以设置很多的值，看一下自动补全提示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ip l set &lt;tab&gt;</span><br><span class="line">address     -- specify unicast link layer (MAC) ad</span><br><span class="line">arp         -- change ARP flag on device</span><br><span class="line">brd         -- specify broadcast link layer (MAC) </span><br><span class="line">broadcast   -- specify broadcast link layer (MAC) </span><br><span class="line">dev         -- specify device</span><br><span class="line">down        -- change state do down</span><br><span class="line">dynamic     -- change DYNAMIC flag on device</span><br><span class="line">mtu         -- specify maximum transmit unit</span><br><span class="line">multicast   -- change MULTICAST flag on device</span><br><span class="line">name        -- change name of device</span><br><span class="line">peer        -- specify peer link layer (MAC) addre</span><br><span class="line">promisc     -- set promiscious mode</span><br><span class="line">txqlen      -- specify length of transmit queue</span><br><span class="line">txqueuelen  -- specify length of transmit queue</span><br><span class="line">up          -- change state to up</span><br></pre></td></tr></table></figure>
+<p>一般用法都是 <code>ip link set {cmd} dev {interface}</code>。比如设置mtu：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip link set mtu 3000 dev eth0</span><br></pre></td></tr></table></figure>
+<p>ip命令还能查看与邻近节点（neighbour）的可达性：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip n show         // same as ip neigh show</span><br><span class="line">ip n add &#123;ip_addr&#125; lladdr &#123;MAC/LLADDRESS&#125; dev &#123;interface&#125; nud &#123;perm|noarp|stale|reachable&#125;</span><br><span class="line">ip n del &#123;ip_addr&#125; dev eth0</span><br></pre></td></tr></table></figure>
+<p>会输出附近节点的arp信息。可以手动添加这些arp条目。</p>
+<p>路由表信息也由ip命令提供，使用route/r 子命令操作：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># list route table</span><br><span class="line">ip r</span><br><span class="line">ip r list 192.168.0.0/24</span><br><span class="line">ip r add &#123;default&#125; &#123;network/mask&#125; dev &#123;interface&#125;</span><br><span class="line">ip r add (default) &#123;network/mask&#125; via &#123;gateway_ip&#125;</span><br><span class="line">ip r del default</span><br><span class="line">ip r del network/mask dev wth0</span><br></pre></td></tr></table></figure>
+<p>ip命令远比上面介绍的部分复杂，这里不能一一列出了，使用一个带tab补全的终端非常有用，另外虽然ifconfig命令没有了，但是基于图形用户界面的 <code>nmtui</code> (network management text user interface) 还是预装了，可以用它来配置ip/DNS等。如果没有安装，使用下面的命令安装： <code>sudo yum install NetworkManager-tui -y</code>。</p>
+<h2 id="ss-命令"><a href="#ss-命令" class="headerlink" title="ss 命令"></a>ss 命令</h2><p>ss是另一个很重要的工具，ss是socket statistics的缩写，用于代替之前使用netstat命令。ss能够显示比netstat更多的信息并且速度也更快。netstat是从 /proc 下的文件中读取信息再整理显示的，而 ss 命令直接从内核空间获取信息。</p>
+<p>ss的man页面介绍如下：</p>
+<blockquote>
+<p>ss - another utility to investigate sockets</p>
+</blockquote>
+<p>直接执行 ss 会列出当前所有已建立的非监听的（non-listening）连接，一个常用的参数 <code>-ntl</code>，参数意义为：</p>
+<ul>
+<li><code>-n</code> –numeric，显示端口数字而不是服务名字，比如显示 80 而不是 http</li>
+<li><code>-t</code> –tcp， 即显示 tcp 套接字，同理常用 -u 表示 udo 套接字</li>
+<li><code>-l</code> –listening，也好理解，默认不显示监听的套接字，这个参数指明只显示监听中的套接字</li>
+<li><code>-4</code> –ipv4也是常用的，在查看服务监听状态时，常指定 -4 或者 -6 结果更加清晰</li>
+<li><code>-p</code> –processes,显示使用这个套接字的进程id，<strong>这个参数需要 sudo 权限</strong></li>
+<li><code>-s</code> –summary，显示套接字使用的统计信息</li>
+<li><code>-o</code> –options，显示相关的时间信息</li>
+</ul>
+<p>还可以更具套接字状态过滤输出，比如下面的命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ss -t4 state established</span><br><span class="line">ss -t4 state time-wait</span><br></pre></td></tr></table></figure>
+<p>连接的状态有很多中，常用如下：</p>
+<ol>
+<li>established</li>
+<li>syn-sent</li>
+<li>syn-recv</li>
+<li>time-wait</li>
+<li>closed</li>
+<li>closing</li>
+<li>all</li>
+<li>connected</li>
+</ol>
+<p>还可以通过指定dport和sport过滤输出：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 还可以使用 or，666</span><br><span class="line">ss -nt dst :443 or dst :80</span><br><span class="line">// dport 大于1024的连接</span><br><span class="line">ss -nt dst gt :1024</span><br></pre></td></tr></table></figure>
+<p>当然更常用的过滤是 grep 啦，哈哈哈。</p>
+<p>要监控网络流量的动态，可以用top相关命令，也可以用watch工具：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">watch -n 1 &quot;ss -t4&quot;</span><br></pre></td></tr></table></figure>
+<p>这样每秒中会刷新一次ss的结果。</p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
+<li><a href="http://www.cyberciti.biz/faq/linux-ip-command-examples-usage-syntax/" target="_blank" rel="noopener">http://www.cyberciti.biz/faq/Linux-ip-command-examples-usage-syntax/</a></li>
+<li><a href="http://www.binarytides.com/linux-ss-command/" target="_blank" rel="noopener">http://www.binarytides.com/Linux-ss-command/</a></li>
+</ul>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/system-level-io/" itemprop="url">
                   系统级I/O
                 </a>
@@ -298,6 +451,106 @@
 <li>关闭文件。应用完成了对文件的访问之后，它就通知内核关闭这个文件。内核释放打开这个文件时创建的数据结构，并将这个描述符恢复到可用的描述符池中。无论一个进程因为何种原因终止，内核都会关闭所有打开的文件，并释放它们的存储器资源。
           <div class="post-more-link text-center">
             <a class="btn" href="/system-level-io/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/compile-and-install-php7/" itemprop="url">
+                  编译安装PHP7正式版
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-03T12:34:50+08:00" content="2015-12-03">
+              2015-12-03
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><img src="/images/php.jpg" alt=""></p>
+<p>PHP 7正式版终于在今天发布了，<del>虽然在官网 <a href="php.net">php.net</a> 还没有挂出链接（原来是因为中国时区比较早，现在已经有下载了），但是在鸟哥的微信公众号中给出来下载地址</del>，在github上也有了 7.0.0  的release。不知道为什么github上面的状态一直显示 build error。但是下载源文件编译是成功的。基本的安装步骤和之前编译安装 beta1 是一样的。</p>
+<p>官方的下载地址： <a href="http://www.php.net/downloads.php" target="_blank" rel="noopener">http://www.php.net/downloads.php</a></p>
+<p>可以参考之前的文章： <a href="http://wuxu92.github.io/compile-and-install-php7-beta1/" target="_blank" rel="noopener">http://wuxu92.github.io/compile-and-install-php7-beta1/</a> 唯一的区别是正式版没有了 <code>--with-MySQL</code>  选项，因为正式版已经没有旧的mysql函数的支持了，需要使用 mysqli 或者 PDO 替代早已不建议使用的mysql函数。</p>
+<p>下载链接：  <a href="http://cn2.php.net/get/php-7.0.0.tar.gz/from/this/mirror" target="_blank" rel="noopener">http://cn2.php.net/get/php-7.0.0.tar.gz/from/this/mirror</a></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/compile-and-install-php7/" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1084,209 +1337,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/csapp-linking/" itemprop="url">
-                  CSAPP：链接
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-11-22T12:34:50+08:00" content="2015-11-22">
-              2015-11-22
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p><img src="/images/post/csapp2ecover.jpg" alt=""></p>
-<blockquote>
-<p>链接（linking）是将各种代码和数据部分收集起来并组合成为一个单一文件的过程，这个文件可以被加载到存储器并执行。</p>
-</blockquote>
-<p>链接可以是在编译时执行（静态链接），或者在加载时执行，甚至在运行时执行（后两者均为动态链接）。在现代操作系统中，链接由链接器（linker）自动执行。</p>
-<p>链接器使得分离编译成为可能。可以把程序分解为更小、更好管理的模块，可以独立的修改和编译这些模块，只需要简单重新编译它们，然后重新链接应用，而不需要重新编译其他文件。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/csapp-linking/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/csapp-optimizing-program-performance/" itemprop="url">
-                  CSAPP：优化程序性能
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-11-20T12:34:50+08:00" content="2015-11-20">
-              2015-11-20
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p><img src="/images/post/csapp2ecover.jpg" alt=""></p>
-<blockquote>
-<p>你能获得的对程序对大的加速比就是当你第一次让它工作起来的时候。<br>–John K.Ousterhout</p>
-</blockquote>
-<h2 id="优化编译器的能力和局限性"><a href="#优化编译器的能力和局限性" class="headerlink" title="优化编译器的能力和局限性"></a>优化编译器的能力和局限性</h2><p>下面的代码1不能优化为代码2：</p>
-<p>代码1：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">teiddle1</span><span class="params">(<span class="keyword">int</span> *xp, <span class="keyword">int</span> *yp)</span> </span>&#123;</span><br><span class="line">    *xp += *yp;</span><br><span class="line">    *xp += *yp</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/csapp-optimizing-program-performance/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1333,21 +1383,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">171</span>
+              <span class="site-state-item-count">173</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">144</span>
+              <span class="site-state-item-count">145</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

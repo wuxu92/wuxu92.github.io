@@ -235,6 +235,202 @@
             
               
                 
+                <a class="post-title-link" href="/vuejs-render-and-event/" itemprop="url">
+                  Vue.js的渲染机制与事件处理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-07T21:14:50+08:00" content="2016-01-07">
+              2016-01-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/fe/" itemprop="url" rel="index">
+                    <span itemprop="name">fe</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>Vue.js真是一个好的东西！！！</p>
+<h2 id="条件渲染"><a href="#条件渲染" class="headerlink" title="条件渲染"></a>条件渲染</h2><p>在前面的例子中，已经使用过条件渲染指令 <code>v-if=&quot;var&quot;</code> 了，还可以使用 <code>v-else</code> 实现更复杂的条件渲染，不过没有 <code>v-elif</code> 这样的指令了。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"render"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span> <span class="attr">v-if</span>=<span class="string">"isPass"</span>&gt;</span>Yes<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span> <span class="attr">v-else</span>&gt;</span>No<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> <span class="attr">v-on:click</span>=<span class="string">"passit"</span>&gt;</span>Change<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> render = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">  el: <span class="string">'#render'</span>,</span></span><br><span class="line"><span class="undefined">  data: &#123;</span></span><br><span class="line"><span class="javascript">    isPass: <span class="literal">true</span></span></span><br><span class="line"><span class="undefined">  &#125;,</span></span><br><span class="line"><span class="undefined">  methods: &#123;</span></span><br><span class="line"><span class="javascript">    passit: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">this</span>.isPass = !<span class="keyword">this</span>.isPass &#125;</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">&#125;)</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/vuejs-render-and-event/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/migrate-from-jekyll-to-hexo/" itemprop="url">
+                  从Jekyll迁移到Hexo
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-07T14:28:17+08:00" content="2016-01-07">
+              2016-01-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/self/" itemprop="url" rel="index">
+                    <span itemprop="name">self</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><a href="/jekyll-posts-to-hexo-style/">前一篇</a> 讲了为什么要从Jekyll迁移到Hexo，以及将Jekyll文章转换到Hexo风格的实现，这里记录一下迁移的具体过程。</p>
+<p><a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">hexo</a>是使用nodejs开发的静态博客生成框架，我经常在Windows下写博客，然后push到github，然后在github.io查看，这里主要介绍Windows下的迁移。</p>
+<h2 id="安装node-js-和-hexo"><a href="#安装node-js-和-hexo" class="headerlink" title="安装node.js 和 hexo"></a>安装node.js 和 hexo</h2><p>首先要安装Node.js，现在各个平台都支持了，Windows下的安装也很方便，直接去 <a href="https://nodejs.org/en/download/stable/" target="_blank" rel="noopener">https://nodejs.org/en/download/stable/</a> 下载最近的版本，Windows的是一个 msi 文件，就像安装一个软件一样，点点下一步就可以了。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/migrate-from-jekyll-to-hexo/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/jekyll-posts-to-hexo-style/" itemprop="url">
                   用Go将jekyll的文章转换成hexo文章风格
                 </a>
@@ -436,6 +632,120 @@
             
               
                 
+                <a class="post-title-link" href="/books-on-reading-list/" itemprop="url">
+                  当前在读书目
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-01T00:00:00+08:00" content="2016-01-01">
+              2016-01-01
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/life/" itemprop="url" rel="index">
+                    <span itemprop="name">life</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>最近没有项目，没有实习，也没有实习的计划，准备这学期认认真真看些书，提升一下自己。把自己正在看的书和准备看的书做个清单。</p>
+<h2 id="在读"><a href="#在读" class="headerlink" title="在读"></a>在读</h2><ol>
+<li>《算法 第四版》。 看了一部分了，最近又没看了</li>
+<li>《重构：改善既有代码的设计》。 偶尔看看，记记笔记</li>
+<li>《Go语言网络编程》。看了一半了</li>
+<li>《中国哲学史（上）》。这几天看得多些，虽然看得有点难，但是很有收获</li>
+<li>《蒋勋说红楼梦》 看到了第四本，很好的书</li>
+<li>《觉醒的力量》。睡前看看，一大堆给别人做的序，烂书</li>
+<li>《通往奴役之路》。看了两个月了，翻译实在太难看了，看得很慢，翻译太烂了，奇烂无比</li>
+<li>《CSAPP，深入理解计算机系统》，过了一遍</li>
+<li>《APUE，Unix环境高级编程》，进行中</li>
+<li>《C Primer Plus》，过了一遍</li>
+</ol>
+<h2 id="准备看"><a href="#准备看" class="headerlink" title="准备看"></a>准备看</h2><ol>
+<li>《仪式过程》</li>
+<li>《霍乱时期的爱情》</li>
+<li>《日格瓦医生》 这本买了还没动，有时间看看</li>
+<li>《追忆似水年华》 先排上来，估计一时半会没看</li>
+</ol>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/techs-to-learn-late-2015/" itemprop="url">
                   近期技术方向选择
                 </a>
@@ -523,120 +833,6 @@
 <h2 id="Paper"><a href="#Paper" class="headerlink" title="Paper"></a>Paper</h2><ol>
 <li>小论文 0.5/1</li>
 <li>大论文 0.0/1</li>
-</ol>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/books-on-reading-list/" itemprop="url">
-                  当前在读书目
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-01T00:00:00+08:00" content="2016-01-01">
-              2016-01-01
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/life/" itemprop="url" rel="index">
-                    <span itemprop="name">life</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>最近没有项目，没有实习，也没有实习的计划，准备这学期认认真真看些书，提升一下自己。把自己正在看的书和准备看的书做个清单。</p>
-<h2 id="在读"><a href="#在读" class="headerlink" title="在读"></a>在读</h2><ol>
-<li>《算法 第四版》。 看了一部分了，最近又没看了</li>
-<li>《重构：改善既有代码的设计》。 偶尔看看，记记笔记</li>
-<li>《Go语言网络编程》。看了一半了</li>
-<li>《中国哲学史（上）》。这几天看得多些，虽然看得有点难，但是很有收获</li>
-<li>《蒋勋说红楼梦》 看到了第四本，很好的书</li>
-<li>《觉醒的力量》。睡前看看，一大堆给别人做的序，烂书</li>
-<li>《通往奴役之路》。看了两个月了，翻译实在太难看了，看得很慢，翻译太烂了，奇烂无比</li>
-<li>《CSAPP，深入理解计算机系统》，过了一遍</li>
-<li>《APUE，Unix环境高级编程》，进行中</li>
-<li>《C Primer Plus》，过了一遍</li>
-</ol>
-<h2 id="准备看"><a href="#准备看" class="headerlink" title="准备看"></a>准备看</h2><ol>
-<li>《仪式过程》</li>
-<li>《霍乱时期的爱情》</li>
-<li>《日格瓦医生》 这本买了还没动，有时间看看</li>
-<li>《追忆似水年华》 先排上来，估计一时半会没看</li>
 </ol>
 
             
@@ -1046,223 +1242,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/Eternal-Sunshine-of-the-Spotless-Mind/" itemprop="url">
-                  电影：美丽心灵的永恒阳光
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-23T12:34:50+08:00" content="2015-12-23">
-              2015-12-23
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/life/" itemprop="url" rel="index">
-                    <span itemprop="name">life</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>主演：金·凯瑞，凯特·温斯莱特，这是温斯莱特的电影里，我最喜欢的一部。</p>
-<p>影片一开头，穿着橙色运动衫，染着“蓝色废墟”发色的温斯莱特绝对让人着迷。<br><img src="/images/movie/kate.jpg" alt=""></p>
-<p>本来不太喜欢染发的人，而另一个让我觉得很美的染发案例就是《谍影重重》女主的淡淡的酒红头发。<br><img src="/images/movie/mary.jpg" alt=""></p>
-<p>真是，光是看温斯莱特那些变幻莫测，但总是很惊艳的发色就值得去看这部片子了，更不要说编剧巨大无比的脑洞。</p>
-<p>作为一部爱情电影，所表现的爱情观也是极正。</p>
-<p>这是一部比较需要细看的电影，上周看的，推荐去看。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/setjmp-and-longjmp-in-c/" itemprop="url">
-                  跳转 setjmp 和 longjmp
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-23T12:34:50+08:00" content="2015-12-23">
-              2015-12-23
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>虽然 goto 被认为是语言设计中的“毒瘤”，人人都避而远之，但是在真正的C开发者心中，goto不应该是让人害怕的东西。反而有一些比goto更加放肆的跳转函数！</p>
-<h2 id="setjmp-和-longjmp"><a href="#setjmp-和-longjmp" class="headerlink" title="setjmp 和 longjmp"></a>setjmp 和 longjmp</h2><p>在C中，goto语句只能在函数内部进行跳转，而不能跨越函数，要执行这种跳转功能需要 <code>setjmp</code> 和  <code>longjmp</code> 配合使用，这两个函数对于处理发生在很深层嵌套函数调用中的出错情况是非常有用的，我们把它们成为<strong>非局部跳转</strong>，表示它们在栈上跳过多个调用栈帧，返回到当前函数调用路径上的某一个函数。</p>
-<p>这两个函数的声明如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;setjmp.h&gt;</span><br><span class="line">int setjmp(jmp_buf env);</span><br><span class="line">void longjmp(jmp_buf env, int val);</span><br></pre></td></tr></table></figure>
-<p>这两个函数让人感到比较奇怪的是，它的参数env看起来是一个结构体变量，而不是一个结构体指针，实际上是因为 jmp_buf 并不是结构体定义，而是某种形式的数组定义，本身就是一个指针，所以不需要使用取地址操作。</p>
-<p>我们在希望返回的地方调用 <code>setjmp</code>，该调用会将用于恢复栈帧状态的信息保存到 env 变量中，因为 env 变量在 longjmp函数调用中要用到，而longjmp常在另一个函数调用，所以常需要<strong>将env设置为全局变量</strong>。</p>
-<p>调用 setjmp 后可以在后续调用的函数中使用 longjmp 函数，它使用 setjmp 时所使用的 env 作为参数，第二个参数是一个非0值，则作为 setjmp 处恢复栈帧后的函数返回值，第二个参数可以用来作为多处调用 longjmp 返回到一个 setjmp时判断具体是那个 longjmp 的跳转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;setjmp.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">jmp_buf jbuf;</span><br><span class="line">void handle(char *);</span><br><span class="line">int main(void) &#123;</span><br><span class="line">    int i;</span><br><span class="line">    char line[32];</span><br><span class="line">    i = setjmp(jbuf);</span><br><span class="line">    if (i != 0) puts(&quot;setjmp error&quot;);  // longjmp return comes here</span><br><span class="line">    printf(&quot;i : %d\n&quot;, i);</span><br><span class="line">    while(fgets(line, 32, stdin) != NULL) &#123;</span><br><span class="line">        handle(line);</span><br><span class="line">    &#125;</span><br><span class="line">    puts(&quot;exit&quot;);</span><br><span class="line">&#125;</span><br><span class="line">void handle(char *line) &#123;</span><br><span class="line">    if (line[0] == &apos;n&apos; &amp;&amp; line[1] == &apos;o&apos;) &#123;</span><br><span class="line">         longjmp(jbuf, 1);</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;handle %s\n&quot;, line);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="跳转中的变量"><a href="#跳转中的变量" class="headerlink" title="跳转中的变量"></a>跳转中的变量</h2><p>我们要考虑一下跳转后<strong>自动变量</strong>和<strong>寄存器变量</strong>（其他类型不需要考虑）的值的状态。当longjmp返回到main函数时，这些变量的值是否能恢复到以前调用setjmp是的值，或者这些变量的值保持为调用函数时的值？很遗憾，这个问题的答案是看情况，所有的标准称这些值是不确定的，虽然大多数的实现并<strong>不回滚</strong>这些自动变量和寄存器变量的值，但是在编译器使用优化策略时，其值可能会被回滚。</p>
-<p>如果有一个自动变量，又要确保不回滚其值，可以定义其为具有 <code>volatile</code>属性，声明为全局变量或者静态变量的值在执行 longjmp 时保持不变（总是能保持最近所呈现的值）。</p>
-<p>下面是一个示例，表示了不同类型的变量在 longjmp 跳转后值是否回滚：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;setjmp.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">void f2(void);</span><br><span class="line">void f3(void);</span><br><span class="line">void f1(int, int, int, int);</span><br><span class="line"></span><br><span class="line">jmp_buf jbuf;</span><br><span class="line">int global;</span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line">    int aut;</span><br><span class="line">    register int reg;</span><br><span class="line">    volatile int vola;</span><br><span class="line">    global = 1; aut = 2; reg = 3; vola = 4;</span><br><span class="line">    if (setjmp(jbuf) != 0) &#123;</span><br><span class="line">        printf(&quot;after long jmp\nglobal:%d, auto:%d, reg:%d, vola:%d\n&quot;,</span><br><span class="line">                global, aut, reg, vola);</span><br><span class="line">        exit(0);</span><br><span class="line">    &#125;</span><br><span class="line">    global = 11; aut = 22; reg = 33; vola = 44;</span><br><span class="line">    f1(global, aut, reg, vola);</span><br><span class="line">&#125;</span><br><span class="line">void f1(int g, int a, int r, int v) &#123;</span><br><span class="line">    printf(&quot;in f1\ng:%d, a:%d, r:%d, v:%d\n&quot;, g, a, r, v);</span><br><span class="line">    f2();</span><br><span class="line">&#125;</span><br><span class="line">void f2(void) &#123;</span><br><span class="line">     f3();</span><br><span class="line">&#125;</span><br><span class="line">void f3() &#123;</span><br><span class="line">     longjmp(jbuf, 1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>不使用优化的编译结果如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wuxu@centos7 % gcc -o jmpvar jmpvariable.c</span><br><span class="line">wuxu@centos7 % ./jmpvar</span><br><span class="line">in f1</span><br><span class="line">g:11, a:22, r:33, v:44</span><br><span class="line">after long jmp</span><br><span class="line">global:11, auto:22, reg:33, vola:44</span><br></pre></td></tr></table></figure>
-<p>开启编译器优化的结果：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wuxu@centos7 % gcc -O2 -o jmpvarO2 jmpvariable.c</span><br><span class="line">wuxu@centos7 % ./jmpvarO2</span><br><span class="line">in f1</span><br><span class="line">g:11, a:22, r:33, v:44</span><br><span class="line">after long jmp</span><br><span class="line">global:11, auto:2, reg:3, vola:44</span><br></pre></td></tr></table></figure>
-<p>可以看出，在启用编译器优化后，自动变量和寄存器变量都回滚了，而全局的，volatile修饰的变量咩有回滚值。</p>
-<h2 id="自动变量的潜在问题"><a href="#自动变量的潜在问题" class="headerlink" title="自动变量的潜在问题"></a>自动变量的潜在问题</h2><p>对于自动变量，一个基本的规则是声明自动变量的函数已经返回后，不能再引用这些变量。下面是一个例子，使用一个自动变量作为文件流的缓冲区了：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">FILE * open_file(const char *filename);</span><br><span class="line"></span><br><span class="line">int main(int argc,  char *argv[]) &#123;</span><br><span class="line">    char *filename = &quot;a.txt&quot;;</span><br><span class="line">    FILE *fp = open_file(filename);</span><br><span class="line">	// call some other function</span><br><span class="line">    char buf[64];</span><br><span class="line">    fread(buf, sizeof(char), sizeof buf, fp);</span><br><span class="line">    puts(buf);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">FILE *open_file(const char *filename) &#123;</span><br><span class="line">     FILE *fp;</span><br><span class="line">     char databuf[BUFSIZ];</span><br><span class="line">     if ((fp = fopen(filename, &quot;r&quot;)) == NULL)</span><br><span class="line">         puts(&quot;open file failed&quot;);</span><br><span class="line"></span><br><span class="line">     if (setvbuf(fp, databuf, _IOLBF, BUFSIZ) != 0)  // IOLBF means line buffer io</span><br><span class="line">         puts(&quot;setvbuf failed&quot;);</span><br><span class="line"></span><br><span class="line">     return fp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>open_file</code> 函数中，使用自动变量 databuf 的空间作为文件流的缓冲区，当函数返回时，databuf在栈上的的空间将由下一个被调用函数的栈帧使用，这个时候就产生了冲突（在实际测试（gcc 4.8.3, centos 7）中，并没有出现问题，文件流能正常读取）。不过按照理论这是容易出现问题，为了防止出现问题，应该使用全局存储空间静态地（static, extern）或者动态地(malloc等）为数组 databuf 分配空间。</p>
-<p>基本完</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1309,21 +1288,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">171</span>
+              <span class="site-state-item-count">173</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">144</span>
+              <span class="site-state-item-count">145</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

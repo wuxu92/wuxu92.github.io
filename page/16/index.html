@@ -235,6 +235,250 @@
             
               
                 
+                <a class="post-title-link" href="/php-using-late-static-bindings/" itemprop="url">
+                  使用后期静态绑定实现MVC的Model的基类
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-08-17T12:34:50+08:00" content="2015-08-17">
+              2015-08-17
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>PHP 5.3中引入了一个后期静态绑定的功能，对于静态绑定都比较熟悉了，就是static修饰的方法或者字段，那这个后期静态绑定又是干什么的呢？</p>
+<p>如果在一个类中定义一个静态方法或者静态域成员，如下：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> $type = <span class="string">'man'</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">'run'</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以对于静态成员的理解，这些static修饰的成员在所有对象中共享，只有一个实例，可以使用<code>Person::run()</code> 这样的方式直接调用而不需要实例化类。</p>
+<h2 id="self调用"><a href="#self调用" class="headerlink" title="self调用"></a>self调用</h2><p>如果在类的内部直接调用这些静态方法，我们一般使用self来指代当前类:</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> staic <span class="function"><span class="keyword">function</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">self</span>::run(); <span class="comment">// run before eat...</span></span><br><span class="line">		<span class="comment">// do some eating here</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里使用self来指代当前的类，并用于调用其静态方法。这里，<code>self::</code>和<code>__CLASS__</code> 是一样的，都是<strong>对当前类的静态引用</strong></p>
+<h2 id="后期静态绑定"><a href="#后期静态绑定" class="headerlink" title="后期静态绑定"></a>后期静态绑定</h2><p>常用示例代码：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">who</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="keyword">__CLASS__</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">self</span>::who();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">who</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="keyword">__CLASS__</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">B::test();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>后期静态绑定本想通过引入一个新的关键字表示运行时最初调用的类来绕过限制。简单地说，这个关键字能够让你在上述例子中调用 test() 时引用的类是 B 而不是 A。最终决定不引入新的关键字，而是使用已经预留的 static 关键字。</p>
+</blockquote>
+<p>这里简单的理解就是，B是A的子类，有时候在使用B调用A中实现的的静态方法时，需要使用子类B的一些静态域实现，而不是A实现的静态域。使用<code>self::</code> 调用静态成员只会调用A类的静态成员。这是后应该使用后期静态绑定关键字 <code>static</code>来代替<code>self</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class A &#123;</span><br><span class="line">    public static function who() &#123;</span><br><span class="line">        echo __CLASS__;</span><br><span class="line">    &#125;</span><br><span class="line">    public static function test() &#123;</span><br><span class="line">        static::who(); // 后期静态绑定从这里开始</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class B extends A &#123;</span><br><span class="line">    public static function who() &#123;</span><br><span class="line">        echo __CLASS__;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">B::test(); // return B</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>好像还是不是很好理解，下面来看这个后静态绑定在MVC框架中的用途，这样更容易理解一些.</p>
+<h2 id="使用后期静态绑定实现MVC框架中的model基类"><a href="#使用后期静态绑定实现MVC框架中的model基类" class="headerlink" title="使用后期静态绑定实现MVC框架中的model基类"></a>使用后期静态绑定实现MVC框架中的model基类</h2><p>在一个MVC框架中，通常使用Model来对数据库抽象，把一张数据库表映射到一个Model的子类。比如，一张person表可以对应一个下面的类:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">namespace model</span><br><span class="line"></span><br><span class="line">class Person extends Model &#123;</span><br><span class="line">	public $name;</span><br><span class="line">	public $age;</span><br><span class="line">	</span><br><span class="line">	public function say($words) &#123;</span><br><span class="line">		...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么有一些通用的数据库操作，我们希望可以放到Model类中实现了，这样在各个Model子类中都可以直接调用，比如 <code>findById()</code> 用来根据id返回一个Person的实例。这个时候有一个问题就是，Model基类中如何知道各个Model子类的表名呢，我们需要子类把表名告知Model基类，这样才能方便些sql语句。</p>
+<p>这时候就可以使用后期静态绑定了，因为后期静态绑定可以在子类调用父类的静态方法时将一些静态域使用自己（子类）的静态域。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">findById</span><span class="params">($id)</span> </span>&#123;</span><br><span class="line">		$tableName = <span class="keyword">static</span>::tableName();</span><br><span class="line">		$sql = <span class="string">"select * from &#123;$tableName&#125; where id=&#123;$id&#125; "</span>;</span><br><span class="line">		<span class="comment">// 下面的数据库查询只是一个示例，使用了一个数据库封装</span></span><br><span class="line">		$row = DBConnector::createSql($sql)-&gt;queryOne();</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">static</span>($row);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 改进子类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="keyword">extends</span> <span class="title">Model</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> functin tableName() &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">'person'</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样可以直接使用静态方法获得一个person实例： <code>Person::findById(1);</code> 就可以了。<br>这样其他的model子类也是要在类中实现了静态域 <code>public static function tableName()</code> 就能直接使用Model类中findById方法了。</p>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p>可以在Model中添加更多的方法来使得数据库操作变得简单，比如 deleteByid(), findByArray() 等等，这非常有用。</p>
+<ul>
+<li>在非静态环境下，所调用的类即为该对象实例所属的类。由于 $this-&gt; 会在同一作用范围内尝试调用私有方法，而 static:: 则可能给出不同结果。另一个区别是 static:: 只能用于静态属性</li>
+<li>后期静态绑定的解析会一直到取得一个完全解析了的静态调用为止。另一方面，如果静态调用使用 parent:: 或者 self:: 将转发调用信息</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">static</span>::who();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">who</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="keyword">__CLASS__</span>.<span class="string">"\n"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        A::foo();</span><br><span class="line">        <span class="keyword">parent</span>::foo();</span><br><span class="line">        <span class="keyword">self</span>::foo();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">who</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="keyword">__CLASS__</span>.<span class="string">"\n"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> <span class="keyword">extends</span> <span class="title">B</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">who</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="keyword">__CLASS__</span>.<span class="string">"\n"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">C::test(); </span><br><span class="line"><span class="comment">// 输出:A C C</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>参考： <a href="http://php.net/manual/zh/language.oop5.late-static-bindings.php" title="http://php.net/manual/zh/language.oop5.late-static-bindings.php" target="_blank" rel="noopener">http://php.net/manual/zh/language.oop5.late-static-bindings.php</a></p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/using-awk/" itemprop="url">
+                  使用awk处理文本
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-08-13T12:34:50+08:00" content="2015-08-13">
+              2015-08-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>在Linux下我们经常需要对一些文本文档做一些处理，尤其像从日志里提取一些数据，这是我们一般会用awk工具和sed工具去实现需求，这里对awk的入门使用简单记录。</p>
+<p>awk可以看作一种文本处理工具，一种专注数据操作的编程语言，一个数据处理引擎。其名字来源于三个发明者的姓名首字母。一般在Linux下使用的awk是gawk(gnu awk)。</p>
+<h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><p>awk把文本文档看作是数据库，每一行看作一条数据库中的记录，可以指定数据列的分隔符，默认的分隔符是”\t”,即Tab。<br>awk工作流程是这样的：读入有’\n’换行符分割的一条记录，然后将记录按指定的域分隔符划分域，填充域，$0则表示所有域,$1表示第一个域,$n表示第n个域。默认域分隔符是”空白键” 或 “[tab]键”<br>awk的执行模式是： <code>awk &#39;{pattern + action}&#39; {filenames}</code></p>
+<p>awk的执行方式：</p>
+<p>1.命令行方式</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk [-F  field-separator]  &apos;commands&apos;  input-file(s)</span><br></pre></td></tr></table></figure>
+<p>其中，commands 是真正awk命令，[-F域分隔符]是可选的。 input-file(s) 是待处理的文件。<br>在awk中，文件的每一行中，由域分隔符分开的每一项称为一个域。通常，在不指名-F域分隔符的情况下，默认的域分隔符是空格。</p>
+<p>2.shell脚本方式<br>将所有的awk命令插入一个文件，并使awk程序可执行，然后awk命令解释器作为脚本的首行，一遍通过键入脚本名称来调用。<br>相当于shell脚本首行的：#!/bin/sh<br>可以换成：#!/bin/awk</p>
+<p>3.将所有的awk命令插入一个单独文件，然后调用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk -f awk-script-file input-file(s)</span><br></pre></td></tr></table></figure>
+<p>其中，-f选项加载awk-script-file中的awk脚本，input-file(s)跟上面的是一样的。</p>
+<p>一般是哟你哦个命令行模式就能满足需求了。</p>
+<p>这样下面的一行文本：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">abc def 123</span><br><span class="line">dfg jik 234</span><br></pre></td></tr></table></figure>
+<p>在awk看来就是一个包含三个字段的记录，可以类比到mysql的一行记录，只不过awk没有一个mysql那么强的scheme。<br>这样比如我们要抽出中间的那一行数据，假设文本保存为文件 data.txt</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk &apos;&#123;print $2&#125;&apos;</span><br></pre></td></tr></table></figure>
+<p>很简单，这样就可以打印出中间的字符def 和jik 了。</p>
+<p>下面来一个点点复杂的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Beth	4.00	0</span><br><span class="line">Dan	3.75	0</span><br><span class="line">kathy	4.00	10</span><br><span class="line">Mark	5.00	20</span><br><span class="line">Mary	5.50	22</span><br><span class="line">Susie	4.25	18</span><br></pre></td></tr></table></figure>
+<p>对于这样的数据<br>使用 <code>awk &#39;$3&gt;0 { print $, $2 * $3 }&#39; data.txt</code> 这样会输出</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Kathy 40</span><br><span class="line">Mark 100</span><br><span class="line">Mary 121</span><br><span class="line">Susie 76.5</span><br></pre></td></tr></table></figure>
+<p>理解就是可以在{}前面添加一个判断的语句，只有符合条件的行才会执行后面的语句。</p>
+<h2 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h2><p>相对于print输出，可以使用printf进行格式化输出：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk  -F &apos;:&apos;  &apos;&#123;printf(&quot;filename:%10s,linenumber:%s,columns:%s,linecontent:%s\n&quot;,FILENAME,NR,NF,$0)&#125;&apos; /etc/passwd</span><br></pre></td></tr></table></figure>
+<p>print函数的参数可以是变量、数值或者字符串。字符串必须用双引号引用，参数用逗号分隔。如果没有逗号，参数就串联在一起而无法区分。这里，逗号的作用与输出文件的分隔符的作用是一样的，只是后者是空格而已。</p>
+<p>printf函数，其用法和c语言中printf基本相似,可以格式化字符串,输出复杂时，printf更加好用，代码更易懂。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/remove-last-letter-of-each-line/" itemprop="url">
                   使用后期静态绑定实现MVC的Model的基类
                 </a>
@@ -691,6 +935,138 @@
             
               
                 
+                <a class="post-title-link" href="/litle-known-css-facts/" itemprop="url">
+                  那些你可能不知道但是很有意思的CSS Tricks
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-27T12:34:50+08:00" content="2015-07-27">
+              2015-07-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/fe/" itemprop="url" rel="index">
+                    <span itemprop="name">fe</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>在去年的时候，Louis Lazaris在sitepoint上发了一篇文章 [http</p>
+<p>参考：<br><a href="http://www.sitepoint.com/12-little-known-css-facts/" target="_blank" rel="noopener">12 Little-Known CSS Facts</a><br><a href="http://www.sitepoint.com/12-little-known-css-facts-the-sequel/" target="_blank" rel="noopener">12 Little-Known CSS Facts (The Sequel)</a></p>
+<p>CSS 本身并不是非常复杂的语言，但是即使你写过很多的CSS样式，你总会感觉到对它并不了解，使用了很多年之后你还是会偶遇很多你没有用过的“有意思”的样式属性，本文作者列举了一些这样的Tricks。</p>
+<h2 id="color属性不只是作用域文本"><a href="#color属性不只是作用域文本" class="headerlink" title="color属性不只是作用域文本"></a>color属性不只是作用域文本</h2><p>color属性大家都很熟悉，一般用来设置文本(Text)的颜色属性，但是如果你把body标签的color设置为某种颜色，比如<code>color: yellow</code>几乎所有的东西就都会变成黄色的，包括图片的替代文本，列表的bullet，border等，但是<code>hr</code>标签并不会默认继承这个颜色，需要手动设置 <code>border-color: inherit</code>才会变成黄色。<br>color属性的spec中是这么定义的：</p>
+<blockquote>
+<p>This property describes the foreground color of an element’s text<br>content. In addition it is used to provide a potential indirect value<br>… for any other properties that accept color values.</p>
+</blockquote>
+<h2 id="visibility属性可以设置为”collapse”"><a href="#visibility属性可以设置为”collapse”" class="headerlink" title="visibility属性可以设置为”collapse”"></a>visibility属性可以设置为”collapse”</h2><p>所有元素的visibility属性的默认值都是<code>visible</code>, 我们可以把它设置为<code>hidden</code>来隐藏一个元素，与<code>dispaly: none</code>表现不同的是，hidden的元素仍然会占据原来的空间（still occupy space）<br>visibility属性还有一个值就是<code>collapse</code>，它的表现一般和<code>hidden</code>是一样的，但是在table中表现会不一样，可能你已经想到了，在table元素中的行，行组，列，列组中使用<code>collapse</code>属性它的表现和<code>display:none</code>是一样的。<br><strong>不过用于浏览器对这个属性的表现并不一致，所以还是<a href="http://css-tricks.com/almanac/properties/v/visibility/" target="_blank" rel="noopener">不要使用</a>了</strong></p>
+<h2 id="background属性有了新的内容"><a href="#background属性有了新的内容" class="headerlink" title="background属性有了新的内容"></a>background属性有了新的内容</h2><p>在CSS 2.1中，background属性有color, image, repeat, attachment, position 5个“子内容”，在CSS3 中，添加很了一些新内容：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">background</span>: <span class="selector-attr">[background-color]</span> <span class="selector-attr">[background-image]</span> <span class="selector-attr">[background-repeat]</span></span><br><span class="line">            [background-attachment] [background-position] / [ background-size]</span><br><span class="line">            <span class="selector-attr">[background-origin]</span> <span class="selector-attr">[background-clip]</span></span><br></pre></td></tr></table></figure>
+<p>一个示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.example &#123;</span><br><span class="line">  background: aquamarine url(img.png)</span><br><span class="line">	no-repeat</span><br><span class="line">	scroll</span><br><span class="line">	center center / 50%</span><br><span class="line">	content-box content-box;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这些新属性在所有现代浏览器都能正常工作，只不过好像用处也不大。</p>
+<h2 id="clip属性只在绝对定位元素上起作用"><a href="#clip属性只在绝对定位元素上起作用" class="headerlink" title="clip属性只在绝对定位元素上起作用"></a>clip属性只在绝对定位元素上起作用</h2><p>clip属性可以用来对元素进行裁剪，它的值是一个图形，比如rect，或者是auto。<br>但是要注意，clip属性只对决定定位元素起作用，包括<code>position: absolute;</code>,和<code>position: fixed</code>两种情况。<br>使用:</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.example</span> &#123;</span><br><span class="line">	<span class="attribute">position</span>: absolute;</span><br><span class="line">	<span class="attribute">clip</span>: <span class="built_in">rect</span>(110px, 160px, 170px, 60px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>它的表现可以参考这张图片: <img src="http://cdn.impressivewebs.com/2012-05/clip-visual.jpg" alt=""><br>更多关于clip的内容，可以查看<a href="http://www.impressivewebs.com/css-clip-property/" target="_blank" rel="noopener">这里</a></p>
+<h2 id="垂直百分比和容器的宽度有关而不是高度"><a href="#垂直百分比和容器的宽度有关而不是高度" class="headerlink" title="垂直百分比和容器的宽度有关而不是高度"></a>垂直百分比和容器的宽度有关而不是高度</h2><p>这个听起来有点奇怪，我们知道百分比计算宽度是基于容器的宽度的，但是实际上padding-top, margin-top, padding-bottom, margin-bottom这些属性的百分比属性也是基于容器的宽度的，而不是高度。<br>这是挺有意思的。</p>
+<h2 id="border属性-is-Kind-of-Like-Inception"><a href="#border属性-is-Kind-of-Like-Inception" class="headerlink" title="border属性 is Kind of Like Inception"></a>border属性 is Kind of Like Inception</h2><p>border属性我们会经常使用，比如这样子：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.somecontainer</span> &#123;</span><br><span class="line">	<span class="attribute">border</span>: solid <span class="number">1px</span> black;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们知道border属性是border-style, border=width, border-color三个属性的综合声明。但是其实这三个属性都可以对上下左右四条边分别设置属性：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.somecontainer</span> &#123;</span><br><span class="line">	<span class="attribute">border-width</span>: <span class="number">2px</span> <span class="number">5px</span> <span class="number">1px</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样可以把border设置的很复杂，不过在实际使用中，并不要这么用，因为这样使得整个元素显得混乱而导致页面风格混乱。</p>
+<h2 id="text-decoration-现在也成为了一种速记符（shorthand）"><a href="#text-decoration-现在也成为了一种速记符（shorthand）" class="headerlink" title="text-decoration 现在也成为了一种速记符（shorthand）"></a>text-decoration 现在也成为了一种速记符（shorthand）</h2><p>新的css规范中，可以这样使用text-decoration属性：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">a</span> &#123;</span><br><span class="line">	<span class="attribute">text-decoration</span>: overline aqua wavy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一个值是<code>text-decoration-line</code>, 第二个是<code>text-decoration-color</code>, 第三个是 <code>text-dcoration-style</code>属性<br>不过这个属性只在firefox中实现了。</p>
+<h2 id="border-width属性可以接受关键字值"><a href="#border-width属性可以接受关键字值" class="headerlink" title="border-width属性可以接受关键字值"></a>border-width属性可以接受关键字值</h2><p>现在border-width 可以接受 <code>medium</code>, <code>thin</code>, <code>thick</code>关键字了。他们在浏览器实现中大概是1px, 2px, 5px;不过在spec中并没有指定他们具体的值。</p>
+<h2 id="几乎没人使用botder-image"><a href="#几乎没人使用botder-image" class="headerlink" title="几乎没人使用botder-image"></a>几乎没人使用botder-image</h2><p><code>border-image</code>看起来是个不错的属性，使某些表现变得整洁，有一个特别经典的例子是在一圈文字的border加一圈花or狗爪印？不过在现实中几乎没有人会使用这个属性，我也没有使用过。。</p>
+<h2 id="empty-cells属性"><a href="#empty-cells属性" class="headerlink" title="empty-cells属性"></a>empty-cells属性</h2><p>这个属性被所有主流浏览器支持，包括IE8。它的用法如下：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">table</span> &#123;</span><br><span class="line">	<span class="attribute">empty-cell</span>: hide;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个属性用于table元素中空td的样式。或许会有用哦。 测试： <a href="http://codepen.io/SitePoint/pen/yfhtq" target="_blank" rel="noopener">codepen</a></p>
+<h2 id="font-style属性接受“oblique”值"><a href="#font-style属性接受“oblique”值" class="headerlink" title="font-style属性接受“oblique”值"></a>font-style属性接受“oblique”值</h2><p>这个看起来和 <code>font-style: italic</code> 并没有什么区别，都是斜体字体，spec中是这么描述的：</p>
+<blockquote>
+<p>“…selects a font that is labeled as an oblique face, or an italic face if one is not.”</p>
+</blockquote>
+<p>如果设置的字体没有真正的italic样式（face），那么<code>font-style:italic</code> 和 <code>font-style: oblique</code>的表现是一样的。</p>
+<h2 id="word-wrap-属性和overflow-wrap属性是一样的"><a href="#word-wrap-属性和overflow-wrap属性是一样的" class="headerlink" title="word-wrap 属性和overflow-wrap属性是一样的"></a>word-wrap 属性和overflow-wrap属性是一样的</h2><p><code>word-wrap</code>是微软提出的一个属性，所以在IE老版本中都有很好的支持，但是W3C决定使用<code>overflow-wrap</code> 替换掉 <code>word-wrap</code>。但是现在所有的浏览器都支持 <code>word-wrap</code>属性了，所以要替换也不是那么容易的事了。</p>
+<p>没什么问题的话还是继续使用<code>word-wrap</code>吧。</p>
+<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/notes-of-go-by-example/" itemprop="url">
                   Go by Example 中值得注意的点(一)
                 </a>
@@ -787,138 +1163,6 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">_, e := me.buy(&quot;shirt&quot;)</span><br><span class="line">if me, ok := e.(*myErr); ok &#123;</span><br><span class="line">	// with myErr return, me ref to return error</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2><p>见第二部分</p>
 
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/litle-known-css-facts/" itemprop="url">
-                  那些你可能不知道但是很有意思的CSS Tricks
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-27T12:34:50+08:00" content="2015-07-27">
-              2015-07-27
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/fe/" itemprop="url" rel="index">
-                    <span itemprop="name">fe</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>在去年的时候，Louis Lazaris在sitepoint上发了一篇文章 [http</p>
-<p>参考：<br><a href="http://www.sitepoint.com/12-little-known-css-facts/" target="_blank" rel="noopener">12 Little-Known CSS Facts</a><br><a href="http://www.sitepoint.com/12-little-known-css-facts-the-sequel/" target="_blank" rel="noopener">12 Little-Known CSS Facts (The Sequel)</a></p>
-<p>CSS 本身并不是非常复杂的语言，但是即使你写过很多的CSS样式，你总会感觉到对它并不了解，使用了很多年之后你还是会偶遇很多你没有用过的“有意思”的样式属性，本文作者列举了一些这样的Tricks。</p>
-<h2 id="color属性不只是作用域文本"><a href="#color属性不只是作用域文本" class="headerlink" title="color属性不只是作用域文本"></a>color属性不只是作用域文本</h2><p>color属性大家都很熟悉，一般用来设置文本(Text)的颜色属性，但是如果你把body标签的color设置为某种颜色，比如<code>color: yellow</code>几乎所有的东西就都会变成黄色的，包括图片的替代文本，列表的bullet，border等，但是<code>hr</code>标签并不会默认继承这个颜色，需要手动设置 <code>border-color: inherit</code>才会变成黄色。<br>color属性的spec中是这么定义的：</p>
-<blockquote>
-<p>This property describes the foreground color of an element’s text<br>content. In addition it is used to provide a potential indirect value<br>… for any other properties that accept color values.</p>
-</blockquote>
-<h2 id="visibility属性可以设置为”collapse”"><a href="#visibility属性可以设置为”collapse”" class="headerlink" title="visibility属性可以设置为”collapse”"></a>visibility属性可以设置为”collapse”</h2><p>所有元素的visibility属性的默认值都是<code>visible</code>, 我们可以把它设置为<code>hidden</code>来隐藏一个元素，与<code>dispaly: none</code>表现不同的是，hidden的元素仍然会占据原来的空间（still occupy space）<br>visibility属性还有一个值就是<code>collapse</code>，它的表现一般和<code>hidden</code>是一样的，但是在table中表现会不一样，可能你已经想到了，在table元素中的行，行组，列，列组中使用<code>collapse</code>属性它的表现和<code>display:none</code>是一样的。<br><strong>不过用于浏览器对这个属性的表现并不一致，所以还是<a href="http://css-tricks.com/almanac/properties/v/visibility/" target="_blank" rel="noopener">不要使用</a>了</strong></p>
-<h2 id="background属性有了新的内容"><a href="#background属性有了新的内容" class="headerlink" title="background属性有了新的内容"></a>background属性有了新的内容</h2><p>在CSS 2.1中，background属性有color, image, repeat, attachment, position 5个“子内容”，在CSS3 中，添加很了一些新内容：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">background</span>: <span class="selector-attr">[background-color]</span> <span class="selector-attr">[background-image]</span> <span class="selector-attr">[background-repeat]</span></span><br><span class="line">            [background-attachment] [background-position] / [ background-size]</span><br><span class="line">            <span class="selector-attr">[background-origin]</span> <span class="selector-attr">[background-clip]</span></span><br></pre></td></tr></table></figure>
-<p>一个示例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.example &#123;</span><br><span class="line">  background: aquamarine url(img.png)</span><br><span class="line">	no-repeat</span><br><span class="line">	scroll</span><br><span class="line">	center center / 50%</span><br><span class="line">	content-box content-box;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这些新属性在所有现代浏览器都能正常工作，只不过好像用处也不大。</p>
-<h2 id="clip属性只在绝对定位元素上起作用"><a href="#clip属性只在绝对定位元素上起作用" class="headerlink" title="clip属性只在绝对定位元素上起作用"></a>clip属性只在绝对定位元素上起作用</h2><p>clip属性可以用来对元素进行裁剪，它的值是一个图形，比如rect，或者是auto。<br>但是要注意，clip属性只对决定定位元素起作用，包括<code>position: absolute;</code>,和<code>position: fixed</code>两种情况。<br>使用:</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.example</span> &#123;</span><br><span class="line">	<span class="attribute">position</span>: absolute;</span><br><span class="line">	<span class="attribute">clip</span>: <span class="built_in">rect</span>(110px, 160px, 170px, 60px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>它的表现可以参考这张图片: <img src="http://cdn.impressivewebs.com/2012-05/clip-visual.jpg" alt=""><br>更多关于clip的内容，可以查看<a href="http://www.impressivewebs.com/css-clip-property/" target="_blank" rel="noopener">这里</a></p>
-<h2 id="垂直百分比和容器的宽度有关而不是高度"><a href="#垂直百分比和容器的宽度有关而不是高度" class="headerlink" title="垂直百分比和容器的宽度有关而不是高度"></a>垂直百分比和容器的宽度有关而不是高度</h2><p>这个听起来有点奇怪，我们知道百分比计算宽度是基于容器的宽度的，但是实际上padding-top, margin-top, padding-bottom, margin-bottom这些属性的百分比属性也是基于容器的宽度的，而不是高度。<br>这是挺有意思的。</p>
-<h2 id="border属性-is-Kind-of-Like-Inception"><a href="#border属性-is-Kind-of-Like-Inception" class="headerlink" title="border属性 is Kind of Like Inception"></a>border属性 is Kind of Like Inception</h2><p>border属性我们会经常使用，比如这样子：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.somecontainer</span> &#123;</span><br><span class="line">	<span class="attribute">border</span>: solid <span class="number">1px</span> black;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们知道border属性是border-style, border=width, border-color三个属性的综合声明。但是其实这三个属性都可以对上下左右四条边分别设置属性：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.somecontainer</span> &#123;</span><br><span class="line">	<span class="attribute">border-width</span>: <span class="number">2px</span> <span class="number">5px</span> <span class="number">1px</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样可以把border设置的很复杂，不过在实际使用中，并不要这么用，因为这样使得整个元素显得混乱而导致页面风格混乱。</p>
-<h2 id="text-decoration-现在也成为了一种速记符（shorthand）"><a href="#text-decoration-现在也成为了一种速记符（shorthand）" class="headerlink" title="text-decoration 现在也成为了一种速记符（shorthand）"></a>text-decoration 现在也成为了一种速记符（shorthand）</h2><p>新的css规范中，可以这样使用text-decoration属性：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">a</span> &#123;</span><br><span class="line">	<span class="attribute">text-decoration</span>: overline aqua wavy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>第一个值是<code>text-decoration-line</code>, 第二个是<code>text-decoration-color</code>, 第三个是 <code>text-dcoration-style</code>属性<br>不过这个属性只在firefox中实现了。</p>
-<h2 id="border-width属性可以接受关键字值"><a href="#border-width属性可以接受关键字值" class="headerlink" title="border-width属性可以接受关键字值"></a>border-width属性可以接受关键字值</h2><p>现在border-width 可以接受 <code>medium</code>, <code>thin</code>, <code>thick</code>关键字了。他们在浏览器实现中大概是1px, 2px, 5px;不过在spec中并没有指定他们具体的值。</p>
-<h2 id="几乎没人使用botder-image"><a href="#几乎没人使用botder-image" class="headerlink" title="几乎没人使用botder-image"></a>几乎没人使用botder-image</h2><p><code>border-image</code>看起来是个不错的属性，使某些表现变得整洁，有一个特别经典的例子是在一圈文字的border加一圈花or狗爪印？不过在现实中几乎没有人会使用这个属性，我也没有使用过。。</p>
-<h2 id="empty-cells属性"><a href="#empty-cells属性" class="headerlink" title="empty-cells属性"></a>empty-cells属性</h2><p>这个属性被所有主流浏览器支持，包括IE8。它的用法如下：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">table</span> &#123;</span><br><span class="line">	<span class="attribute">empty-cell</span>: hide;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个属性用于table元素中空td的样式。或许会有用哦。 测试： <a href="http://codepen.io/SitePoint/pen/yfhtq" target="_blank" rel="noopener">codepen</a></p>
-<h2 id="font-style属性接受“oblique”值"><a href="#font-style属性接受“oblique”值" class="headerlink" title="font-style属性接受“oblique”值"></a>font-style属性接受“oblique”值</h2><p>这个看起来和 <code>font-style: italic</code> 并没有什么区别，都是斜体字体，spec中是这么描述的：</p>
-<blockquote>
-<p>“…selects a font that is labeled as an oblique face, or an italic face if one is not.”</p>
-</blockquote>
-<p>如果设置的字体没有真正的italic样式（face），那么<code>font-style:italic</code> 和 <code>font-style: oblique</code>的表现是一样的。</p>
-<h2 id="word-wrap-属性和overflow-wrap属性是一样的"><a href="#word-wrap-属性和overflow-wrap属性是一样的" class="headerlink" title="word-wrap 属性和overflow-wrap属性是一样的"></a>word-wrap 属性和overflow-wrap属性是一样的</h2><p><code>word-wrap</code>是微软提出的一个属性，所以在IE老版本中都有很好的支持，但是W3C决定使用<code>overflow-wrap</code> 替换掉 <code>word-wrap</code>。但是现在所有的浏览器都支持 <code>word-wrap</code>属性了，所以要替换也不是那么容易的事了。</p>
-<p>没什么问题的话还是继续使用<code>word-wrap</code>吧。</p>
-<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
             
           </span>
         
@@ -1224,226 +1468,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/golang-errors/" itemprop="url">
-                  Golang中的错误处理
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-24T12:34:50+08:00" content="2015-07-24">
-              2015-07-24
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>Go语言提供了一套“新颖的”错误系统，与Java中的异常系统不一样，Go中没有抛出异常的概念</p>
-<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>如果有一定面向对象语言编程经验的话，肯定会对异常/错误系统有一定的了解。如果使用Java比较多的话，一定会认为抛异常是编程语言天生的一部分，因为在Java中抛异常真的是太家常便饭，无处不在了；但是在Go语言中，根本没有异常这个东西！</p>
-<p>看一段官方的QA是怎么解释这个问题的：</p>
-<blockquote>
-<p>We believe that coupling exceptions to a control structure, as in the try-catch-finally idiom,<strong> results in convoluted code</strong>. It also tends to encourage programmers to label too many ordinary errors, such as failing to open a file, as exceptional.</p>
-<p>Go takes a different approach. For plain error handling, Go’s multi-value returns make it easy to report an error without overloading the return value. A canonical error type, coupled with Go’s other features, makes error handling pleasant but quite different from that in other languages.</p>
-<p>Go also has a couple of built-in functions to signal and recover from truly exceptional conditions. The recovery mechanism is executed only as part of a function’s state being torn down after an error, which is sufficient to handle catastrophe but requires no extra control structures and, when used well, can result in clean error-handling code.</p>
-</blockquote>
-<p>多值返回为Go提供了一个新的错误处理机制，如果对为什么Go不提供异常体系感兴趣可以在 <a href="https://golang.org/doc/articles/defer_panic_recover.html" target="_blank" rel="noopener">这里</a> 找到更多的细节。</p>
-<p>在之前文章中，已经使用过Go语言的多值返回来返回详细的错误描述。按照规定，<strong>错误的类型通常为error，这是一个内建的简单接口</strong>。</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> error <span class="keyword">interface</span> &#123;</span><br><span class="line">	Error() <span class="keyword">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以通过实现这个接口定制错误，例如打开文件时的错误:</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> PathError <span class="keyword">struct</span> &#123;</span><br><span class="line">	Op <span class="keyword">string</span></span><br><span class="line">	Path <span class="keyword">string</span></span><br><span class="line">	Err error	<span class="comment">// 由系统调用返回</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fanc (pe *PathError) Error() <span class="keyword">string</span> &#123;</span><br><span class="line">	<span class="comment">// 返回定制的错误信息</span></span><br><span class="line">	<span class="keyword">return</span> pe.Op + <span class="string">" "</span> + pe.Path + <span class="string">": "</span> + pe.Err.Error()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>effective go中有一个示例非常有利于我们理解错误的使用,这段代码的作用是创建一个文件，如果创建失败，检查是不是磁盘空间不足，如果是则删除掉一些临时文件，再尝试创建一次：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for try:=0; try&lt;2; try++ &#123;</span><br><span class="line">	file, err := os.Create(filename)</span><br><span class="line">	if err == nill &#123;</span><br><span class="line">		return  //没有错误</span><br><span class="line">	&#125;</span><br><span class="line">	// 检查是不是空间不足</span><br><span class="line">	if e,ok := err.(*os.PathError); ok &amp;&amp; e.Err == syscall.ENOSPC &#123;</span><br><span class="line">		deleteTempFiles()  	// 删除一些临时文件</span><br><span class="line">		continue 			// 再创建一次</span><br><span class="line">	&#125;</span><br><span class="line">	return</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以查看源码中PathError的实现 <a href="https://golang.org/src/os/error.go" title="https://golang.org/src/os/error.go" target="_blank" rel="noopener">https://golang.org/src/os/error.go</a></p>
-<h2 id="Panic函数"><a href="#Panic函数" class="headerlink" title="Panic函数"></a>Panic函数</h2><p>函数可以通过将error作为额外的返回值来向调用者报告错误，对于一些“致命”的错误，他们导致程序不能继续运行了，Go内建了一个Panic函数，它会产生一个运行时错误并重孩子程序。该函数接受一个任意类型的实参在程序终止时打印。</p>
-<p>只需要在需要它的地方调用一下<code>panix()</code>就可以了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func init() &#123;</span><br><span class="line">	if user == &quot;&quot; &#123;</span><br><span class="line">		panic(&quot;user变量必须有值&quot;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这是一个示例，但是如果是设计库函数则应该避免使用panic，一个常见的使用panic的场景是初始化，如上面的示例。</p>
-<h2 id="恢复"><a href="#恢复" class="headerlink" title="恢复"></a>恢复</h2><p>panic函数被调用后，程序将终止当前函数的执行。并开始追溯Go程的栈，运行任何被推迟的函数。我如果回溯到栈顶，程序会终止。<br>我们可以通过使用内建的recover函数来重新取回Go程的控制权。<br>调用recover将停止回溯，并返回传入panic的是西安。因为回溯只有被推迟执行的函数中的代码在执行，所以recover也只能在被推迟的函数中才有效。</p>
-<p>一个应用：在服务器中终止失败的Go程而无需杀死其他正在执行的Go程：</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">server</span><span class="params">(workChan &lt;-<span class="keyword">chan</span> *Work)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> work := <span class="keyword">range</span> workChan &#123;</span><br><span class="line">		<span class="keyword">go</span> safelyDo(work)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">safelyDo</span><span class="params">(work *Work)</span></span> &#123;</span><br><span class="line">	<span class="comment">// defer 函数是被推迟执行的</span></span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">if</span> err := <span class="built_in">recover</span>(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">			log.Println(<span class="string">"work failed:"</span>, err)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	do(work)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如果do函数中调用panic函数，回溯会执行defer的函数，这时recover会起作用，打印错误信息后退出Go程。<br>可以使用上面的思路简化错误处理。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/go-efficient-string-concat/" itemprop="url">
-                  Go 快速拼接字符串
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
-              2015-07-20
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>对于频繁的字符串操作，可以使用bytes.Buffer接口提供的方法快速拼接 </p>
-<p>和一般语言类似，Go也为string重载了”+”操作符，可以使用它进行字符串拼接，但是在C#和Java中对于大量的字符串拼接操作推荐使用StringBuilder这样的类，同样对于Go中的大量字符串拼接也不推荐直接使用”+”操作。</p>
-<p>可以使用bytes.Buffer提供的方法进行快速拼接：</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"bytes"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">concat</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> buffer bytes.Buffer</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>; i&lt;<span class="number">1000</span>; i++ &#123;</span><br><span class="line">		buffer.WriteString(<span class="string">"abcd"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	str := buffer.String()</span><br><span class="line">	<span class="comment">// do something to str</span></span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">return</span> str</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样可以获得O(n)的时间复杂度。</p>
-<p>参考： <a href="http://stackoverflow.com/questions/1760757/" title="http://stackoverflow.com/questions/1760757/" target="_blank" rel="noopener">stackoverflow.com/</a></p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1490,21 +1514,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">171</span>
+              <span class="site-state-item-count">173</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">144</span>
+              <span class="site-state-item-count">145</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

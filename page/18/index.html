@@ -235,6 +235,225 @@
             
               
                 
+                <a class="post-title-link" href="/vim-commands/" itemprop="url">
+                  vim 常用的命令模式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
+              2015-07-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>vim中常用的命令，日常更新 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">!ls  使用感叹号开头调用系统命令</span><br><span class="line">~	 切换当前光标所在字符的大小写</span><br></pre></td></tr></table></figure>
+<h2 id="buffer相关"><a href="#buffer相关" class="headerlink" title="buffer相关"></a>buffer相关</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:ls</span><br><span class="line">:bn :bnext</span><br><span class="line">:bp :bprev</span><br><span class="line">:bd :bdelete</span><br><span class="line">:b1 :buffer1</span><br><span class="line">:bufdo cmd 在所有缓冲区执行命令</span><br></pre></td></tr></table></figure>
+<h2 id="参数列表"><a href="#参数列表" class="headerlink" title="参数列表"></a>参数列表</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:args 列出参数列表或者设置参数列表</span><br><span class="line">:args **/*.postfix</span><br><span class="line">:write :w</span><br><span class="line">:edit! :e!放弃修改重新载入文件</span><br><span class="line">:qall :qa</span><br><span class="line">:wall :wa</span><br></pre></td></tr></table></figure>
+<h2 id="多窗口"><a href="#多窗口" class="headerlink" title="多窗口"></a>多窗口</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:sp [file] 水平分割</span><br><span class="line">:vsp [filw] 垂直分割</span><br><span class="line">:clo &lt;C-w&gt;c 关闭当前窗口</span><br><span class="line">:no[ly] &lt;C-v&gt;o 关闭当前之外的所有窗口</span><br></pre></td></tr></table></figure>
+<p><strong>切换窗口</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;C-w&gt;&lt;C-w&gt; 在串口中切换，连续按两次Ctrl+w</span><br><span class="line">&lt;C-w&gt;h|j|k|l 切换到左/下/上/右的窗口</span><br></pre></td></tr></table></figure>
+<p><strong>改变窗口大小</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;C-w&gt;=</span><br><span class="line">&lt;C-w&gt;_  最大化当前窗口的高度</span><br><span class="line">&lt;C-w&gt;|  最大化当前窗口的宽度</span><br><span class="line">[n]&lt;C-w&gt;_   设置</span><br><span class="line">[n]&lt;C-w&gt;|</span><br></pre></td></tr></table></figure>
+<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:tabedit :tabe &#123;filename&#125; 如果filename为空则打开一个新的标签页</span><br><span class="line">:tabclose :tabc </span><br><span class="line">:tabonly  :tabo  关闭当前标签之外的所有标签</span><br></pre></td></tr></table></figure>
+<p><strong>标签切换</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:tabnext  :tabn &#123;N&#125;  Ngt</span><br><span class="line">:tabn gt</span><br><span class="line">:tabp gT</span><br><span class="line">:tabmove [N] 移动标签页</span><br></pre></td></tr></table></figure>
+<h2 id="打开及保存文件"><a href="#打开及保存文件" class="headerlink" title="打开及保存文件"></a>打开及保存文件</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:edit full/path/name</span><br><span class="line">:edit %:h&lt;tab&gt;filename 	使用缓冲区文件的完整路径打开文件, :h去掉当前文件名，tab键补全</span><br><span class="line">:edit path 打开文件管理窗口</span><br><span class="line">:find filename 在path下查找文件</span><br><span class="line">: set path+=/path/to/workspace  将工作区添加到vim的path中用于寻找</span><br><span class="line">:e 是 :edit的缩写</span><br><span class="line">:Explore :E 打开当前的目录管理器</span><br><span class="line">:Sexplore  explore的切分</span><br><span class="line">:Vexplore</span><br></pre></td></tr></table></figure>
+<p><strong>文件操作</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:!mkdir -p %:h    前缓冲区创建目录，然后在:w，解决某些不能保存的问题</span><br><span class="line">:w !sudo tee % &gt; /dev/null 由于保存用非sudo打开的无权限文件的保存</span><br></pre></td></tr></table></figure>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/effective-go-note-1/" itemprop="url">
+                  Effective Go笔记：函数，数据，初始化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
+              2015-07-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>effective go 中的部分笔记，这是第一部分 </p>
+<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>Go的函数有一个很特别的性质那就是多值返回，这样做有一个很方便的地方是可以把错误值返回，这样做和后面会讲到的取消异常也是有关的。</p>
+<p>一个Go函数的签名可能是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func (file *File) Write(b []byte) (n int, err error)</span><br></pre></td></tr></table></figure>
+<p>这是一个典型的Go函数签名，初看起来比较复杂，一点点分析：</p>
+<ol>
+<li>func关键字，类似php中的function</li>
+<li>(file <em>File) 表示这是一个添加到</em>File接口上的方法。这也是Go比较有意思的地方，通过<em>附着</em>接口方法的方式实现接口</li>
+<li>Write 很简单就是方法名了，大写开头的方法表示共有的导出方法，如果是小写的方法名是不能导出的</li>
+<li>(b []byte)方法的参数，形参名为b，类型为[]byte</li>
+<li>(n int, err error) 返回类型，如果是多指返回则使用小括号括起来，如果是一个返回值就不需要了。比较有意思的是返回值也可以作为有命名返回值，比如这里的n和err，这样表示把函数作用域内的n和err变量返回，这样返回语句只需要写return，而不需要显式说明具体变量</li>
+</ol>
+<h3 id="Defer"><a href="#Defer" class="headerlink" title="Defer"></a>Defer</h3><p>Defer 是Go的关键字，用于预设一个函数调用，一个使用Defer调用的函数会<strong>在执行defer的函数返回之前</strong>立即执行，常用来释放资源，比如解锁互斥和关闭文件<br>使用defer推迟的函数会按照<strong>后进先出</strong>的顺序执行。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/effective-go-note-1/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/using-ambari-to-setup-a-hadoop-cluster/" itemprop="url">
                   使用ambari搭建并管理一个hadoop集群
                 </a>
@@ -366,21 +585,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">171</span>
+              <span class="site-state-item-count">173</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">144</span>
+              <span class="site-state-item-count">145</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

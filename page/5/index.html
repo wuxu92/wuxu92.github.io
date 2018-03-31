@@ -235,6 +235,261 @@
             
               
                 
+                <a class="post-title-link" href="/intro-of-https/" itemprop="url">
+                  了解https通信
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-03-05T14:29:56+08:00" content="2016-03-05">
+              2016-03-05
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/network/" itemprop="url" rel="index">
+                    <span itemprop="name">network</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="https和SSL介绍"><a href="#https和SSL介绍" class="headerlink" title="https和SSL介绍"></a>https和SSL介绍</h2><p>对于http和https，一般人都不太陌生，随着互联网的发展，这几年越来越的站点开始进行全站https化。</p>
+<p>早期只有牵涉到网上购物、网上银行这样的站点才会开启https，现在随着硬件性能的不断提升，全站起用https的开销已经可以接受了，所以最近两年，越来越多的大站开始向全站https过渡。比如前段时间去参加的infoq的一个百度技术分享会，就介绍了百度在全站转向https中的经验；像知乎也开了全站https。一般来说开启https的站点给用户一种放心的感觉，Chrome地址栏那一把绿色的锁在很多人心中就代表“安全”。</p>
+<p>https简单地说就是http和ssl/tls的结合，所以https一般看作是<strong>http over ssl, http over tls</strong>或 <strong>http secure</strong>。http协议我们知道是一个不加密的，在计算机网络课程上一般都会进行详细的介绍，三次握手，四次挥手这些都比较熟悉了。但由于https传输的内容是不加密的，在网络上的嗅探、抓包工具抓到的数据可以直接被中间人解析甚至篡改！最典型就是无耻运营商流量劫持，可以说很多的站点趋向于全站https改造就是为了解决无法无天的运营商劫持问题。</p>
+<p>ssl协议定义在应用程序协议（http,ftp等）和TCP/IP 协议之间，提供数据安全性分层的机制，SSL为TCP/IP连接提供数据加密、服务器认证、消息完整性验证以及可选的客户机认证。它的主要作用好似提高应用程序之间数据的安全性，对传送的数据进行加密和隐藏，确保数据在传送中不被改变。</p>
+<h3 id="ssl协议"><a href="#ssl协议" class="headerlink" title="ssl协议"></a>ssl协议</h3>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/intro-of-https/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/php-7-reference-cn/" itemprop="url">
+                  整理-PHP7新特性与改动
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-03-02T20:49:16+08:00" content="2016-03-02">
+              2016-03-02
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/lang/" itemprop="url" rel="index">
+                    <span itemprop="name">lang</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <blockquote>
+<p>整理来自英文版：<a href="https://github.com/tpunt/PHP7-Reference" target="_blank" rel="noopener">https://github.com/tpunt/PHP7-Reference</a> 和官方迁移文档<br>整理的中文版本： <a href="https://github.com/wuxu92/PHP7-Reference-cn" target="_blank" rel="noopener">https://github.com/wuxu92/PHP7-Reference-cn</a></p>
+</blockquote>
+<p>PHP 7 在 <a href="http://php.net/archive/2015.php#id2015-12-03-1" target="_blank" rel="noopener">2015年12月3日</a> 发布了. 它带来了大量的新特性，改变和一些不向后兼容的变更（backwards compatibility breakages），这些改变概述如下：</p>
+<p><strong><a href="/php-7-reference-cn/#u6027_u80FD">性能</a></strong></p>
+<p><strong><a href="/php-7-reference-cn/#u7279_u6027">特性</a></strong></p>
+<ul>
+<li><a href="/php-7-reference-cn/#u7EC4_u5408_u6BD4_u8F83_u64CD_u4F5C_u7B26">组合比较操作符</a></li>
+<li><a href="/php-7-reference-cn/#u7A7A_u5F15_u7528_u5408_u5E76_u64CD_u4F5C_u7B26">空指针合并操作符</a></li>
+<li><a href="/php-7-reference-cn/#u6807_u91CF_u7C7B_u578B_u58F0_u660E">标量类型声明</a></li>
+<li><a href="/php-7-reference-cn/#u8FD4_u56DE_u503C_u7C7B_u578B_u58F0_u660E">返回值类型声明</a></li>
+<li><a href="/php-7-reference-cn/#u533F_u540D_u7C7B">匿名类</a></li>
+<li><a href="/php-7-reference-cn/#Unicode_u7F16_u7801_u70B9_u8F6C_u4E49_u8BED_u6CD5">Unicode编码点转移语法</a></li>
+<li><a href="/php-7-reference-cn/#Closure_3A_3Acall_28_29">闭包 <code>call()</code> 方法</a></li>
+<li><a href="/php-7-reference-cn/#u5E26_u8FC7_u6EE4_u7684_unserialize_28_29">带过滤的 <code>unserialize()</code></a></li>
+<li><a href="/php-7-reference-cn/#IntlChar__u7C7B"><code>IntlChar</code> 类</a></li>
+<li><a href="/php-7-reference-cn/#u9884_u671F">期望</a></li>
+<li><a href="/php-7-reference-cn/#Group_use_Declarations">组和 <code>use</code> 声明</a></li>
+<li><a href="/php-7-reference-cn/#u751F_u6210_u5668_u8FD4_u56DE_u8868_u8FBE_u5F0F">生成器返回表达式</a></li>
+<li><a href="/php-7-reference-cn/#u751F_u6210_u5668_u59D4_u6258">生成器委托</a></li>
+<li><a href="/php-7-reference-cn/#u4F7F_u7528_intdiv_28_29__u505A_u6574_u6570_u9664_u6CD5">整形除使用 <code>intdiv()</code></a></li>
+<li><a href="/php-7-reference-cn/#session_start_28_29__u9009_u9879"><code>session_start()</code> 参数</a></li>
+<li><a href="/php-7-reference-cn/#preg_replace_callback_array_28_29__u51FD_u6570"><code>preg_replace_callback_array()</code> 函数</a></li>
+<li><a href="/php-7-reference-cn/#CSPRNG_uFF08_u5BC6_u7801_u5B66_u5B89_u5168_u4F2A_u968F_u673A_u6570_u6784_u5EFA_u5668_uFF09_u51FD_u6570">CSPRNG 函数</a></li>
+<li><a href="/php-7-reference-cn/#u652F_u6301_define_28_29__u5B9A_u4E49_u6570_u7EC4_u5E38_u91CF">支持 <code>define()</code> 定义数组常量</a></li>
+<li><a href="/php-7-reference-cn/#u53CD_u5C04_u589E_u5F3A">新增的反射类</a></li>
+</ul>
+<p><strong><a href="/php-7-reference-cn/#u6539_u53D8">改动</a></strong></p>
+<ul>
+<li><a href="/php-7-reference-cn/#u653E_u677E_u4FDD_u7559_u5B57_u7684_u9650_u5236">放松保留字的限制</a></li>
+<li><a href="/php-7-reference-cn/#u7EDF_u4E00_u53D8_u91CF_u8BED_u6CD5">同一变量格式</a></li>
+<li><a href="/php-7-reference-cn/#u5F15_u64CE_u4E2D_u7684_u5F02_u5E38">引擎中的异常</a></li>
+<li><a href="/php-7-reference-cn/#u53EF_u629B_u51FA_u7684_u63A5_u53E3">可抛出的接口</a></li>
+<li><a href="/php-7-reference-cn/#u6574_u6570_u8BED_u4E49">整形语义</a></li>
+<li><a href="/php-7-reference-cn/#JSOND_u66FF_u4EE3_u4E86JSON_u6269_u5C55">JSON 扩展替代 JSOND</a></li>
+<li><a href="/php-7-reference-cn/#ZPP__u6EA2_u51FA_u65F6_u5931_u8D25">ZPP Failure on Overflow</a></li>
+<li><a href="/php-7-reference-cn/#u4FEE_u6B63_foreach_28_29__u7684_u884C_u4E3A">修复 <code>foreach()</code>的行为</a></li>
+<li><a href="/php-7-reference-cn/#u4FEE_u6539_list_28_29__u7684_u884C_u4E3A">修改 <code>list()</code>的行为</a></li>
+<li><a href="/php-7-reference-cn/#u6539_u53D8_u9664_u6570_u4E3A0_u7684_u8BED_u4E49">改变被0整除的语义</a></li>
+<li><a href="/php-7-reference-cn/#u4FEE_u590D_u81EA_u5B9A_u4E49session_handler_u7684_u8FD4_u56DE_u503C">修复自定义Session Handler返回值</a></li>
+<li><a href="/php-7-reference-cn/#u8FD4_u56DE_u53EA_u7528PHP_4_u98CE_u683C_u7684_u6784_u9020_u51FD_u6570">标记PHP 4风格的构造函数过期</a></li>
+<li><a href="/php-7-reference-cn/#u79FB_u9664date-timezone_u7684_u8B66_u544A">移除 date.timezone 警告</a></li>
+<li><a href="/php-7-reference-cn/#u53BB_u9664_u53EF_u66FF_u4EE3_u7684PHP_u6807_u7B7E">移除可替换PHP标签</a></li>
+<li><a href="/php-7-reference-cn/#u79FB_u9664Switch_u8BED_u53E5_u4E2D_u7684_u591A_u9ED8_u8BA4_u5757">移除Switch语句中的多默认块</a></li>
+<li><a href="/php-7-reference-cn/#u79FB_u9664_u53C2_u6570_u5217_u8868_u4E2D_u91CD_u540D_u53C2_u6570_u7684_u91CD_u5B9A_u4E49">移除重复名字参数的重定义</a></li>
+<li><a href="/php-7-reference-cn/#u79FB_u9664_u5DF2_u7ECFDead_u7684_u670D_u52A1_u5668API">移除Dead Server APIs</a></li>
+<li><a href="/php-7-reference-cn/#u79FB_u9664_u6570_u5B57_u5B57_u7B26_u4E32_u7684_u5341_u516D_u8FDB_u5236_u652F_u6301">移除数字字符串中的十六进制支持</a></li>
+<li><a href="/php-7-reference-cn/#u79FB_u9664_u8FC7_u671F_u7684_u529F_u80FD">移除已标记过期的函数</a></li>
+<li><a href="/php-7-reference-cn/#Reclassification_and_Removal_of_E_STRICT_Notices">再分级与移除 E_STRICT 通知</a></li>
+<li><a href="/php-7-reference-cn/#u4E3Apassword_hash_28_29_u51FD_u6570_u8BBE_u7F6E_u76D0_u7684_u9009_u9879_u8FC7_u671F">反对使用<code>password_hash()</code>的盐选项</a></li>
+<li><a href="/php-7-reference-cn/#u65E0_u6548_u7684_u516B_u8FDB_u5236_u5B57_u9762_u91CF_u7684_u9519_u8BEF">无效的八进制字面量错误</a></li>
+<li><a href="/php-7-reference-cn/#substr_28_29_u8FD4_u56DE_u503C_u4FEE_u6539"><code>substr()</code> 返回值改动</a></li>
+</ul>
+<p><strong><a href="/php-7-reference-cn/#FAQ">FAQ</a></strong></p>
+<ul>
+<li><a href="/php-7-reference-cn/#PHP_6_u53D1_u751F_u4E86_u4EC0_u4E48">PHP 6发生了什么?</a></li>
+</ul>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>毫无争议，PHP 7带来的最大的变化就是极大的性能提升，这得益于对Zend引擎的重构，新的引擎使用了更加紧凑的数据结构和更少的堆分配/回收操作。</p>
+<p>在实际项目使用中，性能的提升效果不是固定的，虽然很多应用在使用PHP 7之后活的了超过100%的性能加速，同时还只使用更少的内存消耗！</p>
+<p>重构后的代码基础也为将来的优化（比如JIT编译）提供了更多的可能，所以，可以预计在接下来的PHP版本仍然会看到不错的性能提升。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/php-7-reference-cn/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/effective-go-review/" itemprop="url">
                   再看Effective Go
                 </a>
@@ -1034,214 +1289,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/go-slice-tricks/" itemprop="url">
-                  Go Slice Tricks
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-24T16:05:28+08:00" content="2016-01-24">
-              2016-01-24
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>这是<a href="https://github.com/golang/go/wiki/SliceTricks" target="_blank" rel="noopener">官方wiki</a>的一个页面，很有用就搬移过来，关于Go中slice的使用的tricks的总结：</p>
-<p>Since the introduction of the <code>append</code> built-in, most of the functionality of the <code>container/vector</code> package, which was removed in Go 1, can be replicated using <code>append</code> and <code>copy</code>.</p>
-<p>Here are the vector methods and their slice-manipulation analogues:</p>
-<p><strong>AppendVector</strong><br><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">a = <span class="built_in">append</span>(a, b...)</span><br></pre></td></tr></table></figure></p>
-<p><strong>Copy</strong><br><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">b = <span class="built_in">make</span>([]T, <span class="built_in">len</span>(a))</span><br><span class="line"><span class="built_in">copy</span>(b, a)</span><br><span class="line"><span class="comment">// or</span></span><br><span class="line">b = <span class="built_in">append</span>([]T(<span class="literal">nil</span>), a...)</span><br></pre></td></tr></table></figure></p>
-<p><strong>Cut</strong><br><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">a = <span class="built_in">append</span>(a[:i], a[j:]...)</span><br></pre></td></tr></table></figure></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/go-slice-tricks/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/install-golang-plugin-for-idea/" itemprop="url">
-                  IntelliJ IDEA 支持Golang项目
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-24T13:11:25+08:00" content="2016-01-24">
-              2016-01-24
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/tools/" itemprop="url" rel="index">
-                    <span itemprop="name">tools</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>之前一直使用 LiteIDE 编写Go的程序，在单个文件或文件比较少的时候liteide还是挺好用的，但是文件多了的时候自动提示总是不能即使更新，新添加的方法总是没有提示，感觉是自动提示的索引更新太慢的原因。</p>
-<p>前几天把IDEA的golang插件装了一下，发现用IDEA写go的项目舒服多了，intellij的IDE不愧是宇宙最好的IDE之一。免费的社区版（IDEA 15 CE）也支持Golang插件，不过CE没有Nodejs支持，后来装 Vue.js 的插件时遇到了问题，所以如果对盗版没有愧疚的话装 IDEA的ultimate版本也可以。</p>
-<h2 id="安装语言支持插件"><a href="#安装语言支持插件" class="headerlink" title="安装语言支持插件"></a>安装语言支持插件</h2><p>先安装Golang语言支持的插件，插件地址：<a href="https://github.com/go-lang-plugin-org/go-lang-idea-plugin" target="_blank" rel="noopener">https://github.com/go-lang-plugin-org/go-lang-idea-plugin</a>，在默认的插件库中没有，需要手动添加 <code>File-&gt;Settings-&gt;Plugins-&gt;Browser repositories-&gt;Manage repositories</code> 点右侧的加号，添加源：</p>
-<p>Paste the URL for the version you need:</p>
-<ul>
-<li>alpha: <a href="https://plugins.jetbrains.com/plugins/alpha/5047" target="_blank" rel="noopener">https://plugins.jetbrains.com/plugins/alpha/5047</a></li>
-<li>nightly: <a href="https://plugins.jetbrains.com/plugins/nightly/5047" target="_blank" rel="noopener">https://plugins.jetbrains.com/plugins/nightly/5047</a></li>
-</ul>
-<p>然后到安装插件那搜索 go 就可以了。</p>
-<h2 id="配置SDK"><a href="#配置SDK" class="headerlink" title="配置SDK"></a>配置SDK</h2><p>在IDEA中添加GO SDK： <code>File-&gt;Project Structure-&gt;SDKs</code> 点击添加，选择Go SDK，如果系统配置好了Go的环境变量的话会自动定位到Go的目录比如我的 <code>C:\Go</code>,添加好SDK后修改项目的SDK。</p>
-<p>在 <code>File-&gt;Project Structure-&gt;Project</code> 现在Project SDK下拉框应该可以选择Go的SDK了。</p>
-<p>这样就可以了，之后写Go的项目就非常方便了</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1288,21 +1335,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">171</span>
+              <span class="site-state-item-count">173</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">144</span>
+              <span class="site-state-item-count">145</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

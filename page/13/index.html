@@ -235,6 +235,226 @@
             
               
                 
+                <a class="post-title-link" href="/golang-db-access/" itemprop="url">
+                  Go mysql数据库操作
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-26T12:34:50+08:00" content="2015-10-26">
+              2015-10-26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/db/" itemprop="url" rel="index">
+                    <span itemprop="name">db</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>Go官方并不提供数据库驱动，而只是为开发数据库驱动定义了一些标准接口。我们要使用mysql数据库得使用第三方维护的mysql驱动。Go中支持MySQL的驱动目前比较多，有如下几种，有些是支持database/sql标准，而有些是采用了自己的实现接口,常用的有如下几种:</p>
+<p><a href="https://github.com/go-sql-driver/mysql" target="_blank" rel="noopener">https://github.com/go-sql-driver/MySQL</a> 支持database/sql，全部采用go写。<br><a href="https://github.com/ziutek/mymysql" target="_blank" rel="noopener">https://github.com/ziutek/mymysql</a> 支持database/sql，也支持自定义的接口，全部采用go写。<br><a href="https://github.com/Philio/GoMySQL" target="_blank" rel="noopener">https://github.com/Philio/GoMySQL</a> 不支持database/sql，自定义接口，全部采用go写。<br>也推荐使用第一个，主要理由：</p>
+<ul>
+<li>维护的比较好</li>
+<li>完全支持database/sql接口</li>
+<li>支持keepalive，保持长连接</li>
+</ul>
+<p>有了驱动，其实golang使用mysql和其他语言没有太大的区别，虽然具体的方法调用与类组织不太一样。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>使用10.4.16.95上的mariadb数据库，新建一个golang的数据库，添加两张测试用的表。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> golang;</span><br><span class="line"><span class="keyword">use</span> golang;</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`userinfo`</span> (</span><br><span class="line">  <span class="string">`uid`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`username`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`uid`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`userdetail`</span> (</span><br><span class="line">  <span class="string">`uid`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span>,</span><br><span class="line">  <span class="string">`intro`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`profile`</span> <span class="built_in">text</span></span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1;</span><br></pre></td></tr></table></figure>
+<p>先ssh登录服务器(因为安全考虑，不开放mysql的root用户的远程登录权限)，用root用户本地登录mysql新建一个用于测试的可远程登录的用户：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssh wuxu@10.4.16.95</span><br><span class="line">MySQL -uroot -p</span><br><span class="line">// enter root password</span><br><span class="line">create user golang@&apos;%&apos; identified by &apos;golangMysql&apos;;</span><br><span class="line">grant privileges on *.golang to golang@&apos;%&apos;;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+<p>这样就可以用golang登录新建的数据库了</p>
+<h2 id="Golang操作mysql"><a href="#Golang操作mysql" class="headerlink" title="Golang操作mysql"></a>Golang操作mysql</h2><p>先get数据库驱动,在命令行运行<code>go get github.com/go-sql-driver/MySQL</code>,会自动使用git从github下载mysql驱动工程到<code>$GOPATH/src/</code>。</p>
+<p>基本的插入，更新，删除，查找方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import (</span><br><span class="line">	_ &quot;github.com/go-sql-driver/MySQL&quot;</span><br><span class="line">	&quot;database/sql&quot;</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	// mysql是一个注册过的数据库驱动了,在驱动的init函数中注册</span><br><span class="line">	db, err := sql.Open(&quot;MySQL&quot;, &quot;golang:golangMysql@tcp(10.4.16.95:3306)/golang?charset=utf8&quot;)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	fmt.Println(&quot;connected&quot;)</span><br><span class="line">	</span><br><span class="line">	stmt, err := db.Prepare(&quot;insert userinfo set username=?&quot;)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	// fmt.Println(stmt)</span><br><span class="line">	res, err := stmt.Exec(&quot;wuxu&quot;)  // 使用占位符&apos;?&apos;防止sql注入，这是一个不定参数函数，传入的参数与prepare阶段设置的占位符相等</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	id, err := res.LastInsertId()</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	fmt.Println(id)</span><br><span class="line">	</span><br><span class="line">	stmt, _ = db.Prepare(&quot;update userinfo set username=? where username=?&quot;)</span><br><span class="line">	</span><br><span class="line">	res, err =  stmt.Exec(&quot;wuxu01&quot;, &quot;wuxu&quot;)</span><br><span class="line">	aff, err := res.RowsAffected()</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	fmt.Println(aff)</span><br><span class="line">	</span><br><span class="line">	rows, err := db.Query(&quot;select * from userinfo&quot;)</span><br><span class="line">	</span><br><span class="line">	for rows.Next() &#123;</span><br><span class="line">		var id int</span><br><span class="line">		var usename string</span><br><span class="line">		err = rows.Scan(&amp;id, &amp;usename)</span><br><span class="line">		CheckErr(err)</span><br><span class="line">		</span><br><span class="line">		fmt.Println(id, usename)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	stmt, _ = db.Prepare(&quot;delete from userinfo where uid&gt;?&quot;)</span><br><span class="line">	res, _ = stmt.Exec(4)</span><br><span class="line">	aff, _ = res.RowsAffected()</span><br><span class="line">	fmt.Println(&quot;affected&quot;, aff)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func CheckErr(e error) &#123;</span><br><span class="line">	if e != nil &#123;</span><br><span class="line">		panic(e)</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>与以往的mysql操作相似，也是一个连接对象，对于插入，删除等要先prepare，然后执行Exec，在exec阶段绑定占位符变量。<br>比较独特的是Exec返回的Result指针，它包含LastInsertId和 RowsAffedted 两个方法。</p>
+<p>注意数据连接的dsn(data source name)和php或者其他语言的比较不一样。我们使用的是 <code>user:password@protocol(host:port)/dbname?charset=utf8</code> 的形式。驱动本身支持更多形式的dsn：</p>
+<ul>
+<li>user@Unix(/path/to/socket)/dbname?charset=utf8</li>
+<li>user:password@tcp(localhost:5555)/dbname?charset=utf8</li>
+<li>user:password@/dbname</li>
+<li>user:password@tcp([::]:80)/dbname   // ipv6</li>
+</ul>
+<p>整个数据库操作的流程大概如下：</p>
+<p>sql.Open()函数用来打开一个注册过的数据库驱动<br>db.Prepare()函数用来返回准备要执行的sql操作， 然后返回准备完毕的执行状态。<br>db.Query()函数用来直接执行Sql返回Rows结果。<br>stmt.Exec()函数用来执行stmt准备好的SQL语句。</p>
+<p>数据库驱动的注册在数据库驱动包导入时执行，注册的逻辑写在包的init函数中。导入驱动包只需要 <code>import _ &quot;driver/package&quot;</code>，因为只需要执行其<code>init()</code>，而不需要调用包中导出的方法，调用的是go语言规定的sql接口。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/go-lang-notebook-2/" itemprop="url">
+                  Golang 学习笔记：HTTP, TCP/IP, UDP
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-23T12:34:50+08:00" content="2015-10-23">
+              2015-10-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><p>我们知道，go内置有http server 支持，我们只需要在代码中启动这个server就可以启动一个类似于apache的服务器。同时可以很方便的监听多个端口等等。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	. <span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">	PORT = <span class="string">":1024"</span></span><br><span class="line">	MSG = <span class="string">"hello, gopher"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.HandleFunc(<span class="string">"/hello"</span>, Hello)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		http.ListenAndServe(PORT, <span class="literal">nil</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		http.ListenAndServeTLS(<span class="string">":443"</span>,<span class="string">"cert.pem"</span>, <span class="string">"key.pem"</span>, <span class="literal">nil</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="keyword">for</span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Hello</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">	w.Header().Set(<span class="string">"Content-Type"</span>, <span class="string">"text/plain"</span>)</span><br><span class="line">	Fprintf(w, MSG)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码启动了一个server，开启了http和https支持；分别监听在1024端口和443端口。<br>有几个需要注意的地方。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/go-lang-notebook-2/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/go-lange-notebook-1/" itemprop="url">
                   Golang 学习笔记： 指针,函数,内嵌及接口
                 </a>
@@ -554,6 +774,120 @@
             
               
                 
+                <a class="post-title-link" href="/z-i-can-explain/" itemprop="url">
+                  绩点只有3？我可以解释一下
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-15T12:34:50+08:00" content="2015-10-15">
+              2015-10-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/life/" itemprop="url" rel="index">
+                    <span itemprop="name">life</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>放张图文无关压压惊<br><img src="/images/post/title-pic-1.jpg" alt=""></p>
+<p>最近开始申请学业奖学金了，大家开始计算自己的绩点，我也算了一下自己的成绩，结果是比3多一点点（如果没有算错的话）。我觉得这是一个比较合适的数字，没有比3小已经很满足了，毕竟学的并不好，太高了也不太符合我的水平。可是！到现在我还没有找到比我绩点低的人！</p>
+<p>我觉得我可以解释一下来安慰自己。</p>
+<p>我觉得算下来绩点为3应该是比较正常的水平吧，但是看看我们宿舍其他几个人的成绩： 毛哥以3.9遥遥领先，念神3.7不落下风，凡哥3.5也不错，吓得我直接不敢说话。然后实验室的也是3.4，连我在教着写代码的同学也比我高。我的内心是有一点点崩溃的。</p>
+<p>绩点低的主要原因是我的模式识别只有61分，嗯，比我本科的最低分线性代数还是什么鬼的63分还要低2分。这个分数其实已经远超我在模式识别领域的姿势水平了，所以也没什么话说。其他分数7788的也算可以吧，毕竟真的没学好。</p>
+<p>那我干什么去了呢？大概本科开始成绩就不太好了。高考的时候成绩还是不错的，本科以来的考试就越来越水了，后来考研突击了一下，也还勉勉强强，总体来说考试成绩是线性下降的。</p>
+<p>大概从初中的时候就发现问题，因为我发现除了成绩之外，其他的能力真的很差，当时我和一个好友两个人成绩差不多，一般我还要略高一点点，但是当时就想了一个严重的问题，除去考试的几门科目，如果再多加一门其他的测试，我肯定会搞砸，根本保持不了“名列前茅”。</p>
+<p>这个问题一直在考虑，直到大学。我觉得考试与成绩一直压迫了我的小学初中高中，大学的应该走一条不同的路，当然也许当时并没有这么明确的“方针路线”，总体来说是这样子的。</p>
+<p>当初选软件工程是我自己的决定，但是其实在这之前对计算机没有什么了解，没怎么用过电脑，很少去网吧，甚至没有使用过QQ；选这个专业可能是因为填志愿之前看了哥带回来的《大学计算机基础》和一堆的《微型计算机》杂志。。。。(题外话，其实我当时很喜欢的是化学与生物）</p>
+<p>过完大一大二，其实已经很反感学校的教育了。开始喜欢自己学，自己动手的东西。这样导致很多基础课学的很糟糕，尤其是操作系统，组成原理等等。但是有得必有失，其中确实是需要自己去权衡的。本科的后两年基本就是水课，自己学些东西，成绩保持在能拿个三等奖学金的样子。</p>
+<p><img src="/images/post/bab8ab1fgw1eib2.gif" alt=""></p>
+<p>现在的状态就是，好像<a href="http://wuxu92.github.io/about.html" title="http://wuxu92.github.io/about.html" target="_blank" rel="noopener">懂很多的东西</a>，但是其实心里很没底，但是大部分时候又确实是能用的起来这些东西的。也许相对于成绩与绩点，这些列出来的名词更能给我带来成就感吧。</p>
+<p>研一这一年干了什么事呢，因为总体来说过的比较懒散，没什么具体的事情，买了一堆书，看了几本；没学什么新的东西；给一个项目扫了个尾，重构了科委的二版，帮人做项目，教人写代码；看了十来篇论文，没什么用；去掌游实习了三个月，学了不少东西，开始更新这个博客；现在在学golang。</p>
+<p>对我来说，绩点低的唯一的坏处就是没有奖学金吧，又要过穷日子了；早知道应该多实习一个月的。</p>
+<p>套用无心法师里老岳的一句话</p>
+<blockquote>
+<p>这几年没有好好学，很糟糕</p>
+</blockquote>
+<p><del>我觉得根本没法安慰自己，必须要承认智商不够的事实了</del></p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/weaknesses-of-golang/" itemprop="url">
                   Golang语言特性中的一些不足
                 </a>
@@ -636,120 +970,6 @@
 <ul>
 <li><a href="https://golang.org/doc/faq" title="https://golang.org/doc/faq" target="_blank" rel="noopener">https://golang.org/doc/faq</a></li>
 </ul>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/z-i-can-explain/" itemprop="url">
-                  绩点只有3？我可以解释一下
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-15T12:34:50+08:00" content="2015-10-15">
-              2015-10-15
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/life/" itemprop="url" rel="index">
-                    <span itemprop="name">life</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>放张图文无关压压惊<br><img src="/images/post/title-pic-1.jpg" alt=""></p>
-<p>最近开始申请学业奖学金了，大家开始计算自己的绩点，我也算了一下自己的成绩，结果是比3多一点点（如果没有算错的话）。我觉得这是一个比较合适的数字，没有比3小已经很满足了，毕竟学的并不好，太高了也不太符合我的水平。可是！到现在我还没有找到比我绩点低的人！</p>
-<p>我觉得我可以解释一下来安慰自己。</p>
-<p>我觉得算下来绩点为3应该是比较正常的水平吧，但是看看我们宿舍其他几个人的成绩： 毛哥以3.9遥遥领先，念神3.7不落下风，凡哥3.5也不错，吓得我直接不敢说话。然后实验室的也是3.4，连我在教着写代码的同学也比我高。我的内心是有一点点崩溃的。</p>
-<p>绩点低的主要原因是我的模式识别只有61分，嗯，比我本科的最低分线性代数还是什么鬼的63分还要低2分。这个分数其实已经远超我在模式识别领域的姿势水平了，所以也没什么话说。其他分数7788的也算可以吧，毕竟真的没学好。</p>
-<p>那我干什么去了呢？大概本科开始成绩就不太好了。高考的时候成绩还是不错的，本科以来的考试就越来越水了，后来考研突击了一下，也还勉勉强强，总体来说考试成绩是线性下降的。</p>
-<p>大概从初中的时候就发现问题，因为我发现除了成绩之外，其他的能力真的很差，当时我和一个好友两个人成绩差不多，一般我还要略高一点点，但是当时就想了一个严重的问题，除去考试的几门科目，如果再多加一门其他的测试，我肯定会搞砸，根本保持不了“名列前茅”。</p>
-<p>这个问题一直在考虑，直到大学。我觉得考试与成绩一直压迫了我的小学初中高中，大学的应该走一条不同的路，当然也许当时并没有这么明确的“方针路线”，总体来说是这样子的。</p>
-<p>当初选软件工程是我自己的决定，但是其实在这之前对计算机没有什么了解，没怎么用过电脑，很少去网吧，甚至没有使用过QQ；选这个专业可能是因为填志愿之前看了哥带回来的《大学计算机基础》和一堆的《微型计算机》杂志。。。。(题外话，其实我当时很喜欢的是化学与生物）</p>
-<p>过完大一大二，其实已经很反感学校的教育了。开始喜欢自己学，自己动手的东西。这样导致很多基础课学的很糟糕，尤其是操作系统，组成原理等等。但是有得必有失，其中确实是需要自己去权衡的。本科的后两年基本就是水课，自己学些东西，成绩保持在能拿个三等奖学金的样子。</p>
-<p><img src="/images/post/bab8ab1fgw1eib2.gif" alt=""></p>
-<p>现在的状态就是，好像<a href="http://wuxu92.github.io/about.html" title="http://wuxu92.github.io/about.html" target="_blank" rel="noopener">懂很多的东西</a>，但是其实心里很没底，但是大部分时候又确实是能用的起来这些东西的。也许相对于成绩与绩点，这些列出来的名词更能给我带来成就感吧。</p>
-<p>研一这一年干了什么事呢，因为总体来说过的比较懒散，没什么具体的事情，买了一堆书，看了几本；没学什么新的东西；给一个项目扫了个尾，重构了科委的二版，帮人做项目，教人写代码；看了十来篇论文，没什么用；去掌游实习了三个月，学了不少东西，开始更新这个博客；现在在学golang。</p>
-<p>对我来说，绩点低的唯一的坏处就是没有奖学金吧，又要过穷日子了；早知道应该多实习一个月的。</p>
-<p>套用无心法师里老岳的一句话</p>
-<blockquote>
-<p>这几年没有好好学，很糟糕</p>
-</blockquote>
-<p><del>我觉得根本没法安慰自己，必须要承认智商不够的事实了</del></p>
 
             
           </span>
@@ -1068,217 +1288,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/golang-package-usage/" itemprop="url">
-                  Golang中包机制的理解
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-09T12:34:50+08:00" content="2015-10-09">
-              2015-10-09
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>我们都知道Golang中有package的概念。在go源码文件的第一行就是先声明包名：</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br></pre></td></tr></table></figure>
-<p>这里的包名是一个标签，<strong>不是</strong>使用字符串。对于简答的项目可以直接使用main作为包名。</p>
-<p>在go的开发中，我们会把所有的项目放到<code>GOPATH/src</code>目录下；与其他语言的项目不同，go的约定是（当前用户）所有的所有项目都是放到这个目录；所以这里面会有很多的项目。一般约定使用域名作为一级的目录，比如<code>GOPATH/src/github.com</code>这个目录存放所有从github获取的项目。</p>
-<p>golang中的包全名是相对于<code>GOPATH/src/</code>的相对路径加源码文件中的package声明。源码的文件夹目录可以随意组织，可以有多层级目录，比如我打一个项目放在 <code>GOPATH/src/wuxu.bit/example/alg/sort</code>目录下。里面的一个源码文件<code>sort.go</code>如下：</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> sort</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Sort</span><span class="params">(a []<span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="comment">// do some sort things</span></span><br><span class="line">	<span class="comment">// fmt.Println(...)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>现在另外一个项目要使用这个排序方法，假设那个项目目录是<code>GOPATH/src/wuxu/weather/</code>目录下的main.go文件。那么要在main.go中import排序文件的包，这里要用完整的包名</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	sort <span class="string">"wuxu.bit/example/alg/sort"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// can use sort.Sort here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面使用了import包名的别名。</p>
-<p>golang在引入包的时候还有一些tricks：</p>
-<ul>
-<li><code>import . &quot;fmt&quot;</code> 这样在调用fmt包的导出方法时可以省略fmt</li>
-<li><code>import _ &quot;fmt&quot;</code> 这样引入该包但是不引入该包的导出函数，而是为了使用该导入操作的副作用: 调用包里面的init函数</li>
-</ul>
-<p>golang的包机制现在还很简单，尤其还没有官方的包依赖解决方案，希望依赖解决能早日出来。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/traveling-at-qingdao-2/" itemprop="url">
-                  十一前青岛游记（二）
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-04T12:34:50+08:00" content="2015-10-04">
-              2015-10-04
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/life/" itemprop="url" rel="index">
-                    <span itemprop="name">life</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>接<a href="http://wuxu92.github.io/traveling-at-qingdao/" target="_blank" rel="noopener">上一篇</a>继续</p>
-<h2 id="第二天"><a href="#第二天" class="headerlink" title="第二天"></a>第二天</h2><p>这次去青岛虽然没有具体的攻略，但是总体的计划还是有的：总共两天，第一天的安排和游记的第一篇大概相符，第二天是准备去八大关和石老人浴场那边。可是H同学说石老人浴场不好玩，要去金沙滩那边，那就去金沙滩吧。</p>
-<p>昨天中午吃饭的时候和店主聊了一会，说我们准备去小青岛玩，店主就说要去就要早上去，7点之前去还不要门票可以看到很漂亮的青岛的早晨。H同学表示那就早上去吧，我表示如果起得来就去吧。哈哈，果然是没有起来～</p>
-<p>第二天起来已经是7点40多了，洗漱完越好直接在武胜关的公交站碰面，离开宾馆前再看一眼&lt;琅琊榜&gt;</p>
-<p><img src="/images/qd2/1.JPG" alt="琅琊榜"><br>时间还早，中途找了家煎饼果子店吃了个早饭，煎饼果子还不错，挺香的，是在香港中路和燕儿岛路交界的地方，很小的一个早餐店。</p>
-<h3 id="八大关"><a href="#八大关" class="headerlink" title="八大关"></a>八大关</h3><p>青岛的各种大大小小的路，十字路口真的非常多，导致公交一会就要等红绿灯了，不过总体速度还行，还有不少电动公交车，体验非常棒。从宾馆到武胜关公交站花了些时间，比约定的时间晚了几分钟，结果H同学比我还晚，在公交站等了几分钟。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/traveling-at-qingdao-2/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1325,21 +1334,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">171</span>
+              <span class="site-state-item-count">173</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">144</span>
+              <span class="site-state-item-count">145</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

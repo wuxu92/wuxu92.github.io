@@ -235,6 +235,238 @@
             
               
                 
+                <a class="post-title-link" href="/array-and-pointer/" itemprop="url">
+                  C数组和指针
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-14T12:34:50+08:00" content="2015-12-14">
+              2015-12-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><img src="/images/clang.gif" alt=""><br>尽管现在很多的高级语言，脚本语言提供了非常非常方便实用的数组，队列(list)，字典（map）等数据结构，但是理解C语言的数组和指针是掌握这些高级数据结构的基础。即使不经常写底层的数组，也应该熟练掌握。</p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>数组的初始化比较简单不罗嗦了，这里介绍一下数组的指定项目初始化方法，这是c99添加的特性，个人觉得很有意思。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 普通的初始化方法</span><br><span class="line">int year[6] = &#123;31, 28, 31, 30, 31, 30&#125;;</span><br><span class="line">// 可以在初始化时指定要初始化的项及其值如：</span><br><span class="line">int year[6] = &#123; [1] = 28, [3] = 30, 31, 30, [1] = 29&#125;;</span><br><span class="line">// 初始化结果为： [0, 29, 0, 30, 31, 30]</span><br></pre></td></tr></table></figure>
+<p>看起来还算好理解，就是指定下标对其赋值。某个指定赋值后的为指定项目用来对后续的元素初始化，未初始化的项会初始化为0（只要对数组进行了初始化就会把剩余的部分初始化为0，这是一般行为）。甚至可以对一项多次指定赋值，以最后一次为准。</p>
+<blockquote>
+<p>再提一次，花括号列表的形式只能用于初始化，不能用于对数组赋值。</p>
+</blockquote>
+<p>对数组指针使用sizeof的时候会计算到第一个 <code>\0</code> 处，常用 <code>sizeof arr / sizeof arr[0]</code> 计算数组的大小。但是实际上这样做可能会导致问题。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/array-and-pointer/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/c-bits/" itemprop="url">
+                  位运算
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-12T12:34:50+08:00" content="2015-12-12">
+              2015-12-12
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p><img src="/images/clang.gif" alt=""><br>C可以对变量的个别位进行操作，这在流行的其他高级语言中不太常见了，尤其是脚本语言很少有这样的能力了。位操作最常见的情景是设备控制的驱动程序，每一位都有特定的含义；数据的压缩与解压缩，数据加密解密等等。</p>
+<h2 id="基础：二进制数、位、字节"><a href="#基础：二进制数、位、字节" class="headerlink" title="基础：二进制数、位、字节"></a>基础：二进制数、位、字节</h2><p>这部分是计算机理论基础，只提一个有意思的点：一个字节通常包括8个位，不过C使用术语字节（byte)表示用于存放系统字符集的空间大小，所以一个C字节可能为8，9，16位或者其他的值。然而描述存储器芯片和数据传输率时使用的字节就是指8位字节。</p>
+<p>关于字符编码的原码，反码，补码的内容，不再赘述。</p>
+<h2 id="位运算符"><a href="#位运算符" class="headerlink" title="位运算符"></a>位运算符</h2><p>C提供位的<strong>逻辑运算符</strong>和<strong>移位运算符</strong>。</p>
+<h3 id="位逻辑运算符"><a href="#位逻辑运算符" class="headerlink" title="位逻辑运算符"></a>位逻辑运算符</h3><p>4个位运算符用于整型数据，位逻辑运算符与常规的逻辑运算符（&amp;&amp;, ||, ！）不一样，使用时不要把它们混淆了。常规的逻辑运算符是对整个操作数进行的，而位逻辑运算是针对数的某一位操作，而不影响其他位。</p>
+<ul>
+<li>取二进制反码，或者按位取反: <code>~</code> 将一个数的二进制表示形式按位取反。注意，~是一个操作符， <code>~val</code> 并不改变val的值，就像 <code>3*val</code> 不会改变val保存的值，该操作会返回一个操作的结果，用于赋值语句的右边。</li>
+<li>位与 <code>&amp;</code> 两个操作数按位与产生一个新值。两个操作数对应位都为1时，结果的那一位也为1，否则为0.</li>
+<li>位或 <code>|</code> 和 &amp;很像</li>
+<li>按位异或 <code>^</code> 对每一个位，如果操作数中的对应位有且只有一个为1，结果对应位也为1，都则结果对应位为0</li>
+</ul>
+<p>这四个操作符和 数值运算(+, -, *, /)一样可以与赋值符号（=）结合成一个赋值运算符（&amp;=, |=, ^=）。其中取反常写为 <code>val = ~val;</code>。</p>
+<h3 id="掩码、打开位"><a href="#掩码、打开位" class="headerlink" title="掩码、打开位"></a>掩码、打开位</h3><p>掩码常用在如子网掩码的名称中，掩码是某些位设为1而某些位设为0的位组合。使用掩码与<code>&amp;</code>操作符的目的是将特定位之外的所有位都设置为0.</p>
+<p>与使用掩码相对的是打开某个为，使用 <code>|</code> 操作符与掩码将某些位保持不变而使某些位都设置位1。</p>
+<p>其他还有关闭位（ f &amp;= ~mask），转置位（f ^= mask）都是很常用的。</p>
+<h3 id="查看某一位的值"><a href="#查看某一位的值" class="headerlink" title="查看某一位的值"></a>查看某一位的值</h3><p>用 &amp; 实现查看变量某一个位的值.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int i = 123;</span><br><span class="line">int mask = 0b01000000;		// 01000000</span><br><span class="line">if ( (i &amp; mask ) == mask)</span><br><span class="line">	puts(&quot;bit 6 of i is 1&quot;);</span><br></pre></td></tr></table></figure>
+<p>这种方法中，为避免信息漏过边界，位掩码至少应该与其所屏蔽的值具有相同的宽度。</p>
+<h2 id="移位运算"><a href="#移位运算" class="headerlink" title="移位运算"></a>移位运算</h2><p>移位运算包括左移和右移两种。</p>
+<p>左移运算 <code>&lt;&lt;</code> 将左侧操作数的值的每一位都向左移动，移动的位数由右侧操作数指定。空出的位用 0 填充，并且丢弃移出做操作数末端的未。移位操作返回一个新值而不改变其操作数。如 <code>i &lt;&lt; 2</code> 返回i左移2位的结果，i的值不变。</p>
+<p>右移运算 <code>&gt;&gt;</code> 将做操作数的每位向右移动。丢弃移出左侧操作数右端的位。对于无符号类型（unsigned），使用0填充左端空出的位，对于有符号数，结果依赖于机器，可能用0填充，可能用符号位填充（常用符号位填充）。</p>
+<p>移位运算是高校的对2的幂的乘法和除法，在编译器的优化中常用移位运算和加法运算组合来优化乘法运算，比如 <code>i*33</code> 可以被优化为 <code>i &lt;&lt; 5 + i</code> 这样子。这些优化取决于编译器实现，对程序员是透明的。</p>
+<p>移位运算对于按位存储数据的变量很有用有用，比如颜色常保存为 <code>0xff00ff00</code> 这样子，使用移位与 <code>&amp;</code> 操作符可以方便的取得 rgba 对应的数值。</p>
+<h2 id="位字段"><a href="#位字段" class="headerlink" title="位字段"></a>位字段</h2><p>位字段在之前的一片介绍链接的部分，ELF的结构体中使用过。这种技术在网络协议中也经常会使用。</p>
+<p>位字段是一个singed int 或者 unsigned int 中一组相邻的位。位字段<strong>由一个结构声明建立</strong>，该结构声明为每一个字段提供<strong>标签</strong>，并决定<strong>字段的宽度</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct &#123;</span><br><span class="line">	unsigned int autfd: 1;</span><br><span class="line">	unsigned int bldfc: 1;</span><br><span class="line">	unsigned int undln: 1;</span><br><span class="line">	unsigned int itals: 1;</span><br><span class="line">&#125; prnt</span><br><span class="line"></span><br><span class="line">prnt.autfd = 1;</span><br><span class="line">prnt.itals = 0;</span><br></pre></td></tr></table></figure>
+<p>该定义使prnt包含4个1位的字段，可以像使用普通结构成员运算符一样将值赋给单独的字段。变量prnt被存储在一个int大小的存储单元中，且只有4位被使用。</p>
+<p>带有位字段的结构允许在单个单元中存储多项设置。但是要确保设置的值没有超出字段的容量。</p>
+<p>如果声明的结构中总的字段数超过了一个unsigned  int 大小，那么将会使用下一个unsigned int存储位置。<strong>不允许</strong>一个字段跨越两个存储位置的边界，如果有这种情况编译器将自动地移位字段定义，使字段按照unsigned int边界对齐。这样会在前一个存储位置留下一个未命名的洞。</p>
+<p>可以使用<strong>未命名字段填充未命名的洞</strong>。使用一个宽度为0的未命名字段迫使下一个字段与下一个存储位置对齐。也就是说位字段结构成员的大小没有什么限制，只要注意边界对齐就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct &#123;</span><br><span class="line">	unsigned int field1	: 3;</span><br><span class="line">	unsigned int 		: 1;	// leave a hole</span><br><span class="line">	unsigned int field2	: 3;</span><br><span class="line">	unsigned int		: 0;	// hole for align</span><br><span class="line">	unsigned int field	: 5;</span><br><span class="line">&#125; staff;</span><br></pre></td></tr></table></figure>
+<p>一个可能的问题是字段在int中的顺序依赖于机器实现，有的机器上从左到右存储，在另一些机器则是从右向左，所以位字段往往难以移植，典型地，把他们用于不可移植的用途，例如按照某个特定硬件设备所使用的确切格式来存放数据。</p>
+<p>位字段和位运算符是对于同类编程问题的两种可选择的方法，<strong>可以使用其中任何一种</strong>，通常来说位字段的方法比较好理解，使用也更加方便。</p>
+<p>完？</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/linux-shortcuts-and-commands/" itemprop="url">
                   Linux Shortcuts And Commands
                 </a>
@@ -1164,259 +1396,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/linux-ip-command/" itemprop="url">
-                  Linux ip/ss 命令详解
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-04T12:34:50+08:00" content="2015-12-04">
-              2015-12-04
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p><img src="/images/linux-logo.png" alt=""><br>CentOS 7正式废弃了很多旧的工具包，比如历史悠久的ifconfig, netstat等网络相关的命令，还有locate这些命令也没有了。新的系统使用ip, ss, net等命令替代了之前的网络操作命令。</p>
-<p>新的命令设计的比较复杂，其帮助文档看起来都头晕，这里记录一下一下常见的操作。</p>
-<h2 id="ip-命令"><a href="#ip-命令" class="headerlink" title="ip 命令"></a>ip 命令</h2><p>没有了ifconfig命令之后，ip命令是其替代品。ip命令的作用如下：</p>
-<blockquote>
-<p>ip - show / manipulate routing, devices, policy routing and tunnels</p>
-</blockquote>
-<p>命令使用格式如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip [ OPTIONS ] OBJECT &#123; COMMAND | help &#125;</span><br><span class="line">       ip [ -force ] -batch filename</span><br><span class="line">       OBJECT := &#123; link | addr | addrlabel | route | rule | neigh | ntable | tunnel | tuntap |</span><br><span class="line">               maddr | mroute | mrule | monitor | xfrm | netns | l2tp | tcp_metrics &#125;</span><br><span class="line">       OPTIONS := &#123; -V[ersion] | -s[tatistics] | -r[esolve] | -f[amily] &#123; inet | inet6 | ipx |</span><br><span class="line">               dnet | link &#125; | -o[neline] &#125;</span><br></pre></td></tr></table></figure>
-<p>可以看到二级命令非常多，很难记。最常用的是 <code>ip addr</code> 也可以简写为 <code>ip a</code>（ip命令中更有很多这种简写方法）。操作网络地址相关内容，比如列出ip地址，添加ip地址，删除ip等待。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip addr show</span><br><span class="line"># Only show TCP/IP IPv4</span><br><span class="line">ip -4 a</span><br><span class="line"># Only show TCP/IP IPv4</span><br><span class="line">ip -6 a</span><br><span class="line"></span><br><span class="line"># show eth0 interface</span><br><span class="line">ip a show eth0</span><br><span class="line"></span><br><span class="line"># show on running interface</span><br><span class="line">ip link ls up</span><br><span class="line"></span><br><span class="line"># add/del ip address</span><br><span class="line">ip a add &#123;ip_addr/mask&#125; dev &#123;intereface&#125; [label label_name] // 可选的设置一个label</span><br><span class="line">ip addr add 192.168.0.123/24 dev eth0</span><br><span class="line"></span><br><span class="line">#remove ip address</span><br><span class="line">ip a del &#123;ip_addr&#125; dev &#123;interface&#125;</span><br><span class="line">ip addr del 192.168.0.123 dev eth0</span><br><span class="line"></span><br><span class="line"># flush ip address; delete all the IP addresses matches</span><br><span class="line"># 可以flush一个地址或者一个label标记的所有地址</span><br><span class="line">ip a flush label &quot;label&quot;</span><br><span class="line">ip -s a f to 192.168.2.0/24   // -s 输出统计信息 to limit to given IP address/prefix</span><br><span class="line"></span><br><span class="line"># up or down a device</span><br><span class="line">ip link set dev &#123;interface&#125; &#123;up|down&#125;</span><br><span class="line">ip l set dev eth0 down</span><br></pre></td></tr></table></figure>
-<p><code>ip link set</code> 命令可以设置很多的值，看一下自动补全提示：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ip l set &lt;tab&gt;</span><br><span class="line">address     -- specify unicast link layer (MAC) ad</span><br><span class="line">arp         -- change ARP flag on device</span><br><span class="line">brd         -- specify broadcast link layer (MAC) </span><br><span class="line">broadcast   -- specify broadcast link layer (MAC) </span><br><span class="line">dev         -- specify device</span><br><span class="line">down        -- change state do down</span><br><span class="line">dynamic     -- change DYNAMIC flag on device</span><br><span class="line">mtu         -- specify maximum transmit unit</span><br><span class="line">multicast   -- change MULTICAST flag on device</span><br><span class="line">name        -- change name of device</span><br><span class="line">peer        -- specify peer link layer (MAC) addre</span><br><span class="line">promisc     -- set promiscious mode</span><br><span class="line">txqlen      -- specify length of transmit queue</span><br><span class="line">txqueuelen  -- specify length of transmit queue</span><br><span class="line">up          -- change state to up</span><br></pre></td></tr></table></figure>
-<p>一般用法都是 <code>ip link set {cmd} dev {interface}</code>。比如设置mtu：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip link set mtu 3000 dev eth0</span><br></pre></td></tr></table></figure>
-<p>ip命令还能查看与邻近节点（neighbour）的可达性：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip n show         // same as ip neigh show</span><br><span class="line">ip n add &#123;ip_addr&#125; lladdr &#123;MAC/LLADDRESS&#125; dev &#123;interface&#125; nud &#123;perm|noarp|stale|reachable&#125;</span><br><span class="line">ip n del &#123;ip_addr&#125; dev eth0</span><br></pre></td></tr></table></figure>
-<p>会输出附近节点的arp信息。可以手动添加这些arp条目。</p>
-<p>路由表信息也由ip命令提供，使用route/r 子命令操作：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># list route table</span><br><span class="line">ip r</span><br><span class="line">ip r list 192.168.0.0/24</span><br><span class="line">ip r add &#123;default&#125; &#123;network/mask&#125; dev &#123;interface&#125;</span><br><span class="line">ip r add (default) &#123;network/mask&#125; via &#123;gateway_ip&#125;</span><br><span class="line">ip r del default</span><br><span class="line">ip r del network/mask dev wth0</span><br></pre></td></tr></table></figure>
-<p>ip命令远比上面介绍的部分复杂，这里不能一一列出了，使用一个带tab补全的终端非常有用，另外虽然ifconfig命令没有了，但是基于图形用户界面的 <code>nmtui</code> (network management text user interface) 还是预装了，可以用它来配置ip/DNS等。如果没有安装，使用下面的命令安装： <code>sudo yum install NetworkManager-tui -y</code>。</p>
-<h2 id="ss-命令"><a href="#ss-命令" class="headerlink" title="ss 命令"></a>ss 命令</h2><p>ss是另一个很重要的工具，ss是socket statistics的缩写，用于代替之前使用netstat命令。ss能够显示比netstat更多的信息并且速度也更快。netstat是从 /proc 下的文件中读取信息再整理显示的，而 ss 命令直接从内核空间获取信息。</p>
-<p>ss的man页面介绍如下：</p>
-<blockquote>
-<p>ss - another utility to investigate sockets</p>
-</blockquote>
-<p>直接执行 ss 会列出当前所有已建立的非监听的（non-listening）连接，一个常用的参数 <code>-ntl</code>，参数意义为：</p>
-<ul>
-<li><code>-n</code> –numeric，显示端口数字而不是服务名字，比如显示 80 而不是 http</li>
-<li><code>-t</code> –tcp， 即显示 tcp 套接字，同理常用 -u 表示 udo 套接字</li>
-<li><code>-l</code> –listening，也好理解，默认不显示监听的套接字，这个参数指明只显示监听中的套接字</li>
-<li><code>-4</code> –ipv4也是常用的，在查看服务监听状态时，常指定 -4 或者 -6 结果更加清晰</li>
-<li><code>-p</code> –processes,显示使用这个套接字的进程id，<strong>这个参数需要 sudo 权限</strong></li>
-<li><code>-s</code> –summary，显示套接字使用的统计信息</li>
-<li><code>-o</code> –options，显示相关的时间信息</li>
-</ul>
-<p>还可以更具套接字状态过滤输出，比如下面的命令：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ss -t4 state established</span><br><span class="line">ss -t4 state time-wait</span><br></pre></td></tr></table></figure>
-<p>连接的状态有很多中，常用如下：</p>
-<ol>
-<li>established</li>
-<li>syn-sent</li>
-<li>syn-recv</li>
-<li>time-wait</li>
-<li>closed</li>
-<li>closing</li>
-<li>all</li>
-<li>connected</li>
-</ol>
-<p>还可以通过指定dport和sport过滤输出：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 还可以使用 or，666</span><br><span class="line">ss -nt dst :443 or dst :80</span><br><span class="line">// dport 大于1024的连接</span><br><span class="line">ss -nt dst gt :1024</span><br></pre></td></tr></table></figure>
-<p>当然更常用的过滤是 grep 啦，哈哈哈。</p>
-<p>要监控网络流量的动态，可以用top相关命令，也可以用watch工具：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">watch -n 1 &quot;ss -t4&quot;</span><br></pre></td></tr></table></figure>
-<p>这样每秒中会刷新一次ss的结果。</p>
-<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
-<li><a href="http://www.cyberciti.biz/faq/linux-ip-command-examples-usage-syntax/" target="_blank" rel="noopener">http://www.cyberciti.biz/faq/Linux-ip-command-examples-usage-syntax/</a></li>
-<li><a href="http://www.binarytides.com/linux-ss-command/" target="_blank" rel="noopener">http://www.binarytides.com/Linux-ss-command/</a></li>
-</ul>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/compile-and-install-php7/" itemprop="url">
-                  编译安装PHP7正式版
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-03T12:34:50+08:00" content="2015-12-03">
-              2015-12-03
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p><img src="/images/php.jpg" alt=""></p>
-<p>PHP 7正式版终于在今天发布了，<del>虽然在官网 <a href="php.net">php.net</a> 还没有挂出链接（原来是因为中国时区比较早，现在已经有下载了），但是在鸟哥的微信公众号中给出来下载地址</del>，在github上也有了 7.0.0  的release。不知道为什么github上面的状态一直显示 build error。但是下载源文件编译是成功的。基本的安装步骤和之前编译安装 beta1 是一样的。</p>
-<p>官方的下载地址： <a href="http://www.php.net/downloads.php" target="_blank" rel="noopener">http://www.php.net/downloads.php</a></p>
-<p>可以参考之前的文章： <a href="http://wuxu92.github.io/compile-and-install-php7-beta1/" target="_blank" rel="noopener">http://wuxu92.github.io/compile-and-install-php7-beta1/</a> 唯一的区别是正式版没有了 <code>--with-MySQL</code>  选项，因为正式版已经没有旧的mysql函数的支持了，需要使用 mysqli 或者 PDO 替代早已不建议使用的mysql函数。</p>
-<p>下载链接：  <a href="http://cn2.php.net/get/php-7.0.0.tar.gz/from/this/mirror" target="_blank" rel="noopener">http://cn2.php.net/get/php-7.0.0.tar.gz/from/this/mirror</a></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/compile-and-install-php7/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1463,21 +1442,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">171</span>
+              <span class="site-state-item-count">173</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">144</span>
+              <span class="site-state-item-count">145</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

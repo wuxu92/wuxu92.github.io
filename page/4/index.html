@@ -235,6 +235,211 @@
             
               
                 
+                <a class="post-title-link" href="/intro-of-sass/" itemprop="url">
+                  Sass介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-04-04T15:38:41+08:00" content="2016-04-04">
+              2016-04-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>前面几天一直忙着改论文，终于捯饬一篇出来投出去了，接下来可以有一段时间休息了。可以把这几天玩的东西整理整理了。这段时间主要玩的东西是Sass和Docker。其实这两样在以前都有一点点接触过，Sass和LESS大概在学CSS之后不久就有了解，只是觉得还要装一个编译器挺麻烦的，还不如直接写CSS；Docker也是大概大四的时候接触到，当时在服务器上装了一下，可是由于当时的网络实在不好，拉取镜像总是很慢或者失败，就没玩了。</p>
+<p>这一篇主要记录一下Sass的简单认识。我们知道Sass是CSS的一个预处理器，也可以看作是一种更强大的CSS扩展编程语言，其官网 <a href="http://Sass-lang.com/" target="_blank" rel="noopener">http://Sass-lang.com/</a> 可以看出来Sass的目标是一种编程语言，让CSS的编写更加方便，更加像一门编程语言。其实还有一种也很常见的CSS预处理语言： <a href="http://lesscss.org/" target="_blank" rel="noopener">LESS</a>。LESS 也被广泛使用，LESS的特性是可以直接被浏览器使用，而LESS文件通常比编译出来的CSS文件小很多，这可以带来一定的性能优势，但是需要在客户端解析，这又导致一定的性能开销。关于LESS和Sass有很多比较，就不啰嗦了，反正我只玩了一下Sass，对LESS不甚了解。据说新版的Bootstrap会转向Sass，看来Sass是一个不错的选择。</p>
+<h2 id="安装和使用"><a href="#安装和使用" class="headerlink" title="安装和使用"></a>安装和使用</h2><p>这类预处理工具多由ruby开发，实在的，现在很多工具类应用都用ruby或者nodejs开发了，尤其是面向开发者使用工具。ruby和nodejs有很大的优势，倒是python见得少了些。要安装Sass编译器需要先安装ruby，然后用gem安装Sass。在Linux下面还是比较方便的，在Windows下就有些麻烦了，并且国内的网对gem库并不那么友好，常需要切到淘宝的镜像才能快速解决。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/intro-of-sass/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/php-iconv-ignore-option/" itemprop="url">
+                  php字符集转转换失败的问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-03-30T17:58:03+08:00" content="2016-03-30">
+              2016-03-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>今天科委的项目有子系统报错说有几条数据上传不了，各种排查终于搞好了。</p>
+<p>首先是ESB的服务器他们重启了，然后IP没配对，端口没配对，我们curl一直是失败的，导致我们的nginx返回 504 gateway timeout。这个问题之前<a href="/php-fpm-504-error/">有一篇文章</a>已经说过了。php执行curl的时间超过了nginx配置的响应时间，就会报 upstream time out 然后给客户端返回 504 。</p>
+<p>等ESB服务起好了，深圳那边有一条数据始终传不上了，诡异的是ESB根本没有收到数据。我把我们转发的PHP的日志记录改了好多次，终于发现是在某一步上传的内容被置空了，所以在我们转发的时候，其实并没有把子系统的数据发到 ESB。</p>
+<p>调试了一下，发现是 iconv 执行失败了。 不同的系统对接麻烦的就是字符集的问题，我们的项目一直都是用 UTF-8的，可是很多的java项目都使用GBK，东华的ESB系统也是使用GBK编码的，所以我们收到数据后要执行一次字符集转换才能转发到ESB：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">$xml = iconv(<span class="string">'UTF-8'</span>, <span class="string">'GBK'</span>, $xml);</span><br></pre></td></tr></table></figure>
+<p>就是这一步，iconv转换失败的时候会返回false而不是报错，也没有日志记录，所以 $xml 被置为 false 了。。。。。至于为什么会失败，我也不知道，应该是有某种特殊编码把，有一个办法可以跳过这个转换失败,就是在目标字符集加一个选项：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">$xml = iconv(<span class="string">'UTF-8'</span>, <span class="string">'GBK//IGNORE'</span>, $xml);</span><br></pre></td></tr></table></figure>
+<p>领略到我大 PHP 神奇的方法调用了么~~~</p>
+<p>参考：</p>
+<ul>
+<li><a href="http://php.net/manual/en/function.iconv.php" target="_blank" rel="noopener">http://php.net/manual/en/function.iconv.php</a></li>
+</ul>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/jvm-class-load-mechanism/" itemprop="url">
                   Java虚拟机类加载机制
                 </a>
@@ -1008,261 +1213,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/intro-of-https/" itemprop="url">
-                  了解https通信
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-03-05T14:29:56+08:00" content="2016-03-05">
-              2016-03-05
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/network/" itemprop="url" rel="index">
-                    <span itemprop="name">network</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="https和SSL介绍"><a href="#https和SSL介绍" class="headerlink" title="https和SSL介绍"></a>https和SSL介绍</h2><p>对于http和https，一般人都不太陌生，随着互联网的发展，这几年越来越的站点开始进行全站https化。</p>
-<p>早期只有牵涉到网上购物、网上银行这样的站点才会开启https，现在随着硬件性能的不断提升，全站起用https的开销已经可以接受了，所以最近两年，越来越多的大站开始向全站https过渡。比如前段时间去参加的infoq的一个百度技术分享会，就介绍了百度在全站转向https中的经验；像知乎也开了全站https。一般来说开启https的站点给用户一种放心的感觉，Chrome地址栏那一把绿色的锁在很多人心中就代表“安全”。</p>
-<p>https简单地说就是http和ssl/tls的结合，所以https一般看作是<strong>http over ssl, http over tls</strong>或 <strong>http secure</strong>。http协议我们知道是一个不加密的，在计算机网络课程上一般都会进行详细的介绍，三次握手，四次挥手这些都比较熟悉了。但由于https传输的内容是不加密的，在网络上的嗅探、抓包工具抓到的数据可以直接被中间人解析甚至篡改！最典型就是无耻运营商流量劫持，可以说很多的站点趋向于全站https改造就是为了解决无法无天的运营商劫持问题。</p>
-<p>ssl协议定义在应用程序协议（http,ftp等）和TCP/IP 协议之间，提供数据安全性分层的机制，SSL为TCP/IP连接提供数据加密、服务器认证、消息完整性验证以及可选的客户机认证。它的主要作用好似提高应用程序之间数据的安全性，对传送的数据进行加密和隐藏，确保数据在传送中不被改变。</p>
-<h3 id="ssl协议"><a href="#ssl协议" class="headerlink" title="ssl协议"></a>ssl协议</h3>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/intro-of-https/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/php-7-reference-cn/" itemprop="url">
-                  整理-PHP7新特性与改动
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-03-02T20:49:16+08:00" content="2016-03-02">
-              2016-03-02
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/lang/" itemprop="url" rel="index">
-                    <span itemprop="name">lang</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <blockquote>
-<p>整理来自英文版：<a href="https://github.com/tpunt/PHP7-Reference" target="_blank" rel="noopener">https://github.com/tpunt/PHP7-Reference</a> 和官方迁移文档<br>整理的中文版本： <a href="https://github.com/wuxu92/PHP7-Reference-cn" target="_blank" rel="noopener">https://github.com/wuxu92/PHP7-Reference-cn</a></p>
-</blockquote>
-<p>PHP 7 在 <a href="http://php.net/archive/2015.php#id2015-12-03-1" target="_blank" rel="noopener">2015年12月3日</a> 发布了. 它带来了大量的新特性，改变和一些不向后兼容的变更（backwards compatibility breakages），这些改变概述如下：</p>
-<p><strong><a href="/php-7-reference-cn/#u6027_u80FD">性能</a></strong></p>
-<p><strong><a href="/php-7-reference-cn/#u7279_u6027">特性</a></strong></p>
-<ul>
-<li><a href="/php-7-reference-cn/#u7EC4_u5408_u6BD4_u8F83_u64CD_u4F5C_u7B26">组合比较操作符</a></li>
-<li><a href="/php-7-reference-cn/#u7A7A_u5F15_u7528_u5408_u5E76_u64CD_u4F5C_u7B26">空指针合并操作符</a></li>
-<li><a href="/php-7-reference-cn/#u6807_u91CF_u7C7B_u578B_u58F0_u660E">标量类型声明</a></li>
-<li><a href="/php-7-reference-cn/#u8FD4_u56DE_u503C_u7C7B_u578B_u58F0_u660E">返回值类型声明</a></li>
-<li><a href="/php-7-reference-cn/#u533F_u540D_u7C7B">匿名类</a></li>
-<li><a href="/php-7-reference-cn/#Unicode_u7F16_u7801_u70B9_u8F6C_u4E49_u8BED_u6CD5">Unicode编码点转移语法</a></li>
-<li><a href="/php-7-reference-cn/#Closure_3A_3Acall_28_29">闭包 <code>call()</code> 方法</a></li>
-<li><a href="/php-7-reference-cn/#u5E26_u8FC7_u6EE4_u7684_unserialize_28_29">带过滤的 <code>unserialize()</code></a></li>
-<li><a href="/php-7-reference-cn/#IntlChar__u7C7B"><code>IntlChar</code> 类</a></li>
-<li><a href="/php-7-reference-cn/#u9884_u671F">期望</a></li>
-<li><a href="/php-7-reference-cn/#Group_use_Declarations">组和 <code>use</code> 声明</a></li>
-<li><a href="/php-7-reference-cn/#u751F_u6210_u5668_u8FD4_u56DE_u8868_u8FBE_u5F0F">生成器返回表达式</a></li>
-<li><a href="/php-7-reference-cn/#u751F_u6210_u5668_u59D4_u6258">生成器委托</a></li>
-<li><a href="/php-7-reference-cn/#u4F7F_u7528_intdiv_28_29__u505A_u6574_u6570_u9664_u6CD5">整形除使用 <code>intdiv()</code></a></li>
-<li><a href="/php-7-reference-cn/#session_start_28_29__u9009_u9879"><code>session_start()</code> 参数</a></li>
-<li><a href="/php-7-reference-cn/#preg_replace_callback_array_28_29__u51FD_u6570"><code>preg_replace_callback_array()</code> 函数</a></li>
-<li><a href="/php-7-reference-cn/#CSPRNG_uFF08_u5BC6_u7801_u5B66_u5B89_u5168_u4F2A_u968F_u673A_u6570_u6784_u5EFA_u5668_uFF09_u51FD_u6570">CSPRNG 函数</a></li>
-<li><a href="/php-7-reference-cn/#u652F_u6301_define_28_29__u5B9A_u4E49_u6570_u7EC4_u5E38_u91CF">支持 <code>define()</code> 定义数组常量</a></li>
-<li><a href="/php-7-reference-cn/#u53CD_u5C04_u589E_u5F3A">新增的反射类</a></li>
-</ul>
-<p><strong><a href="/php-7-reference-cn/#u6539_u53D8">改动</a></strong></p>
-<ul>
-<li><a href="/php-7-reference-cn/#u653E_u677E_u4FDD_u7559_u5B57_u7684_u9650_u5236">放松保留字的限制</a></li>
-<li><a href="/php-7-reference-cn/#u7EDF_u4E00_u53D8_u91CF_u8BED_u6CD5">同一变量格式</a></li>
-<li><a href="/php-7-reference-cn/#u5F15_u64CE_u4E2D_u7684_u5F02_u5E38">引擎中的异常</a></li>
-<li><a href="/php-7-reference-cn/#u53EF_u629B_u51FA_u7684_u63A5_u53E3">可抛出的接口</a></li>
-<li><a href="/php-7-reference-cn/#u6574_u6570_u8BED_u4E49">整形语义</a></li>
-<li><a href="/php-7-reference-cn/#JSOND_u66FF_u4EE3_u4E86JSON_u6269_u5C55">JSON 扩展替代 JSOND</a></li>
-<li><a href="/php-7-reference-cn/#ZPP__u6EA2_u51FA_u65F6_u5931_u8D25">ZPP Failure on Overflow</a></li>
-<li><a href="/php-7-reference-cn/#u4FEE_u6B63_foreach_28_29__u7684_u884C_u4E3A">修复 <code>foreach()</code>的行为</a></li>
-<li><a href="/php-7-reference-cn/#u4FEE_u6539_list_28_29__u7684_u884C_u4E3A">修改 <code>list()</code>的行为</a></li>
-<li><a href="/php-7-reference-cn/#u6539_u53D8_u9664_u6570_u4E3A0_u7684_u8BED_u4E49">改变被0整除的语义</a></li>
-<li><a href="/php-7-reference-cn/#u4FEE_u590D_u81EA_u5B9A_u4E49session_handler_u7684_u8FD4_u56DE_u503C">修复自定义Session Handler返回值</a></li>
-<li><a href="/php-7-reference-cn/#u8FD4_u56DE_u53EA_u7528PHP_4_u98CE_u683C_u7684_u6784_u9020_u51FD_u6570">标记PHP 4风格的构造函数过期</a></li>
-<li><a href="/php-7-reference-cn/#u79FB_u9664date-timezone_u7684_u8B66_u544A">移除 date.timezone 警告</a></li>
-<li><a href="/php-7-reference-cn/#u53BB_u9664_u53EF_u66FF_u4EE3_u7684PHP_u6807_u7B7E">移除可替换PHP标签</a></li>
-<li><a href="/php-7-reference-cn/#u79FB_u9664Switch_u8BED_u53E5_u4E2D_u7684_u591A_u9ED8_u8BA4_u5757">移除Switch语句中的多默认块</a></li>
-<li><a href="/php-7-reference-cn/#u79FB_u9664_u53C2_u6570_u5217_u8868_u4E2D_u91CD_u540D_u53C2_u6570_u7684_u91CD_u5B9A_u4E49">移除重复名字参数的重定义</a></li>
-<li><a href="/php-7-reference-cn/#u79FB_u9664_u5DF2_u7ECFDead_u7684_u670D_u52A1_u5668API">移除Dead Server APIs</a></li>
-<li><a href="/php-7-reference-cn/#u79FB_u9664_u6570_u5B57_u5B57_u7B26_u4E32_u7684_u5341_u516D_u8FDB_u5236_u652F_u6301">移除数字字符串中的十六进制支持</a></li>
-<li><a href="/php-7-reference-cn/#u79FB_u9664_u8FC7_u671F_u7684_u529F_u80FD">移除已标记过期的函数</a></li>
-<li><a href="/php-7-reference-cn/#Reclassification_and_Removal_of_E_STRICT_Notices">再分级与移除 E_STRICT 通知</a></li>
-<li><a href="/php-7-reference-cn/#u4E3Apassword_hash_28_29_u51FD_u6570_u8BBE_u7F6E_u76D0_u7684_u9009_u9879_u8FC7_u671F">反对使用<code>password_hash()</code>的盐选项</a></li>
-<li><a href="/php-7-reference-cn/#u65E0_u6548_u7684_u516B_u8FDB_u5236_u5B57_u9762_u91CF_u7684_u9519_u8BEF">无效的八进制字面量错误</a></li>
-<li><a href="/php-7-reference-cn/#substr_28_29_u8FD4_u56DE_u503C_u4FEE_u6539"><code>substr()</code> 返回值改动</a></li>
-</ul>
-<p><strong><a href="/php-7-reference-cn/#FAQ">FAQ</a></strong></p>
-<ul>
-<li><a href="/php-7-reference-cn/#PHP_6_u53D1_u751F_u4E86_u4EC0_u4E48">PHP 6发生了什么?</a></li>
-</ul>
-<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>毫无争议，PHP 7带来的最大的变化就是极大的性能提升，这得益于对Zend引擎的重构，新的引擎使用了更加紧凑的数据结构和更少的堆分配/回收操作。</p>
-<p>在实际项目使用中，性能的提升效果不是固定的，虽然很多应用在使用PHP 7之后活的了超过100%的性能加速，同时还只使用更少的内存消耗！</p>
-<p>重构后的代码基础也为将来的优化（比如JIT编译）提供了更多的可能，所以，可以预计在接下来的PHP版本仍然会看到不错的性能提升。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/php-7-reference-cn/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1309,21 +1259,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">171</span>
+              <span class="site-state-item-count">173</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">144</span>
+              <span class="site-state-item-count">145</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
