@@ -207,11 +207,6 @@
 
     
     
-      
-      
-
-      
-    
 
     
       
@@ -256,8 +251,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
                   </a>
                 </span>
 
@@ -463,8 +458,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
                   </a>
                 </span>
 
@@ -506,6 +501,135 @@
               阅读全文 &raquo;
             </a>
           </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/c-bits/" itemprop="url">
+                  位运算
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-12T12:34:50+08:00" content="2015-12-12">
+              2015-12-12
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p><img src="/images/clang.gif" alt=""><br>C可以对变量的个别位进行操作，这在流行的其他高级语言中不太常见了，尤其是脚本语言很少有这样的能力了。位操作最常见的情景是设备控制的驱动程序，每一位都有特定的含义；数据的压缩与解压缩，数据加密解密等等。</p>
+<h2 id="基础：二进制数、位、字节"><a href="#基础：二进制数、位、字节" class="headerlink" title="基础：二进制数、位、字节"></a>基础：二进制数、位、字节</h2><p>这部分是计算机理论基础，只提一个有意思的点：一个字节通常包括8个位，不过C使用术语字节（byte)表示用于存放系统字符集的空间大小，所以一个C字节可能为8，9，16位或者其他的值。然而描述存储器芯片和数据传输率时使用的字节就是指8位字节。</p>
+<p>关于字符编码的原码，反码，补码的内容，不再赘述。</p>
+<h2 id="位运算符"><a href="#位运算符" class="headerlink" title="位运算符"></a>位运算符</h2><p>C提供位的<strong>逻辑运算符</strong>和<strong>移位运算符</strong>。</p>
+<h3 id="位逻辑运算符"><a href="#位逻辑运算符" class="headerlink" title="位逻辑运算符"></a>位逻辑运算符</h3><p>4个位运算符用于整型数据，位逻辑运算符与常规的逻辑运算符（&amp;&amp;, ||, ！）不一样，使用时不要把它们混淆了。常规的逻辑运算符是对整个操作数进行的，而位逻辑运算是针对数的某一位操作，而不影响其他位。</p>
+<ul>
+<li>取二进制反码，或者按位取反: <code>~</code> 将一个数的二进制表示形式按位取反。注意，~是一个操作符， <code>~val</code> 并不改变val的值，就像 <code>3*val</code> 不会改变val保存的值，该操作会返回一个操作的结果，用于赋值语句的右边。</li>
+<li>位与 <code>&amp;</code> 两个操作数按位与产生一个新值。两个操作数对应位都为1时，结果的那一位也为1，否则为0.</li>
+<li>位或 <code>|</code> 和 &amp;很像</li>
+<li>按位异或 <code>^</code> 对每一个位，如果操作数中的对应位有且只有一个为1，结果对应位也为1，都则结果对应位为0</li>
+</ul>
+<p>这四个操作符和 数值运算(+, -, *, /)一样可以与赋值符号（=）结合成一个赋值运算符（&amp;=, |=, ^=）。其中取反常写为 <code>val = ~val;</code>。</p>
+<h3 id="掩码、打开位"><a href="#掩码、打开位" class="headerlink" title="掩码、打开位"></a>掩码、打开位</h3><p>掩码常用在如子网掩码的名称中，掩码是某些位设为1而某些位设为0的位组合。使用掩码与<code>&amp;</code>操作符的目的是将特定位之外的所有位都设置为0.</p>
+<p>与使用掩码相对的是打开某个为，使用 <code>|</code> 操作符与掩码将某些位保持不变而使某些位都设置位1。</p>
+<p>其他还有关闭位（ f &amp;= ~mask），转置位（f ^= mask）都是很常用的。</p>
+<h3 id="查看某一位的值"><a href="#查看某一位的值" class="headerlink" title="查看某一位的值"></a>查看某一位的值</h3><p>用 &amp; 实现查看变量某一个位的值.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int i = 123;</span><br><span class="line">int mask = 0b01000000;		// 01000000</span><br><span class="line">if ( (i &amp; mask ) == mask)</span><br><span class="line">	puts(&quot;bit 6 of i is 1&quot;);</span><br></pre></td></tr></table></figure>
+<p>这种方法中，为避免信息漏过边界，位掩码至少应该与其所屏蔽的值具有相同的宽度。</p>
+<h2 id="移位运算"><a href="#移位运算" class="headerlink" title="移位运算"></a>移位运算</h2><p>移位运算包括左移和右移两种。</p>
+<p>左移运算 <code>&lt;&lt;</code> 将左侧操作数的值的每一位都向左移动，移动的位数由右侧操作数指定。空出的位用 0 填充，并且丢弃移出做操作数末端的未。移位操作返回一个新值而不改变其操作数。如 <code>i &lt;&lt; 2</code> 返回i左移2位的结果，i的值不变。</p>
+<p>右移运算 <code>&gt;&gt;</code> 将做操作数的每位向右移动。丢弃移出左侧操作数右端的位。对于无符号类型（unsigned），使用0填充左端空出的位，对于有符号数，结果依赖于机器，可能用0填充，可能用符号位填充（常用符号位填充）。</p>
+<p>移位运算是高校的对2的幂的乘法和除法，在编译器的优化中常用移位运算和加法运算组合来优化乘法运算，比如 <code>i*33</code> 可以被优化为 <code>i &lt;&lt; 5 + i</code> 这样子。这些优化取决于编译器实现，对程序员是透明的。</p>
+<p>移位运算对于按位存储数据的变量很有用有用，比如颜色常保存为 <code>0xff00ff00</code> 这样子，使用移位与 <code>&amp;</code> 操作符可以方便的取得 rgba 对应的数值。</p>
+<h2 id="位字段"><a href="#位字段" class="headerlink" title="位字段"></a>位字段</h2><p>位字段在之前的一片介绍链接的部分，ELF的结构体中使用过。这种技术在网络协议中也经常会使用。</p>
+<p>位字段是一个singed int 或者 unsigned int 中一组相邻的位。位字段<strong>由一个结构声明建立</strong>，该结构声明为每一个字段提供<strong>标签</strong>，并决定<strong>字段的宽度</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct &#123;</span><br><span class="line">	unsigned int autfd: 1;</span><br><span class="line">	unsigned int bldfc: 1;</span><br><span class="line">	unsigned int undln: 1;</span><br><span class="line">	unsigned int itals: 1;</span><br><span class="line">&#125; prnt</span><br><span class="line"></span><br><span class="line">prnt.autfd = 1;</span><br><span class="line">prnt.itals = 0;</span><br></pre></td></tr></table></figure>
+<p>该定义使prnt包含4个1位的字段，可以像使用普通结构成员运算符一样将值赋给单独的字段。变量prnt被存储在一个int大小的存储单元中，且只有4位被使用。</p>
+<p>带有位字段的结构允许在单个单元中存储多项设置。但是要确保设置的值没有超出字段的容量。</p>
+<p>如果声明的结构中总的字段数超过了一个unsigned  int 大小，那么将会使用下一个unsigned int存储位置。<strong>不允许</strong>一个字段跨越两个存储位置的边界，如果有这种情况编译器将自动地移位字段定义，使字段按照unsigned int边界对齐。这样会在前一个存储位置留下一个未命名的洞。</p>
+<p>可以使用<strong>未命名字段填充未命名的洞</strong>。使用一个宽度为0的未命名字段迫使下一个字段与下一个存储位置对齐。也就是说位字段结构成员的大小没有什么限制，只要注意边界对齐就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct &#123;</span><br><span class="line">	unsigned int field1	: 3;</span><br><span class="line">	unsigned int 		: 1;	// leave a hole</span><br><span class="line">	unsigned int field2	: 3;</span><br><span class="line">	unsigned int		: 0;	// hole for align</span><br><span class="line">	unsigned int field	: 5;</span><br><span class="line">&#125; staff;</span><br></pre></td></tr></table></figure>
+<p>一个可能的问题是字段在int中的顺序依赖于机器实现，有的机器上从左到右存储，在另一些机器则是从右向左，所以位字段往往难以移植，典型地，把他们用于不可移植的用途，例如按照某个特定硬件设备所使用的确切格式来存放数据。</p>
+<p>位字段和位运算符是对于同类编程问题的两种可选择的方法，<strong>可以使用其中任何一种</strong>，通常来说位字段的方法比较好理解，使用也更加方便。</p>
+<p>完？</p>
+
+            
+          </span>
         
       
     </div>
@@ -653,135 +777,6 @@
             
               
                 
-                <a class="post-title-link" href="/c-bits/" itemprop="url">
-                  位运算
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-12T12:34:50+08:00" content="2015-12-12">
-              2015-12-12
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p><img src="/images/clang.gif" alt=""><br>C可以对变量的个别位进行操作，这在流行的其他高级语言中不太常见了，尤其是脚本语言很少有这样的能力了。位操作最常见的情景是设备控制的驱动程序，每一位都有特定的含义；数据的压缩与解压缩，数据加密解密等等。</p>
-<h2 id="基础：二进制数、位、字节"><a href="#基础：二进制数、位、字节" class="headerlink" title="基础：二进制数、位、字节"></a>基础：二进制数、位、字节</h2><p>这部分是计算机理论基础，只提一个有意思的点：一个字节通常包括8个位，不过C使用术语字节（byte)表示用于存放系统字符集的空间大小，所以一个C字节可能为8，9，16位或者其他的值。然而描述存储器芯片和数据传输率时使用的字节就是指8位字节。</p>
-<p>关于字符编码的原码，反码，补码的内容，不再赘述。</p>
-<h2 id="位运算符"><a href="#位运算符" class="headerlink" title="位运算符"></a>位运算符</h2><p>C提供位的<strong>逻辑运算符</strong>和<strong>移位运算符</strong>。</p>
-<h3 id="位逻辑运算符"><a href="#位逻辑运算符" class="headerlink" title="位逻辑运算符"></a>位逻辑运算符</h3><p>4个位运算符用于整型数据，位逻辑运算符与常规的逻辑运算符（&amp;&amp;, ||, ！）不一样，使用时不要把它们混淆了。常规的逻辑运算符是对整个操作数进行的，而位逻辑运算是针对数的某一位操作，而不影响其他位。</p>
-<ul>
-<li>取二进制反码，或者按位取反: <code>~</code> 将一个数的二进制表示形式按位取反。注意，~是一个操作符， <code>~val</code> 并不改变val的值，就像 <code>3*val</code> 不会改变val保存的值，该操作会返回一个操作的结果，用于赋值语句的右边。</li>
-<li>位与 <code>&amp;</code> 两个操作数按位与产生一个新值。两个操作数对应位都为1时，结果的那一位也为1，否则为0.</li>
-<li>位或 <code>|</code> 和 &amp;很像</li>
-<li>按位异或 <code>^</code> 对每一个位，如果操作数中的对应位有且只有一个为1，结果对应位也为1，都则结果对应位为0</li>
-</ul>
-<p>这四个操作符和 数值运算(+, -, *, /)一样可以与赋值符号（=）结合成一个赋值运算符（&amp;=, |=, ^=）。其中取反常写为 <code>val = ~val;</code>。</p>
-<h3 id="掩码、打开位"><a href="#掩码、打开位" class="headerlink" title="掩码、打开位"></a>掩码、打开位</h3><p>掩码常用在如子网掩码的名称中，掩码是某些位设为1而某些位设为0的位组合。使用掩码与<code>&amp;</code>操作符的目的是将特定位之外的所有位都设置为0.</p>
-<p>与使用掩码相对的是打开某个为，使用 <code>|</code> 操作符与掩码将某些位保持不变而使某些位都设置位1。</p>
-<p>其他还有关闭位（ f &amp;= ~mask），转置位（f ^= mask）都是很常用的。</p>
-<h3 id="查看某一位的值"><a href="#查看某一位的值" class="headerlink" title="查看某一位的值"></a>查看某一位的值</h3><p>用 &amp; 实现查看变量某一个位的值.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int i = 123;</span><br><span class="line">int mask = 0b01000000;		// 01000000</span><br><span class="line">if ( (i &amp; mask ) == mask)</span><br><span class="line">	puts(&quot;bit 6 of i is 1&quot;);</span><br></pre></td></tr></table></figure>
-<p>这种方法中，为避免信息漏过边界，位掩码至少应该与其所屏蔽的值具有相同的宽度。</p>
-<h2 id="移位运算"><a href="#移位运算" class="headerlink" title="移位运算"></a>移位运算</h2><p>移位运算包括左移和右移两种。</p>
-<p>左移运算 <code>&lt;&lt;</code> 将左侧操作数的值的每一位都向左移动，移动的位数由右侧操作数指定。空出的位用 0 填充，并且丢弃移出做操作数末端的未。移位操作返回一个新值而不改变其操作数。如 <code>i &lt;&lt; 2</code> 返回i左移2位的结果，i的值不变。</p>
-<p>右移运算 <code>&gt;&gt;</code> 将做操作数的每位向右移动。丢弃移出左侧操作数右端的位。对于无符号类型（unsigned），使用0填充左端空出的位，对于有符号数，结果依赖于机器，可能用0填充，可能用符号位填充（常用符号位填充）。</p>
-<p>移位运算是高校的对2的幂的乘法和除法，在编译器的优化中常用移位运算和加法运算组合来优化乘法运算，比如 <code>i*33</code> 可以被优化为 <code>i &lt;&lt; 5 + i</code> 这样子。这些优化取决于编译器实现，对程序员是透明的。</p>
-<p>移位运算对于按位存储数据的变量很有用有用，比如颜色常保存为 <code>0xff00ff00</code> 这样子，使用移位与 <code>&amp;</code> 操作符可以方便的取得 rgba 对应的数值。</p>
-<h2 id="位字段"><a href="#位字段" class="headerlink" title="位字段"></a>位字段</h2><p>位字段在之前的一片介绍链接的部分，ELF的结构体中使用过。这种技术在网络协议中也经常会使用。</p>
-<p>位字段是一个singed int 或者 unsigned int 中一组相邻的位。位字段<strong>由一个结构声明建立</strong>，该结构声明为每一个字段提供<strong>标签</strong>，并决定<strong>字段的宽度</strong>。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct &#123;</span><br><span class="line">	unsigned int autfd: 1;</span><br><span class="line">	unsigned int bldfc: 1;</span><br><span class="line">	unsigned int undln: 1;</span><br><span class="line">	unsigned int itals: 1;</span><br><span class="line">&#125; prnt</span><br><span class="line"></span><br><span class="line">prnt.autfd = 1;</span><br><span class="line">prnt.itals = 0;</span><br></pre></td></tr></table></figure>
-<p>该定义使prnt包含4个1位的字段，可以像使用普通结构成员运算符一样将值赋给单独的字段。变量prnt被存储在一个int大小的存储单元中，且只有4位被使用。</p>
-<p>带有位字段的结构允许在单个单元中存储多项设置。但是要确保设置的值没有超出字段的容量。</p>
-<p>如果声明的结构中总的字段数超过了一个unsigned  int 大小，那么将会使用下一个unsigned int存储位置。<strong>不允许</strong>一个字段跨越两个存储位置的边界，如果有这种情况编译器将自动地移位字段定义，使字段按照unsigned int边界对齐。这样会在前一个存储位置留下一个未命名的洞。</p>
-<p>可以使用<strong>未命名字段填充未命名的洞</strong>。使用一个宽度为0的未命名字段迫使下一个字段与下一个存储位置对齐。也就是说位字段结构成员的大小没有什么限制，只要注意边界对齐就可以了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct &#123;</span><br><span class="line">	unsigned int field1	: 3;</span><br><span class="line">	unsigned int 		: 1;	// leave a hole</span><br><span class="line">	unsigned int field2	: 3;</span><br><span class="line">	unsigned int		: 0;	// hole for align</span><br><span class="line">	unsigned int field	: 5;</span><br><span class="line">&#125; staff;</span><br></pre></td></tr></table></figure>
-<p>一个可能的问题是字段在int中的顺序依赖于机器实现，有的机器上从左到右存储，在另一些机器则是从右向左，所以位字段往往难以移植，典型地，把他们用于不可移植的用途，例如按照某个特定硬件设备所使用的确切格式来存放数据。</p>
-<p>位字段和位运算符是对于同类编程问题的两种可选择的方法，<strong>可以使用其中任何一种</strong>，通常来说位字段的方法比较好理解，使用也更加方便。</p>
-<p>完？</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/c-standard-file-io/" itemprop="url">
                   C 文件IO
                 </a>
@@ -803,8 +798,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
                   </a>
                 </span>
 
@@ -948,8 +943,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
                   </a>
                 </span>
 
@@ -1056,8 +1051,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
                   </a>
                 </span>
 
@@ -1132,6 +1127,120 @@
             
               
                 
+                <a class="post-title-link" href="/using-pointer-as-parameter/" itemprop="url">
+                  C中使用指针作为参数的一些问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-08T12:34:50+08:00" content="2015-12-08">
+              2015-12-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>这个问题其实比较常见了，但是经常会出错，就是C中函数的参数是值传递的，即使对于指针，也是值传递。很多高级语言在这一点是相通的。</p>
+<p>今天看到这个问题是在 c-fqa.com 上的一个问题，看下面的代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int *ip) &#123;</span><br><span class="line">	static int dummy = 5;	// static make dummy accessiable for whole file</span><br><span class="line">	ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int *ip;</span><br><span class="line">f(ip);</span><br></pre></td></tr></table></figure>
+<p>这时候ip指向哪里呢？实际上ip可能指向任何地址。因为ip没有初始化，传递给f函数调用的参数只是指针值的<strong>拷贝</strong>，对拷贝的修改并不会改变 ip 本身的内容。要达到本来的目的，需要传入 ip的地址，也就是指针的指针作为参数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int **ipp) &#123;</span><br><span class="line">	static int dummy = 5;	// if no static here, then ip can be anywhere, *ip can be any value</span><br><span class="line">	*ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int  *ip;</span><br><span class="line">f(&amp;ip);</span><br></pre></td></tr></table></figure>
+<p>另一种方法是把结果的指针作为函数的返回值，这是更常用的方式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int *f() &#123;</span><br><span class="line">	static int dummy = 5;</span><br><span class="line">	return &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line">int *ip = f();</span><br></pre></td></tr></table></figure>
+<p>另一个例子是，定制一个 malloc 的自己的版本：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void mymalloc(void *retp, size_t size) &#123;</span><br><span class="line">	retp = malloc(size);</span><br><span class="line">	if (retp == NULL) &#123;</span><br><span class="line">		fprintf(stderr, &quot;out of memory\n&quot;);</span><br><span class="line">		exit(EXIT_FAILURE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看起来没有什么问题，但是在调用这个函数时并不能正常工作，因为被调用函数接受的指针是调用者传入的指针的拷贝。</p>
+<blockquote>
+<p>C always uses pass by value. You can simulate pass by reference yourself, by defining functions which accept pointers and then using the &amp; operator when calling, and the compiler will essentially simulate it for you when you pass an array to a function </p>
+</blockquote>
+<p>这些内容在Java和Go中也是通用的，指针作为参数实际上也是值传递的哦。</p>
+<p>参考：</p>
+<ul>
+<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passptrinit.html</a></li>
+<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passbyref.html</a></li>
+</ul>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/should-not-cast-the-result-of-malloc/" itemprop="url">
                   malloc的强制类型转换
                 </a>
@@ -1153,8 +1262,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
                   </a>
                 </span>
 
@@ -1237,120 +1346,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/using-pointer-as-parameter/" itemprop="url">
-                  C中使用指针作为参数的一些问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-08T12:34:50+08:00" content="2015-12-08">
-              2015-12-08
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>这个问题其实比较常见了，但是经常会出错，就是C中函数的参数是值传递的，即使对于指针，也是值传递。很多高级语言在这一点是相通的。</p>
-<p>今天看到这个问题是在 c-fqa.com 上的一个问题，看下面的代码：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int *ip) &#123;</span><br><span class="line">	static int dummy = 5;	// static make dummy accessiable for whole file</span><br><span class="line">	ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int *ip;</span><br><span class="line">f(ip);</span><br></pre></td></tr></table></figure>
-<p>这时候ip指向哪里呢？实际上ip可能指向任何地址。因为ip没有初始化，传递给f函数调用的参数只是指针值的<strong>拷贝</strong>，对拷贝的修改并不会改变 ip 本身的内容。要达到本来的目的，需要传入 ip的地址，也就是指针的指针作为参数：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int **ipp) &#123;</span><br><span class="line">	static int dummy = 5;	// if no static here, then ip can be anywhere, *ip can be any value</span><br><span class="line">	*ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int  *ip;</span><br><span class="line">f(&amp;ip);</span><br></pre></td></tr></table></figure>
-<p>另一种方法是把结果的指针作为函数的返回值，这是更常用的方式：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int *f() &#123;</span><br><span class="line">	static int dummy = 5;</span><br><span class="line">	return &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line">int *ip = f();</span><br></pre></td></tr></table></figure>
-<p>另一个例子是，定制一个 malloc 的自己的版本：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void mymalloc(void *retp, size_t size) &#123;</span><br><span class="line">	retp = malloc(size);</span><br><span class="line">	if (retp == NULL) &#123;</span><br><span class="line">		fprintf(stderr, &quot;out of memory\n&quot;);</span><br><span class="line">		exit(EXIT_FAILURE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>看起来没有什么问题，但是在调用这个函数时并不能正常工作，因为被调用函数接受的指针是调用者传入的指针的拷贝。</p>
-<blockquote>
-<p>C always uses pass by value. You can simulate pass by reference yourself, by defining functions which accept pointers and then using the &amp; operator when calling, and the compiler will essentially simulate it for you when you pass an array to a function </p>
-</blockquote>
-<p>这些内容在Java和Go中也是通用的，指针作为参数实际上也是值传递的哦。</p>
-<p>参考：</p>
-<ul>
-<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passptrinit.html</a></li>
-<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passbyref.html</a></li>
-</ul>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1404,14 +1399,14 @@
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-count">27</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">146</span>
+              <span class="site-state-item-count">147</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

@@ -555,6 +555,135 @@
             
               
                 
+                <a class="post-title-link" href="/sar-usage/" itemprop="url">
+                  使用sar分析系统性能
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2018-03-24T17:09:22+08:00" content="2018-03-24">
+              2018-03-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>都知道Linux系统使用sar会收集系统运行的各种数据，可以用sar分析过去一段时间CPU，内存，网络使用等情况，分析系统瓶颈，在分析线上故障或性能问题时非常有用，但是一直没有好好用过，基本连io分析都不会，今天做个笔记记录以下sar的使用。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>sar 命令用于收集，报告，或者保存Unix/Linux系统的活动信息，一般将这些信息保存在 <code>/var/log/sa/</code> 目录下，这些信息包括CPU使用率， 内存页面和使用率，网络IO和传输统计，进程创建活动，块设备活动和每秒中断计数等。</p>
+<p>常说的sar来源于 sysstat 包，包括sar，sa1, sa2 三个工具。sar用户分析、显示 sa1 和 sa2 工具记录的日志。 sa2 工具每天在 <code>/var/log/sa</code> 目录下如一个报告，文件名以月份第N天命名。 sa1 工具将每天的系统活动信息以二进制数据写入到文件中。</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>sysstat的配置文件在 <code>/etc/sysconfig/sysstat</code> 可以配置日至文件保存多少天，最长为一个月。各项配置在文件中都有说明。</p>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sar [option] [interval [count]]</span><br></pre></td></tr></table></figure>
+<p>常用选项：</p>
+<ul>
+<li><code>-A</code> 所用，等价于 <code>-bBdFHqSuvwWy -I SUM -I ALL -m ALL -n ALL -r ALL -u ALL -P ALL</code></li>
+<li><code>-B</code> 报告换页（pagging）统计</li>
+<li><code>-b</code> 报告IO和数据传输速率统计</li>
+<li><code>-d</code> 报告每个块设备的活动</li>
+<li><code>-F [MOUNT]</code> 显示当前挂载文件系统的统计，伪文件系统（pseudo-fs）会被忽略。</li>
+<li><code>-f [filename]</code> 从指定文件获取信息，默认使用当前时间对应的文件</li>
+<li><code>--human</code> 对大小数值使用易读的单位打印</li>
+<li><code>-P {cpu_list|ALL}</code> 报告CPU统计，可以指定某个或某几个CPU。0是第一个CPU。</li>
+<li><code>-p</code> pretty print device name。</li>
+<li><code>-q</code> 报告队列长度和平均负载</li>
+<li><code>-r</code> 报告内存使用统计</li>
+<li><code>-S</code> 报告swap空间使用统计</li>
+<li><code>-s [hh:mm[:ss]]</code> 设置数据的开始时间，只有指定从文件读取数据时可用，时间使用24小时形式。默认开始时间时 08:00:00</li>
+<li><code>-e [hh:mm[:ss]]</code> 设置结束时间</li>
+<li><code>-I {int_list|SUM|ALL}</code> 统计中断信息，指定中断列表或打印统计信息或所有中断统计。</li>
+<li><code>-n {keyword [,...]|ALL}</code> 显示网络统计，可用的keyword包括 <code>DEV,  EDEV,  FC, ICMP, EICMP, ICMP6, EICMP6, IP, EIP, IP6, EIP6, NFS, NFSD, SOCK, SOCK6, SOFT, TCP, ETCP, UDP and UDP6.</code> 使用 <code>sar -n ALL 1</code> 查看当前网络情况，每秒刷新一次。</li>
+<li><code>-t</code> 使用用户本地时间显示记录</li>
+<li><code>-u [ALL]</code> 报告CPU使用率统计</li>
+<li><code>-v</code> 报告inode，文件和其它内核表的状态。</li>
+<li><code>-W</code> 报告 swapping 统计</li>
+<li><code>-w</code> 报告任务创建和系统切换活动</li>
+<li><code>-y</code> 报告 TTY 设备活动</li>
+</ul>
+<p>Ref:</p>
+<ul>
+<li><a href="https://linux.cn/article-9398-1.html" target="_blank" rel="noopener">Linux.cn</a></li>
+</ul>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/tmux-inside-tmux/" itemprop="url">
                   在tmux中嵌套一个远程tmux
                 </a>
@@ -1141,14 +1270,14 @@
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-count">27</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">146</span>
+              <span class="site-state-item-count">147</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

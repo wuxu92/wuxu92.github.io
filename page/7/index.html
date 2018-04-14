@@ -631,109 +631,6 @@
             
               
                 
-                <a class="post-title-link" href="/jekyll-posts-to-hexo-style/" itemprop="url">
-                  用Go将jekyll的文章转换成hexo文章风格
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-07T14:02:07+08:00" content="2016-01-07">
-              2016-01-07
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>博客之前使用jekyll引擎部署在github pages, 由于几个原因一直想迁移到hexo平台：</p>
-<ul>
-<li>原来的模板被我修改的比较严重，文章页面在大屏幕上的显示效果无法居中了</li>
-<li>Jekyll在Windows下编译比较麻烦，每次都要 push 到github才能预览效果</li>
-<li>当时使用的Jekyll模板对代码的渲染效果很糟糕，尤其是Vue.js的大括号需要各种转义才好显示</li>
-</ul>
-<p>但是迁移也挺麻烦的，主要是Jekyll使用的模板和hexo的markdown解析并不完全兼容，尤其是 Front-matter，也就是文章元数据的格式不太一样，还有就是文档的命名风格也不一样，Jekyll使用日期加标题的方式，hexo一般直接使用标题。原来已经有大概110篇文章，一篇一篇修改太麻烦了，所以用Go写了一个简单的工具去转换。</p>
-<p>代码如下：<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/jekyll-posts-to-hexo-style/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/vuejs-starting/" itemprop="url">
                   开始学习 vue.js
                 </a>
@@ -1136,104 +1033,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/apue-process-control/" itemprop="url">
-                  进程控制
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-28T12:34:50+08:00" content="2015-12-28">
-              2015-12-28
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p><img src="/images/linux-logo.png" alt=""><br>包括创建进程，执行程序和进程终止，还有进程属性的各种ID，以及它们如何受到进程控制原语的影响，最后还会介绍解释器文件，进程会计机制等。</p>
-<h2 id="进程标识"><a href="#进程标识" class="headerlink" title="进程标识"></a>进程标识</h2><p>每个进程都有一个非负整型表示的唯一进程ID，进程ID标识符总是唯一的。虽然是唯一的，但是进程ID是可以复用的，当一个进程终止后，其进程ID就成为复用的候选者。大多数Unix系统实现延迟复用算法，使得赋予新建进程的ID不同于最近终止进程的ID。所以我们可以认为一段时间内，一个进程ID唯一代表那一个进程。</p>
-<p>系统中有一些专用进程，比如ID为0的进程通常是<strong>调度进程</strong>，常常称为交换进程（swapper），该进程是内核的一部分（调度进程是内核的核心），它并不执行任何磁盘上的程序，因此也被称为系统进程。进程ID为1的通常是<strong> init 进程</strong>，在自举（bootstrap)过程中由内核调用，此进程负责在自举内核后启动一个UNIX系统。init进程绝不会终止，它是一个普通的用户进程（而不是内核进程），但它以超级用户特权运行。（在某些Unix实现中，进程ID为2的是页守护进程（page daemon),它负责支持虚拟存储器系统的分页操作。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/apue-process-control/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1287,14 +1086,14 @@
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-count">27</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">146</span>
+              <span class="site-state-item-count">147</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

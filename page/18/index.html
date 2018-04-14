@@ -207,11 +207,6 @@
 
     
     
-      
-      
-
-      
-    
 
     
       
@@ -235,8 +230,8 @@
             
               
                 
-                <a class="post-title-link" href="/vim-shortcuts/" itemprop="url">
-                  vim 常用的快捷键
+                <a class="post-title-link" href="/effective-go-note-2/" itemprop="url">
+                  Effective Go笔记：方法，接口与其他类型
                 </a>
               
             
@@ -256,8 +251,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
                   </a>
                 </span>
 
@@ -288,17 +283,38 @@
         
           <span itemprop="articleBody">
             
-              <p>vim作为键盘操作为主的编辑器，有许多功能丰富的快捷键，其实不只在普通模式下有快捷键，其实在插入模式下也有一些有用的快捷键…</p>
-<h2 id="插入模式的快捷键"><a href="#插入模式的快捷键" class="headerlink" title="插入模式的快捷键"></a>插入模式的快捷键</h2><p>对于新手来说，vim的插入模式和记事本一样“好用”，记事本有一些快捷键，但是在vim的插入模式下，我们却经常忘记使用快捷键：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;C-h&gt;/Ctrl+h	 删除前一个字符</span><br><span class="line">&lt;C-w&gt;			删除前一个单词</span><br><span class="line">&lt;C-u&gt;			删除到行首</span><br><span class="line"></span><br><span class="line">Esc/&lt;C-[&gt;	Esc进入普通模式，其实Ctrl+[和Esc的作用是一样的</span><br><span class="line">&lt;Ctrl-o&gt;		Ctrl+o进入插入-普通模式，此模式下可以执行一个普通模式下的命令并返回插入模式，</span><br><span class="line">			常用 &lt;C-o&gt;zz：保持插入模式并把光标行滚动到屏幕中间</span><br></pre></td></tr></table></figure>
-<p>可以在插入模式下使用vim的计算工具<code>&lt;C-r&gt;=</code> 插入模式下这个组合键访问表达式寄存器(=)，这是会在屏幕下方提示输入运算符，输入<code>1+2+3</code> 后 <code>&lt;CR&gt;</code>（回车），vim就会把运算结果插入到刚刚的光标位置，并且仍然是插入模式</p>
-<p>对于104键的键盘可以在插入模式下使用<code>Shift+insert</code>组合键粘贴系统剪切板的内容，可以使用<code>&lt;C-r&gt;n</code>粘贴寄存器n中的内容</p>
-<p>在插入模式下 <code>&lt;C-v&gt;</code>用来插入一个特殊字符，比如<code>&lt;C-v&gt;u00bf</code>可以插入一个返过来的问号~这是用来插入unicode字符的。</p>
-<h2 id="可视模式下的快捷键"><a href="#可视模式下的快捷键" class="headerlink" title="可视模式下的快捷键"></a>可视模式下的快捷键</h2><h2 id="普通模式下的快捷键"><a href="#普通模式下的快捷键" class="headerlink" title="普通模式下的快捷键"></a>普通模式下的快捷键</h2><h2 id="分栏"><a href="#分栏" class="headerlink" title="分栏"></a>分栏</h2><p><code>sp {filename}</code> 水平切分上下两栏。filename可选，默认当前文件，快捷键<code>&lt;C-w&gt;s</code><br><code>vsp {filenamem}</code> 垂直切分，左右两栏 <code>&lt;C-w&gt;v</code></p>
-<p>如果安装了yadr扩展的话可以使用<code>contrl+h,j,k,l</code>来跳转到相应方向的分栏<br>没有yadr可以使用快捷键 <code>&lt;C-w&gt;&lt;C-w&gt;</code>在分栏中循环切换，或这使用<code>&lt;C-w&gt;[h,j,k,l]</code> 跳转到分栏。</p>
-<p><code>&lt;C-w&gt;=</code> 所有窗口等宽等高<br><code>&lt;C-w&gt;_</code> 最大化活动窗口高度<br><code>&lt;C-w&gt;|</code> 最大化活动窗口宽度<br><code>[n]&lt;C-w&gt;_</code> 活动窗口高度设为n<br><code>[n]&lt;C-w&gt;|</code> 活动窗口宽度设为n</p>
-<p><code>:clo</code> 关闭活动窗口， 快捷键 <code>&lt;C-w&gt;c</code><br><code>:on[ly]</code> 只保留当前窗口   快捷键 <code>&lt;C-w&gt;o</code></p>
-<p>很有用的重新对其代码,命令模式下 <code>gg=G</code><br><em>待续</em></p>
+              <p>effective go 中的部分笔记，这是第二部分 </p>
+<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
+<h2 id="方法-Methods"><a href="#方法-Methods" class="headerlink" title="方法/Methods"></a>方法/Methods</h2><p>与一般的面向对象语言不同；一般的面向对象语言定义类，然后在类中定义属性和方法，通过类的继承来抽象一套机制，但是在Go中，首先是定义结构，然后为已经命名的结构（除了指针或接口）定义方法，这里有一个方法接收者的概念，为一个结构体绑定方法的常用用法如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Book struct &#123;</span><br><span class="line">	price float64</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func (p Book) Disount(c float64) float64 &#123;</span><br><span class="line">	// 注意int和float64类型不一样，</span><br><span class="line">	// 在Go中并不能直接操作，需要进行类型转换</span><br><span class="line">	// 但是float64 可以与字面量值直接相乘... p.price*100不会有问题</span><br><span class="line">	return p.price * c</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对一些方法，传入的参数是值的拷贝而不是地址，经常需要在方法的结尾放回新的结果，可以通过把参数的指针传入，直接修改参数的地址指向的值，常见的io.Write接口就是在指针添加方法。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type byteSlice []byte</span><br><span class="line">func (slice *byteSlice) Write(data []byte) (n int, err error) &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var b byteSlice</span><br><span class="line">fmt.Fprintf(&amp;b, &quot;this is a string&quot;, 7)</span><br></pre></td></tr></table></figure>
+<p><strong>以指针或值为接收者的区别在于：值方法可通过指针和值调用， 而指针方法只能通过指针来调用</strong></p>
+<h2 id="接口与其他类型-interface"><a href="#接口与其他类型-interface" class="headerlink" title="接口与其他类型/interface"></a>接口与其他类型/interface</h2><p>Go中的接口为指定对象的行为提供了一种方法：<strong>如果某样东西可以完成这个， 那么它就可以用在这里。</strong>我们已经见过许多简单的示例了；通过实现 String 方法，我们可以自定义打印函数，而通过 Write 方法，Fprintf 则能对任何对象产生输出。</p>
+<p>Go中的的接口只是需要实现它的类接受了同名的方法即可，这是很特别的。</p>
+<h3 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h3><p>下面的代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type squence []int</span><br><span class="line">func (s squence) String stirng &#123;</span><br><span class="line">	// do some thing to s</span><br><span class="line">	return ftm.Sprint(s)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果忽略类型名，squence和[]int其实是相同的，只不过squence有一个新的类型名而已，所以在他们之间进行类型转换是可以的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">is := []int(s)</span><br></pre></td></tr></table></figure>
+<p>在Go语言中，为了访问不同的方法集会经常进行类型转换。甚至对int和float之间的简单运算都会用到类型转换。</p>
+<h3 id="接口转换与类型断言"><a href="#接口转换与类型断言" class="headerlink" title="接口转换与类型断言"></a>接口转换与类型断言</h3><p>对于混合类型，我们经常需要将一种接口转换为另一种接口，要判断一个值是否实现了某个接口，需要使用到<strong>类型断言</strong>。类型断言接受一个接口值，并从中提取指定的明确的明确类型的值。与其他语言判断类型不同，它的用法如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var.(typeName)</span><br><span class="line">str.(string)</span><br><span class="line"></span><br><span class="line">// 对于使用接口定义的值，可以使用下面的方式</span><br><span class="line">// 其中iv是用 var iv interface&#123;&#125; 定义的，Milk是一中类型</span><br><span class="line">switch str := iv.(type) &#123;</span><br><span class="line">case string:</span><br><span class="line">  fmt.Println(str)</span><br><span class="line">case Milk:</span><br><span class="line">  fmt.Println(&quot;milk&quot;, str)</span><br><span class="line">default:</span><br><span class="line">  fmt.Println(&quot;interface type:&quot;, str)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一个看起来很奇怪的用法，不知道Go中有没有提供想instanceof这样的关键字。</p>
+<h3 id="通用性-Generality"><a href="#通用性-Generality" class="headerlink" title="通用性/Generality"></a>通用性/Generality</h3><blockquote>
+<p>这部分还不是很了解</p>
+</blockquote>
+<p>若某种现有的类型仅实现了一个接口，且除此之外并无可导出的方法，则该类型本身就无需导出。 仅导出该接口能让我们更专注于其行为而非实现，其它属性不同的实现则能镜像该原始类型的行为。 这也能够避免为每个通用接口的实例重复编写文档。</p>
+<p>在这种情况下，构造函数应当返回一个接口值而非实现的类型。</p>
+<h2 id="接口和方法"><a href="#接口和方法" class="headerlink" title="接口和方法"></a>接口和方法</h2><p>Go中几乎任何类型(<strong>除了指针和接口</strong>)都能添加方法（添加的示例已经看过很多了，就不赘述了），因此几乎任何类型都能满足一个接口（即使是基于int的类型也能用来满足一个特别的接口），常见的用法就是<strong>任何实现了ServeHTTP方法的对象都能处理HTTP请求</strong>。</p>
+<blockquote>
+<p>甚至可以为func添加方法，当然需要先将函数定义为一种新类型</p>
+</blockquote>
+<p>Handler接口定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Handler interface &#123;</span><br><span class="line">	ServeHTTP(ResponseWriter, *Request)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面是一个实现该接口的示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import &quot;net/http&quot;</span><br><span class="line"></span><br><span class="line">type milkServer struct &#123;</span><br><span class="line">	n int</span><br><span class="line">&#125;</span><br><span class="line">// 注意参数中的http不能少，参考Go的包机制</span><br><span class="line">func (m *MilkServer) ServeHTTP(w http.ResponseWriter, req *http.Request) &#123;</span><br><span class="line">	m.n++</span><br><span class="line">	// do some thing</span><br><span class="line">	fmt.Fprintf(w, &quot;request count at %d\n&quot;, m.n)</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 添加绑定</span><br><span class="line">m := new(Milk)</span><br><span class="line">http.Handle(&quot;/count&quot;, m)</span><br><span class="line">// 也可以直接绑定一个与ServeHTTP签名相同的函数</span><br><span class="line">func ArgsFunc(w http.ResponseWriter, req *http.Request) &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line">http.HandleFunc(&quot;args&quot;, ArgsFunc)</span><br></pre></td></tr></table></figure>
+<p>当然也可以绑定到一个信道上面，然后使用信道新更新一些内部状态：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Chan chan *http.Request</span><br><span class="line">func (c Chan) ServeHTTP(w http.ResponseWriter, req *http.Request) &#123;</span><br><span class="line">	c &lt;- req</span><br><span class="line">	fmt.Fprint(w, &quot;request received&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
             
           </span>
@@ -341,8 +357,8 @@
             
               
                 
-                <a class="post-title-link" href="/effective-go-note-1/" itemprop="url">
-                  Effective Go笔记：函数，数据，初始化
+                <a class="post-title-link" href="/go-iota-spc/" itemprop="url">
+                  Golang 中iota的用法
                 </a>
               
             
@@ -362,8 +378,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
                   </a>
                 </span>
 
@@ -392,25 +408,18 @@
 
       
         
-          <p>effective go 中的部分笔记，这是第一部分 </p>
-<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
-<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>Go的函数有一个很特别的性质那就是多值返回，这样做有一个很方便的地方是可以把错误值返回，这样做和后面会讲到的取消异常也是有关的。</p>
-<p>一个Go函数的签名可能是：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func (file *File) Write(b []byte) (n int, err error)</span><br></pre></td></tr></table></figure>
-<p>这是一个典型的Go函数签名，初看起来比较复杂，一点点分析：</p>
-<ol>
-<li>func关键字，类似php中的function</li>
-<li>(file <em>File) 表示这是一个添加到</em>File接口上的方法。这也是Go比较有意思的地方，通过<em>附着</em>接口方法的方式实现接口</li>
-<li>Write 很简单就是方法名了，大写开头的方法表示共有的导出方法，如果是小写的方法名是不能导出的</li>
-<li>(b []byte)方法的参数，形参名为b，类型为[]byte</li>
-<li>(n int, err error) 返回类型，如果是多指返回则使用小括号括起来，如果是一个返回值就不需要了。比较有意思的是返回值也可以作为有命名返回值，比如这里的n和err，这样表示把函数作用域内的n和err变量返回，这样返回语句只需要写return，而不需要显式说明具体变量</li>
-</ol>
-<h3 id="Defer"><a href="#Defer" class="headerlink" title="Defer"></a>Defer</h3><p>Defer 是Go的关键字，用于预设一个函数调用，一个使用Defer调用的函数会<strong>在执行defer的函数返回之前</strong>立即执行，常用来释放资源，比如解锁互斥和关闭文件<br>使用defer推迟的函数会按照<strong>后进先出</strong>的顺序执行。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/effective-go-note-1/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
+          <span itemprop="articleBody">
+            
+              <p>Golang中可以使用iota方便的定义复杂的常量结构，下面是golang spec中的说明</p>
+<p>Within a constant declaration, the predeclared identifier iota represents successive untyped integer constants. It is reset to 0 whenever the reserved word const appears in the source and increments after each ConstSpec. It can be used to construct a set of related constants:</p>
+<h2 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (  // iota is reset to 0</span><br><span class="line">	c0 = iota  // c0 == 0</span><br><span class="line">	c1 = iota  // c1 == 1</span><br><span class="line">	c2 = iota  // c2 == 2</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	a = 1 &lt;&lt; iota  // a == 1 (iota has been reset)</span><br><span class="line">	b = 1 &lt;&lt; iota  // b == 2</span><br><span class="line">	c = 1 &lt;&lt; iota  // c == 4</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	u         = iota * 42  // u == 0     (untyped integer constant)</span><br><span class="line">	v float64 = iota * 42  // v == 42.0  (float64 constant)</span><br><span class="line">	w         = iota * 42  // w == 84    (untyped integer constant)</span><br><span class="line">)</span><br><span class="line">``</span><br><span class="line">const x = iota  // x == 0 (iota has been reset)</span><br><span class="line">const y = iota  // y == 0 (iota has been reset)</span><br></pre></td></tr></table></figure>
+<p>Within an ExpressionList, the value of each iota is the same because it is only incremented after each ConstSpec:</p>
+<h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (</span><br><span class="line">	bit0, mask0 = 1 &lt;&lt; iota, 1&lt;&lt;iota - 1  // bit0 == 1, mask0 == 0</span><br><span class="line">	bit1, mask1                           // bit1 == 2, mask1 == 1</span><br><span class="line">	_, _                                  // skips iota == 2</span><br><span class="line">	bit3, mask3                           // bit3 == 8, mask3 == 7</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>This last example exploits the implicit repetition of the last non-empty expression list.</p>
+<p>iota是一个比较有特色的东西，看完这两个例子基本就知道怎么用了，相当于它是一个从0开始自动增加的变量，可以重复使用，可以用来定义单位的大小，比如KB，MB，GB等</p>
+
+            
+          </span>
         
       
     </div>
@@ -560,8 +569,8 @@
             
               
                 
-                <a class="post-title-link" href="/go-iota-spc/" itemprop="url">
-                  Golang 中iota的用法
+                <a class="post-title-link" href="/effective-go-note-1/" itemprop="url">
+                  Effective Go笔记：函数，数据，初始化
                 </a>
               
             
@@ -581,8 +590,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
                   </a>
                 </span>
 
@@ -611,18 +620,25 @@
 
       
         
-          <span itemprop="articleBody">
-            
-              <p>Golang中可以使用iota方便的定义复杂的常量结构，下面是golang spec中的说明</p>
-<p>Within a constant declaration, the predeclared identifier iota represents successive untyped integer constants. It is reset to 0 whenever the reserved word const appears in the source and increments after each ConstSpec. It can be used to construct a set of related constants:</p>
-<h2 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (  // iota is reset to 0</span><br><span class="line">	c0 = iota  // c0 == 0</span><br><span class="line">	c1 = iota  // c1 == 1</span><br><span class="line">	c2 = iota  // c2 == 2</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	a = 1 &lt;&lt; iota  // a == 1 (iota has been reset)</span><br><span class="line">	b = 1 &lt;&lt; iota  // b == 2</span><br><span class="line">	c = 1 &lt;&lt; iota  // c == 4</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	u         = iota * 42  // u == 0     (untyped integer constant)</span><br><span class="line">	v float64 = iota * 42  // v == 42.0  (float64 constant)</span><br><span class="line">	w         = iota * 42  // w == 84    (untyped integer constant)</span><br><span class="line">)</span><br><span class="line">``</span><br><span class="line">const x = iota  // x == 0 (iota has been reset)</span><br><span class="line">const y = iota  // y == 0 (iota has been reset)</span><br></pre></td></tr></table></figure>
-<p>Within an ExpressionList, the value of each iota is the same because it is only incremented after each ConstSpec:</p>
-<h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (</span><br><span class="line">	bit0, mask0 = 1 &lt;&lt; iota, 1&lt;&lt;iota - 1  // bit0 == 1, mask0 == 0</span><br><span class="line">	bit1, mask1                           // bit1 == 2, mask1 == 1</span><br><span class="line">	_, _                                  // skips iota == 2</span><br><span class="line">	bit3, mask3                           // bit3 == 8, mask3 == 7</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>This last example exploits the implicit repetition of the last non-empty expression list.</p>
-<p>iota是一个比较有特色的东西，看完这两个例子基本就知道怎么用了，相当于它是一个从0开始自动增加的变量，可以重复使用，可以用来定义单位的大小，比如KB，MB，GB等</p>
-
-            
-          </span>
+          <p>effective go 中的部分笔记，这是第一部分 </p>
+<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>Go的函数有一个很特别的性质那就是多值返回，这样做有一个很方便的地方是可以把错误值返回，这样做和后面会讲到的取消异常也是有关的。</p>
+<p>一个Go函数的签名可能是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func (file *File) Write(b []byte) (n int, err error)</span><br></pre></td></tr></table></figure>
+<p>这是一个典型的Go函数签名，初看起来比较复杂，一点点分析：</p>
+<ol>
+<li>func关键字，类似php中的function</li>
+<li>(file <em>File) 表示这是一个添加到</em>File接口上的方法。这也是Go比较有意思的地方，通过<em>附着</em>接口方法的方式实现接口</li>
+<li>Write 很简单就是方法名了，大写开头的方法表示共有的导出方法，如果是小写的方法名是不能导出的</li>
+<li>(b []byte)方法的参数，形参名为b，类型为[]byte</li>
+<li>(n int, err error) 返回类型，如果是多指返回则使用小括号括起来，如果是一个返回值就不需要了。比较有意思的是返回值也可以作为有命名返回值，比如这里的n和err，这样表示把函数作用域内的n和err变量返回，这样返回语句只需要写return，而不需要显式说明具体变量</li>
+</ol>
+<h3 id="Defer"><a href="#Defer" class="headerlink" title="Defer"></a>Defer</h3><p>Defer 是Go的关键字，用于预设一个函数调用，一个使用Defer调用的函数会<strong>在执行defer的函数返回之前</strong>立即执行，常用来释放资源，比如解锁互斥和关闭文件<br>使用defer推迟的函数会按照<strong>后进先出</strong>的顺序执行。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/effective-go-note-1/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -800,14 +816,14 @@
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-count">27</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">146</span>
+              <span class="site-state-item-count">147</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
