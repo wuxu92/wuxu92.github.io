@@ -235,6 +235,216 @@
             
               
                 
+                <a class="post-title-link" href="/ss-bash-script/" itemprop="url">
+                  Shadowsocks的客户端脚本
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-10-10T21:55:47+08:00" content="2016-10-10">
+              2016-10-10
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>之前一直使用shadowsocks-qt5的ss客户端，但是最近不知道怎么回事，一启动它过几秒就崩溃,重装也没有效果，只好写两个脚本控制了。</p>
+<p>首先需要安装sslocal的包：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo dnf install python-pip</span><br><span class="line">sudo pip install shadowsocks</span><br></pre></td></tr></table></figure>
+<p>安装了shadowsocks后就可以用 <code>sslocal</code>命令来连接shadowsocks服务器了，还需要一个关闭连接，我们可以使用<code>ps -aux|grep</code> + <code>kill -9 pid</code> 来实现。具体的脚本见下：</p>
+<h2 id="启动脚本"><a href="#启动脚本" class="headerlink" title="启动脚本"></a>启动脚本</h2><p>启动要考虑关闭之前存在的连接，并且我的sever同时有ipv4和ipv6服务，可通过命令行参数选择连接到ipv6。具体脚本如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#! /bin/sh</span><br><span class="line"></span><br><span class="line">ip=*7*.***.*7.*7</span><br><span class="line">ip6=2**:f7**:4*:c**::****:****</span><br><span class="line"></span><br><span class="line">if [[ $# -eq 1 &amp;&amp; $1 -eq 6 ]]; then</span><br><span class="line">    ip=$ip6</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># close existed sslocal proc</span><br><span class="line"># may need change the path, or add bash to PATH</span><br><span class="line">~/bin/bashes/close-ss</span><br><span class="line">echo &quot;connecting at $ip&quot;</span><br><span class="line">sslocal -s $ip -p 18989 -l 1080 -k password -t 600 -m aes-256-cfb &amp;&gt;&gt;/path/to/log/ss.log &amp;</span><br><span class="line"></span><br><span class="line">echo &quot;done with: $?&quot;</span><br></pre></td></tr></table></figure>
+<p>在连接脚本中使用了关闭功能，因为对于一个新的连接需要先关闭之前的连接</p>
+<h2 id="关闭连接"><a href="#关闭连接" class="headerlink" title="关闭连接"></a>关闭连接</h2><p>关闭连接使用ps查找到pid，再调用kill关闭进程，也可以将pid写到一个文件，都差不多，具体如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#! /bin/sh</span><br><span class="line">procs=`ps aux|grep sslocal`</span><br><span class="line">count=`echo &quot;$procs&quot;|wc -l`</span><br><span class="line"></span><br><span class="line">if [[ count -eq 1 ]]; then</span><br><span class="line">    echo &quot;no ss-local runs&quot;</span><br><span class="line">    exit;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">pid=`echo &quot;$procs&quot;|head -1 |awk &apos;&#123;print $2&#125;&apos;`</span><br><span class="line">echo &quot;closing by pid: $pid&quot;</span><br><span class="line"></span><br><span class="line">kill -9 $pid</span><br><span class="line"></span><br><span class="line">if [ $? -eq 0 ]; then</span><br><span class="line">    echo &quot;result: success&quot;</span><br><span class="line">	# clean log file</span><br><span class="line">    : &gt; /path/to/log/ss.log</span><br><span class="line">else</span><br><span class="line">    echo &quot;fialed to close sslocal&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>++ update @2017-02-10 ++<br>关闭sslocal的时候，之前使用的是ps+grep找出pid，实际上可以用pgrep更快更方便地找出来，更新后的代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#! /bin/sh</span><br><span class="line">procs=`pgrep sslocal`</span><br><span class="line">if [[ -z $procs ]]; then</span><br><span class="line">    echo &quot;no ss-local runs&quot;</span><br><span class="line">    exit;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">for pid in $procs; do</span><br><span class="line">    echo &quot;closing by pid: $pid&quot;</span><br><span class="line">    kill -9 $pid</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">if [ $? -eq 0 ]; then</span><br><span class="line">    echo &quot;result: success&quot;</span><br><span class="line">    : &gt; ~/tmp/ss.log</span><br><span class="line">else</span><br><span class="line">    echo &quot;fialed to close sslocal&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>可以将两个脚本的目录放到 PATH 里面，分别命名为<code>sss</code>和<code>close-ss</code>，这样就可以通过下面的命令启动和关闭shadowsocks的客户端了：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 启用默认ipv4连接</span><br><span class="line">sss </span><br><span class="line"></span><br><span class="line"># 启用ipv6连接</span><br><span class="line">sss 6</span><br><span class="line"></span><br><span class="line"># 关闭连接</span><br><span class="line">close-ss</span><br></pre></td></tr></table></figure>
+<p>还是很方便的。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/whats-up-oct-2016/" itemprop="url">
+                  这个十一做了什么？
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-10-08T15:23:42+08:00" content="2016-10-08">
+              2016-10-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/self/" itemprop="url" rel="index">
+                    <span itemprop="name">self</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>最近忙些什么呢<br>追了几部剧<br>新出的《西部世界》是一部科幻剧<br>大有要超越《权力的游戏》的潜力<br>权力的游戏到第六季已经显得有点力不从心了<br>没有了马丁大爷的帮助，编剧在很多地方出现漏洞<br>尤其是龙母线，已经崩坏得厉害<br>很多情节都莫名其妙，高庭线，北境线，沙蛇线基本全线崩坏<br>GOT已经不再是曾经的神剧了，现在看来极有可能烂尾<br>当然不会像其他剧那样的烂尾，HBO还是能保证基本的水准的<br>只是相比前三季，没有原著支撑后，水平下降的厉害<br>而新出的这个西部世界，设定极其宏大，要探讨的问题也很深邃<br>从第一集的水准来看，具备成为下一部神剧的基础<br>可以期待一下</p>
+<p>另外补了英剧《Black Books》<br>这个剧之前看过一两集<br>最近再看，发现非常精彩<br>经典的英式喜剧，有点 IT 狂人的味道<br>其实前两周还看了两集TBBT（The Big Bang Thoery），第九季<br>从第五季后就没追TBBT了<br>TBBT真的是烂尾的厉害，卖萌耍宝，偶尔还能出一两个段子<br>但整体水平不行了，赶紧结束这个系列吧<br>一般来说，很少有超过6季还能保持水准的<br>Black Books基本能从头笑到尾，三季的长度也很合适<br>英剧的幽默和美式喜剧还是很大区别的<br>美式情景喜剧，老友记是巅峰，其实看多了也挺没意思的<br>最有英式风格的大概是《30 Rock》，但是总觉得那个系列有点恶俗<br>补完了《Black Books》第一季，有点意思</p>
+<p>十一还做了两件事<br>终于学了一下tmux，这也是一个神器<br>之前一直想学来着，终于花了一两天系统性地学了一下<br>之前对于终端复用器的理解一直不太对<br>这几天都是基于tmux工作，简直不要太舒服，不要太便利！<br>Nice Tool<br>喜欢终端的用户一定不能错过tmux<br>另外还用上了moc，music on commandline<br>虽然Fedora下网易云音乐也可用，但播放本地音乐的能力有点弱<br>我还是喜欢本地音乐的，百来G的曲库的样子<br>moc搭配上tmux操作起来不要太方便！<br>还开始学了Bash，之前面百度的时候让手写一个脚本<br>没写出来。。因为记得不清不楚<br>这几天就系统地学一下经典的abs教程<br>嗯，以后可以用Bash做更多事情了</p>
+<p>终于挤牙膏样挤完了《万历十五年》第二遍<br>这本书对我影响还挺大的<br>作为一个明粉，一定要多看几遍<br>十一开始看《枪炮，病菌与钢铁》这本书<br>在书架摆了几个月了<br>这本书副标题起的那叫一个大《人类社会的命运》<br>另外一本起的这么大的只有《失控》了吧<br>不过确实讲的是大问题，人类社会演进的方向问题<br>听上去就很厉害，看了几章，确实有点意思</p>
+<p>最近心情不太好，开始抽烟<br>抽的是博哥推荐的一种很淡的细烟<br>很淡很淡，抽完一根万宝路，再抽这个，完全没有冲劲，很好<br>基本一天一根的样子<br>这几天有点感冒，一天两根的样子</p>
+<p>放假放得面试的东西都忘记了<br>睡觉睡得天昏地暗<br>假期结束又得面试了<br>找工作好难<br>哦，前几天还去了Offer寺<br>当然不是我迷信，这只是《仪式过程》所讲的仪式的一部分，嗯</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/lvm-extend-record/" itemprop="url">
                   一次LVM扩容记录
                 </a>
@@ -1094,209 +1304,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/fix-centos-vm-networking-things/" itemprop="url">
-                  解决一个VirtualBox虚拟机错误导致的各种问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-04-13T21:07:47+08:00" content="2016-04-13">
-              2016-04-13
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>10.<em>.</em>.91是最早的一台虚拟机之一，是VirtualBox运行在Windows Server 2008 R2 上的，到现在已经运行了两年多了，基本没出什么问题。上面主要提供Git服务、一个Web server、一个Svn Server。前几天发现ssh登录的时候会直接返回 <code>connection failed</code>。并没有什么其他的信息。而直接ping则能ping通该IP。</p>
-<p>非常奇怪的问题，由于前段时间一直没有用到这个机器就没管它。这几天重新做科委要提交git的时候总是失败（因为ssh都连不上，git肯定就提交不了了）。攒了很多commit在本地总觉得不安心，所以就找找原因，解决一下。</p>
-<h2 id="虚拟机停止运行"><a href="#虚拟机停止运行" class="headerlink" title="虚拟机停止运行"></a>虚拟机停止运行</h2><p>还好有Windows server的远程登录权限，登陆上去看了一下，91这台机器还在运行，但是试图从 Virtual Box 的图形界面登录时直接报错了，然后只能强制关闭该虚拟机，而运行的其它几台虚拟机都没有问题。仔细看了一下报错内容有一些 <strong>DISK FULL</strong>相关的内容。查看了一下 Virtual Box对该虚机的配置，32G的动态空间，已用17GB，没有问题啊，宿主机器（Windows Server 2008)分两块磁盘，C盘100GB，D盘750GB，而虚机使用的磁盘文件放在D盘，应该不可能磁盘空间不足的。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/fix-centos-vm-networking-things/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/solid-principle-of-oo/" itemprop="url">
-                  面向对象中的 SOLID 原则
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-04-08T20:12:12+08:00" content="2016-04-08">
-              2016-04-08
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>在面向对象程序设计中，经常见到各种设计原则、设计模式。面向对象的优势就是其针对各种场景的成体系的设计模式，当然过于复杂的设计模式也是Java经常被人诟病的一点。而 SOLID 的就是其中最重要的5条设计原则的首字母缩写，不仅仅是Java，任何面向对象设计的语言编程都应该尽量遵循这5条原则，它们分别是：</p>
-<ol>
-<li>SRP， Single Responsibility Principle，单一职责原则</li>
-<li>OCP， Open Closed Principle，开放封闭原则</li>
-<li>LSP， Liskov Substitution Principle，里氏替换原则</li>
-<li>ISP， Interface Segregation Principle，接口分离原则</li>
-<li>DIP， Dependency Inversion Principle，依赖倒置原则</li>
-</ol>
-<p>这些原则是 Robert C. Martin 整理来的，它们使得一个程序员开发的软件更加容易维护和扩展。虽然它们不是进行软件开发的强制性约束，但是如果对这些原则有很好的理解，并且能在自己的代码中考虑这些规则，很可能可以写出更好的面向对象代码。</p>
-<h2 id="单一职责原则（SRP）"><a href="#单一职责原则（SRP）" class="headerlink" title="单一职责原则（SRP）"></a>单一职责原则（SRP）</h2><p>单一职责是指一个类或者模块应该有且只有一个去改变它的理由，这意味着一个类应该只有一项职责，并且该功能应该由这个类完全封装起来。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/solid-principle-of-oo/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1343,21 +1350,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">173</span>
+              <span class="site-state-item-count">175</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">145</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

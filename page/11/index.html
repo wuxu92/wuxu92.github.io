@@ -235,6 +235,227 @@
             
               
                 
+                <a class="post-title-link" href="/linking-relocation-and-others/" itemprop="url">
+                  CSAPP：链接重定位
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-24T12:34:50+08:00" content="2015-11-24">
+              2015-11-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p><img src="/images/post/csapp2ecover.jpg" alt=""></p>
+<p> 前一篇讲了链接的基础，这里继续链接过程的重定位实现机制以及可执行目标文件的结构和后面的一些内容。</p>
+<h2 id="重定位"><a href="#重定位" class="headerlink" title="重定位"></a>重定位</h2><p>前面讲过了链接器的符号解析过程，在符号解析完成之后，代码中的每个符号引用和确定的一个符号定义联系起来了。此时，链接器就知道它的输入目标模块中的代码和数据节的确定大小。此时开始进行重定位，重定位将合并输入模块，并为每个符号分配运行时地址。重定位分两步进行：</p>
+<ol>
+<li>重定位节和符号定义。 链接器将所有相同类型的节进行合并，形成一个新的聚合节。例如将所有输入模块的 .data 节合并到一个节，这个节成为输出的可执行目标文件的 .data 节。然后链接器将新的存储器地址赋给新的聚合节。此时程序中每个指令和全局变量都有了一个运行时存储器地址了。</li>
+<li>重定位节中的符号引用。 对指令和全局变量（定义）重编码后，需要将输入模块的节（代码和数据）中的符号引用进行重定位，使它们指向第一步重定位后的运行时地址。这一步依赖于一个称为 relocation entry(重定位条目)的数据结构。这个条目由<strong>汇编器</strong>生成，链接器根据这个结构的内容确定符号引用的运行时地址。</li>
+</ol>
+<h3 id="relocation-entry"><a href="#relocation-entry" class="headerlink" title="relocation entry"></a>relocation entry</h3><p>汇编器生产一个目标模块时，它并不知道数据和代码最终存放在存储器的什么位置，所以在汇编器遇到最终位置未知的目标引用时，就生成一个重定位条目（relocation entry），告诉链接器如何在合并成可执行文件时修改这个引用。代码的重定位条目保存在 .rel.text 中，数据的重定位条目存放在 .rel.data 中（见上一篇的可重定位目标文件结构）。</p>
+<p>relocation entry的数据结构定义如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> offset;</span><br><span class="line">    <span class="keyword">int</span> symbol:<span class="number">24</span>,</span><br><span class="line">        type:<span class="number">8</span>;</span><br><span class="line">&#125; ELF32_Rel;</span><br></pre></td></tr></table></figure>
+<p>其中offset是需要被修改的引用的节偏移（相对于节的偏移），symbol是标识被修改的引用应该指向的符号（的地址），type是高职链接器如果修改新的引用。</p>
+<p>type有11中，我们只需要知道最主要的两种方式，一种是 R_386_PC32，即使用一个32位PC（程序计数器）相对地址的引用。PC的值通常是存储器中下一条指令的地址。另一种方式R_386_32；重定位使用一个32位绝对地址的引用。</p>
+<h3 id="重定位符号引用"><a href="#重定位符号引用" class="headerlink" title="重定位符号引用"></a>重定位符号引用</h3><p>一种重定位算法的伪代码如下所示：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">foreach section s &#123;</span><br><span class="line">    foreach relocation entry r &#123;</span><br><span class="line">        refptr = s + r.offset;</span><br><span class="line">        <span class="keyword">if</span> (r.type == R_386_PC32) &#123;</span><br><span class="line">            refaddr = ADDR(s) + r.offset;</span><br><span class="line">            *refptr = (<span class="keyword">unsigned</span>) (ADDR(r.symbol) + *refptr - refaddr);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (r.type = R_386_32)</span><br><span class="line">            *refptr = (<span class="keyword">unsigned</span>)(ADDR(r.symbol) + *refptr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中ADDR(s)表示s的运行时地址（在节内部符号重定位时，符号和指令的运行时地址已经知道了）。ADDR(r.symbol)是符号的运行时地址。</p>
+<p><strong>重定位PC相对引用</strong> 对于PC相对位置的重定位。根据上面的代码分析：refptr是一个地址，其值 <em>refaddr 是相对定位的偏移的值（32位长度）。一定要注意第6行的计算， </em>refptr不要用refptr代入计算了，注意它是一个指针。汇编器会将call指令的引用的初始值设置为 -4 (0xfffffffc)（在不同指令大小和编码方式上可能不一样）。这是因为PC总是指向当前指令的下一条指令，指向 -4 允许链接器透明地重定位引用，而不用知道某一台机器的指令编码。这部分使用一个例子更加清晰，CSAPP Page 462的例子可以仔细看看。</p>
+<p><strong>重定位绝对引用</strong> </p>
+<h2 id="可执行文件的结构和加载"><a href="#可执行文件的结构和加载" class="headerlink" title="可执行文件的结构和加载"></a>可执行文件的结构和加载</h2><p>链接器将多个目标模块合并成了一个可执行的二进制目标文件。这个二进制文件包含加载程序到存储器并运行它所需的所有信息。一个典型的ELF可执行文件结构如下图所示。</p>
+<p><img src="/images/post/exe-obj.png" alt=""></p>
+<p>其结构整体和可重定位目标文件差不多，不过因为已经完成了重定位（称作完全链接的），所以没有了  .rel.data 和 .rel.text 节了。多了一个 .init 节，定义了一个_init函数，程序的初始化代码会调用它。</p>
+<p>段头部表(segment header table)描述了可执行文件的连续的片(chunk)被映射到连续的存储器段的信息。</p>
+<p>shell通过一个驻留在存储器中称为加载器(loader)的操作系统代码来运行生成的可执行文件，任何Unix程序都可以通过调用 <code>execve</code> 函数来调用加载器。</p>
+<p>每个Unix程序都一个一个运行时存储器影响，在32位Linux系统中，代码段<strong>总是</strong>从地址 0x08048000 处（小端存储）开始。数据段是接下来的下一个4KB对齐的地址处，运行时堆在读/写段之后接下来的下一个4KB对其的地址处，并通过调用malloc库往上增长。用户栈总是总最大的合法用户地址开始，向下增长的，从栈的上部开始的段是操作系统驻留存储器的部分（内核）保留的。其表示如下图。</p>
+<p><img src="/images/post/Linux-run-mem-img.png" alt=""></p>
+<p>每个C程序中启动例程的伪代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0x080480c0 &lt;_start&gt;:</span><br><span class="line">    call __libc_init_first</span><br><span class="line">    call _init</span><br><span class="line">    call atexit</span><br><span class="line">    call main</span><br><span class="line">    call _exit</span><br></pre></td></tr></table></figure>
+<p>加载工作的一个概述如下：Unix系统中的每个程序都运行在一个进程上下文中，有自己的虚拟地址空间。当shell运行一个程序时，（父）shell进程生成一个子进程，它是父进程的一个复制，子进程通过execve系统调用启动加载器。加载器删除子进程现有的虚拟存储器段，并创建一组新的代码、数据、堆和栈段。新的栈和堆段被初始化为0.通过将虚拟地址空间中的页映射到可执行文件的页大小的片，新的代码和数据段被初始化为可执行文件的内容。最后加载器跳转到 _start 地址，它最终会调用应用程序的 main 函数。除了一些头部信息，在加载过程中没有任何从磁盘到存储器的数据拷贝。知道CPU引用一个被映射的虚拟页才会进行拷贝，此时操作系统利用它的页面调度机制自动将页面从磁盘传送到存储器。</p>
+<p>待续</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/chrome-extension-vimium/" itemprop="url">
+                  Chrome插件Vimium
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-23T12:34:50+08:00" content="2015-11-23">
+              2015-11-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/tools/" itemprop="url" rel="index">
+                    <span itemprop="name">tools</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>Vimuim是一款很酷的chrome插件，它能让你使用Vim的方式操作你的chrome浏览器，滚动，打开链接，tab跳转，复制，搜索，功能非常强大。</p>
+<p>在有鼠标的时候可以使用鼠标手势快速操作浏览器，但是在使用笔记本（我现在的T430）的时候，基本不使用鼠标，使用小红点浏览网页的时候还是有点麻烦。今天使用了一下大名鼎鼎的Vimium插件，简直解放了我的食指。</p>
+<p>首先安装插件，地址是 <a href="https://chrome.google.com/webstore/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb?utm_source=chrome-ntp-icon" target="_blank" rel="noopener">https://chrome.google.com/webstore/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb?utm_source=chrome-ntp-icon </a> ，另外还有一些类似的插件，像 cVim 等，不过用的最多是这个 Vimium。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/chrome-extension-vimium/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/csapp-linking/" itemprop="url">
                   CSAPP：链接
                 </a>
@@ -975,102 +1196,6 @@
             
               
                 
-                <a class="post-title-link" href="/refactoring-method-call/" itemprop="url">
-                  重构：简化函数调用
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-11-09T12:34:50+08:00" content="2015-11-09">
-              2015-11-09
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/软件工程/" itemprop="url" rel="index">
-                    <span itemprop="name">软件工程</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>有时间再补</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/golang-character-set-and-encoding/" itemprop="url">
                   Go 字符集与编码
                 </a>
@@ -1182,128 +1307,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/npwg-application-level-protocols/" itemprop="url">
-                  Go 应用层协议
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-11-07T12:34:50+08:00" content="2015-11-07">
-              2015-11-07
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p><img src="/images/golang/gopher-banner-small.jpg" alt=""></p>
-<blockquote>
-<p>这两天状态不太好，这一篇写的很糟糕</p>
-</blockquote>
-<p>在端到端的通信中，是两个程序之间的通信，除了TCP/UDP这样的传输层协议外，我们需要应用之间的通信的协议，这样才能利用/理解传输的数据，这就是我们这一篇的应用层协议。</p>
-<h2 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h2><p>应用之间的通信协议设计要考虑下面的问题：</p>
-<ul>
-<li>广播还是点对点？广播必须是UDP，本地多播或者更加实验性质的MBONE，点对点则可以是UDP和TCP</li>
-<li>有状态还是无状态的？有状态的连接对应用更简便，但是要考虑连接奔溃的时候怎么办</li>
-<li>传输层协议是否是可靠的？可靠连接一般更慢，但是就不需要担心丢包了，在内网的话UDP的可靠性也是非常高的</li>
-<li>是否需要回复(reply)?接收端是否需要给发送方返回一个收到确认，如果要的话要考虑确认丢失，可能要使用超时</li>
-<li>使用什么样的数据格式？通常会使用MIME规定的类型，或者使用字节编码数据</li>
-<li>是否有突发性大流量的情况？这要考虑QoS(服务质量)，如果突然流量爆发如何处理。</li>
-<li>多个流是否有同步的要求？比如视频和音频需要同步时间轴</li>
-<li>是一个独立的应用还是为其他人提供的库？</li>
-</ul>
-<p>设计一个应用层协议，上面是最基本要考虑的点。</p>
-<h2 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h2><p>消息的数据有两种主要的数据格式，一种是字节编码(byte encoded)，一种是字符编码(character encoded).</p>
-<h3 id="字节格式"><a href="#字节格式" class="headerlink" title="字节格式"></a>字节格式</h3><p>使用字节编码格式的数据一般使用第一个字节来区分消息类型。消息的处理器（handler）通过检查第一个字节转向不同的处理流程(不同的消息对应不同的请求)。其他字节是根据某种规定的规则序列化的数据体。</p>
-<p>使用字节的优势是数据密度高也因此速度很快，其缺点是数据不透明，这其实也算一个好处，这样别人就难以逆向工程了。如果出现错误将很难被发现，很难调试。常用使用这种格式的是DNS、NFS到Skype。</p>
-<p>针对字节数据，Conn 类型提供了读取字节的方法：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func (c Conn) Read(b []byte) (n int, err os.Error)</span><br><span class="line">func (c Conn) Write(b []byte) (n int err os.Error)</span><br></pre></td></tr></table></figure>
-<h3 id="字符格式"><a href="#字符格式" class="headerlink" title="字符格式"></a>字符格式</h3><p>使用base64编码后或者将二进制流转变成7-bit使用ascii字符发送。<br>字符格式通常使用多行形式的消息。第一行通常代表消息类型，剩余的数据是消息体数据。常使用行处理的函数。<br>在Go中没有管理字符流的直接支持，只能手动执行“换行”，要注意的是不同操作系统的换行很不一样， Unix系统使用’\n’ 代表换行，Windows系统使用”\r\n”换行，<strong>在internet上”\r\n”更加常用</strong>。</p>
-<h2 id="状态管理"><a href="#状态管理" class="headerlink" title="状态管理"></a>状态管理</h2><p>应用需要管理状态信息来简化当前的操作，可以使用状态来保存应用信息。状态可以由服务器管理也可以由客户端管理。<br>可以使用应用状态转移图表设计状态系统。状态转移图可以跟踪应用的状态以及何时转移到新的状态。</p>
-<blockquote>
-<p>这一章主要是概念性的东西，状态不太好，记的很乱，ごめ</p>
-</blockquote>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1350,21 +1353,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">173</span>
+              <span class="site-state-item-count">175</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">145</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

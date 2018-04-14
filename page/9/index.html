@@ -235,6 +235,213 @@
             
               
                 
+                <a class="post-title-link" href="/apue-files-and-dirs/" itemprop="url">
+                  APUE：文件和目录
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-15T12:34:50+08:00" content="2015-12-15">
+              2015-12-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><img src="/images/linux-logo.png" alt=""><br>前面已近有一篇系统级IO，那是 CSAPP 中的一章，讲了Unix IO的内容，这一次是Unix环境高级编程的一章，也是讲Unix/Linux下的文件IO，可能这里讲编程的内容多一些。</p>
+<p>我们知道通过 low level 的 open, creat 方法调用可以获得一个 file description ,它是一个整数，对应到进程文件描述符表的一项，使用这个整数就可以标识这个打开的文件。</p>
+<h2 id="文件信息"><a href="#文件信息" class="headerlink" title="文件信息"></a>文件信息</h2><p>对于一个打开的文件的 fd， 我们已经知道有一个 <code>stat</code> 函数可以获得该文件的信息，其实有另外好几个类似的函数（在64位系统还是有stat64的一套函数），其函数声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;sys/stat.h&gt;</span><br><span class="line">int stat(const char *restrict pathname, struct stat *restrict buf);</span><br><span class="line">int fstat(int fd, struct stat *buf);</span><br><span class="line">int lstat(const char *restrict pathname, struct stat *restrict buf);</span><br><span class="line">int fstatat(int fd, const char *restrict pathname, struct stat *restrict buf, int flag);</span><br></pre></td></tr></table></figure>
+<p>它们的作用都是获得某个文件的相关信息，文件信息被保存在一个结构体中，上面的函数调用会填充这个函数体的成员字段。stat和fstat比较好理解，只是第一个参数不同（不考虑参数的修饰符），stat使用一个文件名做参数，fstat使用一个fd做参数，实际的效果是一样的，不过stat的buf参数使用了restrict修饰符，这个修饰符在之前的文章中已经解释过了，它提示编译器保证该指针指向的对象不被当前指针以外的指针修改。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/apue-files-and-dirs/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/hai-xu-yao-xue-xi-yi-ge/" itemprop="url">
+                  为什么还要学习一个
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-14T12:34:50+08:00" content="2015-12-14">
+              2015-12-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/life/" itemprop="url" rel="index">
+                    <span itemprop="name">life</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <blockquote>
+<p>人啊，就还得要多学习一个，要不然想的东西啊，总是 too simple。<br>–来自长者的教诲</p>
+</blockquote>
+<p>从实习离职回学校“搞论文”已经快三个月了。实在的，论文没怎么搞，没搞出什么东西，已经对科研非常的没兴趣了，不适合做科研。不过这三个月看些书，就觉得啊，还是要学习一个，要不然搞得那些东西啊，一点都不excited，都 too simple，跑的一点都不快，没什么搞头。</p>
+<p>在学校做工程的人多容易飘飘然，这是我的感受。虽然我见的一点也不多，但是我作为一个年轻人，我还是要说一个，现在做项目的啊，都太low。现在在学校做项目的主要是几个：老师的项目，工程性的项目，老师和外面公司，机构谈好，回来交给学生做，然后老师基本不管；学生自己的项目，几个人组一个团队，拉一些活自己写，能力好的能做的不错，听说不少都不能按时完成。</p>
+<p>做项目的好处是能实践一些东西，现在做创业的那么多，随便加入一个创业团队，从后台导前台，从开发到运维到推广都能体验一番，但是呢，现在做创业的都太浮躁了，看起来从前到后，从低到高全栈了一把，实际上，现在99%的创业团队里，技术都不是重点，用php,python,ruby搞个模板一趟的网站出来就可以搞个大新闻了。这种看起来厉害的全栈，真的非常危险，尤其是对我们这样的学生来说。</p>
+<p>当然这只是我自己的感觉。曾经我也认为自己全栈的一逼，虽然我CSS渣的可以，但是前端的人都偶尔找我调CSS；虽然JS一直没弄懂闭包，不过真正能写JS的人实在很少，我也能顶一下；后台那些框架，哪个我没用过（胡），Restful API， MVC，MVVC，一套一套的。这些名词堆砌的多了，就自己真的都会相信自己是全栈了。</p>
+<p>但是真正想想自己做过的那些东西，有什么技术吗？所谓的技术，其实就是你知不知道这个东西，有没有这个思路，知道这个东西的名字，查查资料，翻翻教程，一般的一周就能上手了。现在所谓的互联网创业，大多数都是这样的技术支撑着，就能拿大笔投资，真是想不明白，这样的都能技术创业，要是还都成功了，简直没天理了。</p>
+<p>那应该学习一个，要学什么呢？我觉得还是计算机理论的基础。但是又要结合工程的实际，不是科研的那种；组成原理，计算机网络，编译，操作系统，这些才应该是985计算机专业学生的内力，才是和其他人比较时有优势的地方。当然主流的语言，框架，数据库技术都很重要，这就需要花更多的时间去学习，毕竟虽然说它们比较简单，但是要掌握真的还是要花费时间精力的。</p>
+<p>不过这中的调和又很矛盾，我自己是理论基础学的不好的，所以我认为其他人应该理论都学的比我好（什么逻辑），但是我看的有的人的Linux水平，实在不能说是一个计算机专业毕业的学生。虽然Linux并不是必须要掌握的技术，但是技能树上没有这一枝，实在太可惜了。</p>
+<p>那些网上卖水果的，卖各种乱七八糟的P2P行业，忽悠了好几年，实在没看出来他们创造的价值在哪里，根本没有解决什么问题。绝大部分的P2P就是忽悠，尤其是P2P理财，水分泡沫太大了，基本全是泡沫所以看起来很好。</p>
+<p>未完</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/array-and-pointer/" itemprop="url">
                   C数组和指针
                 </a>
@@ -296,6 +503,114 @@
 <p>对数组指针使用sizeof的时候会计算到第一个 <code>\0</code> 处，常用 <code>sizeof arr / sizeof arr[0]</code> 计算数组的大小。但是实际上这样做可能会导致问题。<br>
           <div class="post-more-link text-center">
             <a class="btn" href="/array-and-pointer/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/linux-shortcuts-and-commands/" itemprop="url">
+                  Linux Shortcuts And Commands
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-12T12:34:50+08:00" content="2015-12-12">
+              2015-12-12
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><img src="/images/linux-logo.png" alt=""></p>
+<p>来源： <a href="http://www.unixguide.net/linux/linuxshortcuts.shtml" target="_blank" rel="noopener">http://www.unixguide.net/Linux/linuxshortcuts.shtml</a> 个人觉得非常好的一个Linux入门资料。待我慢慢翻译整理出来。</p>
+<blockquote>
+<p>前面的部分很值得看看，后面的很多管理工具都已经过时了，看不看影响不大了。</p>
+</blockquote>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>This is a practical selection of the commands we use most often. Press <tab> to see the listing of all available command (on your PATH). On my small home system, it says there are 2595 executables on my PATH.  Many of these “commands” can be accessed from your favourite GUI front-end (probably KDE or Gnome) by clicking on the right menu or button. They can all be run from the command line.  Programs that require GUI have to be run from a terminal opened under a GUI.</tab></p>
+<p>图例: </p>
+<ul>
+<li><code>&lt;&gt;</code> = 键盘上的单个特殊按键或者功能键. 比如用 <ctrl> 表示 “control” 键. </ctrl></li>
+<li><em>italic</em> = 斜体字用于文件名，或者需要你自己替换的变量. </li>
+<li>fixed width = 等宽字体表示Linux命令和文件.</li>
+</ul>
+<p>对Unix新手的提示:<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/linux-shortcuts-and-commands/" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -428,114 +743,6 @@
 
             
           </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/linux-shortcuts-and-commands/" itemprop="url">
-                  Linux Shortcuts And Commands
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-12T12:34:50+08:00" content="2015-12-12">
-              2015-12-12
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p><img src="/images/linux-logo.png" alt=""></p>
-<p>来源： <a href="http://www.unixguide.net/linux/linuxshortcuts.shtml" target="_blank" rel="noopener">http://www.unixguide.net/Linux/linuxshortcuts.shtml</a> 个人觉得非常好的一个Linux入门资料。待我慢慢翻译整理出来。</p>
-<blockquote>
-<p>前面的部分很值得看看，后面的很多管理工具都已经过时了，看不看影响不大了。</p>
-</blockquote>
-<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>This is a practical selection of the commands we use most often. Press <tab> to see the listing of all available command (on your PATH). On my small home system, it says there are 2595 executables on my PATH.  Many of these “commands” can be accessed from your favourite GUI front-end (probably KDE or Gnome) by clicking on the right menu or button. They can all be run from the command line.  Programs that require GUI have to be run from a terminal opened under a GUI.</tab></p>
-<p>图例: </p>
-<ul>
-<li><code>&lt;&gt;</code> = 键盘上的单个特殊按键或者功能键. 比如用 <ctrl> 表示 “control” 键. </ctrl></li>
-<li><em>italic</em> = 斜体字用于文件名，或者需要你自己替换的变量. </li>
-<li>fixed width = 等宽字体表示Linux命令和文件.</li>
-</ul>
-<p>对Unix新手的提示:<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/linux-shortcuts-and-commands/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
         
       
     </div>
@@ -1144,258 +1351,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/c-union-enum-and-func-ptr/" itemprop="url">
-                  C 联合、枚举及函数指针
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-07T12:34:50+08:00" content="2015-12-07">
-              2015-12-07
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p><img src="/images/clang.gif" alt=""></p>
-<h2 id="联合（union）"><a href="#联合（union）" class="headerlink" title="联合（union）"></a>联合（union）</h2><p>联合是一个能在同一存储空间里（但是<strong>不是同时</strong>）存储不同类型数据的数据类型。用来存储某种即没有规律，事先未知顺序的混合数据类型。联合使用于结构同样的方式建立，也需要一个联合模板和联合变量，下面是一个例子：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">union hold &#123;</span><br><span class="line">	int digit;</span><br><span class="line">	double bigfl;</span><br><span class="line">	char letter;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">union hold fit;</span><br></pre></td></tr></table></figure>
-<p>一个hold结构可以含有一个int型数值<strong>或者</strong>一个double型数值<strong>或者</strong>一个char型数值。一个联合的变量可以存储模板中声明的成员<strong>的某一个</strong>。编译器分配空间时，会分析各成员需要的空间，然后按最大需求分配。因为联合<strong>一个时刻只存储一个值</strong>，所以初始化与结构并不一样。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fit.letter = &apos;A&apos;;</span><br><span class="line">fit.digit = 127;</span><br><span class="line">union hold holdA = &#123; .bigfl = 10.08 &#125;;</span><br></pre></td></tr></table></figure>
-<p>要注意的是，<strong>需要程序员维护存储在联合变量的是哪一个成员</strong>，有时候使用了一个成员保存值，而使用另一个成员来查看这些内容，这有时很有用，但需要是程序员管理下进行的，否则会导致错误。</p>
-<h2 id="枚举（enumerated-type）"><a href="#枚举（enumerated-type）" class="headerlink" title="枚举（enumerated type）"></a>枚举（enumerated type）</h2><p>枚举类型声明代表整数常量的符号名称，通过使用关键字 enum 可以创建一个新的类型，并可以指定它<strong>可以</strong>具有的值，实际上enum常量是int类型的，因此在任何使用int类型的地方都可以使用它。枚举使得程序有更高的可读性，它的语法与结构很相似。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">enum spectrum &#123; red, orange, yellow, blue &#125;;</span><br><span class="line">enum spectrum color;</span><br><span class="line"></span><br><span class="line">// 可以当作int使用</span><br><span class="line">for (color = red; color &lt;= blue; color++)</span><br><span class="line">	...</span><br></pre></td></tr></table></figure>
-<p>类型声明中的 red, orange 等我们称之为 <strong>枚举常量</strong>，规定枚举常量都是int类型的，而定义的变量 color 称为枚举变量，可以较为宽松地限定为任意一种整数类型，常有编译器决定，比如我们这里color的范围在0-3之间，可以选择为unsigned char表示。要注意对枚举变量的一元操作符在C++中是不允许的，如果代码可能迁移到C++则不应该这样用。</p>
-<p>枚举常量默认从0开始递增，也可以为枚举列表中的常量指定特定的值。如：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">enum level &#123; low = 100, medium = 101, high &#125;;</span><br></pre></td></tr></table></figure>
-<p>这样后面没有指定值的常量会赋予后续的值（即high为102）。Go中有更加强大的 <a href="http://wuxu92.github.io/go-iota-spc/" target="_blank" rel="noopener">itoa</a> 生成更加复杂的赋值模式。</p>
-<blockquote>
-<p>可以字啊同一个作用域内对一个变量和一个标记使用同一个名字而不会发生错误，但是不能在同一作用域内使用名字相同的两个标记或者变量。</p>
-</blockquote>
-<h2 id="typedef"><a href="#typedef" class="headerlink" title="typedef"></a>typedef</h2><p>typedef 是一种高级数据特性，它能够为某一类型创建自己的名字，与#define有3个不同之处</p>
-<ul>
-<li>typedef 给出的符号名称仅限于对类型，而不是对值</li>
-<li>typedef 的解释有编译器执行，而不是预处理器（也就是说 #define 由预处理器执行</li>
-<li>虽然typedesf的范围有限，但在受限范围内，typedef比 #define更灵活</li>
-</ul>
-<p>下面是一个使用示例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef unsigned int BYTE;</span><br><span class="line">BYTE x, y[2], *z</span><br></pre></td></tr></table></figure>
-<p>typedef 的作用域取决于typedef语句所在的位置，它的作用域与变量相似。通常typedef定义的类型使用大写字母，以提醒用户这个类型名称实际上以一个符号缩写（当然也可以使用小写字母）。</p>
-<p>实际上，在 &lt;sys/types.h&gt; 中定义的很多很多类型，比如 time_t, size_t 都是使用typedef定义的整数类型。这是由于C标准留给具体实现来决定使用哪种类型。</p>
-<p>注意typedef和#define的区别：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef char * STRING</span><br><span class="line">STRING name, sign; // char *name, *sign;</span><br><span class="line"></span><br><span class="line">// define</span><br><span class="line">#define STRING char *</span><br><span class="line">STRING name, sign; // char *name, sign;</span><br></pre></td></tr></table></figure>
-<p>一种更常用的 typedef 场景是对strut 结构体创建新的类型：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef struct book &#123;</span><br><span class="line">	char title[20];</span><br><span class="line">	float price;</span><br><span class="line">&#125; Book;</span><br><span class="line">Book cspp;</span><br></pre></td></tr></table></figure>
-<p>这样使用更见方便，也更见常见。</p>
-<h2 id="一些奇特的声明"><a href="#一些奇特的声明" class="headerlink" title="一些奇特的声明"></a>一些奇特的声明</h2><p>这里记录几个比较有用的：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int *reisks[10];		// 表示具有10个元素的数组，每个元素是一个指向int的指针</span><br><span class="line">int (*risks)[10];		// 一个指针，指向具有10个元素的int数组</span><br><span class="line">int *oof[3][4];			// 一个 3×4的数组，每个元素是一个指向int的指针</span><br><span class="line">int (* uuf)[3][4];		// 一个指针，指向 3×4的int数组</span><br><span class="line">int (* uof[3])[4];		// 一个具有3个元素的数组，每个元素是一个指向具有4个元素的int数组的指针</span><br></pre></td></tr></table></figure>
-<p>理解这部分，需要知道， [] 和 () 具有相同的优先级，其优先级比 * 高，且 [] 和 () 都是从左到右进行结合的。这一块确实是比较难以理解的，过一段时间又会混乱掉。</p>
-<p>再看一下复杂的函数返回值类型：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">char * fump();			// 返回指向char的指针**的函数**</span><br><span class="line">char (* frump)();		// 指向返回类型为char的**函数的指针**</span><br><span class="line">char (* flump[3])();	// 由3个指针组成**的数组**，每个指针指向返回类型为char**的函数**</span><br></pre></td></tr></table></figure>
-<p>一个技巧是，首先确定类型，是数组、指针还是函数，在确认其他的。</p>
-<p>更复杂的typedef应用：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef int arr5[5];		// arr5 是一个有5个元素的int数组类型</span><br><span class="line">typedef arr5 * p_arr5; 		// p_arr5是指向具有5个元素的int数组的指针 的类型</span><br><span class="line">typedef p_arr5 arrp10[10];	// 一个具有10个元素的数组类型，每个元素是一个指向有5个元素的int数组</span><br></pre></td></tr></table></figure>
-<h2 id="函数和指针"><a href="#函数和指针" class="headerlink" title="函数和指针"></a>函数和指针</h2><p>上面一节中，函数指针是比较难懂的，之前也确实没有用过C中的函数指针，在Go，JS甚至PHP中都用过相似的概念，这里学习一下C中的函数指针。</p>
-<p>对于一个函数的指针，必须声明它指向的函数的类型，在C中函数的类型包括返回类型及函数的参数类型。考虑下面的函数声明：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void ToUpper(char *);</span><br></pre></td></tr></table></figure>
-<p>描述这个函数声明就是：一个具有char * 类型的参量，返回类型是void的函数，那么要声明这种函数的指针，可以如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void (*pf)(char *)</span><br></pre></td></tr></table></figure>
-<p>pf 就是一个指向 ToUpper类型函数的指针了。其前一个括号是结合符，后一个括号是表示这是一个函数指针，并且用于说明其参数类型。这是可以用 <code>*pf</code> 代替函数名 ToUpper。 第一个括号是不可省略的，之前的文章里已经提到过，<code>void *pf(char *)</code>表示一个返回一个指针的函数。</p>
-<p>有了函数指针后，可以把适当类型的函数的标识（地址）赋值给它，函数名即是函数的地址：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">char mis[12] = &quot;how are you&quot;;</span><br><span class="line">pf = ToUpper;  // 不需要 ToUpper()</span><br><span class="line">(*pf)(mis);</span><br><span class="line"></span><br><span class="line">pf(mis);</span><br></pre></td></tr></table></figure>
-<p>像上面的两种使用方式在ANSI C中都可以，第一种是C和Unix开发者使用的，第二种是Berkeley的Unix扩展这采用的，而K &amp;R C不允许使用第二种形式，ANSI C保持了对两种方式的兼容。一个使用函数指针的示例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void ToUpper(char *str) &#123;</span><br><span class="line">    while (*str != 0) &#123;</span><br><span class="line">        if (*str &gt;= &apos;a&apos; &amp;&amp; *str &lt;= &apos;z&apos;)</span><br><span class="line">            *str -= 32;</span><br><span class="line">        str++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void ToLower(char *str) &#123;</span><br><span class="line">    while (*str != 0) &#123;</span><br><span class="line">        if (*str &gt;= &apos;A&apos; &amp;&amp; *str &lt;= &apos;Z&apos;)</span><br><span class="line">            *str += 32;</span><br><span class="line">        str++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void show(void (*fp)(char *),char *str) &#123;</span><br><span class="line">    fp(str);</span><br><span class="line">    printf(&quot;str after fp: %s\n&quot;, str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">     char *hi = &quot;how are you?&quot;;</span><br><span class="line">     void (*fp)(char *);</span><br><span class="line">     fp = ToUpper;	// 类型相同的函数才能赋值给该指针</span><br><span class="line">     show(fp, hi);	// 函数指针作为参数</span><br><span class="line">     fp = ToLower;</span><br><span class="line">     show(fp, hi);</span><br><span class="line">     return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以使用typedef简化函数指针的声明，比如使用：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef void(*V_FP_CHARP) (char *);</span><br><span class="line">void show(V_FP_CHARP, char *);</span><br><span class="line"></span><br><span class="line">V_FP_CHARP pfun;</span><br></pre></td></tr></table></figure>
-<p>这样的typedef用法和之前简单的 <code>typedef unsigned char BYTE</code> 形式不太一样，不过结合前面对函数指针的介绍，应该也可以理解了。</p>
-<p>完。</p>
-<p>参考：</p>
-<ul>
-<li>除了 C Primer Plus，然而并没有</li>
-</ul>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/c-struct-of-cpp/" itemprop="url">
-                  C语言中的结构
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-06T12:34:50+08:00" content="2015-12-06">
-              2015-12-06
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p><img src="/images/clang.gif" alt=""></p>
-<p>结构体一块本科的时候就没有学好，在学习Go的时候学习了Go定义结构体的方式，最近看C Primer Plus的结构体一章，发现Go借鉴了很多C中结构体的东西，并且这本书中讲的结构体和本科书上的结构体部分很不一样，讲的更加容易理解。</p>
-<p>这里只记一些最重要的，因为对结构体已经有一定的基础了，虽然很久没有使用过了。</p>
-<h2 id="结构体的声明和变量定义"><a href="#结构体的声明和变量定义" class="headerlink" title="结构体的声明和变量定义"></a>结构体的声明和变量定义</h2><p>声明结构体的关键字是 struct ，结构体的声明是描述结构如何组合的主要方法。下面是一个示例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book &#123;</span><br><span class="line">	title char[20];</span><br><span class="line">	char author[20];</span><br><span class="line">	price float;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 定义一个结构体的变量</span><br><span class="line">struct book cpp;</span><br></pre></td></tr></table></figure>
-<p>我们把struct 后面的 book 称作（可选的）标记，用来引用该结构的快速标记。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/c-struct-of-cpp/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1442,21 +1397,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">173</span>
+              <span class="site-state-item-count">175</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">145</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

@@ -235,6 +235,353 @@
             
               
                 
+                <a class="post-title-link" href="/example-of-awk-handle-csv/" itemprop="url">
+                  一个使用awk处理csv数据示例
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-08-19T12:34:50+08:00" content="2015-08-19">
+              2015-08-19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>最近要处理一个csv文件，起始是这样的：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>mmid</th>
+<th>cp</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>zy006</td>
+<td>2200112411</td>
+<td>小米商城</td>
+</tr>
+<tr>
+<td>zy007</td>
+<td>2200123091-3003904564</td>
+<td>掌游自有渠道</td>
+</tr>
+<tr>
+<td>zy008</td>
+<td>0</td>
+<td>MM应用商城</td>
+</tr>
+<tr>
+<td>zy101</td>
+<td>2200131184-2200131784</td>
+<td>多酷</td>
+</tr>
+<tr>
+<td>zy102</td>
+<td>2200017122-2200126498-2200127284-3003898651</td>
+<td>3G门户</td>
+</tr>
+<tr>
+<td>zy104</td>
+<td>3003904473</td>
+<td>软吧</td>
+</tr>
+</tbody>
+</table>
+<p>第二列是多个元素组合起来的，现在要导入到数据库里面，把第一列和第二列的元素使用一个关联表而不是这样使用数据拼接的方式。</p>
+<p>要处理的结果是抽出第一列和第二列，然后第二列使用’-‘分割新建一条记录。</p>
+<p>步骤如下：</p>
+<p>1 抽出数据到新文件:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">awk -F <span class="string">","</span> <span class="string">'NR&gt;1&#123;printf("%s,%s\n", $1, $2)&#125;'</span> data.csv&gt; mmid.csv</span><br></pre></td></tr></table></figure>
+<p>NR代表当前的记录的数值，表示第几个记录了，这里忽略掉第一行。</p>
+<p>2 分割数据并创建新记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">awk -F <span class="string">'[,-]'</span> <span class="string">'&#123;for(i=2;i&lt;NF;i++) &#123;printf("%s,%s\n", $1, $i)&#125;&#125;'</span> mmid.csv &gt; channel_mmid.csv</span><br></pre></td></tr></table></figure>
+<p>使用-F 设置两个分割参数，使用一个循环，其中NF是number of fields的简写，表名当前当有多少条记录，对应有NR，number of record</p>
+<p>3 完成</p>
+<p>使用awk处理excel/csv文件真的非常的方便</p>
+<p>4 扩展</p>
+<p>删除记录中的某一列</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">awk -F <span class="string">','</span> <span class="string">'BEGIN&#123;OFS=","; &#125; NR&gt;1&#123;str=""; for (i=1; i&lt;=NF;i++) if (i != 2) str = str "," $i; print str&#125;'</span> channel-manage.csv &gt; new-channel-manage.csv</span><br></pre></td></tr></table></figure>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/write-your-first-php-extension/" itemprop="url">
+                  编写你的第一个PHP扩展模块(一)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-08-18T12:34:50+08:00" content="2015-08-18">
+              2015-08-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>一直以来对于PHP的扩展编写都比较感兴趣但是却没有什么更深的接触，正好最近要研究一下，做个记录吧。</p>
+<p>参考：<br><a href="http://www.laruence.com/2009/04/28/719.html" title="http://www.laruence.com/2009/04/28/719.html" target="_blank" rel="noopener">http://www.laruence.com/2009/04/28/719.html</a><br><a href="http://www.walu.cc/phpbook/5.md" title="http://www.walu.cc/phpbook/5.md" target="_blank" rel="noopener">http://www.walu.cc/phpbook/5.md</a></p>
+<p>首先我们从头安装一个PHP环境，现在最新的稳定版的PHP是5.6.12。</p>
+<h2 id="编译安装php"><a href="#编译安装php" class="headerlink" title="编译安装php"></a>编译安装php</h2><p>以下在Linux（centos）下完成</p>
+<ol>
+<li>下载src： <code>wget http://cn2.php.net/get/php-5.6.12.tar.bz2/from/this/mirror</code> wget 下载的文件可能被命名为mirror，需要重命名一下 <code>mv mirror php-5.6.12.tar.bz2</code></li>
+<li>解压： <code>tar xjvf php-5.6.12.tar.bz2</code></li>
+<li><code>cd php-5.6.12</code> 编译安装： <code>./configure --prefix=/home/wuxu/data/php5.6/ --enable-debug --enable-maintainer-zts</code></li>
+<li><code>make</code></li>
+<li><code>make install</code></li>
+<li><code>make clean</code></li>
+</ol>
+<p>这样一个新的php安装在了家目录下（/home/wuxu/data/php5.6）。</p>
+<h2 id="扩展的准备工作"><a href="#扩展的准备工作" class="headerlink" title="扩展的准备工作"></a>扩展的准备工作</h2><p>首先要理解为PHP内核编写的扩展的两个工作方式，一种是编译为动态共享对象/可装载模块，也就是常见的.so扩展，这种扩展可以在php的配置文件中方便的开启或者关闭；另外一种方式是静态编译到PHP中，使用静态方法编译比较容易上手，鸟哥的文章中也是使用的静态编译方式，所以我们也使用静态编译方式来练习。</p>
+<p>PHP在源码中提供了一个扩展骨架构造脚本： ext_skel，脚本放在php-5.6.12/ext目录下。它的使用方式如下： </p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">./ext_skel --extname=mfs --proto=mfs.def</span><br></pre></td></tr></table></figure>
+<p>解释一下，–extname明显就是我们要创建的扩展的名称，–proto的proto是prototype的缩写，也就是扩展对外提供的函数原型，可以在这个文件中添加要导出的函数签名，每个函数做一行，这样ext_skel脚本可以自动创建它们的骨架代码。比如鸟哥的例子中的字符串复制函数:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string self_concat(string str, int n)</span><br></pre></td></tr></table></figure>
+<p>把这一行保存为mfs.def文件，放在ext文件夹下。</p>
+<h2 id="基本骨架"><a href="#基本骨架" class="headerlink" title="基本骨架"></a>基本骨架</h2><p>运行上面的ext_skel命令，就会在ext文件夹下创建一个mfs的文件夹，并声称一些代码文件和配置文件。 php扩展在Linux下的配置文件是 ext/mfs/config.m4；m4有自己的语法，不过我们并不需要熟悉它，只需要简单去掉一些注释就可以了。打开配置文件config.m4；大概在16行和18行，找到<code>PHP_ARG_ENABLE(mfs, whether to enable mfs support</code> 相关的内容，这一行是用来重新生成configure文件时起作用的，取消这一行及<br>它后面的第二行<code>[ --enable-myfunctions                Include myfunctions support])</code>，中间有一行不要取消注释。这样就可以重新生成configure文件可以使用enable-mfs来静态编译扩展。</p>
+<p>完成上面的工作后，重新生成configure文件并编译安装php。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd /path/to/php-5.6.12</span><br><span class="line">./buildconf --force</span><br><span class="line">./configure --enable-fms --prefix=/home/wuxu/data/php5.6 --with-config-file-path=/home/wuxu/data/etc/php.ini</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>这样编译的php就带有了fms扩展，并可以使用在def文件中定义的原型函数。但是由于并没有编写那个函数的具体内容，所以这个是str_concat函数并不能起作用，不过ext_skel脚本还导出了一个函数： confirm_mfs_compiled(str); 可以用下面的脚本检测fms扩展是否可用了：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">print</span> confirm_mfs_compiled(<span class="string">"myextension"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// output: </span></span><br><span class="line"><span class="comment">// "Congratulations! You have successfully modified ext/mfs</span></span><br><span class="line"><span class="comment">//  </span></span><br><span class="line"><span class="comment">// config.m4. Module mfs is now compiled into PHP."</span></span><br></pre></td></tr></table></figure>
+<p>表明脚本已经编译到php了。下面我们就可以开始编写self_concat的具体内容了。</p>
+<h2 id="起始代码"><a href="#起始代码" class="headerlink" title="起始代码"></a>起始代码</h2><p>先看一下有ext_skel脚本自动生成的self_concat函数代码，在ext/mfs/mfs.c:76 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PHP_FUNCTION(self_concat)</span><br><span class="line">&#123;</span><br><span class="line">	char *str = NULL;</span><br><span class="line">	int argc = ZEND_NUM_ARGS();</span><br><span class="line">	int str_len;</span><br><span class="line">	long n;</span><br><span class="line">	if (zend_parse_parameters(argc TSRMLS_CC, &quot;sl&quot;, &amp;str, &amp;str_len, &amp;n) == FAILURE)</span><br><span class="line">		return;</span><br><span class="line">	php_error(E_WARNING, &quot;self_concat: not yet implemented&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这些代码是一个到处函数的基本框架了。<br>使用PHPFUNCTION()宏来生成一个适合于Zend引擎的函数原型。其中比较重要的是 zend_parse_parameters 函数，用来获取函数传递的参数；该函数的原型是：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">zend_parse_parameters(<span class="keyword">int</span> num_args TSRMLS_DC, <span class="keyword">char</span> *type_spec, …);</span><br></pre></td></tr></table></figure>
+<p>第一个参数是参数的个数，通常使用<code>ZEND_NUM_ARGS()</code>的返回值，TSRMLS_DC这个照写就可以了，第三个参数比较复杂是一个表示函数期望的参数类型的字符串，后面紧跟参数值的变量列表，这里有一个PHP的松散变量和动态类型推断到C语言类型的转换。</p>
+<p>第三个参数根据一个参数类型对照表生成:</p>
+<table>
+<thead>
+<tr>
+<th>类型指定符</th>
+<th>对应的C类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>l</td>
+<td>long</td>
+<td>符号整数</td>
+</tr>
+<tr>
+<td>d</td>
+<td>double</td>
+<td>浮点数</td>
+</tr>
+<tr>
+<td>s</td>
+<td>char *, int</td>
+<td>二进制字符串，长度</td>
+</tr>
+<tr>
+<td>b</td>
+<td>zend_bool</td>
+<td>逻辑型（1或0）</td>
+</tr>
+<tr>
+<td>r</td>
+<td>zval *</td>
+<td>资源（文件指针，数据库连接等）</td>
+</tr>
+<tr>
+<td>a</td>
+<td>zval *</td>
+<td>联合数组</td>
+</tr>
+<tr>
+<td>o</td>
+<td>zval *</td>
+<td>任何类型的对象</td>
+</tr>
+<tr>
+<td>O</td>
+<td>zval *</td>
+<td>指定类型的对象。需要提供目标对象的类类型</td>
+</tr>
+<tr>
+<td>z</td>
+<td>zval *</td>
+<td>无任何操作的zval</td>
+</tr>
+</tbody>
+</table>
+<p>考虑上面代码的实例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if (zend_parse_parameters(argc TSRMLS_CC, &quot;sl&quot;, &amp;str, &amp;str_len, &amp;n) == FAILURE)</span><br><span class="line">	return;</span><br></pre></td></tr></table></figure>
+<p>“sl”: 第一个字符s代表二进制字符串，它在后面的参数列表中对应两个值，一个 &amp;str， 一个&amp;strlen；第二个字符’l’（L的小写）,表示整数类型参数对应 &amp;n。</p>
+<blockquote>
+<p>扩展中的字符串都是二进制字符串，即并不以\0作为字符串结束，而是使用一个str_len表示字符串长度，具体看_zval结构体。</p>
+</blockquote>
+<p>下面的工作就是修改这个函数了。</p>
+<h2 id="完成第一个导出函数"><a href="#完成第一个导出函数" class="headerlink" title="完成第一个导出函数"></a>完成第一个导出函数</h2><p>将自动生成的函数更新为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PHP_FUNCTION(self_concat)</span><br><span class="line">&#123;</span><br><span class="line">	char *str = NULL;</span><br><span class="line">	int argc = ZEND_NUM_ARGS();</span><br><span class="line">	int str_len;</span><br><span class="line">	long n;</span><br><span class="line">	char *result; /* Points to resulting string */</span><br><span class="line">	char *ptr; /* Points at the next location we want to copy to */</span><br><span class="line">	int result_length; /* Length of resulting string */</span><br><span class="line">	</span><br><span class="line">	if (zend_parse_parameters(argc TSRMLS_CC, &quot;sl&quot;, &amp;str, &amp;str_len, &amp;n) == FAILURE) &#123;</span><br><span class="line">		return;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	result_length = (str_len * n);</span><br><span class="line">	result = (char *) emalloc(result_length + 1);</span><br><span class="line">	ptr = result;</span><br><span class="line">	while (n--) &#123;</span><br><span class="line">		memcpy(ptr, str, str_len);</span><br><span class="line">		ptr += str_len;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	*ptr = &apos;\0&apos;;</span><br><span class="line"></span><br><span class="line">	RETURN_STRINGL(result, result_length, 0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>按照上面的方法，重新编译php， 就可以在php文件中直接使用slef_concat()函数拼接字符串了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">print self_concat(&quot;pop_&quot;, 10);</span><br></pre></td></tr></table></figure>
+<p>保存为confirm.php;运行：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">php confirm.php</span><br></pre></td></tr></table></figure>
+<p>会输出拼接的字符串了。</p>
+<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/php-using-late-static-bindings/" itemprop="url">
                   使用后期静态绑定实现MVC的Model的基类
                 </a>
@@ -935,138 +1282,6 @@
             
               
                 
-                <a class="post-title-link" href="/litle-known-css-facts/" itemprop="url">
-                  那些你可能不知道但是很有意思的CSS Tricks
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-27T12:34:50+08:00" content="2015-07-27">
-              2015-07-27
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/fe/" itemprop="url" rel="index">
-                    <span itemprop="name">fe</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>在去年的时候，Louis Lazaris在sitepoint上发了一篇文章 [http</p>
-<p>参考：<br><a href="http://www.sitepoint.com/12-little-known-css-facts/" target="_blank" rel="noopener">12 Little-Known CSS Facts</a><br><a href="http://www.sitepoint.com/12-little-known-css-facts-the-sequel/" target="_blank" rel="noopener">12 Little-Known CSS Facts (The Sequel)</a></p>
-<p>CSS 本身并不是非常复杂的语言，但是即使你写过很多的CSS样式，你总会感觉到对它并不了解，使用了很多年之后你还是会偶遇很多你没有用过的“有意思”的样式属性，本文作者列举了一些这样的Tricks。</p>
-<h2 id="color属性不只是作用域文本"><a href="#color属性不只是作用域文本" class="headerlink" title="color属性不只是作用域文本"></a>color属性不只是作用域文本</h2><p>color属性大家都很熟悉，一般用来设置文本(Text)的颜色属性，但是如果你把body标签的color设置为某种颜色，比如<code>color: yellow</code>几乎所有的东西就都会变成黄色的，包括图片的替代文本，列表的bullet，border等，但是<code>hr</code>标签并不会默认继承这个颜色，需要手动设置 <code>border-color: inherit</code>才会变成黄色。<br>color属性的spec中是这么定义的：</p>
-<blockquote>
-<p>This property describes the foreground color of an element’s text<br>content. In addition it is used to provide a potential indirect value<br>… for any other properties that accept color values.</p>
-</blockquote>
-<h2 id="visibility属性可以设置为”collapse”"><a href="#visibility属性可以设置为”collapse”" class="headerlink" title="visibility属性可以设置为”collapse”"></a>visibility属性可以设置为”collapse”</h2><p>所有元素的visibility属性的默认值都是<code>visible</code>, 我们可以把它设置为<code>hidden</code>来隐藏一个元素，与<code>dispaly: none</code>表现不同的是，hidden的元素仍然会占据原来的空间（still occupy space）<br>visibility属性还有一个值就是<code>collapse</code>，它的表现一般和<code>hidden</code>是一样的，但是在table中表现会不一样，可能你已经想到了，在table元素中的行，行组，列，列组中使用<code>collapse</code>属性它的表现和<code>display:none</code>是一样的。<br><strong>不过用于浏览器对这个属性的表现并不一致，所以还是<a href="http://css-tricks.com/almanac/properties/v/visibility/" target="_blank" rel="noopener">不要使用</a>了</strong></p>
-<h2 id="background属性有了新的内容"><a href="#background属性有了新的内容" class="headerlink" title="background属性有了新的内容"></a>background属性有了新的内容</h2><p>在CSS 2.1中，background属性有color, image, repeat, attachment, position 5个“子内容”，在CSS3 中，添加很了一些新内容：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">background</span>: <span class="selector-attr">[background-color]</span> <span class="selector-attr">[background-image]</span> <span class="selector-attr">[background-repeat]</span></span><br><span class="line">            [background-attachment] [background-position] / [ background-size]</span><br><span class="line">            <span class="selector-attr">[background-origin]</span> <span class="selector-attr">[background-clip]</span></span><br></pre></td></tr></table></figure>
-<p>一个示例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.example &#123;</span><br><span class="line">  background: aquamarine url(img.png)</span><br><span class="line">	no-repeat</span><br><span class="line">	scroll</span><br><span class="line">	center center / 50%</span><br><span class="line">	content-box content-box;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这些新属性在所有现代浏览器都能正常工作，只不过好像用处也不大。</p>
-<h2 id="clip属性只在绝对定位元素上起作用"><a href="#clip属性只在绝对定位元素上起作用" class="headerlink" title="clip属性只在绝对定位元素上起作用"></a>clip属性只在绝对定位元素上起作用</h2><p>clip属性可以用来对元素进行裁剪，它的值是一个图形，比如rect，或者是auto。<br>但是要注意，clip属性只对决定定位元素起作用，包括<code>position: absolute;</code>,和<code>position: fixed</code>两种情况。<br>使用:</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.example</span> &#123;</span><br><span class="line">	<span class="attribute">position</span>: absolute;</span><br><span class="line">	<span class="attribute">clip</span>: <span class="built_in">rect</span>(110px, 160px, 170px, 60px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>它的表现可以参考这张图片: <img src="http://cdn.impressivewebs.com/2012-05/clip-visual.jpg" alt=""><br>更多关于clip的内容，可以查看<a href="http://www.impressivewebs.com/css-clip-property/" target="_blank" rel="noopener">这里</a></p>
-<h2 id="垂直百分比和容器的宽度有关而不是高度"><a href="#垂直百分比和容器的宽度有关而不是高度" class="headerlink" title="垂直百分比和容器的宽度有关而不是高度"></a>垂直百分比和容器的宽度有关而不是高度</h2><p>这个听起来有点奇怪，我们知道百分比计算宽度是基于容器的宽度的，但是实际上padding-top, margin-top, padding-bottom, margin-bottom这些属性的百分比属性也是基于容器的宽度的，而不是高度。<br>这是挺有意思的。</p>
-<h2 id="border属性-is-Kind-of-Like-Inception"><a href="#border属性-is-Kind-of-Like-Inception" class="headerlink" title="border属性 is Kind of Like Inception"></a>border属性 is Kind of Like Inception</h2><p>border属性我们会经常使用，比如这样子：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.somecontainer</span> &#123;</span><br><span class="line">	<span class="attribute">border</span>: solid <span class="number">1px</span> black;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们知道border属性是border-style, border=width, border-color三个属性的综合声明。但是其实这三个属性都可以对上下左右四条边分别设置属性：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.somecontainer</span> &#123;</span><br><span class="line">	<span class="attribute">border-width</span>: <span class="number">2px</span> <span class="number">5px</span> <span class="number">1px</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样可以把border设置的很复杂，不过在实际使用中，并不要这么用，因为这样使得整个元素显得混乱而导致页面风格混乱。</p>
-<h2 id="text-decoration-现在也成为了一种速记符（shorthand）"><a href="#text-decoration-现在也成为了一种速记符（shorthand）" class="headerlink" title="text-decoration 现在也成为了一种速记符（shorthand）"></a>text-decoration 现在也成为了一种速记符（shorthand）</h2><p>新的css规范中，可以这样使用text-decoration属性：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">a</span> &#123;</span><br><span class="line">	<span class="attribute">text-decoration</span>: overline aqua wavy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>第一个值是<code>text-decoration-line</code>, 第二个是<code>text-decoration-color</code>, 第三个是 <code>text-dcoration-style</code>属性<br>不过这个属性只在firefox中实现了。</p>
-<h2 id="border-width属性可以接受关键字值"><a href="#border-width属性可以接受关键字值" class="headerlink" title="border-width属性可以接受关键字值"></a>border-width属性可以接受关键字值</h2><p>现在border-width 可以接受 <code>medium</code>, <code>thin</code>, <code>thick</code>关键字了。他们在浏览器实现中大概是1px, 2px, 5px;不过在spec中并没有指定他们具体的值。</p>
-<h2 id="几乎没人使用botder-image"><a href="#几乎没人使用botder-image" class="headerlink" title="几乎没人使用botder-image"></a>几乎没人使用botder-image</h2><p><code>border-image</code>看起来是个不错的属性，使某些表现变得整洁，有一个特别经典的例子是在一圈文字的border加一圈花or狗爪印？不过在现实中几乎没有人会使用这个属性，我也没有使用过。。</p>
-<h2 id="empty-cells属性"><a href="#empty-cells属性" class="headerlink" title="empty-cells属性"></a>empty-cells属性</h2><p>这个属性被所有主流浏览器支持，包括IE8。它的用法如下：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">table</span> &#123;</span><br><span class="line">	<span class="attribute">empty-cell</span>: hide;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个属性用于table元素中空td的样式。或许会有用哦。 测试： <a href="http://codepen.io/SitePoint/pen/yfhtq" target="_blank" rel="noopener">codepen</a></p>
-<h2 id="font-style属性接受“oblique”值"><a href="#font-style属性接受“oblique”值" class="headerlink" title="font-style属性接受“oblique”值"></a>font-style属性接受“oblique”值</h2><p>这个看起来和 <code>font-style: italic</code> 并没有什么区别，都是斜体字体，spec中是这么描述的：</p>
-<blockquote>
-<p>“…selects a font that is labeled as an oblique face, or an italic face if one is not.”</p>
-</blockquote>
-<p>如果设置的字体没有真正的italic样式（face），那么<code>font-style:italic</code> 和 <code>font-style: oblique</code>的表现是一样的。</p>
-<h2 id="word-wrap-属性和overflow-wrap属性是一样的"><a href="#word-wrap-属性和overflow-wrap属性是一样的" class="headerlink" title="word-wrap 属性和overflow-wrap属性是一样的"></a>word-wrap 属性和overflow-wrap属性是一样的</h2><p><code>word-wrap</code>是微软提出的一个属性，所以在IE老版本中都有很好的支持，但是W3C决定使用<code>overflow-wrap</code> 替换掉 <code>word-wrap</code>。但是现在所有的浏览器都支持 <code>word-wrap</code>属性了，所以要替换也不是那么容易的事了。</p>
-<p>没什么问题的话还是继续使用<code>word-wrap</code>吧。</p>
-<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/notes-of-go-by-example/" itemprop="url">
                   Go by Example 中值得注意的点(一)
                 </a>
@@ -1204,8 +1419,8 @@
             
               
                 
-                <a class="post-title-link" href="/use-yadr-enhancing-your-vim/" itemprop="url">
-                  yadr中提供的vim快捷操作
+                <a class="post-title-link" href="/litle-known-css-facts/" itemprop="url">
+                  那些你可能不知道但是很有意思的CSS Tricks
                 </a>
               
             
@@ -1215,185 +1430,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-07-25T12:34:50+08:00" content="2015-07-25">
-              2015-07-25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/tools/" itemprop="url" rel="index">
-                    <span itemprop="name">tools</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>github上面的活跃的dotfiles项目[yadr](https</p>
-<p>这里主要就是官方readme文档的 <a href="https://github.com/skwp/dotfiles/#vim---whats-included" title="https://github.com/skwp/dotfiles/#vim---whats-included" target="_blank" rel="noopener">Vim部分</a> 的记录。基本的vim操作就不详细介绍了。</p>
-<p>参考： <a href="http://skwp.github.io/dotfiles/" title="http://skwp.github.io/dotfiles/" target="_blank" rel="noopener">http://skwp.github.io/dotfiles/</a></p>
-<h2 id="有什么？"><a href="#有什么？" class="headerlink" title="有什么？"></a>有什么？</h2><p>yadr提供了</p>
-<h2 id="导航"><a href="#导航" class="headerlink" title="导航"></a>导航</h2><ul>
-<li><code>,z</code> 切换到前一个缓冲文件（buffer），相当于 :bp[revious]</li>
-<li><code>,x</code> 切换到后一个缓冲，相当于命令行的 :bn[ext]</li>
-<li><code>Alt+j</code> 和 <code>Alt+k</code> 下跳或者上跳一个函数；好像不起作用</li>
-<li><code>Ctrl+o</code> 跳转到旧的指针位置，这是vim的标准快捷键，<strong>非常有用</strong></li>
-<li><code>Ctrl+i</code> Ctrl+o的逆操作，也是标准按键</li>
-</ul>
-<h2 id="搜索与代码导航"><a href="#搜索与代码导航" class="headerlink" title="搜索与代码导航"></a>搜索与代码导航</h2><ul>
-<li><code>,f</code> 跳转到类定义，需要系统安装了ctags，并创建tags file。</li>
-</ul>
-<blockquote>
-<p>ctags是一个独立的软件，不包含在vim之中，使用yum安装即可，在项目目录下运行 <code>ctags -R .</code> 后会创建tags file，这是就可以使用跳转到定义的功能了。</p>
-</blockquote>
-<ul>
-<li><code>,F</code> 与<code>,f</code>相同不过在新建垂直分屏（vsp）显示定义</li>
-<li><code>,gf</code>或者 <code>ctrl+f</code> 跳转到光标坐在变量名对应的文件，但是在一个新的分栏中显示，这在java中比较好用</li>
-<li><code>gF</code> 标准快捷键，打开文件</li>
-<li><code>K</code> 搜索光标所在单词，并在quickfix窗口显示结果，这个功能需要安装silver serach, <code>sudo yum install -y the_silver_searcher</code></li>
-<li><code>,K</code> 没太多用，Grep the current word up to next exclamation point (useful for ruby foo! methods)</li>
-<li><code>,hl</code> 开关搜索结果的高亮，相当于 :set noh与其逆操作</li>
-<li><code>,gg</code>或者<code>,ag</code>: 搜索，键入这个命令后，会出现一个输入符，在双引号中输入字符后回车会搜索包含这段字符的行</li>
-<li><code>,gd</code> 搜索包含字符的函数定义， grep def,不太用</li>
-<li><code>,gcf</code> grep current file的缩写，查找对本文件的引用</li>
-<li><code>//</code> 清空搜索</li>
-<li><code>,,w</code> <code>,&lt;Esc&gt;</code>的alias，EasyMotion，highlights jump-points on the screen and lets you type to get there</li>
-<li><code>,mc</code> 多标签，这个功能和sublime中的比较像，在一个单词上面使用<code>,mc</code>会记录这个单词，然后使用<code>Ctrl-n</code>或者<code>Ctrl+p</code>选择前一个或者后一个相同的单词的，或者使用Ctrl+x跳过一个。 这个比较有用</li>
-<li><code>gK</code> 打开光标所在单词同名的文档？不常用</li>
-</ul>
-<h2 id="文件导航"><a href="#文件导航" class="headerlink" title="文件导航"></a>文件导航</h2><ul>
-<li><code>,t</code>  文件选择器，不常- 用，键入指令后可以输入字符筛选文件</li>
-<li><code>,b</code> 打开缓存区的一个文件，比较常用</li>
-<li><code>Cmd-Shift-M</code> 跳转到方法，Linux下好像没用。</li>
-<li><code>,jm</code> jump to models,可能在rails里面比较有用</li>
-<li><code>Alt+Shift+N</code> nerd tree toogle,好像没什么用</li>
-<li><code>Ctrl+\</code> 在侧边栏文件树显示当前文件，和sublime的sidebar有点像</li>
-<li><code>Cmd-Shift-P</code> 清空ctrlp 缓存，没用过</li>
-</ul>
-<h2 id="常用编辑快捷键"><a href="#常用编辑快捷键" class="headerlink" title="常用编辑快捷键"></a>常用编辑快捷键</h2><ul>
-<li><code>Ctrl+space</code> 自动补全- ， Tab键</li>
-<li><code>,#</code>; <code>,&quot;</code>; <code>,&#39;</code>; <code>,]</code>; <code>,)</code>; <code>,}</code>;  这些优点麻烦的样子，待补充</li>
-<li><code>,.</code> 跳转到上一个编辑地点。和<code>&#39;.</code>的作用相同。</li>
-<li><code>,ci</code> change inside any set of quotes/brackets/etc。其作用是删除”, {}, ()之间的字符并进入插入模式</li>
-</ul>
-<h2 id="多标签，多窗口，分割模式"><a href="#多标签，多窗口，分割模式" class="headerlink" title="多标签，多窗口，分割模式"></a>多标签，多窗口，分割模式</h2><ul>
-<li><code>alt+n</code> - 快速跳转到指定的tab</li>
-<li><code>Ctrl-h,j,k,l</code> 在分栏窗口中上下左右移动。</li>
-<li><code>Q</code> 关闭当前的window，<strong>非常方便</strong></li>
-<li><code>vv</code> 与 <code>Ctrl-w,v</code>一样，vertical split, 上下分栏</li>
-<li><code>ss</code> 与 <code>Ctrl-w,s</code>一样，horizontal split，左右分栏</li>
-<li><code>,qo</code> 打开quickfix， qo =&gt; quickfix open, <strong>有用</strong></li>
-<li><code>,qc</code> 关闭quickfix,  qc =&gt; quickfix close， <strong>有用</strong>，yadr配置的vim在保存文件时会做语法检查，如果检查不通过会在quickfix窗口显示错误，并且不会自动消失，这时候也许需要 <code>,qc</code>来关闭它。</li>
-</ul>
-<h2 id="其它常用"><a href="#其它常用" class="headerlink" title="其它常用"></a>其它常用</h2><ul>
-<li><code>Ctrl-p</code> 循环历史剪切板，这个很有用，p是粘贴，Ctrl+p会粘贴之前的剪切板内容</li>
-<li><code>,yr</code> view yanking, 查看历史复制记录， <code>q</code>退出查看</li>
-<li><code>crs</code>, <code>crc</code>, <code>cru</code> cr 应该是 coerce（强制）， s是snake, c是camelcase， u是UPPER，转换变量大小写下划线形式，比较有意思,可以使用<code>:help abolish</code>查看更多</li>
-<li><code>:NR</code> NarrowRgn，看名字不知道是干什么的，其实是选中一段代码，然后<code>:NR</code>vim会新开一个split把选中的代码放在心的split中操作，操作完后，<code>wq</code>会把结果覆盖掉原来选中的代码。也挺有用的。</li>
-<li><code>,ig</code> toggle visual indentation guids</li>
-<li><code>,cf</code> 拷贝当前文件的完整路径到系统剪切板</li>
-<li><code>,cn</code> 拷贝文件名</li>
-<li><code>,yw</code> yw是从复制从光标位置开始到单词结束，<code>,yw</code>是在任意位置复制整个单词</li>
-<li><code>,ow</code> 使用yank buffer中内容覆盖当前所在的单词，ow =&gt; overwrite</li>
-<li><code>,ocf</code> 打开所有git标记为修改过的文件，在splits中打开。使用git版本控制下的文件才有用, ocf =&gt; open changed files</li>
-<li><code>,w</code> 去掉尾部多余的空格，应该很有用， StripTrailingWhitespaces</li>
-<li><code>sj</code> 把单行的hash表格式化为多行的</li>
-<li><code>sk</code> unsplit a link 应该不怎么用</li>
-<li><code>,he</code> he =&gt; html escape</li>
-<li><code>,hu</code> hu =&gt; html unescape</li>
-<li><code>Alt+Shift-A</code> align things, 好像没什么用</li>
-<li><code>:ColorToggle</code> 顾名思义</li>
-<li><code>:Gitv</code> git log browser</li>
-<li><code>,hi</code>  显示当前高亮的组</li>
-<li><code>,gt</code> Go Tidy， 格式化html代码</li>
-<li><code>:Wrap</code> 折叠长行，这个比较有用,特别是quickfix中的提示经常跑出去了 // 好像对quickfix部分不起作用 -_-</li>
-<li><code>Cmd-/</code> toggle comments,在Linux下使用alt</li>
-<li><code>gcp</code> comment a paragraph</li>
-</ul>
-<h2 id="vim相关"><a href="#vim相关" class="headerlink" title="vim相关"></a>vim相关</h2><p><code>,vr</code> 重新加载vim， vim reload</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/z-expand-anchor-element-to-fill-parent/" itemprop="url">
-                  A标签(Anchor Tag)占满父元素的实现
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-24T12:34:50+08:00" content="2015-07-24">
-              2015-07-24
+            <time itemprop="dateCreated" datetime="2015-07-27T12:34:50+08:00" content="2015-07-27">
+              2015-07-27
             </time>
           </span>
 
@@ -1434,20 +1472,44 @@
         
           <span itemprop="articleBody">
             
-              <p>A标签默认是inline元素，所以标签内容的长短决定了鼠标hover的范围，在有些时候，比如某些导航列表中，需要hover父标签（li）时能hover到a标签。</p>
-<p>在制作一个API文档的侧边栏导航列表的时候，html大概是这样的</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;div class=&quot;toc-macro absolute&quot;&gt;</span><br><span class="line">&lt;ul class=&quot;toc-indentation&quot;&gt;</span><br><span class="line">  &lt;li&gt;&lt;a href=&quot;#id-1&quot;&gt;1. 绑定手机号&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">  &lt;li&gt;&lt;a href=&quot;#id-2&quot;&gt;2. 查询手机号码是否可以绑定&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">  &lt;li&gt;&lt;a href=&quot;#id-3&quot;&gt;3. 添加邮箱&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">  &lt;li&gt;&lt;a href=&quot;#id-4&quot;&gt;4. 检查邮箱是否可以添加&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
-<p>其他的样式就不具体写了，其实现的效果是在右侧边栏实现一个列表导航。一些主要的样式大概如下：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.toc-macro</span>&#123; <span class="attribute">position</span>: fixed; <span class="attribute">top</span>: <span class="number">100px</span>; &#125;</span><br><span class="line"><span class="selector-class">.toc-macro</span> <span class="selector-tag">ul</span> &#123;<span class="attribute">list-style-type</span>:none; &#125;</span><br><span class="line"><span class="selector-class">.toc-macro</span> <span class="selector-tag">a</span> &#123; <span class="attribute">text-decoration</span>: none; &#125;</span><br><span class="line"><span class="selector-class">.toc-macro</span> <span class="selector-tag">li</span> &#123; <span class="attribute">padding</span>: <span class="number">6px</span> <span class="number">8px</span> <span class="number">2px</span>;<span class="attribute">text-decoration</span>:none; &#125;</span><br><span class="line"><span class="selector-tag">li</span><span class="selector-pseudo">:hover</span> &#123; <span class="attribute">background-color</span>: <span class="number">#efefef</span>;<span class="attribute">color</span>: <span class="number">#7DB75C</span>; &#125;</span><br><span class="line"><span class="selector-class">.toc-macro</span> <span class="selector-tag">a</span><span class="selector-pseudo">:hover</span> &#123; <span class="attribute">background-color</span>: <span class="number">#efefef</span>;<span class="attribute">color</span>: <span class="number">#7DB75C</span>; &#125;</span><br></pre></td></tr></table></figure>
-<p>其中使用了决定定位时导航不会随着滚动条而滚动，使我们在查看API文档时总是能看到这个导航。<br>这样子基本符合我们的需求了，但是有一个小小的问题，那就是鼠标放到导航上如果没有放到a链接上面，li标签会变色，但是由于鼠标没有在a上所以还是箭头的形状。。。这个小小的瑕疵需要解决一下。</p>
-<p>首先我们想到的是把a标签的宽度设置到 100%：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.toc-macro a &#123; display:inline-block; width: 100%; &#125;</span><br></pre></td></tr></table></figure>
-<p>但是这样似乎并没有按照我们所想的表现出来。我们需要再加一些东西，让a标签的inline-block可以把宽度填充</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.toc-macro li &#123; vertical-align: middle; line-height: 15px;&#125;</span><br></pre></td></tr></table></figure>
-<p>另外还有一种实现思路那就是把div下所有标签的display属性设置为block,同时a的height设置为100%：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.toc-macro ul &#123; display: block; &#125;</span><br><span class="line">.toc-macro li &#123; display: block;&#125;</span><br><span class="line">.toc-macro a &#123; display:block; height:100%; &#125;</span><br></pre></td></tr></table></figure>
-<p>这样实现应该也是可行的，不过没有测试过了。</p>
-
+              <p>在去年的时候，Louis Lazaris在sitepoint上发了一篇文章 [http</p>
+<p>参考：<br><a href="http://www.sitepoint.com/12-little-known-css-facts/" target="_blank" rel="noopener">12 Little-Known CSS Facts</a><br><a href="http://www.sitepoint.com/12-little-known-css-facts-the-sequel/" target="_blank" rel="noopener">12 Little-Known CSS Facts (The Sequel)</a></p>
+<p>CSS 本身并不是非常复杂的语言，但是即使你写过很多的CSS样式，你总会感觉到对它并不了解，使用了很多年之后你还是会偶遇很多你没有用过的“有意思”的样式属性，本文作者列举了一些这样的Tricks。</p>
+<h2 id="color属性不只是作用域文本"><a href="#color属性不只是作用域文本" class="headerlink" title="color属性不只是作用域文本"></a>color属性不只是作用域文本</h2><p>color属性大家都很熟悉，一般用来设置文本(Text)的颜色属性，但是如果你把body标签的color设置为某种颜色，比如<code>color: yellow</code>几乎所有的东西就都会变成黄色的，包括图片的替代文本，列表的bullet，border等，但是<code>hr</code>标签并不会默认继承这个颜色，需要手动设置 <code>border-color: inherit</code>才会变成黄色。<br>color属性的spec中是这么定义的：</p>
+<blockquote>
+<p>This property describes the foreground color of an element’s text<br>content. In addition it is used to provide a potential indirect value<br>… for any other properties that accept color values.</p>
+</blockquote>
+<h2 id="visibility属性可以设置为”collapse”"><a href="#visibility属性可以设置为”collapse”" class="headerlink" title="visibility属性可以设置为”collapse”"></a>visibility属性可以设置为”collapse”</h2><p>所有元素的visibility属性的默认值都是<code>visible</code>, 我们可以把它设置为<code>hidden</code>来隐藏一个元素，与<code>dispaly: none</code>表现不同的是，hidden的元素仍然会占据原来的空间（still occupy space）<br>visibility属性还有一个值就是<code>collapse</code>，它的表现一般和<code>hidden</code>是一样的，但是在table中表现会不一样，可能你已经想到了，在table元素中的行，行组，列，列组中使用<code>collapse</code>属性它的表现和<code>display:none</code>是一样的。<br><strong>不过用于浏览器对这个属性的表现并不一致，所以还是<a href="http://css-tricks.com/almanac/properties/v/visibility/" target="_blank" rel="noopener">不要使用</a>了</strong></p>
+<h2 id="background属性有了新的内容"><a href="#background属性有了新的内容" class="headerlink" title="background属性有了新的内容"></a>background属性有了新的内容</h2><p>在CSS 2.1中，background属性有color, image, repeat, attachment, position 5个“子内容”，在CSS3 中，添加很了一些新内容：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">background</span>: <span class="selector-attr">[background-color]</span> <span class="selector-attr">[background-image]</span> <span class="selector-attr">[background-repeat]</span></span><br><span class="line">            [background-attachment] [background-position] / [ background-size]</span><br><span class="line">            <span class="selector-attr">[background-origin]</span> <span class="selector-attr">[background-clip]</span></span><br></pre></td></tr></table></figure>
+<p>一个示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.example &#123;</span><br><span class="line">  background: aquamarine url(img.png)</span><br><span class="line">	no-repeat</span><br><span class="line">	scroll</span><br><span class="line">	center center / 50%</span><br><span class="line">	content-box content-box;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这些新属性在所有现代浏览器都能正常工作，只不过好像用处也不大。</p>
+<h2 id="clip属性只在绝对定位元素上起作用"><a href="#clip属性只在绝对定位元素上起作用" class="headerlink" title="clip属性只在绝对定位元素上起作用"></a>clip属性只在绝对定位元素上起作用</h2><p>clip属性可以用来对元素进行裁剪，它的值是一个图形，比如rect，或者是auto。<br>但是要注意，clip属性只对决定定位元素起作用，包括<code>position: absolute;</code>,和<code>position: fixed</code>两种情况。<br>使用:</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.example</span> &#123;</span><br><span class="line">	<span class="attribute">position</span>: absolute;</span><br><span class="line">	<span class="attribute">clip</span>: <span class="built_in">rect</span>(110px, 160px, 170px, 60px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>它的表现可以参考这张图片: <img src="http://cdn.impressivewebs.com/2012-05/clip-visual.jpg" alt=""><br>更多关于clip的内容，可以查看<a href="http://www.impressivewebs.com/css-clip-property/" target="_blank" rel="noopener">这里</a></p>
+<h2 id="垂直百分比和容器的宽度有关而不是高度"><a href="#垂直百分比和容器的宽度有关而不是高度" class="headerlink" title="垂直百分比和容器的宽度有关而不是高度"></a>垂直百分比和容器的宽度有关而不是高度</h2><p>这个听起来有点奇怪，我们知道百分比计算宽度是基于容器的宽度的，但是实际上padding-top, margin-top, padding-bottom, margin-bottom这些属性的百分比属性也是基于容器的宽度的，而不是高度。<br>这是挺有意思的。</p>
+<h2 id="border属性-is-Kind-of-Like-Inception"><a href="#border属性-is-Kind-of-Like-Inception" class="headerlink" title="border属性 is Kind of Like Inception"></a>border属性 is Kind of Like Inception</h2><p>border属性我们会经常使用，比如这样子：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.somecontainer</span> &#123;</span><br><span class="line">	<span class="attribute">border</span>: solid <span class="number">1px</span> black;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们知道border属性是border-style, border=width, border-color三个属性的综合声明。但是其实这三个属性都可以对上下左右四条边分别设置属性：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.somecontainer</span> &#123;</span><br><span class="line">	<span class="attribute">border-width</span>: <span class="number">2px</span> <span class="number">5px</span> <span class="number">1px</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样可以把border设置的很复杂，不过在实际使用中，并不要这么用，因为这样使得整个元素显得混乱而导致页面风格混乱。</p>
+<h2 id="text-decoration-现在也成为了一种速记符（shorthand）"><a href="#text-decoration-现在也成为了一种速记符（shorthand）" class="headerlink" title="text-decoration 现在也成为了一种速记符（shorthand）"></a>text-decoration 现在也成为了一种速记符（shorthand）</h2><p>新的css规范中，可以这样使用text-decoration属性：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">a</span> &#123;</span><br><span class="line">	<span class="attribute">text-decoration</span>: overline aqua wavy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一个值是<code>text-decoration-line</code>, 第二个是<code>text-decoration-color</code>, 第三个是 <code>text-dcoration-style</code>属性<br>不过这个属性只在firefox中实现了。</p>
+<h2 id="border-width属性可以接受关键字值"><a href="#border-width属性可以接受关键字值" class="headerlink" title="border-width属性可以接受关键字值"></a>border-width属性可以接受关键字值</h2><p>现在border-width 可以接受 <code>medium</code>, <code>thin</code>, <code>thick</code>关键字了。他们在浏览器实现中大概是1px, 2px, 5px;不过在spec中并没有指定他们具体的值。</p>
+<h2 id="几乎没人使用botder-image"><a href="#几乎没人使用botder-image" class="headerlink" title="几乎没人使用botder-image"></a>几乎没人使用botder-image</h2><p><code>border-image</code>看起来是个不错的属性，使某些表现变得整洁，有一个特别经典的例子是在一圈文字的border加一圈花or狗爪印？不过在现实中几乎没有人会使用这个属性，我也没有使用过。。</p>
+<h2 id="empty-cells属性"><a href="#empty-cells属性" class="headerlink" title="empty-cells属性"></a>empty-cells属性</h2><p>这个属性被所有主流浏览器支持，包括IE8。它的用法如下：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">table</span> &#123;</span><br><span class="line">	<span class="attribute">empty-cell</span>: hide;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个属性用于table元素中空td的样式。或许会有用哦。 测试： <a href="http://codepen.io/SitePoint/pen/yfhtq" target="_blank" rel="noopener">codepen</a></p>
+<h2 id="font-style属性接受“oblique”值"><a href="#font-style属性接受“oblique”值" class="headerlink" title="font-style属性接受“oblique”值"></a>font-style属性接受“oblique”值</h2><p>这个看起来和 <code>font-style: italic</code> 并没有什么区别，都是斜体字体，spec中是这么描述的：</p>
+<blockquote>
+<p>“…selects a font that is labeled as an oblique face, or an italic face if one is not.”</p>
+</blockquote>
+<p>如果设置的字体没有真正的italic样式（face），那么<code>font-style:italic</code> 和 <code>font-style: oblique</code>的表现是一样的。</p>
+<h2 id="word-wrap-属性和overflow-wrap属性是一样的"><a href="#word-wrap-属性和overflow-wrap属性是一样的" class="headerlink" title="word-wrap 属性和overflow-wrap属性是一样的"></a>word-wrap 属性和overflow-wrap属性是一样的</h2><p><code>word-wrap</code>是微软提出的一个属性，所以在IE老版本中都有很好的支持，但是W3C决定使用<code>overflow-wrap</code> 替换掉 <code>word-wrap</code>。但是现在所有的浏览器都支持 <code>word-wrap</code>属性了，所以要替换也不是那么容易的事了。</p>
+<p>没什么问题的话还是继续使用<code>word-wrap</code>吧。</p>
+<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
             
           </span>
         
@@ -1514,21 +1576,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">173</span>
+              <span class="site-state-item-count">175</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">145</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

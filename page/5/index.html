@@ -235,6 +235,207 @@
             
               
                 
+                <a class="post-title-link" href="/2-interview-question/" itemprop="url">
+                  两道面试题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-03-09T10:26:10+08:00" content="2016-03-09">
+              2016-03-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>上午在社区看到有人分享自己的面试经历，正好有两道很有意思的题目，这里自己试试。</p>
+<p>第一个是关于C中多进程的，fork的问题；第二个是位操作的，32位int按位反转的问题。</p>
+<h2 id="fork的问题"><a href="#fork的问题" class="headerlink" title="fork的问题"></a>fork的问题</h2><p>这个问题其实比较简单，就是考察对fork的理解。在apue的笔记中已经比较了解了。使用fork创建的新进程会得到父进程的代码、数据、堆、栈、缓存区和打开的文件列表的拷贝（实际上使用了写时复制COW技术，并不是一开始就执行父进程的完全副本），知道这个之后就能分析这个问题了，问题如下：</p>
+<p>有下面的代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">2</span>; i++) &#123;</span><br><span class="line">        fork();</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"-"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假设<code>fork()</code>总是成功的，问打印出几个“-”？</p>
+<p>根据上面的分析，在主线程运行到<code>fork()</code>的时候，产生了子进程，子进程有和父进程相同的i值，并在获得运行时接着从fork()往后运行，按照这样分析，主进程会fork出两个子进程，第一个子进程会fork出一个子进程，总共4个进程，主进程和第一个子进程打印两个”-“，后面两个进程分别可以打印一个”-“。这样分析可以打印出6个”-“。但显然这个问题没有这么简单。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2-interview-question/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/C-System-TypeInitializationException-matter/" itemprop="url">
+                  C#-System.TypeInitializationException
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-03-08T12:31:29+08:00" content="2016-03-08">
+              2016-03-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>今天给科委的项目加上自动上传的功能，把之前设计的自动功能彻底修改了。由于这个项目已经好几个月没有动了，把原来的功能重构之后，在调试模式下运行程序会报异常，<code>System.TypeInitializationException</code>。这个异常在运行时才会报错，编译生成项目是成功的。</p>
+<p>以前开发时也遇到过这个问题，一直很奇怪，因为抛出异常的地方在整个项目的入口：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static class Program</span><br><span class="line">&#123;</span><br><span class="line">	static void Main()</span><br><span class="line">    &#123;</span><br><span class="line">    	Application.EnableVisualStyles();</span><br><span class="line">        Application.SetCompatibleTextRenderingDefault(false);</span><br><span class="line">        Application.Run(new MainForm()); // 在这里抛出异常</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从VS的直接报错里面看不出什么有用的东西，查不到到底是哪里出的问题。可以知道的是，是构造 MainForm 类的实例的时候出了问题。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/C-System-TypeInitializationException-matter/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/intro-of-https/" itemprop="url">
                   了解https通信
                 </a>
@@ -1076,219 +1277,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/protect-remote-server-by-ssh-config/" itemprop="url">
-                  服务器ssh登录保护
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-27T17:43:33+08:00" content="2016-01-27">
-              2016-01-27
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>今天登录前段时间买的VPS，发现motd消息中有一段如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">There were 405 failed login attempts since the last successful login</span><br></pre></td></tr></table></figure>
-<p>基本过几个小时再登录就有这个消息，小的几百次失败登录尝试，多个可能几千次，看来网络上真的是错综复杂，不安全呐，整天有人想着办法要“勾搭”互联网上的server。没办法只好配置一下SSHD，要不这么一天到晚被尝试登录也受不了。</p>
-<p>如果是购买的远程主机建议配置到普通用户的密钥登录，关闭root登录权限和密码登录权限，最好把sshd的端口改了，因为大部分尝试登录都是针对默认端口22的。下面是操作步骤。</p>
-<p>因为是远程主机所以操作要按照一定的顺序，要不然可能导致不能登录，注意的是在配置过程中不要退出已登录的回话，直到配置完再退出最初的会话。</p>
-<h2 id="创建新用户"><a href="#创建新用户" class="headerlink" title="创建新用户"></a>创建新用户</h2><p>用现在的用户名密码登录到服务器，这个session不要关闭，中间对sshd的配置及sshd服务重启不会断开这个连接的。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">useradd me</span><br><span class="line">passwd me</span><br><span class="line">usemod -aG wheel me</span><br></pre></td></tr></table></figure>
-<p>这里假设已经编辑 visudo 将wheel用户组设置为拥有 sudo 权限。如果还没有的话使用 <code>sudo visudo</code> 找到相应的行取消注释即可，注意千万不要手动编辑 <code>/etc/sudoers</code> 文件，以前同学手动编辑该文件导致的惨烈后果记忆犹新。。。。</p>
-<h2 id="配置无密码登录"><a href="#配置无密码登录" class="headerlink" title="配置无密码登录"></a>配置无密码登录</h2><p>我们都知道要实现无密码登录就是在本地生成一个密钥对，然后使用用户名密码将公钥(.pub)上传到服务器，然后登陆时指定对应的私钥，就不需要输入密码了。</p>
-<h3 id="生产密钥对"><a href="#生产密钥对" class="headerlink" title="生产密钥对"></a>生产密钥对</h3><p>使用下面的命令</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -f me.server</span><br></pre></td></tr></table></figure>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/protect-remote-server-by-ssh-config/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/npp-chs-words-break/" itemprop="url">
-                  notepad++ 优化汉字换行
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-25T22:39:45+08:00" content="2016-01-25">
-              2016-01-25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/tools/" itemprop="url" rel="index">
-                    <span itemprop="name">tools</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>notepad++是一个非常好用的免费文本编辑器，用来替代Windows默认的编辑器非常的方便，但是在编辑时CJK字符会把一句话看作一个“单词”，导致换行显示的很奇怪，找了一下好像没有直接设置的选项，需要装一个插件来运行一个脚本（在每次启动时运行一次）</p>
-<p>具体步骤如下：</p>
-<ol>
-<li>Install NppExec (through the Plugin Manager is easiest)</li>
-<li>In the menu go to, Plugins-&gt;NppExec-&gt;Execute…<br>Paste this text</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sci_sendmsg SCI_SETWRAPMODE SC_WRAP_CHAR</span><br><span class="line">npp_console 0</span><br></pre></td></tr></table></figure>
-<p>Click save and give it a name</p>
-<ol>
-<li>Go to Plugins-&gt;NppExec-&gt;Advanced Options…<br>In the top right you can select a script to run at startup, select the script you just saved</li>
-</ol>
-<p>This should set this option each time you start up N++</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1335,21 +1323,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">173</span>
+              <span class="site-state-item-count">175</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">145</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

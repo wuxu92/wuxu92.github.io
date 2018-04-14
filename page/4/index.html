@@ -235,6 +235,209 @@
             
               
                 
+                <a class="post-title-link" href="/fix-centos-vm-networking-things/" itemprop="url">
+                  解决一个VirtualBox虚拟机错误导致的各种问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-04-13T21:07:47+08:00" content="2016-04-13">
+              2016-04-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>10.<em>.</em>.91是最早的一台虚拟机之一，是VirtualBox运行在Windows Server 2008 R2 上的，到现在已经运行了两年多了，基本没出什么问题。上面主要提供Git服务、一个Web server、一个Svn Server。前几天发现ssh登录的时候会直接返回 <code>connection failed</code>。并没有什么其他的信息。而直接ping则能ping通该IP。</p>
+<p>非常奇怪的问题，由于前段时间一直没有用到这个机器就没管它。这几天重新做科委要提交git的时候总是失败（因为ssh都连不上，git肯定就提交不了了）。攒了很多commit在本地总觉得不安心，所以就找找原因，解决一下。</p>
+<h2 id="虚拟机停止运行"><a href="#虚拟机停止运行" class="headerlink" title="虚拟机停止运行"></a>虚拟机停止运行</h2><p>还好有Windows server的远程登录权限，登陆上去看了一下，91这台机器还在运行，但是试图从 Virtual Box 的图形界面登录时直接报错了，然后只能强制关闭该虚拟机，而运行的其它几台虚拟机都没有问题。仔细看了一下报错内容有一些 <strong>DISK FULL</strong>相关的内容。查看了一下 Virtual Box对该虚机的配置，32G的动态空间，已用17GB，没有问题啊，宿主机器（Windows Server 2008)分两块磁盘，C盘100GB，D盘750GB，而虚机使用的磁盘文件放在D盘，应该不可能磁盘空间不足的。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/fix-centos-vm-networking-things/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/solid-principle-of-oo/" itemprop="url">
+                  面向对象中的 SOLID 原则
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-04-08T20:12:12+08:00" content="2016-04-08">
+              2016-04-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>在面向对象程序设计中，经常见到各种设计原则、设计模式。面向对象的优势就是其针对各种场景的成体系的设计模式，当然过于复杂的设计模式也是Java经常被人诟病的一点。而 SOLID 的就是其中最重要的5条设计原则的首字母缩写，不仅仅是Java，任何面向对象设计的语言编程都应该尽量遵循这5条原则，它们分别是：</p>
+<ol>
+<li>SRP， Single Responsibility Principle，单一职责原则</li>
+<li>OCP， Open Closed Principle，开放封闭原则</li>
+<li>LSP， Liskov Substitution Principle，里氏替换原则</li>
+<li>ISP， Interface Segregation Principle，接口分离原则</li>
+<li>DIP， Dependency Inversion Principle，依赖倒置原则</li>
+</ol>
+<p>这些原则是 Robert C. Martin 整理来的，它们使得一个程序员开发的软件更加容易维护和扩展。虽然它们不是进行软件开发的强制性约束，但是如果对这些原则有很好的理解，并且能在自己的代码中考虑这些规则，很可能可以写出更好的面向对象代码。</p>
+<h2 id="单一职责原则（SRP）"><a href="#单一职责原则（SRP）" class="headerlink" title="单一职责原则（SRP）"></a>单一职责原则（SRP）</h2><p>单一职责是指一个类或者模块应该有且只有一个去改变它的理由，这意味着一个类应该只有一项职责，并且该功能应该由这个类完全封装起来。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/solid-principle-of-oo/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/intro-of-sass/" itemprop="url">
                   Sass介绍
                 </a>
@@ -1012,207 +1215,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2-interview-question/" itemprop="url">
-                  两道面试题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-03-09T10:26:10+08:00" content="2016-03-09">
-              2016-03-09
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>上午在社区看到有人分享自己的面试经历，正好有两道很有意思的题目，这里自己试试。</p>
-<p>第一个是关于C中多进程的，fork的问题；第二个是位操作的，32位int按位反转的问题。</p>
-<h2 id="fork的问题"><a href="#fork的问题" class="headerlink" title="fork的问题"></a>fork的问题</h2><p>这个问题其实比较简单，就是考察对fork的理解。在apue的笔记中已经比较了解了。使用fork创建的新进程会得到父进程的代码、数据、堆、栈、缓存区和打开的文件列表的拷贝（实际上使用了写时复制COW技术，并不是一开始就执行父进程的完全副本），知道这个之后就能分析这个问题了，问题如下：</p>
-<p>有下面的代码：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">2</span>; i++) &#123;</span><br><span class="line">        fork();</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"-"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>假设<code>fork()</code>总是成功的，问打印出几个“-”？</p>
-<p>根据上面的分析，在主线程运行到<code>fork()</code>的时候，产生了子进程，子进程有和父进程相同的i值，并在获得运行时接着从fork()往后运行，按照这样分析，主进程会fork出两个子进程，第一个子进程会fork出一个子进程，总共4个进程，主进程和第一个子进程打印两个”-“，后面两个进程分别可以打印一个”-“。这样分析可以打印出6个”-“。但显然这个问题没有这么简单。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2-interview-question/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/C-System-TypeInitializationException-matter/" itemprop="url">
-                  C#-System.TypeInitializationException
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-03-08T12:31:29+08:00" content="2016-03-08">
-              2016-03-08
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>今天给科委的项目加上自动上传的功能，把之前设计的自动功能彻底修改了。由于这个项目已经好几个月没有动了，把原来的功能重构之后，在调试模式下运行程序会报异常，<code>System.TypeInitializationException</code>。这个异常在运行时才会报错，编译生成项目是成功的。</p>
-<p>以前开发时也遇到过这个问题，一直很奇怪，因为抛出异常的地方在整个项目的入口：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static class Program</span><br><span class="line">&#123;</span><br><span class="line">	static void Main()</span><br><span class="line">    &#123;</span><br><span class="line">    	Application.EnableVisualStyles();</span><br><span class="line">        Application.SetCompatibleTextRenderingDefault(false);</span><br><span class="line">        Application.Run(new MainForm()); // 在这里抛出异常</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>从VS的直接报错里面看不出什么有用的东西，查不到到底是哪里出的问题。可以知道的是，是构造 MainForm 类的实例的时候出了问题。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/C-System-TypeInitializationException-matter/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1259,21 +1261,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">173</span>
+              <span class="site-state-item-count">175</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">145</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

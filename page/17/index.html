@@ -235,6 +235,183 @@
             
               
                 
+                <a class="post-title-link" href="/use-yadr-enhancing-your-vim/" itemprop="url">
+                  yadr中提供的vim快捷操作
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-25T12:34:50+08:00" content="2015-07-25">
+              2015-07-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/tools/" itemprop="url" rel="index">
+                    <span itemprop="name">tools</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>github上面的活跃的dotfiles项目[yadr](https</p>
+<p>这里主要就是官方readme文档的 <a href="https://github.com/skwp/dotfiles/#vim---whats-included" title="https://github.com/skwp/dotfiles/#vim---whats-included" target="_blank" rel="noopener">Vim部分</a> 的记录。基本的vim操作就不详细介绍了。</p>
+<p>参考： <a href="http://skwp.github.io/dotfiles/" title="http://skwp.github.io/dotfiles/" target="_blank" rel="noopener">http://skwp.github.io/dotfiles/</a></p>
+<h2 id="有什么？"><a href="#有什么？" class="headerlink" title="有什么？"></a>有什么？</h2><p>yadr提供了</p>
+<h2 id="导航"><a href="#导航" class="headerlink" title="导航"></a>导航</h2><ul>
+<li><code>,z</code> 切换到前一个缓冲文件（buffer），相当于 :bp[revious]</li>
+<li><code>,x</code> 切换到后一个缓冲，相当于命令行的 :bn[ext]</li>
+<li><code>Alt+j</code> 和 <code>Alt+k</code> 下跳或者上跳一个函数；好像不起作用</li>
+<li><code>Ctrl+o</code> 跳转到旧的指针位置，这是vim的标准快捷键，<strong>非常有用</strong></li>
+<li><code>Ctrl+i</code> Ctrl+o的逆操作，也是标准按键</li>
+</ul>
+<h2 id="搜索与代码导航"><a href="#搜索与代码导航" class="headerlink" title="搜索与代码导航"></a>搜索与代码导航</h2><ul>
+<li><code>,f</code> 跳转到类定义，需要系统安装了ctags，并创建tags file。</li>
+</ul>
+<blockquote>
+<p>ctags是一个独立的软件，不包含在vim之中，使用yum安装即可，在项目目录下运行 <code>ctags -R .</code> 后会创建tags file，这是就可以使用跳转到定义的功能了。</p>
+</blockquote>
+<ul>
+<li><code>,F</code> 与<code>,f</code>相同不过在新建垂直分屏（vsp）显示定义</li>
+<li><code>,gf</code>或者 <code>ctrl+f</code> 跳转到光标坐在变量名对应的文件，但是在一个新的分栏中显示，这在java中比较好用</li>
+<li><code>gF</code> 标准快捷键，打开文件</li>
+<li><code>K</code> 搜索光标所在单词，并在quickfix窗口显示结果，这个功能需要安装silver serach, <code>sudo yum install -y the_silver_searcher</code></li>
+<li><code>,K</code> 没太多用，Grep the current word up to next exclamation point (useful for ruby foo! methods)</li>
+<li><code>,hl</code> 开关搜索结果的高亮，相当于 :set noh与其逆操作</li>
+<li><code>,gg</code>或者<code>,ag</code>: 搜索，键入这个命令后，会出现一个输入符，在双引号中输入字符后回车会搜索包含这段字符的行</li>
+<li><code>,gd</code> 搜索包含字符的函数定义， grep def,不太用</li>
+<li><code>,gcf</code> grep current file的缩写，查找对本文件的引用</li>
+<li><code>//</code> 清空搜索</li>
+<li><code>,,w</code> <code>,&lt;Esc&gt;</code>的alias，EasyMotion，highlights jump-points on the screen and lets you type to get there</li>
+<li><code>,mc</code> 多标签，这个功能和sublime中的比较像，在一个单词上面使用<code>,mc</code>会记录这个单词，然后使用<code>Ctrl-n</code>或者<code>Ctrl+p</code>选择前一个或者后一个相同的单词的，或者使用Ctrl+x跳过一个。 这个比较有用</li>
+<li><code>gK</code> 打开光标所在单词同名的文档？不常用</li>
+</ul>
+<h2 id="文件导航"><a href="#文件导航" class="headerlink" title="文件导航"></a>文件导航</h2><ul>
+<li><code>,t</code>  文件选择器，不常- 用，键入指令后可以输入字符筛选文件</li>
+<li><code>,b</code> 打开缓存区的一个文件，比较常用</li>
+<li><code>Cmd-Shift-M</code> 跳转到方法，Linux下好像没用。</li>
+<li><code>,jm</code> jump to models,可能在rails里面比较有用</li>
+<li><code>Alt+Shift+N</code> nerd tree toogle,好像没什么用</li>
+<li><code>Ctrl+\</code> 在侧边栏文件树显示当前文件，和sublime的sidebar有点像</li>
+<li><code>Cmd-Shift-P</code> 清空ctrlp 缓存，没用过</li>
+</ul>
+<h2 id="常用编辑快捷键"><a href="#常用编辑快捷键" class="headerlink" title="常用编辑快捷键"></a>常用编辑快捷键</h2><ul>
+<li><code>Ctrl+space</code> 自动补全- ， Tab键</li>
+<li><code>,#</code>; <code>,&quot;</code>; <code>,&#39;</code>; <code>,]</code>; <code>,)</code>; <code>,}</code>;  这些优点麻烦的样子，待补充</li>
+<li><code>,.</code> 跳转到上一个编辑地点。和<code>&#39;.</code>的作用相同。</li>
+<li><code>,ci</code> change inside any set of quotes/brackets/etc。其作用是删除”, {}, ()之间的字符并进入插入模式</li>
+</ul>
+<h2 id="多标签，多窗口，分割模式"><a href="#多标签，多窗口，分割模式" class="headerlink" title="多标签，多窗口，分割模式"></a>多标签，多窗口，分割模式</h2><ul>
+<li><code>alt+n</code> - 快速跳转到指定的tab</li>
+<li><code>Ctrl-h,j,k,l</code> 在分栏窗口中上下左右移动。</li>
+<li><code>Q</code> 关闭当前的window，<strong>非常方便</strong></li>
+<li><code>vv</code> 与 <code>Ctrl-w,v</code>一样，vertical split, 上下分栏</li>
+<li><code>ss</code> 与 <code>Ctrl-w,s</code>一样，horizontal split，左右分栏</li>
+<li><code>,qo</code> 打开quickfix， qo =&gt; quickfix open, <strong>有用</strong></li>
+<li><code>,qc</code> 关闭quickfix,  qc =&gt; quickfix close， <strong>有用</strong>，yadr配置的vim在保存文件时会做语法检查，如果检查不通过会在quickfix窗口显示错误，并且不会自动消失，这时候也许需要 <code>,qc</code>来关闭它。</li>
+</ul>
+<h2 id="其它常用"><a href="#其它常用" class="headerlink" title="其它常用"></a>其它常用</h2><ul>
+<li><code>Ctrl-p</code> 循环历史剪切板，这个很有用，p是粘贴，Ctrl+p会粘贴之前的剪切板内容</li>
+<li><code>,yr</code> view yanking, 查看历史复制记录， <code>q</code>退出查看</li>
+<li><code>crs</code>, <code>crc</code>, <code>cru</code> cr 应该是 coerce（强制）， s是snake, c是camelcase， u是UPPER，转换变量大小写下划线形式，比较有意思,可以使用<code>:help abolish</code>查看更多</li>
+<li><code>:NR</code> NarrowRgn，看名字不知道是干什么的，其实是选中一段代码，然后<code>:NR</code>vim会新开一个split把选中的代码放在心的split中操作，操作完后，<code>wq</code>会把结果覆盖掉原来选中的代码。也挺有用的。</li>
+<li><code>,ig</code> toggle visual indentation guids</li>
+<li><code>,cf</code> 拷贝当前文件的完整路径到系统剪切板</li>
+<li><code>,cn</code> 拷贝文件名</li>
+<li><code>,yw</code> yw是从复制从光标位置开始到单词结束，<code>,yw</code>是在任意位置复制整个单词</li>
+<li><code>,ow</code> 使用yank buffer中内容覆盖当前所在的单词，ow =&gt; overwrite</li>
+<li><code>,ocf</code> 打开所有git标记为修改过的文件，在splits中打开。使用git版本控制下的文件才有用, ocf =&gt; open changed files</li>
+<li><code>,w</code> 去掉尾部多余的空格，应该很有用， StripTrailingWhitespaces</li>
+<li><code>sj</code> 把单行的hash表格式化为多行的</li>
+<li><code>sk</code> unsplit a link 应该不怎么用</li>
+<li><code>,he</code> he =&gt; html escape</li>
+<li><code>,hu</code> hu =&gt; html unescape</li>
+<li><code>Alt+Shift-A</code> align things, 好像没什么用</li>
+<li><code>:ColorToggle</code> 顾名思义</li>
+<li><code>:Gitv</code> git log browser</li>
+<li><code>,hi</code>  显示当前高亮的组</li>
+<li><code>,gt</code> Go Tidy， 格式化html代码</li>
+<li><code>:Wrap</code> 折叠长行，这个比较有用,特别是quickfix中的提示经常跑出去了 // 好像对quickfix部分不起作用 -_-</li>
+<li><code>Cmd-/</code> toggle comments,在Linux下使用alt</li>
+<li><code>gcp</code> comment a paragraph</li>
+</ul>
+<h2 id="vim相关"><a href="#vim相关" class="headerlink" title="vim相关"></a>vim相关</h2><p><code>,vr</code> 重新加载vim， vim reload</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/golang-errors/" itemprop="url">
                   Golang中的错误处理
                 </a>
@@ -354,6 +531,114 @@
             
               
                 
+                <a class="post-title-link" href="/z-expand-anchor-element-to-fill-parent/" itemprop="url">
+                  A标签(Anchor Tag)占满父元素的实现
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-24T12:34:50+08:00" content="2015-07-24">
+              2015-07-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/fe/" itemprop="url" rel="index">
+                    <span itemprop="name">fe</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>A标签默认是inline元素，所以标签内容的长短决定了鼠标hover的范围，在有些时候，比如某些导航列表中，需要hover父标签（li）时能hover到a标签。</p>
+<p>在制作一个API文档的侧边栏导航列表的时候，html大概是这样的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;div class=&quot;toc-macro absolute&quot;&gt;</span><br><span class="line">&lt;ul class=&quot;toc-indentation&quot;&gt;</span><br><span class="line">  &lt;li&gt;&lt;a href=&quot;#id-1&quot;&gt;1. 绑定手机号&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">  &lt;li&gt;&lt;a href=&quot;#id-2&quot;&gt;2. 查询手机号码是否可以绑定&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">  &lt;li&gt;&lt;a href=&quot;#id-3&quot;&gt;3. 添加邮箱&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">  &lt;li&gt;&lt;a href=&quot;#id-4&quot;&gt;4. 检查邮箱是否可以添加&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>其他的样式就不具体写了，其实现的效果是在右侧边栏实现一个列表导航。一些主要的样式大概如下：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.toc-macro</span>&#123; <span class="attribute">position</span>: fixed; <span class="attribute">top</span>: <span class="number">100px</span>; &#125;</span><br><span class="line"><span class="selector-class">.toc-macro</span> <span class="selector-tag">ul</span> &#123;<span class="attribute">list-style-type</span>:none; &#125;</span><br><span class="line"><span class="selector-class">.toc-macro</span> <span class="selector-tag">a</span> &#123; <span class="attribute">text-decoration</span>: none; &#125;</span><br><span class="line"><span class="selector-class">.toc-macro</span> <span class="selector-tag">li</span> &#123; <span class="attribute">padding</span>: <span class="number">6px</span> <span class="number">8px</span> <span class="number">2px</span>;<span class="attribute">text-decoration</span>:none; &#125;</span><br><span class="line"><span class="selector-tag">li</span><span class="selector-pseudo">:hover</span> &#123; <span class="attribute">background-color</span>: <span class="number">#efefef</span>;<span class="attribute">color</span>: <span class="number">#7DB75C</span>; &#125;</span><br><span class="line"><span class="selector-class">.toc-macro</span> <span class="selector-tag">a</span><span class="selector-pseudo">:hover</span> &#123; <span class="attribute">background-color</span>: <span class="number">#efefef</span>;<span class="attribute">color</span>: <span class="number">#7DB75C</span>; &#125;</span><br></pre></td></tr></table></figure>
+<p>其中使用了决定定位时导航不会随着滚动条而滚动，使我们在查看API文档时总是能看到这个导航。<br>这样子基本符合我们的需求了，但是有一个小小的问题，那就是鼠标放到导航上如果没有放到a链接上面，li标签会变色，但是由于鼠标没有在a上所以还是箭头的形状。。。这个小小的瑕疵需要解决一下。</p>
+<p>首先我们想到的是把a标签的宽度设置到 100%：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.toc-macro a &#123; display:inline-block; width: 100%; &#125;</span><br></pre></td></tr></table></figure>
+<p>但是这样似乎并没有按照我们所想的表现出来。我们需要再加一些东西，让a标签的inline-block可以把宽度填充</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.toc-macro li &#123; vertical-align: middle; line-height: 15px;&#125;</span><br></pre></td></tr></table></figure>
+<p>另外还有一种实现思路那就是把div下所有标签的display属性设置为block,同时a的height设置为100%：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.toc-macro ul &#123; display: block; &#125;</span><br><span class="line">.toc-macro li &#123; display: block;&#125;</span><br><span class="line">.toc-macro a &#123; display:block; height:100%; &#125;</span><br></pre></td></tr></table></figure>
+<p>这样实现应该也是可行的，不过没有测试过了。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/effective-go-note-3/" itemprop="url">
                   Effective Go笔记：空白标识符，接口检查与内嵌
                 </a>
@@ -425,6 +710,136 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Logger struct &#123;</span><br><span class="line">  content string</span><br><span class="line">&#125;</span><br><span class="line">func (l Logger) Log(s string) &#123;</span><br><span class="line">  l.content += s</span><br><span class="line">  fmt.Println(s)</span><br><span class="line">&#125;</span><br><span class="line">type infoLog struct &#123;</span><br><span class="line">  count int</span><br><span class="line">  *Logger</span><br><span class="line">&#125;</span><br><span class="line">func main() &#123;</span><br><span class="line">	var logger = infoLog&#123;0, &amp;Logger&#123;&quot;sss&quot;&#125; &#125;</span><br><span class="line">	// 可以直接调用内嵌类型的方法</span><br><span class="line">	logger.Log(&quot;embedding function invoke&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>内嵌类型可能会引起命名冲突的问题。更深层次的命名字段或方法会被覆盖。若相同的嵌套层级上出现同名冲突，通常会产生一个错误。但是如果冲突的名字不会被使用就没有问题……</p>
 <p><em>并发部分有点多，单独做一篇吧</em></p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/effective-go-note-4-concurrency/" itemprop="url">
+                  Effective Go笔记：并发
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
+              2015-07-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>effective go 中的部分笔记，这是第四部分 </p>
+<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
+<h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><h3 id="通过通信共享内存"><a href="#通过通信共享内存" class="headerlink" title="通过通信共享内存"></a>通过通信共享内存</h3><p>并发编程中很麻烦的一点是对共享变量访问的控制，在一般环境中，使用同步互斥锁机制等实现互斥的访问，使得代码繁琐而且难以理解。Go语言提出了一个独特的机制:信道。<br>Go将共享的值通过信道传递。在给定的时间点，只有一个Go程能访问信道中的值，在设计上杜绝了数据在同一时间点被放线程访问。</p>
+<blockquote>
+<p>不要通过共享内存来通信，而应通过通信来共享内存。</p>
+</blockquote>
+<p>为了方便理解，可以把Go的并发处理方式看做类型安全的Unix管道的实现。</p>
+<h3 id="Go程-Goroutines"><a href="#Go程-Goroutines" class="headerlink" title="Go程/Goroutines"></a>Go程/Goroutines</h3><p>Go程是Golang提出的术语，Go程有简单的模型，它是与其他Go程并发运行在同一地址空间的<strong>函数</strong>。Go程可以看作是轻量级的线程，它的开销几乎只有栈空间的分配，它的使用很廉价。<br>Go程在多线程操作系统上可以实现多路复用，后面会详细讲到。多路复用在多线程编程中非常重要。</p>
+<p>那如何运行一个Go程呢？很简单，只需要在要调用的函数前添加”go”关键字就能在Go程中运行这个函数，函数调用结束时，Go程也就自动退出。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">go</span> list.Sort()</span><br><span class="line"><span class="comment">// 使用函数字面量运行</span></span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// do something here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="信道-Channels"><a href="#信道-Channels" class="headerlink" title="信道/Channels"></a>信道/Channels</h3><p>前面已经提到了信道的概念，在多线程中，具体怎么使用呢，下面就详细介绍<strong>信道（channel）</strong>。</p>
+<p>之前讲过，在Go中切片，映射和信道都使用make来分配内存，make返回的值充当对底层数据结构的引用。信道的声明和初始化示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 前两个是无缓冲的正数类型信道</span><br><span class="line">c1 := make(chan int)</span><br><span class="line">c2 := make(chan int, 0)</span><br><span class="line">// 指向文件指针的带缓冲区的信道</span><br><span class="line">c3 := make(chan *os.File, 100)</span><br></pre></td></tr></table></figure>
+<p>若不指定第二个参数，信道就是无缓冲的同步信道。使用一个同步信道，一个示例如下：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">c1 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>) <span class="comment">// 一个不带缓冲的，同步信道</span></span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">  time.Sleep(<span class="number">500</span> * time.Millisecond)</span><br><span class="line">  <span class="comment">// send one value to channl</span></span><br><span class="line">  c1 &lt;- <span class="number">1</span></span><br><span class="line">&#125;()</span><br><span class="line"><span class="comment">// do something here</span></span><br><span class="line">fmt.Println(<span class="string">"wait for goroutine to quir"</span>)</span><br><span class="line">&lt;-c1 <span class="comment">// 主线程在此等待Go程结束,丢弃信道中的值，因为该值只是用作同步的标识</span></span><br><span class="line">fmt.Println(<span class="string">"go routine done"</span>)</span><br></pre></td></tr></table></figure>
+<p>看完无缓冲的信道，下面看一下有缓冲的信道。有缓冲的信道可以看作是信号量，操作系统里面学过信号量的东西。信号量可以看作是资源不足时用来限制线程执行，使其等待的机制。常用来限制吞吐量，限制调用的process的数量等。<br>比如要对Web请求使用Go程处理：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func Serve(queue chan *Request) &#123;</span><br><span class="line">	for req := range queue &#123;</span><br><span class="line">		sem &lt;- 1</span><br><span class="line">		// 考虑到闭包的性质，这里传入值 *Request，</span><br><span class="line">		// 如果不使用 *Request则所有Go程处理的是同一个变量req</span><br><span class="line">		go func(req *Request) &#123;</span><br><span class="line">			process(req)</span><br><span class="line">			&lt;-sem</span><br><span class="line">		&#125;(req)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 另一种方式是，重新声明一个变量</span><br><span class="line">	for req := range queue &#123;</span><br><span class="line">		// 参考js中for循环中使用timeInterval函数时要重新声明变量</span><br><span class="line">		req := req // 为该Go程创建 req 的新实例。</span><br><span class="line">		sem &lt;- 1</span><br><span class="line">		go func() &#123;</span><br><span class="line">			process(req)</span><br><span class="line">			&lt;-sem</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="信道中的信道-channels-of-channels"><a href="#信道中的信道-channels-of-channels" class="headerlink" title="信道中的信道/channels of channels"></a>信道中的信道/channels of channels</h3><p><em>这部分比较麻烦，待续</em></p>
+<h3 id="并行化-Parallelization"><a href="#并行化-Parallelization" class="headerlink" title="并行化/Parallelization"></a>并行化/Parallelization</h3><p>在多CPU核心上实现并行计算。</p>
+<blockquote>
+<p>并发是用可独立执行的组件构造程序的方法， 而并行则是为了效率在多CPU上平行地进行计算。Go仍然是种并发而非并行的语言，且Go的模型并不适合所有的并行问题</p>
+</blockquote>
+<p>目前Go运行时的实现默认并不会并行执行代码，它只为用户层代码提供单一的处理核心。 任意数量的Go程都可能在系统调用中被阻塞，而在任意时刻默认只有一个会执行用户层代码。 它应当变得更智能，而且它将来肯定会变得更智能。但现在，若你希望CPU并行执行， 就必须告诉运行时你希望同时有多少Go程能执行代码。有两种途径可以使用：</p>
+<ol>
+<li>在运行你的工作时将 GOMAXPROCS 环境变量设为你要使用的核心数</li>
+<li>导入 runtime 包并调用 runtime.GOMAXPROCS(NCPU)。 runtime.NumCPU() 的值可能很有用，它会返回当前机器的逻辑CPU核心数。 </li>
+</ol>
+<p>当然，随着调度算法和运行时的改进，将来会不再需要这种方法。</p>
+<h3 id="一个缓冲区泄漏示例-A-leak-buffer"><a href="#一个缓冲区泄漏示例-A-leak-buffer" class="headerlink" title="一个缓冲区泄漏示例/A leak buffer"></a>一个缓冲区泄漏示例/A leak buffer</h3><p>客户端Go程从某些来源，可能是网络中循环接收数据。为避免分配和释放缓冲区， 它保存了一个空闲链表，使用一个带缓冲信道表示。若信道为空，就会分配新的缓冲区。 一旦消息缓冲区就绪，它将通过 serverChan 被发送到服务器。 serverChan.</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> freeList = <span class="built_in">make</span>(<span class="keyword">chan</span> *Buffer, <span class="number">100</span>)</span><br><span class="line"><span class="keyword">var</span> serverChan = <span class="built_in">make</span>(<span class="keyword">chan</span> *Buffer)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">client</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">var</span> b *Buffer</span><br><span class="line">		<span class="comment">// 若缓冲区可用就用它，不可用就分配个新的。</span></span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> b = &lt;-freeList:</span><br><span class="line">			<span class="comment">// 获取一个，不做别的。</span></span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="comment">// 非空闲，因此分配一个新的。</span></span><br><span class="line">			b = <span class="built_in">new</span>(Buffer)</span><br><span class="line">		&#125;</span><br><span class="line">		load(b)              <span class="comment">// 从网络中读取下一条消息。</span></span><br><span class="line">		serverChan &lt;- b   <span class="comment">// 发送至服务器。</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>服务器从客户端循环接收每个消息，处理它们，并将缓冲区返回给空闲列表。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">server</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		b := &lt;-serverChan    <span class="comment">// 等待工作。</span></span><br><span class="line">		process(b)</span><br><span class="line">		<span class="comment">// 若缓冲区有空间就重用它。</span></span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> freeList &lt;- b:</span><br><span class="line">			<span class="comment">// 将缓冲区放大空闲列表中，不做别的。</span></span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="comment">// 空闲列表已满，保持就好。</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户端试图从 freeList 中获取缓冲区；若没有缓冲区可用， 它就将分配一个新的。服务器将 b 放回空闲列表 freeList 中直到列表已满，此时缓冲区将被丢弃，并被垃圾回收器回收。（select 语句中的 default 子句在没有条件符合时执行，这也就意味着 selects 永远不会被阻塞。）依靠带缓冲的信道和垃圾回收器的记录， 我们仅用短短几行代码就构建了一个可能导致缓冲区槽位泄露的空闲列表。(没懂TT)</p>
+<p>上一段的英文如下，总觉得中文的翻译不太对</p>
+<p>The client attempts to retrieve a buffer from freeList; if none is available, it allocates a fresh one. The server’s send to freeList puts b back on the free list unless the list is full, in which case the buffer is dropped on the floor to be reclaimed by the garbage collector. (The default clauses in the select statements execute when no other case is ready, meaning that the selects never block.) This implementation builds a leaky bucket free list in just a few lines, relying on the buffered channel and the garbage collector for bookkeeping.</p>
 
             
           </span>
@@ -790,136 +1205,6 @@
             
               
                 
-                <a class="post-title-link" href="/effective-go-note-4-concurrency/" itemprop="url">
-                  Effective Go笔记：并发
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
-              2015-07-20
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>effective go 中的部分笔记，这是第四部分 </p>
-<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
-<h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><h3 id="通过通信共享内存"><a href="#通过通信共享内存" class="headerlink" title="通过通信共享内存"></a>通过通信共享内存</h3><p>并发编程中很麻烦的一点是对共享变量访问的控制，在一般环境中，使用同步互斥锁机制等实现互斥的访问，使得代码繁琐而且难以理解。Go语言提出了一个独特的机制:信道。<br>Go将共享的值通过信道传递。在给定的时间点，只有一个Go程能访问信道中的值，在设计上杜绝了数据在同一时间点被放线程访问。</p>
-<blockquote>
-<p>不要通过共享内存来通信，而应通过通信来共享内存。</p>
-</blockquote>
-<p>为了方便理解，可以把Go的并发处理方式看做类型安全的Unix管道的实现。</p>
-<h3 id="Go程-Goroutines"><a href="#Go程-Goroutines" class="headerlink" title="Go程/Goroutines"></a>Go程/Goroutines</h3><p>Go程是Golang提出的术语，Go程有简单的模型，它是与其他Go程并发运行在同一地址空间的<strong>函数</strong>。Go程可以看作是轻量级的线程，它的开销几乎只有栈空间的分配，它的使用很廉价。<br>Go程在多线程操作系统上可以实现多路复用，后面会详细讲到。多路复用在多线程编程中非常重要。</p>
-<p>那如何运行一个Go程呢？很简单，只需要在要调用的函数前添加”go”关键字就能在Go程中运行这个函数，函数调用结束时，Go程也就自动退出。</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">go</span> list.Sort()</span><br><span class="line"><span class="comment">// 使用函数字面量运行</span></span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// do something here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="信道-Channels"><a href="#信道-Channels" class="headerlink" title="信道/Channels"></a>信道/Channels</h3><p>前面已经提到了信道的概念，在多线程中，具体怎么使用呢，下面就详细介绍<strong>信道（channel）</strong>。</p>
-<p>之前讲过，在Go中切片，映射和信道都使用make来分配内存，make返回的值充当对底层数据结构的引用。信道的声明和初始化示例如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 前两个是无缓冲的正数类型信道</span><br><span class="line">c1 := make(chan int)</span><br><span class="line">c2 := make(chan int, 0)</span><br><span class="line">// 指向文件指针的带缓冲区的信道</span><br><span class="line">c3 := make(chan *os.File, 100)</span><br></pre></td></tr></table></figure>
-<p>若不指定第二个参数，信道就是无缓冲的同步信道。使用一个同步信道，一个示例如下：</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">c1 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>) <span class="comment">// 一个不带缓冲的，同步信道</span></span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">  time.Sleep(<span class="number">500</span> * time.Millisecond)</span><br><span class="line">  <span class="comment">// send one value to channl</span></span><br><span class="line">  c1 &lt;- <span class="number">1</span></span><br><span class="line">&#125;()</span><br><span class="line"><span class="comment">// do something here</span></span><br><span class="line">fmt.Println(<span class="string">"wait for goroutine to quir"</span>)</span><br><span class="line">&lt;-c1 <span class="comment">// 主线程在此等待Go程结束,丢弃信道中的值，因为该值只是用作同步的标识</span></span><br><span class="line">fmt.Println(<span class="string">"go routine done"</span>)</span><br></pre></td></tr></table></figure>
-<p>看完无缓冲的信道，下面看一下有缓冲的信道。有缓冲的信道可以看作是信号量，操作系统里面学过信号量的东西。信号量可以看作是资源不足时用来限制线程执行，使其等待的机制。常用来限制吞吐量，限制调用的process的数量等。<br>比如要对Web请求使用Go程处理：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func Serve(queue chan *Request) &#123;</span><br><span class="line">	for req := range queue &#123;</span><br><span class="line">		sem &lt;- 1</span><br><span class="line">		// 考虑到闭包的性质，这里传入值 *Request，</span><br><span class="line">		// 如果不使用 *Request则所有Go程处理的是同一个变量req</span><br><span class="line">		go func(req *Request) &#123;</span><br><span class="line">			process(req)</span><br><span class="line">			&lt;-sem</span><br><span class="line">		&#125;(req)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 另一种方式是，重新声明一个变量</span><br><span class="line">	for req := range queue &#123;</span><br><span class="line">		// 参考js中for循环中使用timeInterval函数时要重新声明变量</span><br><span class="line">		req := req // 为该Go程创建 req 的新实例。</span><br><span class="line">		sem &lt;- 1</span><br><span class="line">		go func() &#123;</span><br><span class="line">			process(req)</span><br><span class="line">			&lt;-sem</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="信道中的信道-channels-of-channels"><a href="#信道中的信道-channels-of-channels" class="headerlink" title="信道中的信道/channels of channels"></a>信道中的信道/channels of channels</h3><p><em>这部分比较麻烦，待续</em></p>
-<h3 id="并行化-Parallelization"><a href="#并行化-Parallelization" class="headerlink" title="并行化/Parallelization"></a>并行化/Parallelization</h3><p>在多CPU核心上实现并行计算。</p>
-<blockquote>
-<p>并发是用可独立执行的组件构造程序的方法， 而并行则是为了效率在多CPU上平行地进行计算。Go仍然是种并发而非并行的语言，且Go的模型并不适合所有的并行问题</p>
-</blockquote>
-<p>目前Go运行时的实现默认并不会并行执行代码，它只为用户层代码提供单一的处理核心。 任意数量的Go程都可能在系统调用中被阻塞，而在任意时刻默认只有一个会执行用户层代码。 它应当变得更智能，而且它将来肯定会变得更智能。但现在，若你希望CPU并行执行， 就必须告诉运行时你希望同时有多少Go程能执行代码。有两种途径可以使用：</p>
-<ol>
-<li>在运行你的工作时将 GOMAXPROCS 环境变量设为你要使用的核心数</li>
-<li>导入 runtime 包并调用 runtime.GOMAXPROCS(NCPU)。 runtime.NumCPU() 的值可能很有用，它会返回当前机器的逻辑CPU核心数。 </li>
-</ol>
-<p>当然，随着调度算法和运行时的改进，将来会不再需要这种方法。</p>
-<h3 id="一个缓冲区泄漏示例-A-leak-buffer"><a href="#一个缓冲区泄漏示例-A-leak-buffer" class="headerlink" title="一个缓冲区泄漏示例/A leak buffer"></a>一个缓冲区泄漏示例/A leak buffer</h3><p>客户端Go程从某些来源，可能是网络中循环接收数据。为避免分配和释放缓冲区， 它保存了一个空闲链表，使用一个带缓冲信道表示。若信道为空，就会分配新的缓冲区。 一旦消息缓冲区就绪，它将通过 serverChan 被发送到服务器。 serverChan.</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> freeList = <span class="built_in">make</span>(<span class="keyword">chan</span> *Buffer, <span class="number">100</span>)</span><br><span class="line"><span class="keyword">var</span> serverChan = <span class="built_in">make</span>(<span class="keyword">chan</span> *Buffer)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">client</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">var</span> b *Buffer</span><br><span class="line">		<span class="comment">// 若缓冲区可用就用它，不可用就分配个新的。</span></span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> b = &lt;-freeList:</span><br><span class="line">			<span class="comment">// 获取一个，不做别的。</span></span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="comment">// 非空闲，因此分配一个新的。</span></span><br><span class="line">			b = <span class="built_in">new</span>(Buffer)</span><br><span class="line">		&#125;</span><br><span class="line">		load(b)              <span class="comment">// 从网络中读取下一条消息。</span></span><br><span class="line">		serverChan &lt;- b   <span class="comment">// 发送至服务器。</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>服务器从客户端循环接收每个消息，处理它们，并将缓冲区返回给空闲列表。</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">server</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		b := &lt;-serverChan    <span class="comment">// 等待工作。</span></span><br><span class="line">		process(b)</span><br><span class="line">		<span class="comment">// 若缓冲区有空间就重用它。</span></span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> freeList &lt;- b:</span><br><span class="line">			<span class="comment">// 将缓冲区放大空闲列表中，不做别的。</span></span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="comment">// 空闲列表已满，保持就好。</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>客户端试图从 freeList 中获取缓冲区；若没有缓冲区可用， 它就将分配一个新的。服务器将 b 放回空闲列表 freeList 中直到列表已满，此时缓冲区将被丢弃，并被垃圾回收器回收。（select 语句中的 default 子句在没有条件符合时执行，这也就意味着 selects 永远不会被阻塞。）依靠带缓冲的信道和垃圾回收器的记录， 我们仅用短短几行代码就构建了一个可能导致缓冲区槽位泄露的空闲列表。(没懂TT)</p>
-<p>上一段的英文如下，总觉得中文的翻译不太对</p>
-<p>The client attempts to retrieve a buffer from freeList; if none is available, it allocates a fresh one. The server’s send to freeList puts b back on the free list unless the list is full, in which case the buffer is dropped on the floor to be reclaimed by the garbage collector. (The default clauses in the select statements execute when no other case is ready, meaning that the selects never block.) This implementation builds a leaky bucket free list in just a few lines, relying on the buffered channel and the garbage collector for bookkeeping.</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/compile-and-install-php7-beta1/" itemprop="url">
                   编译安装PHP7 beta1
                 </a>
@@ -981,112 +1266,6 @@
               阅读全文 &raquo;
             </a>
           </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/vim-shortcuts/" itemprop="url">
-                  vim 常用的快捷键
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-19T12:34:50+08:00" content="2015-07-19">
-              2015-07-19
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>vim作为键盘操作为主的编辑器，有许多功能丰富的快捷键，其实不只在普通模式下有快捷键，其实在插入模式下也有一些有用的快捷键…</p>
-<h2 id="插入模式的快捷键"><a href="#插入模式的快捷键" class="headerlink" title="插入模式的快捷键"></a>插入模式的快捷键</h2><p>对于新手来说，vim的插入模式和记事本一样“好用”，记事本有一些快捷键，但是在vim的插入模式下，我们却经常忘记使用快捷键：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;C-h&gt;/Ctrl+h	 删除前一个字符</span><br><span class="line">&lt;C-w&gt;			删除前一个单词</span><br><span class="line">&lt;C-u&gt;			删除到行首</span><br><span class="line"></span><br><span class="line">Esc/&lt;C-[&gt;	Esc进入普通模式，其实Ctrl+[和Esc的作用是一样的</span><br><span class="line">&lt;Ctrl-o&gt;		Ctrl+o进入插入-普通模式，此模式下可以执行一个普通模式下的命令并返回插入模式，</span><br><span class="line">			常用 &lt;C-o&gt;zz：保持插入模式并把光标行滚动到屏幕中间</span><br></pre></td></tr></table></figure>
-<p>可以在插入模式下使用vim的计算工具<code>&lt;C-r&gt;=</code> 插入模式下这个组合键访问表达式寄存器(=)，这是会在屏幕下方提示输入运算符，输入<code>1+2+3</code> 后 <code>&lt;CR&gt;</code>（回车），vim就会把运算结果插入到刚刚的光标位置，并且仍然是插入模式</p>
-<p>对于104键的键盘可以在插入模式下使用<code>Shift+insert</code>组合键粘贴系统剪切板的内容，可以使用<code>&lt;C-r&gt;n</code>粘贴寄存器n中的内容</p>
-<p>在插入模式下 <code>&lt;C-v&gt;</code>用来插入一个特殊字符，比如<code>&lt;C-v&gt;u00bf</code>可以插入一个返过来的问号~这是用来插入unicode字符的。</p>
-<h2 id="可视模式下的快捷键"><a href="#可视模式下的快捷键" class="headerlink" title="可视模式下的快捷键"></a>可视模式下的快捷键</h2><h2 id="普通模式下的快捷键"><a href="#普通模式下的快捷键" class="headerlink" title="普通模式下的快捷键"></a>普通模式下的快捷键</h2><h2 id="分栏"><a href="#分栏" class="headerlink" title="分栏"></a>分栏</h2><p><code>sp {filename}</code> 水平切分上下两栏。filename可选，默认当前文件，快捷键<code>&lt;C-w&gt;s</code><br><code>vsp {filenamem}</code> 垂直切分，左右两栏 <code>&lt;C-w&gt;v</code></p>
-<p>如果安装了yadr扩展的话可以使用<code>contrl+h,j,k,l</code>来跳转到相应方向的分栏<br>没有yadr可以使用快捷键 <code>&lt;C-w&gt;&lt;C-w&gt;</code>在分栏中循环切换，或这使用<code>&lt;C-w&gt;[h,j,k,l]</code> 跳转到分栏。</p>
-<p><code>&lt;C-w&gt;=</code> 所有窗口等宽等高<br><code>&lt;C-w&gt;_</code> 最大化活动窗口高度<br><code>&lt;C-w&gt;|</code> 最大化活动窗口宽度<br><code>[n]&lt;C-w&gt;_</code> 活动窗口高度设为n<br><code>[n]&lt;C-w&gt;|</code> 活动窗口宽度设为n</p>
-<p><code>:clo</code> 关闭活动窗口， 快捷键 <code>&lt;C-w&gt;c</code><br><code>:on[ly]</code> 只保留当前窗口   快捷键 <code>&lt;C-w&gt;o</code></p>
-<p>很有用的重新对其代码,命令模式下 <code>gg=G</code><br><em>待续</em></p>
-
-            
-          </span>
         
       
     </div>
@@ -1232,108 +1411,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/go-iota-spc/" itemprop="url">
-                  Golang 中iota的用法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
-              2015-07-18
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>Golang中可以使用iota方便的定义复杂的常量结构，下面是golang spec中的说明</p>
-<p>Within a constant declaration, the predeclared identifier iota represents successive untyped integer constants. It is reset to 0 whenever the reserved word const appears in the source and increments after each ConstSpec. It can be used to construct a set of related constants:</p>
-<h2 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (  // iota is reset to 0</span><br><span class="line">	c0 = iota  // c0 == 0</span><br><span class="line">	c1 = iota  // c1 == 1</span><br><span class="line">	c2 = iota  // c2 == 2</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	a = 1 &lt;&lt; iota  // a == 1 (iota has been reset)</span><br><span class="line">	b = 1 &lt;&lt; iota  // b == 2</span><br><span class="line">	c = 1 &lt;&lt; iota  // c == 4</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	u         = iota * 42  // u == 0     (untyped integer constant)</span><br><span class="line">	v float64 = iota * 42  // v == 42.0  (float64 constant)</span><br><span class="line">	w         = iota * 42  // w == 84    (untyped integer constant)</span><br><span class="line">)</span><br><span class="line">``</span><br><span class="line">const x = iota  // x == 0 (iota has been reset)</span><br><span class="line">const y = iota  // y == 0 (iota has been reset)</span><br></pre></td></tr></table></figure>
-<p>Within an ExpressionList, the value of each iota is the same because it is only incremented after each ConstSpec:</p>
-<h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (</span><br><span class="line">	bit0, mask0 = 1 &lt;&lt; iota, 1&lt;&lt;iota - 1  // bit0 == 1, mask0 == 0</span><br><span class="line">	bit1, mask1                           // bit1 == 2, mask1 == 1</span><br><span class="line">	_, _                                  // skips iota == 2</span><br><span class="line">	bit3, mask3                           // bit3 == 8, mask3 == 7</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>This last example exploits the implicit repetition of the last non-empty expression list.</p>
-<p>iota是一个比较有特色的东西，看完这两个例子基本就知道怎么用了，相当于它是一个从0开始自动增加的变量，可以重复使用，可以用来定义单位的大小，比如KB，MB，GB等</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1380,21 +1457,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">173</span>
+              <span class="site-state-item-count">175</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">145</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

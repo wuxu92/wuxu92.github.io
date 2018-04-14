@@ -59,7 +59,7 @@
 <meta property="og:site_name" content="Wu Xu">
 <meta property="og:description" content="都知道Linux系统使用sar会收集系统运行的各种数据，可以用sar分析过去一段时间CPU，内存，网络使用等情况，分析系统瓶颈，在分析线上故障或性能问题时非常有用，但是一直没有好好用过，基本连io分析都不会，今天做个笔记记录以下sar的使用。 概述sar 命令用于收集，报告，或者保存Unix/Linux系统的活动信息，一般将这些信息保存在 /var/log/sa/ 目录下，这些信息包括CPU使用率">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-24T15:21:46.000Z">
+<meta property="og:updated_time" content="2018-04-07T14:49:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用sar分析系统性能">
 <meta name="twitter:description" content="都知道Linux系统使用sar会收集系统运行的各种数据，可以用sar分析过去一段时间CPU，内存，网络使用等情况，分析系统瓶颈，在分析线上故障或性能问题时非常有用，但是一直没有好好用过，基本连io分析都不会，今天做个笔记记录以下sar的使用。 概述sar 命令用于收集，报告，或者保存Unix/Linux系统的活动信息，一般将这些信息保存在 /var/log/sa/ 目录下，这些信息包括CPU使用率">
@@ -295,13 +295,16 @@
 <li><code>-I {int_list|SUM|ALL}</code> 统计中断信息，指定中断列表或打印统计信息或所有中断统计。</li>
 <li><code>-n {keyword [,...]|ALL}</code> 显示网络统计，可用的keyword包括 <code>DEV,  EDEV,  FC, ICMP, EICMP, ICMP6, EICMP6, IP, EIP, IP6, EIP6, NFS, NFSD, SOCK, SOCK6, SOFT, TCP, ETCP, UDP and UDP6.</code> 使用 <code>sar -n ALL 1</code> 查看当前网络情况，每秒刷新一次。</li>
 <li><code>-t</code> 使用用户本地时间显示记录</li>
-<li><code>-u 【ALL]</code> 报告CPU使用率统计</li>
+<li><code>-u [ALL]</code> 报告CPU使用率统计</li>
 <li><code>-v</code> 报告inode，文件和其它内核表的状态。</li>
 <li><code>-W</code> 报告 swapping 统计</li>
 <li><code>-w</code> 报告任务创建和系统切换活动</li>
 <li><code>-y</code> 报告 TTY 设备活动</li>
 </ul>
-<p>Ref:<br>-<a href="https://linux.cn/article-9398-1.html" target="_blank" rel="noopener">Linux.cn</a></p>
+<p>Ref:</p>
+<ul>
+<li><a href="https://linux.cn/article-9398-1.html" target="_blank" rel="noopener">Linux.cn</a></li>
+</ul>
 </span>
       
     </div>
@@ -399,21 +402,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">173</span>
+              <span class="site-state-item-count">175</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">145</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

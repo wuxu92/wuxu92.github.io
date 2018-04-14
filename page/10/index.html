@@ -235,6 +235,258 @@
             
               
                 
+                <a class="post-title-link" href="/c-union-enum-and-func-ptr/" itemprop="url">
+                  C 联合、枚举及函数指针
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-07T12:34:50+08:00" content="2015-12-07">
+              2015-12-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p><img src="/images/clang.gif" alt=""></p>
+<h2 id="联合（union）"><a href="#联合（union）" class="headerlink" title="联合（union）"></a>联合（union）</h2><p>联合是一个能在同一存储空间里（但是<strong>不是同时</strong>）存储不同类型数据的数据类型。用来存储某种即没有规律，事先未知顺序的混合数据类型。联合使用于结构同样的方式建立，也需要一个联合模板和联合变量，下面是一个例子：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">union hold &#123;</span><br><span class="line">	int digit;</span><br><span class="line">	double bigfl;</span><br><span class="line">	char letter;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">union hold fit;</span><br></pre></td></tr></table></figure>
+<p>一个hold结构可以含有一个int型数值<strong>或者</strong>一个double型数值<strong>或者</strong>一个char型数值。一个联合的变量可以存储模板中声明的成员<strong>的某一个</strong>。编译器分配空间时，会分析各成员需要的空间，然后按最大需求分配。因为联合<strong>一个时刻只存储一个值</strong>，所以初始化与结构并不一样。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fit.letter = &apos;A&apos;;</span><br><span class="line">fit.digit = 127;</span><br><span class="line">union hold holdA = &#123; .bigfl = 10.08 &#125;;</span><br></pre></td></tr></table></figure>
+<p>要注意的是，<strong>需要程序员维护存储在联合变量的是哪一个成员</strong>，有时候使用了一个成员保存值，而使用另一个成员来查看这些内容，这有时很有用，但需要是程序员管理下进行的，否则会导致错误。</p>
+<h2 id="枚举（enumerated-type）"><a href="#枚举（enumerated-type）" class="headerlink" title="枚举（enumerated type）"></a>枚举（enumerated type）</h2><p>枚举类型声明代表整数常量的符号名称，通过使用关键字 enum 可以创建一个新的类型，并可以指定它<strong>可以</strong>具有的值，实际上enum常量是int类型的，因此在任何使用int类型的地方都可以使用它。枚举使得程序有更高的可读性，它的语法与结构很相似。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">enum spectrum &#123; red, orange, yellow, blue &#125;;</span><br><span class="line">enum spectrum color;</span><br><span class="line"></span><br><span class="line">// 可以当作int使用</span><br><span class="line">for (color = red; color &lt;= blue; color++)</span><br><span class="line">	...</span><br></pre></td></tr></table></figure>
+<p>类型声明中的 red, orange 等我们称之为 <strong>枚举常量</strong>，规定枚举常量都是int类型的，而定义的变量 color 称为枚举变量，可以较为宽松地限定为任意一种整数类型，常有编译器决定，比如我们这里color的范围在0-3之间，可以选择为unsigned char表示。要注意对枚举变量的一元操作符在C++中是不允许的，如果代码可能迁移到C++则不应该这样用。</p>
+<p>枚举常量默认从0开始递增，也可以为枚举列表中的常量指定特定的值。如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">enum level &#123; low = 100, medium = 101, high &#125;;</span><br></pre></td></tr></table></figure>
+<p>这样后面没有指定值的常量会赋予后续的值（即high为102）。Go中有更加强大的 <a href="http://wuxu92.github.io/go-iota-spc/" target="_blank" rel="noopener">itoa</a> 生成更加复杂的赋值模式。</p>
+<blockquote>
+<p>可以字啊同一个作用域内对一个变量和一个标记使用同一个名字而不会发生错误，但是不能在同一作用域内使用名字相同的两个标记或者变量。</p>
+</blockquote>
+<h2 id="typedef"><a href="#typedef" class="headerlink" title="typedef"></a>typedef</h2><p>typedef 是一种高级数据特性，它能够为某一类型创建自己的名字，与#define有3个不同之处</p>
+<ul>
+<li>typedef 给出的符号名称仅限于对类型，而不是对值</li>
+<li>typedef 的解释有编译器执行，而不是预处理器（也就是说 #define 由预处理器执行</li>
+<li>虽然typedesf的范围有限，但在受限范围内，typedef比 #define更灵活</li>
+</ul>
+<p>下面是一个使用示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef unsigned int BYTE;</span><br><span class="line">BYTE x, y[2], *z</span><br></pre></td></tr></table></figure>
+<p>typedef 的作用域取决于typedef语句所在的位置，它的作用域与变量相似。通常typedef定义的类型使用大写字母，以提醒用户这个类型名称实际上以一个符号缩写（当然也可以使用小写字母）。</p>
+<p>实际上，在 &lt;sys/types.h&gt; 中定义的很多很多类型，比如 time_t, size_t 都是使用typedef定义的整数类型。这是由于C标准留给具体实现来决定使用哪种类型。</p>
+<p>注意typedef和#define的区别：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef char * STRING</span><br><span class="line">STRING name, sign; // char *name, *sign;</span><br><span class="line"></span><br><span class="line">// define</span><br><span class="line">#define STRING char *</span><br><span class="line">STRING name, sign; // char *name, sign;</span><br></pre></td></tr></table></figure>
+<p>一种更常用的 typedef 场景是对strut 结构体创建新的类型：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef struct book &#123;</span><br><span class="line">	char title[20];</span><br><span class="line">	float price;</span><br><span class="line">&#125; Book;</span><br><span class="line">Book cspp;</span><br></pre></td></tr></table></figure>
+<p>这样使用更见方便，也更见常见。</p>
+<h2 id="一些奇特的声明"><a href="#一些奇特的声明" class="headerlink" title="一些奇特的声明"></a>一些奇特的声明</h2><p>这里记录几个比较有用的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int *reisks[10];		// 表示具有10个元素的数组，每个元素是一个指向int的指针</span><br><span class="line">int (*risks)[10];		// 一个指针，指向具有10个元素的int数组</span><br><span class="line">int *oof[3][4];			// 一个 3×4的数组，每个元素是一个指向int的指针</span><br><span class="line">int (* uuf)[3][4];		// 一个指针，指向 3×4的int数组</span><br><span class="line">int (* uof[3])[4];		// 一个具有3个元素的数组，每个元素是一个指向具有4个元素的int数组的指针</span><br></pre></td></tr></table></figure>
+<p>理解这部分，需要知道， [] 和 () 具有相同的优先级，其优先级比 * 高，且 [] 和 () 都是从左到右进行结合的。这一块确实是比较难以理解的，过一段时间又会混乱掉。</p>
+<p>再看一下复杂的函数返回值类型：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">char * fump();			// 返回指向char的指针**的函数**</span><br><span class="line">char (* frump)();		// 指向返回类型为char的**函数的指针**</span><br><span class="line">char (* flump[3])();	// 由3个指针组成**的数组**，每个指针指向返回类型为char**的函数**</span><br></pre></td></tr></table></figure>
+<p>一个技巧是，首先确定类型，是数组、指针还是函数，在确认其他的。</p>
+<p>更复杂的typedef应用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef int arr5[5];		// arr5 是一个有5个元素的int数组类型</span><br><span class="line">typedef arr5 * p_arr5; 		// p_arr5是指向具有5个元素的int数组的指针 的类型</span><br><span class="line">typedef p_arr5 arrp10[10];	// 一个具有10个元素的数组类型，每个元素是一个指向有5个元素的int数组</span><br></pre></td></tr></table></figure>
+<h2 id="函数和指针"><a href="#函数和指针" class="headerlink" title="函数和指针"></a>函数和指针</h2><p>上面一节中，函数指针是比较难懂的，之前也确实没有用过C中的函数指针，在Go，JS甚至PHP中都用过相似的概念，这里学习一下C中的函数指针。</p>
+<p>对于一个函数的指针，必须声明它指向的函数的类型，在C中函数的类型包括返回类型及函数的参数类型。考虑下面的函数声明：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void ToUpper(char *);</span><br></pre></td></tr></table></figure>
+<p>描述这个函数声明就是：一个具有char * 类型的参量，返回类型是void的函数，那么要声明这种函数的指针，可以如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void (*pf)(char *)</span><br></pre></td></tr></table></figure>
+<p>pf 就是一个指向 ToUpper类型函数的指针了。其前一个括号是结合符，后一个括号是表示这是一个函数指针，并且用于说明其参数类型。这是可以用 <code>*pf</code> 代替函数名 ToUpper。 第一个括号是不可省略的，之前的文章里已经提到过，<code>void *pf(char *)</code>表示一个返回一个指针的函数。</p>
+<p>有了函数指针后，可以把适当类型的函数的标识（地址）赋值给它，函数名即是函数的地址：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">char mis[12] = &quot;how are you&quot;;</span><br><span class="line">pf = ToUpper;  // 不需要 ToUpper()</span><br><span class="line">(*pf)(mis);</span><br><span class="line"></span><br><span class="line">pf(mis);</span><br></pre></td></tr></table></figure>
+<p>像上面的两种使用方式在ANSI C中都可以，第一种是C和Unix开发者使用的，第二种是Berkeley的Unix扩展这采用的，而K &amp;R C不允许使用第二种形式，ANSI C保持了对两种方式的兼容。一个使用函数指针的示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void ToUpper(char *str) &#123;</span><br><span class="line">    while (*str != 0) &#123;</span><br><span class="line">        if (*str &gt;= &apos;a&apos; &amp;&amp; *str &lt;= &apos;z&apos;)</span><br><span class="line">            *str -= 32;</span><br><span class="line">        str++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void ToLower(char *str) &#123;</span><br><span class="line">    while (*str != 0) &#123;</span><br><span class="line">        if (*str &gt;= &apos;A&apos; &amp;&amp; *str &lt;= &apos;Z&apos;)</span><br><span class="line">            *str += 32;</span><br><span class="line">        str++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void show(void (*fp)(char *),char *str) &#123;</span><br><span class="line">    fp(str);</span><br><span class="line">    printf(&quot;str after fp: %s\n&quot;, str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">     char *hi = &quot;how are you?&quot;;</span><br><span class="line">     void (*fp)(char *);</span><br><span class="line">     fp = ToUpper;	// 类型相同的函数才能赋值给该指针</span><br><span class="line">     show(fp, hi);	// 函数指针作为参数</span><br><span class="line">     fp = ToLower;</span><br><span class="line">     show(fp, hi);</span><br><span class="line">     return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以使用typedef简化函数指针的声明，比如使用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef void(*V_FP_CHARP) (char *);</span><br><span class="line">void show(V_FP_CHARP, char *);</span><br><span class="line"></span><br><span class="line">V_FP_CHARP pfun;</span><br></pre></td></tr></table></figure>
+<p>这样的typedef用法和之前简单的 <code>typedef unsigned char BYTE</code> 形式不太一样，不过结合前面对函数指针的介绍，应该也可以理解了。</p>
+<p>完。</p>
+<p>参考：</p>
+<ul>
+<li>除了 C Primer Plus，然而并没有</li>
+</ul>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/c-struct-of-cpp/" itemprop="url">
+                  C语言中的结构
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-06T12:34:50+08:00" content="2015-12-06">
+              2015-12-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><img src="/images/clang.gif" alt=""></p>
+<p>结构体一块本科的时候就没有学好，在学习Go的时候学习了Go定义结构体的方式，最近看C Primer Plus的结构体一章，发现Go借鉴了很多C中结构体的东西，并且这本书中讲的结构体和本科书上的结构体部分很不一样，讲的更加容易理解。</p>
+<p>这里只记一些最重要的，因为对结构体已经有一定的基础了，虽然很久没有使用过了。</p>
+<h2 id="结构体的声明和变量定义"><a href="#结构体的声明和变量定义" class="headerlink" title="结构体的声明和变量定义"></a>结构体的声明和变量定义</h2><p>声明结构体的关键字是 struct ，结构体的声明是描述结构如何组合的主要方法。下面是一个示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct book &#123;</span><br><span class="line">	title char[20];</span><br><span class="line">	char author[20];</span><br><span class="line">	price float;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 定义一个结构体的变量</span><br><span class="line">struct book cpp;</span><br></pre></td></tr></table></figure>
+<p>我们把struct 后面的 book 称作（可选的）标记，用来引用该结构的快速标记。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/c-struct-of-cpp/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/linux-ip-command/" itemprop="url">
                   Linux ip/ss 命令详解
                 </a>
@@ -388,6 +640,106 @@
             
               
                 
+                <a class="post-title-link" href="/compile-and-install-php7/" itemprop="url">
+                  编译安装PHP7正式版
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-03T12:34:50+08:00" content="2015-12-03">
+              2015-12-03
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><img src="/images/php.jpg" alt=""></p>
+<p>PHP 7正式版终于在今天发布了，<del>虽然在官网 <a href="php.net">php.net</a> 还没有挂出链接（原来是因为中国时区比较早，现在已经有下载了），但是在鸟哥的微信公众号中给出来下载地址</del>，在github上也有了 7.0.0  的release。不知道为什么github上面的状态一直显示 build error。但是下载源文件编译是成功的。基本的安装步骤和之前编译安装 beta1 是一样的。</p>
+<p>官方的下载地址： <a href="http://www.php.net/downloads.php" target="_blank" rel="noopener">http://www.php.net/downloads.php</a></p>
+<p>可以参考之前的文章： <a href="http://wuxu92.github.io/compile-and-install-php7-beta1/" target="_blank" rel="noopener">http://wuxu92.github.io/compile-and-install-php7-beta1/</a> 唯一的区别是正式版没有了 <code>--with-MySQL</code>  选项，因为正式版已经没有旧的mysql函数的支持了，需要使用 mysqli 或者 PDO 替代早已不建议使用的mysql函数。</p>
+<p>下载链接：  <a href="http://cn2.php.net/get/php-7.0.0.tar.gz/from/this/mirror" target="_blank" rel="noopener">http://cn2.php.net/get/php-7.0.0.tar.gz/from/this/mirror</a></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/compile-and-install-php7/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/system-level-io/" itemprop="url">
                   系统级I/O
                 </a>
@@ -451,106 +803,6 @@
 <li>关闭文件。应用完成了对文件的访问之后，它就通知内核关闭这个文件。内核释放打开这个文件时创建的数据结构，并将这个描述符恢复到可用的描述符池中。无论一个进程因为何种原因终止，内核都会关闭所有打开的文件，并释放它们的存储器资源。
           <div class="post-more-link text-center">
             <a class="btn" href="/system-level-io/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/compile-and-install-php7/" itemprop="url">
-                  编译安装PHP7正式版
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-03T12:34:50+08:00" content="2015-12-03">
-              2015-12-03
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p><img src="/images/php.jpg" alt=""></p>
-<p>PHP 7正式版终于在今天发布了，<del>虽然在官网 <a href="php.net">php.net</a> 还没有挂出链接（原来是因为中国时区比较早，现在已经有下载了），但是在鸟哥的微信公众号中给出来下载地址</del>，在github上也有了 7.0.0  的release。不知道为什么github上面的状态一直显示 build error。但是下载源文件编译是成功的。基本的安装步骤和之前编译安装 beta1 是一样的。</p>
-<p>官方的下载地址： <a href="http://www.php.net/downloads.php" target="_blank" rel="noopener">http://www.php.net/downloads.php</a></p>
-<p>可以参考之前的文章： <a href="http://wuxu92.github.io/compile-and-install-php7-beta1/" target="_blank" rel="noopener">http://wuxu92.github.io/compile-and-install-php7-beta1/</a> 唯一的区别是正式版没有了 <code>--with-MySQL</code>  选项，因为正式版已经没有旧的mysql函数的支持了，需要使用 mysqli 或者 PDO 替代早已不建议使用的mysql函数。</p>
-<p>下载链接：  <a href="http://cn2.php.net/get/php-7.0.0.tar.gz/from/this/mirror" target="_blank" rel="noopener">http://cn2.php.net/get/php-7.0.0.tar.gz/from/this/mirror</a></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/compile-and-install-php7/" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1116,227 +1368,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/linking-relocation-and-others/" itemprop="url">
-                  CSAPP：链接重定位
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-11-24T12:34:50+08:00" content="2015-11-24">
-              2015-11-24
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p><img src="/images/post/csapp2ecover.jpg" alt=""></p>
-<p> 前一篇讲了链接的基础，这里继续链接过程的重定位实现机制以及可执行目标文件的结构和后面的一些内容。</p>
-<h2 id="重定位"><a href="#重定位" class="headerlink" title="重定位"></a>重定位</h2><p>前面讲过了链接器的符号解析过程，在符号解析完成之后，代码中的每个符号引用和确定的一个符号定义联系起来了。此时，链接器就知道它的输入目标模块中的代码和数据节的确定大小。此时开始进行重定位，重定位将合并输入模块，并为每个符号分配运行时地址。重定位分两步进行：</p>
-<ol>
-<li>重定位节和符号定义。 链接器将所有相同类型的节进行合并，形成一个新的聚合节。例如将所有输入模块的 .data 节合并到一个节，这个节成为输出的可执行目标文件的 .data 节。然后链接器将新的存储器地址赋给新的聚合节。此时程序中每个指令和全局变量都有了一个运行时存储器地址了。</li>
-<li>重定位节中的符号引用。 对指令和全局变量（定义）重编码后，需要将输入模块的节（代码和数据）中的符号引用进行重定位，使它们指向第一步重定位后的运行时地址。这一步依赖于一个称为 relocation entry(重定位条目)的数据结构。这个条目由<strong>汇编器</strong>生成，链接器根据这个结构的内容确定符号引用的运行时地址。</li>
-</ol>
-<h3 id="relocation-entry"><a href="#relocation-entry" class="headerlink" title="relocation entry"></a>relocation entry</h3><p>汇编器生产一个目标模块时，它并不知道数据和代码最终存放在存储器的什么位置，所以在汇编器遇到最终位置未知的目标引用时，就生成一个重定位条目（relocation entry），告诉链接器如何在合并成可执行文件时修改这个引用。代码的重定位条目保存在 .rel.text 中，数据的重定位条目存放在 .rel.data 中（见上一篇的可重定位目标文件结构）。</p>
-<p>relocation entry的数据结构定义如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> offset;</span><br><span class="line">    <span class="keyword">int</span> symbol:<span class="number">24</span>,</span><br><span class="line">        type:<span class="number">8</span>;</span><br><span class="line">&#125; ELF32_Rel;</span><br></pre></td></tr></table></figure>
-<p>其中offset是需要被修改的引用的节偏移（相对于节的偏移），symbol是标识被修改的引用应该指向的符号（的地址），type是高职链接器如果修改新的引用。</p>
-<p>type有11中，我们只需要知道最主要的两种方式，一种是 R_386_PC32，即使用一个32位PC（程序计数器）相对地址的引用。PC的值通常是存储器中下一条指令的地址。另一种方式R_386_32；重定位使用一个32位绝对地址的引用。</p>
-<h3 id="重定位符号引用"><a href="#重定位符号引用" class="headerlink" title="重定位符号引用"></a>重定位符号引用</h3><p>一种重定位算法的伪代码如下所示：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">foreach section s &#123;</span><br><span class="line">    foreach relocation entry r &#123;</span><br><span class="line">        refptr = s + r.offset;</span><br><span class="line">        <span class="keyword">if</span> (r.type == R_386_PC32) &#123;</span><br><span class="line">            refaddr = ADDR(s) + r.offset;</span><br><span class="line">            *refptr = (<span class="keyword">unsigned</span>) (ADDR(r.symbol) + *refptr - refaddr);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (r.type = R_386_32)</span><br><span class="line">            *refptr = (<span class="keyword">unsigned</span>)(ADDR(r.symbol) + *refptr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>其中ADDR(s)表示s的运行时地址（在节内部符号重定位时，符号和指令的运行时地址已经知道了）。ADDR(r.symbol)是符号的运行时地址。</p>
-<p><strong>重定位PC相对引用</strong> 对于PC相对位置的重定位。根据上面的代码分析：refptr是一个地址，其值 <em>refaddr 是相对定位的偏移的值（32位长度）。一定要注意第6行的计算， </em>refptr不要用refptr代入计算了，注意它是一个指针。汇编器会将call指令的引用的初始值设置为 -4 (0xfffffffc)（在不同指令大小和编码方式上可能不一样）。这是因为PC总是指向当前指令的下一条指令，指向 -4 允许链接器透明地重定位引用，而不用知道某一台机器的指令编码。这部分使用一个例子更加清晰，CSAPP Page 462的例子可以仔细看看。</p>
-<p><strong>重定位绝对引用</strong> </p>
-<h2 id="可执行文件的结构和加载"><a href="#可执行文件的结构和加载" class="headerlink" title="可执行文件的结构和加载"></a>可执行文件的结构和加载</h2><p>链接器将多个目标模块合并成了一个可执行的二进制目标文件。这个二进制文件包含加载程序到存储器并运行它所需的所有信息。一个典型的ELF可执行文件结构如下图所示。</p>
-<p><img src="/images/post/exe-obj.png" alt=""></p>
-<p>其结构整体和可重定位目标文件差不多，不过因为已经完成了重定位（称作完全链接的），所以没有了  .rel.data 和 .rel.text 节了。多了一个 .init 节，定义了一个_init函数，程序的初始化代码会调用它。</p>
-<p>段头部表(segment header table)描述了可执行文件的连续的片(chunk)被映射到连续的存储器段的信息。</p>
-<p>shell通过一个驻留在存储器中称为加载器(loader)的操作系统代码来运行生成的可执行文件，任何Unix程序都可以通过调用 <code>execve</code> 函数来调用加载器。</p>
-<p>每个Unix程序都一个一个运行时存储器影响，在32位Linux系统中，代码段<strong>总是</strong>从地址 0x08048000 处（小端存储）开始。数据段是接下来的下一个4KB对齐的地址处，运行时堆在读/写段之后接下来的下一个4KB对其的地址处，并通过调用malloc库往上增长。用户栈总是总最大的合法用户地址开始，向下增长的，从栈的上部开始的段是操作系统驻留存储器的部分（内核）保留的。其表示如下图。</p>
-<p><img src="/images/post/Linux-run-mem-img.png" alt=""></p>
-<p>每个C程序中启动例程的伪代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0x080480c0 &lt;_start&gt;:</span><br><span class="line">    call __libc_init_first</span><br><span class="line">    call _init</span><br><span class="line">    call atexit</span><br><span class="line">    call main</span><br><span class="line">    call _exit</span><br></pre></td></tr></table></figure>
-<p>加载工作的一个概述如下：Unix系统中的每个程序都运行在一个进程上下文中，有自己的虚拟地址空间。当shell运行一个程序时，（父）shell进程生成一个子进程，它是父进程的一个复制，子进程通过execve系统调用启动加载器。加载器删除子进程现有的虚拟存储器段，并创建一组新的代码、数据、堆和栈段。新的栈和堆段被初始化为0.通过将虚拟地址空间中的页映射到可执行文件的页大小的片，新的代码和数据段被初始化为可执行文件的内容。最后加载器跳转到 _start 地址，它最终会调用应用程序的 main 函数。除了一些头部信息，在加载过程中没有任何从磁盘到存储器的数据拷贝。知道CPU引用一个被映射的虚拟页才会进行拷贝，此时操作系统利用它的页面调度机制自动将页面从磁盘传送到存储器。</p>
-<p>待续</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/chrome-extension-vimium/" itemprop="url">
-                  Chrome插件Vimium
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-11-23T12:34:50+08:00" content="2015-11-23">
-              2015-11-23
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/tools/" itemprop="url" rel="index">
-                    <span itemprop="name">tools</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>Vimuim是一款很酷的chrome插件，它能让你使用Vim的方式操作你的chrome浏览器，滚动，打开链接，tab跳转，复制，搜索，功能非常强大。</p>
-<p>在有鼠标的时候可以使用鼠标手势快速操作浏览器，但是在使用笔记本（我现在的T430）的时候，基本不使用鼠标，使用小红点浏览网页的时候还是有点麻烦。今天使用了一下大名鼎鼎的Vimium插件，简直解放了我的食指。</p>
-<p>首先安装插件，地址是 <a href="https://chrome.google.com/webstore/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb?utm_source=chrome-ntp-icon" target="_blank" rel="noopener">https://chrome.google.com/webstore/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb?utm_source=chrome-ntp-icon </a> ，另外还有一些类似的插件，像 cVim 等，不过用的最多是这个 Vimium。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/chrome-extension-vimium/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1383,21 +1414,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">173</span>
+              <span class="site-state-item-count">175</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">145</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

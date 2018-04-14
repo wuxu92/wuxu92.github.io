@@ -59,7 +59,7 @@
 <meta property="og:site_name" content="Wu Xu">
 <meta property="og:description" content="这是对官方的The Go Memory Model文档的翻译兼笔记。  介绍Go内存模型明确了在何种情况下在一个goroutine中读取一个变量时能够保证他能观察（observe）到被另一个goroutine写入到该变量的值。 建议/忠告程序在修改可能被多个goroutine访问的数据时，应该把这种访问序列化。 为了序列化访问，可以使用 channel操作保护数据，或者一些sync或 sync/">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-18T16:06:02.000Z">
+<meta property="og:updated_time" content="2018-04-07T14:50:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go内存模型">
 <meta name="twitter:description" content="这是对官方的The Go Memory Model文档的翻译兼笔记。  介绍Go内存模型明确了在何种情况下在一个goroutine中读取一个变量时能够保证他能观察（observe）到被另一个goroutine写入到该变量的值。 建议/忠告程序在修改可能被多个goroutine访问的数据时，应该把这种访问序列化。 为了序列化访问，可以使用 channel操作保护数据，或者一些sync或 sync/">
@@ -279,6 +279,7 @@
 <p>为了序列化访问，可以使用 channel操作保护数据，或者一些<code>sync</code>或 <code>sync/atomic</code>包中的同步原语。</p>
 <p>如果你的程序的行为需要阅读本文档接下来的内容才能理解，那你太聪明了。</p>
 <p>但是，不要太聪明。</p>
+<a id="more"></a>
 <h2 id="事件时序"><a href="#事件时序" class="headerlink" title="事件时序"></a>事件时序</h2><p>在单个goroutine中，读写操作的行为一定以程序指定的顺序执行。在单个goroutine中，编译器和处理器只有在不会改编语言规范定义行为的情况下才可能对指令重排序。因为这种重排序，一个goroutine中观察到的执行顺序和另一个goroutine可能不太一样。例如，在一个goroutine中执行了 <code>a=1; b=2;</code>，另一个goroutine可能看到b在a之前更新了值。</p>
 <p>为了明确读、写的必要体检，我们定义 <code>happens before</code>（事件发生顺序），它表示在go程序中执行内存操作的偏序关系。如果事件 <code>e1</code>在事件 happens before <code>e2</code>，我们说 <code>e2</code> happens after e2。同理，如果 e1 没有 heppen before e2，同时也没有 happen after e2，那么我们说 e1 和 e2是并发发生的（happen concurrently）。</p>
 <p>在单个gorouine中， happens-before 顺序即程序定义的顺序。</p>
@@ -455,21 +456,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">173</span>
+              <span class="site-state-item-count">175</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">145</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

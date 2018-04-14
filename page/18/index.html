@@ -235,8 +235,8 @@
             
               
                 
-                <a class="post-title-link" href="/vim-commands/" itemprop="url">
-                  vim 常用的命令模式
+                <a class="post-title-link" href="/vim-shortcuts/" itemprop="url">
+                  vim 常用的快捷键
                 </a>
               
             
@@ -246,8 +246,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
-              2015-07-18
+            <time itemprop="dateCreated" datetime="2015-07-19T12:34:50+08:00" content="2015-07-19">
+              2015-07-19
             </time>
           </span>
 
@@ -288,21 +288,17 @@
         
           <span itemprop="articleBody">
             
-              <p>vim中常用的命令，日常更新 </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">!ls  使用感叹号开头调用系统命令</span><br><span class="line">~	 切换当前光标所在字符的大小写</span><br></pre></td></tr></table></figure>
-<h2 id="buffer相关"><a href="#buffer相关" class="headerlink" title="buffer相关"></a>buffer相关</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:ls</span><br><span class="line">:bn :bnext</span><br><span class="line">:bp :bprev</span><br><span class="line">:bd :bdelete</span><br><span class="line">:b1 :buffer1</span><br><span class="line">:bufdo cmd 在所有缓冲区执行命令</span><br></pre></td></tr></table></figure>
-<h2 id="参数列表"><a href="#参数列表" class="headerlink" title="参数列表"></a>参数列表</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:args 列出参数列表或者设置参数列表</span><br><span class="line">:args **/*.postfix</span><br><span class="line">:write :w</span><br><span class="line">:edit! :e!放弃修改重新载入文件</span><br><span class="line">:qall :qa</span><br><span class="line">:wall :wa</span><br></pre></td></tr></table></figure>
-<h2 id="多窗口"><a href="#多窗口" class="headerlink" title="多窗口"></a>多窗口</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:sp [file] 水平分割</span><br><span class="line">:vsp [filw] 垂直分割</span><br><span class="line">:clo &lt;C-w&gt;c 关闭当前窗口</span><br><span class="line">:no[ly] &lt;C-v&gt;o 关闭当前之外的所有窗口</span><br></pre></td></tr></table></figure>
-<p><strong>切换窗口</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;C-w&gt;&lt;C-w&gt; 在串口中切换，连续按两次Ctrl+w</span><br><span class="line">&lt;C-w&gt;h|j|k|l 切换到左/下/上/右的窗口</span><br></pre></td></tr></table></figure>
-<p><strong>改变窗口大小</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;C-w&gt;=</span><br><span class="line">&lt;C-w&gt;_  最大化当前窗口的高度</span><br><span class="line">&lt;C-w&gt;|  最大化当前窗口的宽度</span><br><span class="line">[n]&lt;C-w&gt;_   设置</span><br><span class="line">[n]&lt;C-w&gt;|</span><br></pre></td></tr></table></figure>
-<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:tabedit :tabe &#123;filename&#125; 如果filename为空则打开一个新的标签页</span><br><span class="line">:tabclose :tabc </span><br><span class="line">:tabonly  :tabo  关闭当前标签之外的所有标签</span><br></pre></td></tr></table></figure>
-<p><strong>标签切换</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:tabnext  :tabn &#123;N&#125;  Ngt</span><br><span class="line">:tabn gt</span><br><span class="line">:tabp gT</span><br><span class="line">:tabmove [N] 移动标签页</span><br></pre></td></tr></table></figure>
-<h2 id="打开及保存文件"><a href="#打开及保存文件" class="headerlink" title="打开及保存文件"></a>打开及保存文件</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:edit full/path/name</span><br><span class="line">:edit %:h&lt;tab&gt;filename 	使用缓冲区文件的完整路径打开文件, :h去掉当前文件名，tab键补全</span><br><span class="line">:edit path 打开文件管理窗口</span><br><span class="line">:find filename 在path下查找文件</span><br><span class="line">: set path+=/path/to/workspace  将工作区添加到vim的path中用于寻找</span><br><span class="line">:e 是 :edit的缩写</span><br><span class="line">:Explore :E 打开当前的目录管理器</span><br><span class="line">:Sexplore  explore的切分</span><br><span class="line">:Vexplore</span><br></pre></td></tr></table></figure>
-<p><strong>文件操作</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:!mkdir -p %:h    前缓冲区创建目录，然后在:w，解决某些不能保存的问题</span><br><span class="line">:w !sudo tee % &gt; /dev/null 由于保存用非sudo打开的无权限文件的保存</span><br></pre></td></tr></table></figure>
+              <p>vim作为键盘操作为主的编辑器，有许多功能丰富的快捷键，其实不只在普通模式下有快捷键，其实在插入模式下也有一些有用的快捷键…</p>
+<h2 id="插入模式的快捷键"><a href="#插入模式的快捷键" class="headerlink" title="插入模式的快捷键"></a>插入模式的快捷键</h2><p>对于新手来说，vim的插入模式和记事本一样“好用”，记事本有一些快捷键，但是在vim的插入模式下，我们却经常忘记使用快捷键：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;C-h&gt;/Ctrl+h	 删除前一个字符</span><br><span class="line">&lt;C-w&gt;			删除前一个单词</span><br><span class="line">&lt;C-u&gt;			删除到行首</span><br><span class="line"></span><br><span class="line">Esc/&lt;C-[&gt;	Esc进入普通模式，其实Ctrl+[和Esc的作用是一样的</span><br><span class="line">&lt;Ctrl-o&gt;		Ctrl+o进入插入-普通模式，此模式下可以执行一个普通模式下的命令并返回插入模式，</span><br><span class="line">			常用 &lt;C-o&gt;zz：保持插入模式并把光标行滚动到屏幕中间</span><br></pre></td></tr></table></figure>
+<p>可以在插入模式下使用vim的计算工具<code>&lt;C-r&gt;=</code> 插入模式下这个组合键访问表达式寄存器(=)，这是会在屏幕下方提示输入运算符，输入<code>1+2+3</code> 后 <code>&lt;CR&gt;</code>（回车），vim就会把运算结果插入到刚刚的光标位置，并且仍然是插入模式</p>
+<p>对于104键的键盘可以在插入模式下使用<code>Shift+insert</code>组合键粘贴系统剪切板的内容，可以使用<code>&lt;C-r&gt;n</code>粘贴寄存器n中的内容</p>
+<p>在插入模式下 <code>&lt;C-v&gt;</code>用来插入一个特殊字符，比如<code>&lt;C-v&gt;u00bf</code>可以插入一个返过来的问号~这是用来插入unicode字符的。</p>
+<h2 id="可视模式下的快捷键"><a href="#可视模式下的快捷键" class="headerlink" title="可视模式下的快捷键"></a>可视模式下的快捷键</h2><h2 id="普通模式下的快捷键"><a href="#普通模式下的快捷键" class="headerlink" title="普通模式下的快捷键"></a>普通模式下的快捷键</h2><h2 id="分栏"><a href="#分栏" class="headerlink" title="分栏"></a>分栏</h2><p><code>sp {filename}</code> 水平切分上下两栏。filename可选，默认当前文件，快捷键<code>&lt;C-w&gt;s</code><br><code>vsp {filenamem}</code> 垂直切分，左右两栏 <code>&lt;C-w&gt;v</code></p>
+<p>如果安装了yadr扩展的话可以使用<code>contrl+h,j,k,l</code>来跳转到相应方向的分栏<br>没有yadr可以使用快捷键 <code>&lt;C-w&gt;&lt;C-w&gt;</code>在分栏中循环切换，或这使用<code>&lt;C-w&gt;[h,j,k,l]</code> 跳转到分栏。</p>
+<p><code>&lt;C-w&gt;=</code> 所有窗口等宽等高<br><code>&lt;C-w&gt;_</code> 最大化活动窗口高度<br><code>&lt;C-w&gt;|</code> 最大化活动窗口宽度<br><code>[n]&lt;C-w&gt;_</code> 活动窗口高度设为n<br><code>[n]&lt;C-w&gt;|</code> 活动窗口宽度设为n</p>
+<p><code>:clo</code> 关闭活动窗口， 快捷键 <code>&lt;C-w&gt;c</code><br><code>:on[ly]</code> 只保留当前窗口   快捷键 <code>&lt;C-w&gt;o</code></p>
+<p>很有用的重新对其代码,命令模式下 <code>gg=G</code><br><em>待续</em></p>
 
             
           </span>
@@ -415,6 +411,218 @@
               阅读全文 &raquo;
             </a>
           </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/vim-commands/" itemprop="url">
+                  vim 常用的命令模式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
+              2015-07-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>vim中常用的命令，日常更新 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">!ls  使用感叹号开头调用系统命令</span><br><span class="line">~	 切换当前光标所在字符的大小写</span><br></pre></td></tr></table></figure>
+<h2 id="buffer相关"><a href="#buffer相关" class="headerlink" title="buffer相关"></a>buffer相关</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:ls</span><br><span class="line">:bn :bnext</span><br><span class="line">:bp :bprev</span><br><span class="line">:bd :bdelete</span><br><span class="line">:b1 :buffer1</span><br><span class="line">:bufdo cmd 在所有缓冲区执行命令</span><br></pre></td></tr></table></figure>
+<h2 id="参数列表"><a href="#参数列表" class="headerlink" title="参数列表"></a>参数列表</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:args 列出参数列表或者设置参数列表</span><br><span class="line">:args **/*.postfix</span><br><span class="line">:write :w</span><br><span class="line">:edit! :e!放弃修改重新载入文件</span><br><span class="line">:qall :qa</span><br><span class="line">:wall :wa</span><br></pre></td></tr></table></figure>
+<h2 id="多窗口"><a href="#多窗口" class="headerlink" title="多窗口"></a>多窗口</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:sp [file] 水平分割</span><br><span class="line">:vsp [filw] 垂直分割</span><br><span class="line">:clo &lt;C-w&gt;c 关闭当前窗口</span><br><span class="line">:no[ly] &lt;C-v&gt;o 关闭当前之外的所有窗口</span><br></pre></td></tr></table></figure>
+<p><strong>切换窗口</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;C-w&gt;&lt;C-w&gt; 在串口中切换，连续按两次Ctrl+w</span><br><span class="line">&lt;C-w&gt;h|j|k|l 切换到左/下/上/右的窗口</span><br></pre></td></tr></table></figure>
+<p><strong>改变窗口大小</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;C-w&gt;=</span><br><span class="line">&lt;C-w&gt;_  最大化当前窗口的高度</span><br><span class="line">&lt;C-w&gt;|  最大化当前窗口的宽度</span><br><span class="line">[n]&lt;C-w&gt;_   设置</span><br><span class="line">[n]&lt;C-w&gt;|</span><br></pre></td></tr></table></figure>
+<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:tabedit :tabe &#123;filename&#125; 如果filename为空则打开一个新的标签页</span><br><span class="line">:tabclose :tabc </span><br><span class="line">:tabonly  :tabo  关闭当前标签之外的所有标签</span><br></pre></td></tr></table></figure>
+<p><strong>标签切换</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:tabnext  :tabn &#123;N&#125;  Ngt</span><br><span class="line">:tabn gt</span><br><span class="line">:tabp gT</span><br><span class="line">:tabmove [N] 移动标签页</span><br></pre></td></tr></table></figure>
+<h2 id="打开及保存文件"><a href="#打开及保存文件" class="headerlink" title="打开及保存文件"></a>打开及保存文件</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:edit full/path/name</span><br><span class="line">:edit %:h&lt;tab&gt;filename 	使用缓冲区文件的完整路径打开文件, :h去掉当前文件名，tab键补全</span><br><span class="line">:edit path 打开文件管理窗口</span><br><span class="line">:find filename 在path下查找文件</span><br><span class="line">: set path+=/path/to/workspace  将工作区添加到vim的path中用于寻找</span><br><span class="line">:e 是 :edit的缩写</span><br><span class="line">:Explore :E 打开当前的目录管理器</span><br><span class="line">:Sexplore  explore的切分</span><br><span class="line">:Vexplore</span><br></pre></td></tr></table></figure>
+<p><strong>文件操作</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:!mkdir -p %:h    前缓冲区创建目录，然后在:w，解决某些不能保存的问题</span><br><span class="line">:w !sudo tee % &gt; /dev/null 由于保存用非sudo打开的无权限文件的保存</span><br></pre></td></tr></table></figure>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/go-iota-spc/" itemprop="url">
+                  Golang 中iota的用法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
+              2015-07-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>Golang中可以使用iota方便的定义复杂的常量结构，下面是golang spec中的说明</p>
+<p>Within a constant declaration, the predeclared identifier iota represents successive untyped integer constants. It is reset to 0 whenever the reserved word const appears in the source and increments after each ConstSpec. It can be used to construct a set of related constants:</p>
+<h2 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (  // iota is reset to 0</span><br><span class="line">	c0 = iota  // c0 == 0</span><br><span class="line">	c1 = iota  // c1 == 1</span><br><span class="line">	c2 = iota  // c2 == 2</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	a = 1 &lt;&lt; iota  // a == 1 (iota has been reset)</span><br><span class="line">	b = 1 &lt;&lt; iota  // b == 2</span><br><span class="line">	c = 1 &lt;&lt; iota  // c == 4</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	u         = iota * 42  // u == 0     (untyped integer constant)</span><br><span class="line">	v float64 = iota * 42  // v == 42.0  (float64 constant)</span><br><span class="line">	w         = iota * 42  // w == 84    (untyped integer constant)</span><br><span class="line">)</span><br><span class="line">``</span><br><span class="line">const x = iota  // x == 0 (iota has been reset)</span><br><span class="line">const y = iota  // y == 0 (iota has been reset)</span><br></pre></td></tr></table></figure>
+<p>Within an ExpressionList, the value of each iota is the same because it is only incremented after each ConstSpec:</p>
+<h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (</span><br><span class="line">	bit0, mask0 = 1 &lt;&lt; iota, 1&lt;&lt;iota - 1  // bit0 == 1, mask0 == 0</span><br><span class="line">	bit1, mask1                           // bit1 == 2, mask1 == 1</span><br><span class="line">	_, _                                  // skips iota == 2</span><br><span class="line">	bit3, mask3                           // bit3 == 8, mask3 == 7</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>This last example exploits the implicit repetition of the last non-empty expression list.</p>
+<p>iota是一个比较有特色的东西，看完这两个例子基本就知道怎么用了，相当于它是一个从0开始自动增加的变量，可以重复使用，可以用来定义单位的大小，比如KB，MB，GB等</p>
+
+            
+          </span>
         
       
     </div>
@@ -585,21 +793,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">173</span>
+              <span class="site-state-item-count">175</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">145</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

@@ -235,6 +235,201 @@
             
               
                 
+                <a class="post-title-link" href="/golang-the-laws-of-reflection/" itemprop="url">
+                  Go 反射
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-26T12:34:50+08:00" content="2015-10-26">
+              2015-10-26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>反射是提供一种程序在运行时检查变量结构，状态的能力，它是元编程的一种形式(metaprogramming)。反射功能强大，但是很多时候反射使得代码难以理解，并且性能并不很好。</p>
+<h2 id="类型和接口"><a href="#类型和接口" class="headerlink" title="类型和接口"></a>类型和接口</h2><p>反射功能是基于类型系统(type system)，所以要先对Go 的类型有足够的认识。我们都知道Go是静态类型的，即使是像<code>type MyInt Int</code> 这样定义的类型，虽然MyInt和Int有相同的基础类型(underlying type),但是MyInt和Int还是不一样的,不能互相赋值。</p>
+<p>接口是一类重要的特殊类型，它代表的是一系列方法，一个接口声明的变量可以用于存储任何实现了该接口方法的变量。常见的接口如io.Reader和 io.Writer 。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> r io.Reader</span><br><span class="line">r = os.Stdin</span><br><span class="line">r = bufio.NewReader(r)</span><br><span class="line">r = <span class="built_in">new</span>(bytes.Buffer)</span><br></pre></td></tr></table></figure>
+<p>在使用中，经常需要明确知道r中到底存储的是什么类型的变量(concrete value)。由于Go是静态类型的，r的类型永远是 <code>io.Reader</code>。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/golang-the-laws-of-reflection/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/golang-web-develope/" itemprop="url">
+                  Go Web开发
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-26T12:34:50+08:00" content="2015-10-26">
+              2015-10-26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/golang-db-access/" itemprop="url">
                   Go mysql数据库操作
                 </a>
@@ -1090,204 +1285,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/build-ss-server-use-free-ec2-instance/" itemprop="url">
-                  在免费的Amazon EC2实例上搭建shadowsocks服务器
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-12T12:34:50+08:00" content="2015-10-12">
-              2015-10-12
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>shadowsocks是非常方便的“出墙”方式，也是现在最流行最被推荐的方式。虽然shadowsocks的作者被逼把github上面的代码删除掉了，但是它依旧是最好用的反长城工具。</p>
-<p>为了出墙，之前买了jandb的包年服务，但是最近经常出问题，很不稳定，像ss这种服务购买了出了问题基本都没地方反映，因为只能低调运行，也是很烦恼。今天早上又发现不能上Google了，正好前段时间申请的免费EC2（新用户都可以申请一个最低配置的VPC一年的免费试用）</p>
-<p>如果还没有申请，建议在申请的时候看有没有JP或者HK或者SG的机房，我选的us-west的机房，速度实在有点慢。</p>
-<p>免费的EC2实例只能选Linux，我选的是Redhat7的系统，因为一直用的CentOS和Fedora，比较熟悉。ss-server有很多种安装方式，有libev的包，有用python,nodejs,golang等多种语言实现。考虑到免费的实例配置很低，推荐使用libev的包。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/build-ss-server-use-free-ec2-instance/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/simple-sort-algm-use-golang/" itemprop="url">
-                  使用golang实现简单排序算法及其性能比较
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-11T12:34:50+08:00" content="2015-10-11">
-              2015-10-11
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>这几天重新看了下三个简答的排序算法：选择排序，插入排序和希尔排序，并使用golang做了一个简单的实现与测试。本科学习算法的时候基础太差，又不认真，现在简单的算法理解起来都很吃力，希尔排序算法看了好久勉强看懂，竟也不是完全理解，用go语言实现以下其实都还是比较简单的,但是由于golang暂时还没有泛型支持，所以只能对int类型切片做一个简单实现了。</p>
-<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><p>选择排序是最简单的排序方法了，实现很简单：</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SelectSort</span><span class="params">(arr []<span class="keyword">int</span>)</span> []<span class="title">int</span></span> &#123;</span><br><span class="line">	length := <span class="built_in">len</span>(arr)</span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>; i&lt;length; i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> j := i+<span class="number">1</span>; j&lt;length; j++ &#123;</span><br><span class="line">			<span class="keyword">if</span> arr[j] &lt; arr[i] &#123;</span><br><span class="line">				arr[i], arr[j] = arr[j], arr[i]</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> arr</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>冒泡排序的特点是每次只在i之后的元素做比较和排序<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/simple-sort-algm-use-golang/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1334,21 +1331,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">173</span>
+              <span class="site-state-item-count">175</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">145</span>
+              <span class="site-state-item-count">146</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
