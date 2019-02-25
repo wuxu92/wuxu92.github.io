@@ -235,6 +235,104 @@
             
               
                 
+                <a class="post-title-link" href="/snp-mongo-design-faults/" itemprop="url">
+                  snp中MongoDB设计失误
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-30T12:18:46+08:00" content="2016-01-30">
+              2016-01-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/db/" itemprop="url" rel="index">
+                    <span itemprop="name">db</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>snp是前段时间开始的一个<a href="https://github.com/wuxu92/snp" target="_blank" rel="noopener">个人项目</a>，受Chrome导航插件 FVD SpeedDial的启发，做一个自定义的导航页，后面会陆续写一些这个项目的文档，今天主要是总结一下到现在为止，MongoDB设计的一些失误。</p>
+<p>snp使用MongoDB作为数据存储，MongoDB作为一个老牌的NoSQL数据库，比较适合这个项目的需求，之前一直是使用MySQL做数据库，虽然MySQL肯定也能满足需求，但是一来为了熟练一些MongoDB的使用，而来NoSQL存储对应的数据确实更加方便，就没有选用MySQL了；一开始设计时还考虑过使用SQL Lite做存储，因为SQL Lite足够小，部署比较方便，不过snp本来是一个练手的项目，学习MongoDB也是其中目的，也就没有使用SQL Lite了。</p>
+<h2 id="数据描述"><a href="#数据描述" class="headerlink" title="数据描述"></a>数据描述</h2><p>我们知道NoSQL的一个很大的优势是没有了关系型数据库的模式约束，可以在一个数据集合中快速存取不同“schema”的数据。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/snp-mongo-design-faults/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/protect-remote-server-by-ssh-config/" itemprop="url">
                   服务器ssh登录保护
                 </a>
@@ -409,6 +507,107 @@
 
             
           </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/go-slice-tricks/" itemprop="url">
+                  Go Slice Tricks
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-24T16:05:28+08:00" content="2016-01-24">
+              2016-01-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>这是<a href="https://github.com/golang/go/wiki/SliceTricks" target="_blank" rel="noopener">官方wiki</a>的一个页面，很有用就搬移过来，关于Go中slice的使用的tricks的总结：</p>
+<p>Since the introduction of the <code>append</code> built-in, most of the functionality of the <code>container/vector</code> package, which was removed in Go 1, can be replicated using <code>append</code> and <code>copy</code>.</p>
+<p>Here are the vector methods and their slice-manipulation analogues:</p>
+<p><strong>AppendVector</strong><br><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">a = <span class="built_in">append</span>(a, b...)</span><br></pre></td></tr></table></figure></p>
+<p><strong>Copy</strong><br><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">b = <span class="built_in">make</span>([]T, <span class="built_in">len</span>(a))</span><br><span class="line"><span class="built_in">copy</span>(b, a)</span><br><span class="line"><span class="comment">// or</span></span><br><span class="line">b = <span class="built_in">append</span>([]T(<span class="literal">nil</span>), a...)</span><br></pre></td></tr></table></figure></p>
+<p><strong>Cut</strong><br><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">a = <span class="built_in">append</span>(a[:i], a[j:]...)</span><br></pre></td></tr></table></figure></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/go-slice-tricks/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -691,6 +890,116 @@
             
               
                 
+                <a class="post-title-link" href="/go-struct-vs-interface-array/" itemprop="url">
+                  Go使用interface切片类型做参数时的坑
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-16T22:23:00+08:00" content="2016-01-16">
+              2016-01-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/golang/" itemprop="url" rel="index">
+                    <span itemprop="name">golang</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>今天在使用mgo（go的mongodb驱动）时遇到了一个奇怪的坑。我想一次性插入一组数据到一个collection，看insert方法的定义如下：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Collection)</span> <span class="title">Insert</span><span class="params">(docs ...<span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	_, err := c.writeOp(&amp;insertOp&#123;c.FullName, docs, <span class="number">0</span>&#125;, <span class="literal">true</span>)</span><br><span class="line">	<span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用一个可变参数，是 interface{} 类型的，应该传一个对象数组就可以了，之前按照mgo的example使用是这样的：<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/go-struct-vs-interface-array/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/mongodb-starting/" itemprop="url">
                   MongoDB 学习
                 </a>
@@ -900,8 +1209,8 @@
             
               
                 
-                <a class="post-title-link" href="/common-bash-commands/" itemprop="url">
-                  有用的Bash命令记录
+                <a class="post-title-link" href="/apue-signals/" itemprop="url">
+                  APUE：信号
                 </a>
               
             
@@ -911,8 +1220,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2016-01-12T12:21:52+08:00" content="2016-01-12">
-              2016-01-12
+            <time itemprop="dateCreated" datetime="2016-01-13T14:43:12+08:00" content="2016-01-13">
+              2016-01-13
             </time>
           </span>
 
@@ -921,8 +1230,20 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
                   </a>
                 </span>
 
@@ -951,30 +1272,21 @@
 
       
         
-          <span itemprop="articleBody">
-            
-              <p>把一些有用的bash命令记录一下，一做学习，一做备忘。</p>
-<h2 id="文件与目录"><a href="#文件与目录" class="headerlink" title="文件与目录"></a>文件与目录</h2><p><strong>目录下批量文件重命名</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for f in *.jpg; do mv &quot;$f&quot; &quot;$&#123;f%.jpg&#125;&quot;; done</span><br><span class="line">for f in *; do mv &quot;$f&quot; &quot;$f.jpg&quot;; done</span><br><span class="line">for f in $(find . -type f -not -name &quot;*.*&quot;); do mv &quot;$f&quot; &quot;$&#123;f&#125;.jpg&quot;; done</span><br></pre></td></tr></table></figure>
-<p>这是遍历目录下的文件，修改为后缀 jpg，很方便，另一实现：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">find . -type f -not -name &quot;*.*&quot; --exec mv &quot;&#123;&#125;&quot; &quot;&#123;&#125;&quot;.jpg</span><br><span class="line">find /path -type f -not -name &quot;*.*&quot; -print0 | xargs -0 rename &apos;s/(.)$/$1.jpg/&apos;</span><br></pre></td></tr></table></figure>
-<p>解压zip文件的特定目录</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">unzip &lt;target-zip-file&gt; &apos;&lt;folder-to-extract/*&gt;&apos; -d &lt;destination-path&gt;</span><br></pre></td></tr></table></figure>
-<p>这会只对没有后缀的文件重命名，还可以根据需求做修改。</p>
-<h2 id="iptables-amp-firewalld"><a href="#iptables-amp-firewalld" class="headerlink" title="iptables &amp; firewalld"></a>iptables &amp; firewalld</h2><p>iptables其实还是很有规则的，只是很久不用就忘记了，今天配置新买的主机要打开一个端口，试了半天。。。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 列出指定 rule chian 的规则</span><br><span class="line">iptables -L INPUT</span><br><span class="line"># 添加一条规则，其中的3表示插入作为表的第三条</span><br><span class="line">iptables -I INPUT 3 -p tcp --dport 80 -j ACCEPT</span><br><span class="line"># 虽然现在用systemctl 替代service的功能</span><br><span class="line"># 但是保存iptables的更改还是只能用service</span><br><span class="line">serbice iptables save</span><br><span class="line">systemctl restart iptables</span><br></pre></td></tr></table></figure>
-<h2 id="安卓"><a href="#安卓" class="headerlink" title="安卓"></a>安卓</h2><p><strong>去掉CM的感叹号</strong>：这个东西真的有点烦，每次都要去搜，不如记一下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 使用 local shell 或者 adb</span><br><span class="line">settings put global captive_portal_detection_enabled 0</span><br><span class="line"># 修改验证服务器为 v2ex.com</span><br><span class="line">adb shell &quot;settings put global captive_portal_server v2ex.com&quot;</span><br></pre></td></tr></table></figure>
-<p><strong>刷入 Recovery</strong> </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 刷入</span><br><span class="line">./fastboot.exe flash recovery recovery.img</span><br><span class="line"># 重启进入recovery</span><br><span class="line">./fastboot.exe boot recovery.img</span><br></pre></td></tr></table></figure>
-<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 将一个数据库导入另一个库</span><br><span class="line">mysqldump -u&#123;username&#125; -p&#123;password｝ db_name | mmysql -u&#123;username&#125; -p&#123;password&#125; New_db_name</span><br></pre></td></tr></table></figure>
-<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2><p>参考：</p>
-<ul>
-<li><a href="http://stackoverflow.com/questions/1108527/recursively-add-file-extension-to-all-files" target="_blank" rel="noopener">http://stackoverflow.com/questions/1108527/recursively-add-file-extension-to-all-files</a></li>
-</ul>
-
-            
-          </span>
+          <p>信号是软件中断，是比较底层的机制，这样一章断断续续看完了，但是很多地方都没有理解好。</p>
+<p>信号提供了一种处理异步事件的方法，例如中断用户键入中断，会通过信号机制停止一个程序，或及早终止管道的下一个程序。信号机制在Unix的早起版本就提供了，不过早期的信号机制并不可靠，后来信号模型做了更改，增加了可靠信号机制（4.3 BSD、SVR3），POSIX.1对可靠信息号进行了标准化，现在的信号都基于这一标准。</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>信号都有一个名字，信号的名字都是以 SIG 三个字符开头，信号在<code>&lt;signal.h&gt;</code>中定义为<strong>正整数</strong>常量（不同的系统可能定义在另外的头文件，不过那些头文件肯定会被 signal.h 包含），当然我们并不要去关心具体的定义是什么。</p>
+<p>有多种方法向进程发送信号：</p>
+<ol>
+<li>中断按键，常见 <code>Ctrl+C</code> 发送中断信号（SIGINT）</li>
+<li>硬件异常产生信号，这是硬件检测到发送给内核的，如除数为0，无效的内存引用等</li>
+<li>进程调用 <code>kill</code> 函数可以将<strong>任意信号</strong>发送给进程/进程组，前提是接收信号的进程和发送信号进程所有者相同。</li>
+<li>用户在终端调用 <code>kill</code> 命令将信号发送给指定进程，常用来结束一个失控的后台进程， <code>kill -9 pid</code></li>
+<li>当系统检测到某种<strong>软件条件</strong>已经发生，并应将其通知有关进程时也产生信号。
+          <div class="post-more-link text-center">
+            <a class="btn" href="/apue-signals/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -1039,14 +1351,14 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">175</span>
+              <span class="site-state-item-count">176</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
@@ -1137,7 +1449,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

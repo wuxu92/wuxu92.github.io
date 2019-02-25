@@ -207,6 +207,125 @@
 
     
     
+      
+      
+
+      
+    
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/using-pointer-as-parameter/" itemprop="url">
+                  C中使用指针作为参数的一些问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-08T12:34:50+08:00" content="2015-12-08">
+              2015-12-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>这个问题其实比较常见了，但是经常会出错，就是C中函数的参数是值传递的，即使对于指针，也是值传递。很多高级语言在这一点是相通的。</p>
+<p>今天看到这个问题是在 c-fqa.com 上的一个问题，看下面的代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int *ip) &#123;</span><br><span class="line">	static int dummy = 5;	// static make dummy accessiable for whole file</span><br><span class="line">	ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int *ip;</span><br><span class="line">f(ip);</span><br></pre></td></tr></table></figure>
+<p>这时候ip指向哪里呢？实际上ip可能指向任何地址。因为ip没有初始化，传递给f函数调用的参数只是指针值的<strong>拷贝</strong>，对拷贝的修改并不会改变 ip 本身的内容。要达到本来的目的，需要传入 ip的地址，也就是指针的指针作为参数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int **ipp) &#123;</span><br><span class="line">	static int dummy = 5;	// if no static here, then ip can be anywhere, *ip can be any value</span><br><span class="line">	*ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int  *ip;</span><br><span class="line">f(&amp;ip);</span><br></pre></td></tr></table></figure>
+<p>另一种方法是把结果的指针作为函数的返回值，这是更常用的方式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int *f() &#123;</span><br><span class="line">	static int dummy = 5;</span><br><span class="line">	return &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line">int *ip = f();</span><br></pre></td></tr></table></figure>
+<p>另一个例子是，定制一个 malloc 的自己的版本：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void mymalloc(void *retp, size_t size) &#123;</span><br><span class="line">	retp = malloc(size);</span><br><span class="line">	if (retp == NULL) &#123;</span><br><span class="line">		fprintf(stderr, &quot;out of memory\n&quot;);</span><br><span class="line">		exit(EXIT_FAILURE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看起来没有什么问题，但是在调用这个函数时并不能正常工作，因为被调用函数接受的指针是调用者传入的指针的拷贝。</p>
+<blockquote>
+<p>C always uses pass by value. You can simulate pass by reference yourself, by defining functions which accept pointers and then using the &amp; operator when calling, and the compiler will essentially simulate it for you when you pass an array to a function </p>
+</blockquote>
+<p>这些内容在Java和Go中也是通用的，指针作为参数实际上也是值传递的哦。</p>
+<p>参考：</p>
+<ul>
+<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passptrinit.html</a></li>
+<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passbyref.html</a></li>
+</ul>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -1256,113 +1375,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/samba-selinux-config/" itemprop="url">
-                  SELinux导致samba共享目录权限错误
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-11-26T12:34:50+08:00" content="2015-11-26">
-              2015-11-26
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>之前将一台CentOS 7的机器使用samba共享家目录到Windows系统，方便使用。升级到Windows 10之后一直没有使用，昨天尝试连接samba怎么都连不上。</p>
-<p>中间倒腾了很久，找了很多资料，改了很多配置，还是不行，总是报权限不足，请联系管理员什么的，如下图：</p>
-<p><img src="/images/post/samba-permission.png" alt=""></p>
-<p>总结一下查到的几种可能存在的问题，虽然它们对我的情况好像都没有什么帮助：</p>
-<ol>
-<li>windows 10会尝试使用samba 3_11链接，而现在samba server一般安装的是4.*的，所以需要disable掉Windows 10 samba 客户端的SMB 2/3协议，来自samba邮件列表 <a href="https://lists.samba.org/archive/samba/2015-September/193886.html" target="_blank" rel="noopener">https://lists.samba.org/archive/samba/2015-September/193886.html</a> ，禁用方法有微软官方方法 <a href="https://support.microsoft.com/en-us/kb/2696547" target="_blank" rel="noopener">https://support.microsoft.com/en-us/kb/2696547</a>。这个很重要</li>
-<li>对于无密码的samba共享，还需要设置一个注册表，找到 <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters</code>，新建一个 <code>DWORD(32-bit)Value</code>，设置名字为AllowInsecureGuestAuth，值为1。有的人说这个有用。</li>
-<li>防火墙的问题，这个好解决，禁用掉iptables或者firewalld试试就知道了，要在iptables打开相关的端口，可以参考 <a href="http://www.cyberciti.biz/faq/what-ports-need-to-be-open-for-samba-to-communicate-with-other-windowsLinux-systems/" target="_blank" rel="noopener">这篇文章</a></li>
-<li>seLinux导致没有权限。这是我遇到的问题，我的server之前是setenfoce=0了的，后来机器断电重启就忘了这事了，结果昨天晚上倒腾好久都没想起来这茬，如果出现上面截图的情况请一定要</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo setenfoce 0</span><br></pre></td></tr></table></figure>
-<p>这样就可以了。如果以前可以用现在不可以连接了，一般不会是samba配置的问题，考虑server防火墙和seLinux比较靠谱。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1409,14 +1421,14 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">175</span>
+              <span class="site-state-item-count">176</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
@@ -1507,7 +1519,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

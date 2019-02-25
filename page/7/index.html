@@ -235,6 +235,120 @@
             
               
                 
+                <a class="post-title-link" href="/common-bash-commands/" itemprop="url">
+                  有用的Bash命令记录
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-12T12:21:52+08:00" content="2016-01-12">
+              2016-01-12
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>把一些有用的bash命令记录一下，一做学习，一做备忘。</p>
+<h2 id="文件与目录"><a href="#文件与目录" class="headerlink" title="文件与目录"></a>文件与目录</h2><p><strong>目录下批量文件重命名</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for f in *.jpg; do mv &quot;$f&quot; &quot;$&#123;f%.jpg&#125;&quot;; done</span><br><span class="line">for f in *; do mv &quot;$f&quot; &quot;$f.jpg&quot;; done</span><br><span class="line">for f in $(find . -type f -not -name &quot;*.*&quot;); do mv &quot;$f&quot; &quot;$&#123;f&#125;.jpg&quot;; done</span><br></pre></td></tr></table></figure>
+<p>这是遍历目录下的文件，修改为后缀 jpg，很方便，另一实现：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">find . -type f -not -name &quot;*.*&quot; --exec mv &quot;&#123;&#125;&quot; &quot;&#123;&#125;&quot;.jpg</span><br><span class="line">find /path -type f -not -name &quot;*.*&quot; -print0 | xargs -0 rename &apos;s/(.)$/$1.jpg/&apos;</span><br></pre></td></tr></table></figure>
+<p>解压zip文件的特定目录</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">unzip &lt;target-zip-file&gt; &apos;&lt;folder-to-extract/*&gt;&apos; -d &lt;destination-path&gt;</span><br></pre></td></tr></table></figure>
+<p>这会只对没有后缀的文件重命名，还可以根据需求做修改。</p>
+<h2 id="iptables-amp-firewalld"><a href="#iptables-amp-firewalld" class="headerlink" title="iptables &amp; firewalld"></a>iptables &amp; firewalld</h2><p>iptables其实还是很有规则的，只是很久不用就忘记了，今天配置新买的主机要打开一个端口，试了半天。。。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 列出指定 rule chian 的规则</span><br><span class="line">iptables -L INPUT</span><br><span class="line"># 添加一条规则，其中的3表示插入作为表的第三条</span><br><span class="line">iptables -I INPUT 3 -p tcp --dport 80 -j ACCEPT</span><br><span class="line"># 虽然现在用systemctl 替代service的功能</span><br><span class="line"># 但是保存iptables的更改还是只能用service</span><br><span class="line">serbice iptables save</span><br><span class="line">systemctl restart iptables</span><br></pre></td></tr></table></figure>
+<h2 id="安卓"><a href="#安卓" class="headerlink" title="安卓"></a>安卓</h2><p><strong>去掉CM的感叹号</strong>：这个东西真的有点烦，每次都要去搜，不如记一下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 使用 local shell 或者 adb</span><br><span class="line">settings put global captive_portal_detection_enabled 0</span><br><span class="line"># 修改验证服务器为 v2ex.com</span><br><span class="line">adb shell &quot;settings put global captive_portal_server v2ex.com&quot;</span><br></pre></td></tr></table></figure>
+<p><strong>刷入 Recovery</strong> </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 刷入</span><br><span class="line">./fastboot.exe flash recovery recovery.img</span><br><span class="line"># 重启进入recovery</span><br><span class="line">./fastboot.exe boot recovery.img</span><br></pre></td></tr></table></figure>
+<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 将一个数据库导入另一个库</span><br><span class="line">mysqldump -u&#123;username&#125; -p&#123;password｝ db_name | mmysql -u&#123;username&#125; -p&#123;password&#125; New_db_name</span><br></pre></td></tr></table></figure>
+<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2><p>参考：</p>
+<ul>
+<li><a href="http://stackoverflow.com/questions/1108527/recursively-add-file-extension-to-all-files" target="_blank" rel="noopener">http://stackoverflow.com/questions/1108527/recursively-add-file-extension-to-all-files</a></li>
+</ul>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/Vue-js-components/" itemprop="url">
                   Vue.js组件
                 </a>
@@ -589,6 +703,109 @@
 <h2 id="安装node-js-和-hexo"><a href="#安装node-js-和-hexo" class="headerlink" title="安装node.js 和 hexo"></a>安装node.js 和 hexo</h2><p>首先要安装Node.js，现在各个平台都支持了，Windows下的安装也很方便，直接去 <a href="https://nodejs.org/en/download/stable/" target="_blank" rel="noopener">https://nodejs.org/en/download/stable/</a> 下载最近的版本，Windows的是一个 msi 文件，就像安装一个软件一样，点点下一步就可以了。<br>
           <div class="post-more-link text-center">
             <a class="btn" href="/migrate-from-jekyll-to-hexo/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/jekyll-posts-to-hexo-style/" itemprop="url">
+                  用Go将jekyll的文章转换成hexo文章风格
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-07T14:02:07+08:00" content="2016-01-07">
+              2016-01-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>博客之前使用jekyll引擎部署在github pages, 由于几个原因一直想迁移到hexo平台：</p>
+<ul>
+<li>原来的模板被我修改的比较严重，文章页面在大屏幕上的显示效果无法居中了</li>
+<li>Jekyll在Windows下编译比较麻烦，每次都要 push 到github才能预览效果</li>
+<li>当时使用的Jekyll模板对代码的渲染效果很糟糕，尤其是Vue.js的大括号需要各种转义才好显示</li>
+</ul>
+<p>但是迁移也挺麻烦的，主要是Jekyll使用的模板和hexo的markdown解析并不完全兼容，尤其是 Front-matter，也就是文章元数据的格式不太一样，还有就是文档的命名风格也不一样，Jekyll使用日期加标题的方式，hexo一般直接使用标题。原来已经有大概110篇文章，一篇一篇修改太麻烦了，所以用Go写了一个简单的工具去转换。</p>
+<p>代码如下：<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/jekyll-posts-to-hexo-style/" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1079,14 +1296,14 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">175</span>
+              <span class="site-state-item-count">176</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
@@ -1177,7 +1394,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

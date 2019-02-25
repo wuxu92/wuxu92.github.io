@@ -207,6 +207,124 @@
 
     
     
+      
+      
+
+      
+    
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/intro-of-cloudsim/" itemprop="url">
+                  Cloudsim 云计算仿真系统介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-16T12:34:50+08:00" content="2015-12-16">
+              2015-12-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/simulation/" itemprop="url" rel="index">
+                    <span itemprop="name">simulation</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>bw: bandwidth<br>cloudlet<br>CIS: cloud information service,执行资源的分配与注册， CloudSim 初始化时会生成该类的实例，不需要自己处理<br>PE: Processing Element, CPU unit<br>vm: virtual machine, runs inside a Host, sharing hostList with other VMs. process cloudlets.process according to CloudletScheduler’s(timeShared, spaceShared) defined policy. VmSchedulerTimeShared is property of Host.<br>datacenterBroker: 代理仁，代表用户执行操作，对用户隐藏虚拟机管理（创建，提交任务到虚拟机，虚拟机销毁）。<br>Event: </p>
+<p>可以有多个datacenter， 一个datacenter有多个host，一个host有多个PE，</p>
+<p>一个仿真流程</p>
+<ol>
+<li>设置用户数量（broker count)</li>
+<li>设定通用的变量</li>
+<li>创建CIS（自动创建）</li>
+<li>创建Datacenter：包括 host + characteristics(Pe, Ram, Bw, price)</li>
+<li>创建DatacenterBroker</li>
+<li>创建Vm instances</li>
+<li>提交Vm　list 到 broker</li>
+<li>创建 Cloudlet(tasks) List</li>
+<li>提交(submit) Cloudlet lists到broker</li>
+<li>start simulation</li>
+<li>stop simulation</li>
+<li>输出仿真的状态</li>
+</ol>
+<h2 id="CloudSim-Events-the-heartbeat-of-simulation"><a href="#CloudSim-Events-the-heartbeat-of-simulation" class="headerlink" title="CloudSim Events the heartbeat of simulation"></a>CloudSim Events the heartbeat of simulation</h2><p>非常重要的类： SimEvent</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -330,6 +448,109 @@
             
               
                 
+                <a class="post-title-link" href="/array-and-pointer/" itemprop="url">
+                  C数组和指针
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-14T12:34:50+08:00" content="2015-12-14">
+              2015-12-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><img src="/images/clang.gif" alt=""><br>尽管现在很多的高级语言，脚本语言提供了非常非常方便实用的数组，队列(list)，字典（map）等数据结构，但是理解C语言的数组和指针是掌握这些高级数据结构的基础。即使不经常写底层的数组，也应该熟练掌握。</p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>数组的初始化比较简单不罗嗦了，这里介绍一下数组的指定项目初始化方法，这是c99添加的特性，个人觉得很有意思。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 普通的初始化方法</span><br><span class="line">int year[6] = &#123;31, 28, 31, 30, 31, 30&#125;;</span><br><span class="line">// 可以在初始化时指定要初始化的项及其值如：</span><br><span class="line">int year[6] = &#123; [1] = 28, [3] = 30, 31, 30, [1] = 29&#125;;</span><br><span class="line">// 初始化结果为： [0, 29, 0, 30, 31, 30]</span><br></pre></td></tr></table></figure>
+<p>看起来还算好理解，就是指定下标对其赋值。某个指定赋值后的为指定项目用来对后续的元素初始化，未初始化的项会初始化为0（只要对数组进行了初始化就会把剩余的部分初始化为0，这是一般行为）。甚至可以对一项多次指定赋值，以最后一次为准。</p>
+<blockquote>
+<p>再提一次，花括号列表的形式只能用于初始化，不能用于对数组赋值。</p>
+</blockquote>
+<p>对数组指针使用sizeof的时候会计算到第一个 <code>\0</code> 处，常用 <code>sizeof arr / sizeof arr[0]</code> 计算数组的大小。但是实际上这样做可能会导致问题。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/array-and-pointer/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/hai-xu-yao-xue-xi-yi-ge/" itemprop="url">
                   为什么还要学习一个
                 </a>
@@ -398,109 +619,6 @@
 
             
           </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/array-and-pointer/" itemprop="url">
-                  C数组和指针
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-14T12:34:50+08:00" content="2015-12-14">
-              2015-12-14
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p><img src="/images/clang.gif" alt=""><br>尽管现在很多的高级语言，脚本语言提供了非常非常方便实用的数组，队列(list)，字典（map）等数据结构，但是理解C语言的数组和指针是掌握这些高级数据结构的基础。即使不经常写底层的数组，也应该熟练掌握。</p>
-<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>数组的初始化比较简单不罗嗦了，这里介绍一下数组的指定项目初始化方法，这是c99添加的特性，个人觉得很有意思。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 普通的初始化方法</span><br><span class="line">int year[6] = &#123;31, 28, 31, 30, 31, 30&#125;;</span><br><span class="line">// 可以在初始化时指定要初始化的项及其值如：</span><br><span class="line">int year[6] = &#123; [1] = 28, [3] = 30, 31, 30, [1] = 29&#125;;</span><br><span class="line">// 初始化结果为： [0, 29, 0, 30, 31, 30]</span><br></pre></td></tr></table></figure>
-<p>看起来还算好理解，就是指定下标对其赋值。某个指定赋值后的为指定项目用来对后续的元素初始化，未初始化的项会初始化为0（只要对数组进行了初始化就会把剩余的部分初始化为0，这是一般行为）。甚至可以对一项多次指定赋值，以最后一次为准。</p>
-<blockquote>
-<p>再提一次，花括号列表的形式只能用于初始化，不能用于对数组赋值。</p>
-</blockquote>
-<p>对数组指针使用sizeof的时候会计算到第一个 <code>\0</code> 处，常用 <code>sizeof arr / sizeof arr[0]</code> 计算数组的大小。但是实际上这样做可能会导致问题。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/array-and-pointer/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
         
       
     </div>
@@ -1127,120 +1245,6 @@
             
               
                 
-                <a class="post-title-link" href="/using-pointer-as-parameter/" itemprop="url">
-                  C中使用指针作为参数的一些问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-08T12:34:50+08:00" content="2015-12-08">
-              2015-12-08
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>这个问题其实比较常见了，但是经常会出错，就是C中函数的参数是值传递的，即使对于指针，也是值传递。很多高级语言在这一点是相通的。</p>
-<p>今天看到这个问题是在 c-fqa.com 上的一个问题，看下面的代码：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int *ip) &#123;</span><br><span class="line">	static int dummy = 5;	// static make dummy accessiable for whole file</span><br><span class="line">	ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int *ip;</span><br><span class="line">f(ip);</span><br></pre></td></tr></table></figure>
-<p>这时候ip指向哪里呢？实际上ip可能指向任何地址。因为ip没有初始化，传递给f函数调用的参数只是指针值的<strong>拷贝</strong>，对拷贝的修改并不会改变 ip 本身的内容。要达到本来的目的，需要传入 ip的地址，也就是指针的指针作为参数：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int **ipp) &#123;</span><br><span class="line">	static int dummy = 5;	// if no static here, then ip can be anywhere, *ip can be any value</span><br><span class="line">	*ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int  *ip;</span><br><span class="line">f(&amp;ip);</span><br></pre></td></tr></table></figure>
-<p>另一种方法是把结果的指针作为函数的返回值，这是更常用的方式：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int *f() &#123;</span><br><span class="line">	static int dummy = 5;</span><br><span class="line">	return &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line">int *ip = f();</span><br></pre></td></tr></table></figure>
-<p>另一个例子是，定制一个 malloc 的自己的版本：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void mymalloc(void *retp, size_t size) &#123;</span><br><span class="line">	retp = malloc(size);</span><br><span class="line">	if (retp == NULL) &#123;</span><br><span class="line">		fprintf(stderr, &quot;out of memory\n&quot;);</span><br><span class="line">		exit(EXIT_FAILURE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>看起来没有什么问题，但是在调用这个函数时并不能正常工作，因为被调用函数接受的指针是调用者传入的指针的拷贝。</p>
-<blockquote>
-<p>C always uses pass by value. You can simulate pass by reference yourself, by defining functions which accept pointers and then using the &amp; operator when calling, and the compiler will essentially simulate it for you when you pass an array to a function </p>
-</blockquote>
-<p>这些内容在Java和Go中也是通用的，指针作为参数实际上也是值传递的哦。</p>
-<p>参考：</p>
-<ul>
-<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passptrinit.html</a></li>
-<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passbyref.html</a></li>
-</ul>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/should-not-cast-the-result-of-malloc/" itemprop="url">
                   malloc的强制类型转换
                 </a>
@@ -1392,14 +1396,14 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">175</span>
+              <span class="site-state-item-count">176</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
@@ -1490,7 +1494,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

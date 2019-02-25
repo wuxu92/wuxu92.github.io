@@ -207,6 +207,11 @@
 
     
     
+      
+      
+
+      
+    
 
     
       
@@ -357,8 +362,8 @@
             
               
                 
-                <a class="post-title-link" href="/go-iota-spc/" itemprop="url">
-                  Golang 中iota的用法
+                <a class="post-title-link" href="/compile-and-install-php7-beta1/" itemprop="url">
+                  编译安装PHP7 beta1
                 </a>
               
             
@@ -368,8 +373,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
-              2015-07-18
+            <time itemprop="dateCreated" datetime="2015-07-19T12:34:50+08:00" content="2015-07-19">
+              2015-07-19
             </time>
           </span>
 
@@ -378,8 +383,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Programming</span>
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
                   </a>
                 </span>
 
@@ -408,18 +413,16 @@
 
       
         
-          <span itemprop="articleBody">
-            
-              <p>Golang中可以使用iota方便的定义复杂的常量结构，下面是golang spec中的说明</p>
-<p>Within a constant declaration, the predeclared identifier iota represents successive untyped integer constants. It is reset to 0 whenever the reserved word const appears in the source and increments after each ConstSpec. It can be used to construct a set of related constants:</p>
-<h2 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (  // iota is reset to 0</span><br><span class="line">	c0 = iota  // c0 == 0</span><br><span class="line">	c1 = iota  // c1 == 1</span><br><span class="line">	c2 = iota  // c2 == 2</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	a = 1 &lt;&lt; iota  // a == 1 (iota has been reset)</span><br><span class="line">	b = 1 &lt;&lt; iota  // b == 2</span><br><span class="line">	c = 1 &lt;&lt; iota  // c == 4</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	u         = iota * 42  // u == 0     (untyped integer constant)</span><br><span class="line">	v float64 = iota * 42  // v == 42.0  (float64 constant)</span><br><span class="line">	w         = iota * 42  // w == 84    (untyped integer constant)</span><br><span class="line">)</span><br><span class="line">``</span><br><span class="line">const x = iota  // x == 0 (iota has been reset)</span><br><span class="line">const y = iota  // y == 0 (iota has been reset)</span><br></pre></td></tr></table></figure>
-<p>Within an ExpressionList, the value of each iota is the same because it is only incremented after each ConstSpec:</p>
-<h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (</span><br><span class="line">	bit0, mask0 = 1 &lt;&lt; iota, 1&lt;&lt;iota - 1  // bit0 == 1, mask0 == 0</span><br><span class="line">	bit1, mask1                           // bit1 == 2, mask1 == 1</span><br><span class="line">	_, _                                  // skips iota == 2</span><br><span class="line">	bit3, mask3                           // bit3 == 8, mask3 == 7</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>This last example exploits the implicit repetition of the last non-empty expression list.</p>
-<p>iota是一个比较有特色的东西，看完这两个例子基本就知道怎么用了，相当于它是一个从0开始自动增加的变量，可以重复使用，可以用来定义单位的大小，比如KB，MB，GB等</p>
-
-            
-          </span>
+          <p>前段时间去php.net上闲逛发现PHP7的beta1版本出来了，就尝试着编译安装了一下</p>
+<p>之前在鸟哥的博客里看到了他们做的PHP的性能测试，相对于PHP5.6都是有很大的提升的，并且PHP的主版本号已经是2004年发布PHP5后，11年来首次更新，肯定PHP７是有很大的改变的，下面那就来试试PHP7的beta版吧，正式版大概在今年年底会发布。</p>
+<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>测试版本的PHP下载页面： <a href="https://downloads.php.net/~ab/" title="https://downloads.php.net/~ab/" target="_blank" rel="noopener">https://downloads.php.net/~ab/</a></p>
+<p>php7 beta1: <a href="https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz" title="https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz" target="_blank" rel="noopener">https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</span><br><span class="line">或者</span><br><span class="line">curl -O https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</span><br></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/compile-and-install-php7-beta1/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -527,6 +530,108 @@
 <h2 id="打开及保存文件"><a href="#打开及保存文件" class="headerlink" title="打开及保存文件"></a>打开及保存文件</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:edit full/path/name</span><br><span class="line">:edit %:h&lt;tab&gt;filename 	使用缓冲区文件的完整路径打开文件, :h去掉当前文件名，tab键补全</span><br><span class="line">:edit path 打开文件管理窗口</span><br><span class="line">:find filename 在path下查找文件</span><br><span class="line">: set path+=/path/to/workspace  将工作区添加到vim的path中用于寻找</span><br><span class="line">:e 是 :edit的缩写</span><br><span class="line">:Explore :E 打开当前的目录管理器</span><br><span class="line">:Sexplore  explore的切分</span><br><span class="line">:Vexplore</span><br></pre></td></tr></table></figure>
 <p><strong>文件操作</strong></p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:!mkdir -p %:h    前缓冲区创建目录，然后在:w，解决某些不能保存的问题</span><br><span class="line">:w !sudo tee % &gt; /dev/null 由于保存用非sudo打开的无权限文件的保存</span><br></pre></td></tr></table></figure>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/go-iota-spc/" itemprop="url">
+                  Golang 中iota的用法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
+              2015-07-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>Golang中可以使用iota方便的定义复杂的常量结构，下面是golang spec中的说明</p>
+<p>Within a constant declaration, the predeclared identifier iota represents successive untyped integer constants. It is reset to 0 whenever the reserved word const appears in the source and increments after each ConstSpec. It can be used to construct a set of related constants:</p>
+<h2 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (  // iota is reset to 0</span><br><span class="line">	c0 = iota  // c0 == 0</span><br><span class="line">	c1 = iota  // c1 == 1</span><br><span class="line">	c2 = iota  // c2 == 2</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	a = 1 &lt;&lt; iota  // a == 1 (iota has been reset)</span><br><span class="line">	b = 1 &lt;&lt; iota  // b == 2</span><br><span class="line">	c = 1 &lt;&lt; iota  // c == 4</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	u         = iota * 42  // u == 0     (untyped integer constant)</span><br><span class="line">	v float64 = iota * 42  // v == 42.0  (float64 constant)</span><br><span class="line">	w         = iota * 42  // w == 84    (untyped integer constant)</span><br><span class="line">)</span><br><span class="line">``</span><br><span class="line">const x = iota  // x == 0 (iota has been reset)</span><br><span class="line">const y = iota  // y == 0 (iota has been reset)</span><br></pre></td></tr></table></figure>
+<p>Within an ExpressionList, the value of each iota is the same because it is only incremented after each ConstSpec:</p>
+<h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (</span><br><span class="line">	bit0, mask0 = 1 &lt;&lt; iota, 1&lt;&lt;iota - 1  // bit0 == 1, mask0 == 0</span><br><span class="line">	bit1, mask1                           // bit1 == 2, mask1 == 1</span><br><span class="line">	_, _                                  // skips iota == 2</span><br><span class="line">	bit3, mask3                           // bit3 == 8, mask3 == 7</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>This last example exploits the implicit repetition of the last non-empty expression list.</p>
+<p>iota是一个比较有特色的东西，看完这两个例子基本就知道怎么用了，相当于它是一个从0开始自动增加的变量，可以重复使用，可以用来定义单位的大小，比如KB，MB，GB等</p>
 
             
           </span>
@@ -809,14 +914,14 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">175</span>
+              <span class="site-state-item-count">176</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
@@ -907,7 +1012,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

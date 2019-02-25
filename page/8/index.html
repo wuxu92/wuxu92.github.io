@@ -235,6 +235,104 @@
             
               
                 
+                <a class="post-title-link" href="/apue-process-control/" itemprop="url">
+                  进程控制
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-28T12:34:50+08:00" content="2015-12-28">
+              2015-12-28
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><img src="/images/linux-logo.png" alt=""><br>包括创建进程，执行程序和进程终止，还有进程属性的各种ID，以及它们如何受到进程控制原语的影响，最后还会介绍解释器文件，进程会计机制等。</p>
+<h2 id="进程标识"><a href="#进程标识" class="headerlink" title="进程标识"></a>进程标识</h2><p>每个进程都有一个非负整型表示的唯一进程ID，进程ID标识符总是唯一的。虽然是唯一的，但是进程ID是可以复用的，当一个进程终止后，其进程ID就成为复用的候选者。大多数Unix系统实现延迟复用算法，使得赋予新建进程的ID不同于最近终止进程的ID。所以我们可以认为一段时间内，一个进程ID唯一代表那一个进程。</p>
+<p>系统中有一些专用进程，比如ID为0的进程通常是<strong>调度进程</strong>，常常称为交换进程（swapper），该进程是内核的一部分（调度进程是内核的核心），它并不执行任何磁盘上的程序，因此也被称为系统进程。进程ID为1的通常是<strong> init 进程</strong>，在自举（bootstrap)过程中由内核调用，此进程负责在自举内核后启动一个UNIX系统。init进程绝不会终止，它是一个普通的用户进程（而不是内核进程），但它以超级用户特权运行。（在某些Unix实现中，进程ID为2的是页守护进程（page daemon),它负责支持虚拟存储器系统的分页操作。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/apue-process-control/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/hong-lou-meng/" itemprop="url">
                   87版红楼梦观后
                 </a>
@@ -294,6 +392,116 @@
               阅读全文 &raquo;
             </a>
           </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/c-ptrs-funccall/" itemprop="url">
+                  C函数指针使用
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-24T12:34:50+08:00" content="2015-12-24">
+              2015-12-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>C 的函数指针前面已经简单介绍过，常用的函数指针及其变量声明方式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef int func(int, int);</span><br><span class="line"></span><br><span class="line">int (*fp)(int, int);</span><br><span class="line">fp = func;</span><br><span class="line"></span><br><span class="line">func *fpt；</span><br><span class="line">fpt = func;</span><br><span class="line"></span><br><span class="line">int func(int a, int b) &#123;</span><br><span class="line">	return a+b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的 fp 和 fpt 都是一个指向函数func的指针了，这就有一个问题，它们都是指向函数的指针，那么 *fp 就是本身，在它后面加上参数列表就是一次函数调用了。其形式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int a = 1;</span><br><span class="line">int b = 2;</span><br><span class="line">a = (*fp)(a, b);</span><br></pre></td></tr></table></figure>
+<p>这种调用看起来太麻烦了，实际上函数经常可以<strong>通过指针调用</strong>，实际的函数名也总是隐式地转换为指针（因为这种隐式的转换，所以函数指针的取地址与间接引用经常被忽略）。所以可以直接通过指针调用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a = fp(a, b);</span><br></pre></td></tr></table></figure>
+<p>这样看起来清晰多了。ANSI C 使用后一种解释，即显示地间接引用（*）不是必需的，虽然仍然允许使用这种方法</p>
+<p>下面是一个简单示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">typedef int Pfunc(int);</span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line">    int r, (*fp)(int), func(int);</span><br><span class="line">    Pfunc *fpt;</span><br><span class="line">    fpt = func;</span><br><span class="line"></span><br><span class="line">    r = 1;</span><br><span class="line">    fp = func;</span><br><span class="line">    r = fp(r);</span><br><span class="line">    printf(&quot;r after fp is %d\n&quot;, r);</span><br><span class="line">    r = (*fp)(r);</span><br><span class="line">    printf(&quot;r after (*fp) call is %d\n&quot;, r);</span><br><span class="line">    r = fpt(r);</span><br><span class="line">    printf(&quot;r after Pfunc is %d\n&quot;, r);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int func(int a) &#123;</span><br><span class="line">    return a * 2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参考：</p>
+<ul>
+<li><a href="http://c-faq.com/ptrs/funccall.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/funccall.html</a></li>
+<li><a href="http://stackoverflow.com/questions/840501/how-do-function-pointers-in-c-work" target="_blank" rel="noopener">http://stackoverflow.com/questions/840501/how-do-function-pointers-in-c-work</a></li>
+<li><a href="http://c.learncodethehardway.org/book/ex18.html" target="_blank" rel="noopener">http://c.learncodethehardway.org/book/ex18.html</a></li>
+</ul>
+
+            
+          </span>
         
       
     </div>
@@ -434,6 +642,122 @@
             
               
                 
+                <a class="post-title-link" href="/setjmp-and-longjmp-in-c/" itemprop="url">
+                  跳转 setjmp 和 longjmp
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-23T12:34:50+08:00" content="2015-12-23">
+              2015-12-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>虽然 goto 被认为是语言设计中的“毒瘤”，人人都避而远之，但是在真正的C开发者心中，goto不应该是让人害怕的东西。反而有一些比goto更加放肆的跳转函数！</p>
+<h2 id="setjmp-和-longjmp"><a href="#setjmp-和-longjmp" class="headerlink" title="setjmp 和 longjmp"></a>setjmp 和 longjmp</h2><p>在C中，goto语句只能在函数内部进行跳转，而不能跨越函数，要执行这种跳转功能需要 <code>setjmp</code> 和  <code>longjmp</code> 配合使用，这两个函数对于处理发生在很深层嵌套函数调用中的出错情况是非常有用的，我们把它们成为<strong>非局部跳转</strong>，表示它们在栈上跳过多个调用栈帧，返回到当前函数调用路径上的某一个函数。</p>
+<p>这两个函数的声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;setjmp.h&gt;</span><br><span class="line">int setjmp(jmp_buf env);</span><br><span class="line">void longjmp(jmp_buf env, int val);</span><br></pre></td></tr></table></figure>
+<p>这两个函数让人感到比较奇怪的是，它的参数env看起来是一个结构体变量，而不是一个结构体指针，实际上是因为 jmp_buf 并不是结构体定义，而是某种形式的数组定义，本身就是一个指针，所以不需要使用取地址操作。</p>
+<p>我们在希望返回的地方调用 <code>setjmp</code>，该调用会将用于恢复栈帧状态的信息保存到 env 变量中，因为 env 变量在 longjmp函数调用中要用到，而longjmp常在另一个函数调用，所以常需要<strong>将env设置为全局变量</strong>。</p>
+<p>调用 setjmp 后可以在后续调用的函数中使用 longjmp 函数，它使用 setjmp 时所使用的 env 作为参数，第二个参数是一个非0值，则作为 setjmp 处恢复栈帧后的函数返回值，第二个参数可以用来作为多处调用 longjmp 返回到一个 setjmp时判断具体是那个 longjmp 的跳转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;setjmp.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">jmp_buf jbuf;</span><br><span class="line">void handle(char *);</span><br><span class="line">int main(void) &#123;</span><br><span class="line">    int i;</span><br><span class="line">    char line[32];</span><br><span class="line">    i = setjmp(jbuf);</span><br><span class="line">    if (i != 0) puts(&quot;setjmp error&quot;);  // longjmp return comes here</span><br><span class="line">    printf(&quot;i : %d\n&quot;, i);</span><br><span class="line">    while(fgets(line, 32, stdin) != NULL) &#123;</span><br><span class="line">        handle(line);</span><br><span class="line">    &#125;</span><br><span class="line">    puts(&quot;exit&quot;);</span><br><span class="line">&#125;</span><br><span class="line">void handle(char *line) &#123;</span><br><span class="line">    if (line[0] == &apos;n&apos; &amp;&amp; line[1] == &apos;o&apos;) &#123;</span><br><span class="line">         longjmp(jbuf, 1);</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;handle %s\n&quot;, line);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="跳转中的变量"><a href="#跳转中的变量" class="headerlink" title="跳转中的变量"></a>跳转中的变量</h2><p>我们要考虑一下跳转后<strong>自动变量</strong>和<strong>寄存器变量</strong>（其他类型不需要考虑）的值的状态。当longjmp返回到main函数时，这些变量的值是否能恢复到以前调用setjmp是的值，或者这些变量的值保持为调用函数时的值？很遗憾，这个问题的答案是看情况，所有的标准称这些值是不确定的，虽然大多数的实现并<strong>不回滚</strong>这些自动变量和寄存器变量的值，但是在编译器使用优化策略时，其值可能会被回滚。</p>
+<p>如果有一个自动变量，又要确保不回滚其值，可以定义其为具有 <code>volatile</code>属性，声明为全局变量或者静态变量的值在执行 longjmp 时保持不变（总是能保持最近所呈现的值）。</p>
+<p>下面是一个示例，表示了不同类型的变量在 longjmp 跳转后值是否回滚：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;setjmp.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">void f2(void);</span><br><span class="line">void f3(void);</span><br><span class="line">void f1(int, int, int, int);</span><br><span class="line"></span><br><span class="line">jmp_buf jbuf;</span><br><span class="line">int global;</span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line">    int aut;</span><br><span class="line">    register int reg;</span><br><span class="line">    volatile int vola;</span><br><span class="line">    global = 1; aut = 2; reg = 3; vola = 4;</span><br><span class="line">    if (setjmp(jbuf) != 0) &#123;</span><br><span class="line">        printf(&quot;after long jmp\nglobal:%d, auto:%d, reg:%d, vola:%d\n&quot;,</span><br><span class="line">                global, aut, reg, vola);</span><br><span class="line">        exit(0);</span><br><span class="line">    &#125;</span><br><span class="line">    global = 11; aut = 22; reg = 33; vola = 44;</span><br><span class="line">    f1(global, aut, reg, vola);</span><br><span class="line">&#125;</span><br><span class="line">void f1(int g, int a, int r, int v) &#123;</span><br><span class="line">    printf(&quot;in f1\ng:%d, a:%d, r:%d, v:%d\n&quot;, g, a, r, v);</span><br><span class="line">    f2();</span><br><span class="line">&#125;</span><br><span class="line">void f2(void) &#123;</span><br><span class="line">     f3();</span><br><span class="line">&#125;</span><br><span class="line">void f3() &#123;</span><br><span class="line">     longjmp(jbuf, 1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不使用优化的编译结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wuxu@centos7 % gcc -o jmpvar jmpvariable.c</span><br><span class="line">wuxu@centos7 % ./jmpvar</span><br><span class="line">in f1</span><br><span class="line">g:11, a:22, r:33, v:44</span><br><span class="line">after long jmp</span><br><span class="line">global:11, auto:22, reg:33, vola:44</span><br></pre></td></tr></table></figure>
+<p>开启编译器优化的结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wuxu@centos7 % gcc -O2 -o jmpvarO2 jmpvariable.c</span><br><span class="line">wuxu@centos7 % ./jmpvarO2</span><br><span class="line">in f1</span><br><span class="line">g:11, a:22, r:33, v:44</span><br><span class="line">after long jmp</span><br><span class="line">global:11, auto:2, reg:3, vola:44</span><br></pre></td></tr></table></figure>
+<p>可以看出，在启用编译器优化后，自动变量和寄存器变量都回滚了，而全局的，volatile修饰的变量咩有回滚值。</p>
+<h2 id="自动变量的潜在问题"><a href="#自动变量的潜在问题" class="headerlink" title="自动变量的潜在问题"></a>自动变量的潜在问题</h2><p>对于自动变量，一个基本的规则是声明自动变量的函数已经返回后，不能再引用这些变量。下面是一个例子，使用一个自动变量作为文件流的缓冲区了：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">FILE * open_file(const char *filename);</span><br><span class="line"></span><br><span class="line">int main(int argc,  char *argv[]) &#123;</span><br><span class="line">    char *filename = &quot;a.txt&quot;;</span><br><span class="line">    FILE *fp = open_file(filename);</span><br><span class="line">	// call some other function</span><br><span class="line">    char buf[64];</span><br><span class="line">    fread(buf, sizeof(char), sizeof buf, fp);</span><br><span class="line">    puts(buf);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">FILE *open_file(const char *filename) &#123;</span><br><span class="line">     FILE *fp;</span><br><span class="line">     char databuf[BUFSIZ];</span><br><span class="line">     if ((fp = fopen(filename, &quot;r&quot;)) == NULL)</span><br><span class="line">         puts(&quot;open file failed&quot;);</span><br><span class="line"></span><br><span class="line">     if (setvbuf(fp, databuf, _IOLBF, BUFSIZ) != 0)  // IOLBF means line buffer io</span><br><span class="line">         puts(&quot;setvbuf failed&quot;);</span><br><span class="line"></span><br><span class="line">     return fp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>open_file</code> 函数中，使用自动变量 databuf 的空间作为文件流的缓冲区，当函数返回时，databuf在栈上的的空间将由下一个被调用函数的栈帧使用，这个时候就产生了冲突（在实际测试（gcc 4.8.3, centos 7）中，并没有出现问题，文件流能正常读取）。不过按照理论这是容易出现问题，为了防止出现问题，应该使用全局存储空间静态地（static, extern）或者动态地(malloc等）为数组 databuf 分配空间。</p>
+<p>基本完</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/run-away-from-beijing/" itemprop="url">
                   逃离北京
                 </a>
@@ -502,6 +826,248 @@
 
             
           </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/process-environment/" itemprop="url">
+                  进程环境
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-22T12:34:50+08:00" content="2015-12-22">
+              2015-12-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>程序执行时，main函数是如何被调用的，命令行参数是如何传递给程序的，典型的存储空间布局是什么样式，如何分配其他存储空间，进程如何使用环境变量，进程的终止等等这些都是进程控制的基础知识。</p>
+<h2 id="main函数"><a href="#main函数" class="headerlink" title="main函数"></a>main函数</h2><p>我们知道C程序总是从main函数开始执行，main函数的原型如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int main(int argc, char *argv[]);</span><br></pre></td></tr></table></figure>
+<p>其中int是main函数的类型，虽然旧的编译器使用void定义，或者不声明main的类型也可以编译，但是那是不好的做法，根据 ISO C和POSIX.1 的定义都应该将main显式声明为 int 类型的。argc是命令行参数的数目，argv是指向参数的各个指针构成的数组。与众面向对象语言不同，C需要显式的 argc 传递参数的个数，因为仅凭 argv 不能确定其大小。</p>
+<p>当内核执行C程序时，在调用 main 前先调用了一个特殊的启动例程，可执行程序文件将此例程指定为程序的起始地址–这是有连接编辑器设置的，而连接编辑器则由C编译器调用，启动例程从内核取得命令行参数和环境变量值，然后为按上述方式调用main函数做好安排。</p>
+<h2 id="进程终止"><a href="#进程终止" class="headerlink" title="进程终止"></a>进程终止</h2><p>进程有多种退出运行的方式，最常用的是从main函数返回，或者main函数执行到结束。所有的进程终止的方式总结如下，其中前5种正常终止，后三种是异常中止：</p>
+<ol>
+<li>从main返回</li>
+<li>调用 exit()</li>
+<li>调用 _exit() 或者 ——Exit()</li>
+<li>最后一个线程从其启动例程返回</li>
+<li>最后一个线程调用 pthread_exit</li>
+<li>调用 abort</li>
+<li>接到一个信号</li>
+<li>最后一个线程对取消请求作出响应</li>
+</ol>
+<p>退出函数 exit 也是很常用的， _exit 和 _Exit 则不太常用，它们之间的区别是 exit 会先执行一些清理操作，比如对所有打开的文件调用 fclose 函数，刷新输出缓冲等，然后在如内核，_exit 和 _Exit 则是立即进入内核的。还有一个区别是它们包含在不同的头文件中，exit 和 _Exit 包含在 &lt;stdlib.h&gt; 中， _exit 包含在 &lt;unistd.h&gt; 中（因为前两者是ISO C说明的，而后者是POSIX.1说明的）。</p>
+<p>这些终止函数都是用一个整型的状态码作为参数，称为终止状态(exit status)。C99 规定没有显示调用return而main执行到最后一个语句时返回，那么进程的终止状态<strong>是0</strong>，在之前的标准这种情况是为定义，所以返回值可能是随机的。我们的应该以C99为标准。</p>
+<h3 id="atexit"><a href="#atexit" class="headerlink" title="atexit"></a>atexit</h3><p>按照 ISO C的规定，一个进程可以登记最多32个（具体实现可能更多）<strong>由exit自动调用的函数</strong>，这些函数称为终止处理程序，调用 <code>atexit</code> 函数来<strong>登记</strong>这些函数。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">int atexit(void (*func)(void));</span><br></pre></td></tr></table></figure>
+<p>还记得之前介绍的函数指针吗，atexit函数的参数的类型就是一个函数指针（函数地址），其返回值和参数都是 void 。注意：exit调用这些登记了的函数的顺序与它们登记的顺序相反，同一函数若登记多次，则会<strong>被调用多次</strong>。</p>
+<p>一个C程序的启动和终止流程：<br><img src="/images/linux/time-functions.png" alt=""><br>可以看出内核使程序执行的唯一方法是调用一个exec函数。</p>
+<h2 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h2><p>命令行参数其实我们之前已经使用过了，基本了解了，对于Java和Go中的命令行参数方式也有所了解：Java通过一个String数组获取命令行参数，而Go则通过设置 flag 可以非常方便地获取特定的参数。</p>
+<p>C的命令行参数保存字啊 main函数的第二个参数，<code>char **argv</code> 或者 (<code>char *argv[]</code>)中，通过第一个参数 argc 获得参数的个数。如果要想Go那样获取特定形式的参数则需要自己对 argv 数组进行一些处理。</p>
+<p>在ISO C 和 POSIX.1 中，都要求 argv[argc] 是一个空指针（这由C启动例程保证），所以对argv的遍历也可以不借助 argc 的值。 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for (int i=0; iargv[i] != NULL; i++) &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>每个程序都自动接受（获得）一张环境表，环境表也是一个字符指针数组（字符串数组），全局变量<code>environ</code>包含了该指针数组的地址。定义为： <code>extern char **environ;</code> 。要想在代码中使用这个数组，需要前面的声明，否则 environ 是一个非定义的符号。</p>
+<p>按照惯例，环境由  <code>name=value</code> 这样形式的字符串组成，大多数预定义名完全由大写字母组成，但是不保证全部是这样。</p>
+<p>ISO C定义了一些函数对环境变量进行读写相关的操作：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">char *getenv(const char *name);</span><br><span class="line">int putenv(char *str);</span><br><span class="line"></span><br><span class="line">// rewrite非0则覆盖已存在的定义，0则不删除现有定义</span><br><span class="line">int setenv(const char *name, const char *value, int rewrite);	</span><br><span class="line">int unsetenv(const char *name);</span><br></pre></td></tr></table></figure>
+<p>一些常用的环境变量名和它们在各个系统中的实现：</p>
+<p><img src="/images/linux/env-vars.png" alt=""></p>
+<h2 id="C程序的存储空间布局"><a href="#C程序的存储空间布局" class="headerlink" title="C程序的存储空间布局"></a>C程序的存储空间布局</h2><p>这一段在深入理解计算机系统中已经<a href="http://wuxu92.github.io/linking-relocation-and-others/" target="_blank" rel="noopener">详细介绍</a>了，这里看有需要记的再记。</p>
+<h2 id="存储空间分布"><a href="#存储空间分布" class="headerlink" title="存储空间分布"></a>存储空间分布</h2><p>ISO C说明了3个用于存储空间动态分配的函数：</p>
+<ul>
+<li><code>malloc</code> 分配指定字节数的存储区，存储区的初始值不确定</li>
+<li><code>calloc</code> 为指定数量，指定长度的对象分配存储空间，该空间中，每一位都初<strong>始化为0</strong></li>
+<li><code>realloc</code> 增加或减少以前分配区的长度，当增加长度时，可能将以前分配的内容移到另一个足够大的区域以便在尾端增加存储区，<strong>新增的存储区的初始值不确定</strong></li>
+</ul>
+<p>它们的函数声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">void *malloc(size_t size);</span><br><span class="line">void *calloc(size_t nobj, size_t size);</span><br><span class="line">void *realloc(void *ptr, size_t newsize);</span><br><span class="line"></span><br><span class="line">void free(void *ptr);</span><br></pre></td></tr></table></figure>
+<p>关于它们返回值的赋值有一个要注意的地方，参见<a href="/should-not-cast-the-result-of-malloc">这里</a>。要注意 realloc函数的第二个参数是存储区的新<strong>长度</strong>，而不是新旧存储区的长度之差。</p>
+<p>这些存储区分配函数通常用 <code>sbrk</code> 系统调用实现，该系统调用扩充（或缩小）进程的堆，虽然 sbrk 可以扩充或者缩小进程的存储空间，但是大多数 malloc 和 free<strong>的实现</strong>都不减少进程的存储空间，释放的空间可供以后再分配，但是将它们保持在 malloc 池中，而不是返还给内核。</p>
+<p>大多数动态分配函数的实现实际分配的空间比所请求的要大一些，额外的空间用于记录管理信息，比如<strong>分配块的长度</strong>，指向下一个分配块的指针等。如果在超多分配去尾端或者在已分配区开始位置之前进行写操作，会修改另一块的管理记录信息，这导致的错误是灾难性的，可恶的是这中错误很难发现。在动态分配的缓冲区的前或后进行写操作，破坏的可能不仅仅是该区的管理记录信息，这些区域可能用于其它动态分配的对象，这些对象因此可能被破坏，而且很难追查到原因。</p>
+<p>另一个导致致命错误的是：释放一个已经释放的块，或者free的参数的指针不是由上面的函数分配的对象。对一个对象调用 free 后，这个指针的值实际上没有改变，它仍然在作用域内，如果该指针指向的地址被重新分配了，对它再进行free就会导致预料之外的行为。</p>
+<p>如果一个分配的区域没有调用free则会导致进程占用的存储空间越来越大，导致<strong>泄漏</strong>（即时是在调用函数中分配的空间，没有free的话在函数调用结束也不会自动释放）。</p>
+<p>后面的新记一篇</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/sys-data-files-and-info/" itemprop="url">
+                  APUE：系统数据文件和信息
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-21T12:34:50+08:00" content="2015-12-21">
+              2015-12-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><img src="/images/linux-logo.png" alt=""><br>Unix系统的正常运作需要使用大量与系统有关的数据文件，例如口令文件 /etc/passwd 和组文件 /etc/group 就经常被多个程序使用，由于历史原因，这些文件都是ASCII文本文件，并且使用标准IO库读这些文件…但是，对于较大的系统，顺序扫描指令文件很花费时间，我们需要能够以非ASCII文本格式存储这些文件，但仍然向使用其他文件格式的应用程序提供接口。</p>
+<h2 id="口令文件"><a href="#口令文件" class="headerlink" title="口令文件"></a>口令文件</h2><p>口令文件就是 /etc/passwd 文件，里面记录了系统的用户的信息，包括用户名，密码（可能单独存放在另一个文件），备注，家目录，默认shell等信息，对Linux比较熟悉的话，对这个文件应该也不陌生。不同的系统的passwd 文件实现不同，Linux实现了7个字段，而FreeBSD 和 MacOS X则实现了全部10个字段（至于各个字段是什么…其实并不重要）。</p>
+<p>与口令文件操作相关的函数和结构声明包含在 &lt;pwd.h&gt; 中，其中定义的结构体 <code>struct passwd</code> 用来保存一个用户对应的信息。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;pwd.h&gt;</span><br><span class="line">struct passwd</span><br><span class="line">&#123;</span><br><span class="line">  char *pw_name;		/* Username.  */</span><br><span class="line">  char *pw_passwd;		/* Password.  */</span><br><span class="line">  __uid_t pw_uid;		/* User ID.  */</span><br><span class="line">  __gid_t pw_gid;		/* Group ID.  */</span><br><span class="line">  char *pw_gecos;		/* Real name.  */</span><br><span class="line">  char *pw_dir;			/* Home directory.  */</span><br><span class="line">  char *pw_shell;		/* Shell program.  */</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct passwd *getpwuid(uid_t uid);</span><br><span class="line">struct passwd *getpwdnam(const char *name);</span><br></pre></td></tr></table></figure>
+<p>上面两个函数分别通过uid和username获取口令文件中的信息，它们都返回一个指向passwd结构的指针，该结构在执行函数时填写了信息，一般返回的passwd结构是<strong>函数内部的静态变量</strong>，只要调用任意相关函数，其内容就会被重写。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/sys-data-files-and-info/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -827,119 +1393,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/intro-of-cloudsim/" itemprop="url">
-                  Cloudsim 云计算仿真系统介绍
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-16T12:34:50+08:00" content="2015-12-16">
-              2015-12-16
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/simulation/" itemprop="url" rel="index">
-                    <span itemprop="name">simulation</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>bw: bandwidth<br>cloudlet<br>CIS: cloud information service,执行资源的分配与注册， CloudSim 初始化时会生成该类的实例，不需要自己处理<br>PE: Processing Element, CPU unit<br>vm: virtual machine, runs inside a Host, sharing hostList with other VMs. process cloudlets.process according to CloudletScheduler’s(timeShared, spaceShared) defined policy. VmSchedulerTimeShared is property of Host.<br>datacenterBroker: 代理仁，代表用户执行操作，对用户隐藏虚拟机管理（创建，提交任务到虚拟机，虚拟机销毁）。<br>Event: </p>
-<p>可以有多个datacenter， 一个datacenter有多个host，一个host有多个PE，</p>
-<p>一个仿真流程</p>
-<ol>
-<li>设置用户数量（broker count)</li>
-<li>设定通用的变量</li>
-<li>创建CIS（自动创建）</li>
-<li>创建Datacenter：包括 host + characteristics(Pe, Ram, Bw, price)</li>
-<li>创建DatacenterBroker</li>
-<li>创建Vm instances</li>
-<li>提交Vm　list 到 broker</li>
-<li>创建 Cloudlet(tasks) List</li>
-<li>提交(submit) Cloudlet lists到broker</li>
-<li>start simulation</li>
-<li>stop simulation</li>
-<li>输出仿真的状态</li>
-</ol>
-<h2 id="CloudSim-Events-the-heartbeat-of-simulation"><a href="#CloudSim-Events-the-heartbeat-of-simulation" class="headerlink" title="CloudSim Events the heartbeat of simulation"></a>CloudSim Events the heartbeat of simulation</h2><p>非常重要的类： SimEvent</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -986,14 +1439,14 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">175</span>
+              <span class="site-state-item-count">176</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
@@ -1084,7 +1537,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

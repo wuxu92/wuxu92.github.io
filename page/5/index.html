@@ -207,6 +207,112 @@
 
     
     
+      
+      
+
+      
+    
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/multi-thread-qsort-with-barrier/" itemprop="url">
+                  使用多线程加速快速排序
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-03-11T21:22:53+08:00" content="2016-03-11">
+              2016-03-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>一般来说，使用qsort能得到很快的速度，这也是它称之为快速排序的原因。但是在一些特定的情况下，可以继续特高快排的速度，今天这种情况就是：</p>
+<ul>
+<li>需要排序的数量特别大，如对百万级别的数据排序</li>
+<li>硬件能支持多线程（多核）</li>
+</ul>
+<p>如果使用的是多核的机器，可能利用起多核计算的优势来加速排序，思路比较简单，就是将一个大的数组切分成和与机器逻辑线程数量相等的小数组再进行排序（小数组的个数也可以略多，但是过多的切分会导致频繁的线程调度）。下面的代码主要来自APUE 第11章线程屏障部分的示例代码，我只简单修改了一部分并添加上注释便于理解。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/multi-thread-qsort-with-barrier/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -1174,104 +1280,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/snp-mongo-design-faults/" itemprop="url">
-                  snp中MongoDB设计失误
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-30T12:18:46+08:00" content="2016-01-30">
-              2016-01-30
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/db/" itemprop="url" rel="index">
-                    <span itemprop="name">db</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>snp是前段时间开始的一个<a href="https://github.com/wuxu92/snp" target="_blank" rel="noopener">个人项目</a>，受Chrome导航插件 FVD SpeedDial的启发，做一个自定义的导航页，后面会陆续写一些这个项目的文档，今天主要是总结一下到现在为止，MongoDB设计的一些失误。</p>
-<p>snp使用MongoDB作为数据存储，MongoDB作为一个老牌的NoSQL数据库，比较适合这个项目的需求，之前一直是使用MySQL做数据库，虽然MySQL肯定也能满足需求，但是一来为了熟练一些MongoDB的使用，而来NoSQL存储对应的数据确实更加方便，就没有选用MySQL了；一开始设计时还考虑过使用SQL Lite做存储，因为SQL Lite足够小，部署比较方便，不过snp本来是一个练手的项目，学习MongoDB也是其中目的，也就没有使用SQL Lite了。</p>
-<h2 id="数据描述"><a href="#数据描述" class="headerlink" title="数据描述"></a>数据描述</h2><p>我们知道NoSQL的一个很大的优势是没有了关系型数据库的模式约束，可以在一个数据集合中快速存取不同“schema”的数据。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/snp-mongo-design-faults/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1318,14 +1326,14 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">175</span>
+              <span class="site-state-item-count">176</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
@@ -1416,7 +1424,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

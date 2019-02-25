@@ -235,6 +235,143 @@
             
               
                 
+                <a class="post-title-link" href="/notes-of-go-by-example/" itemprop="url">
+                  Go by Example 中值得注意的点(一)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-27T12:34:50+08:00" content="2015-07-27">
+              2015-07-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <h2 id="不定参数"><a href="#不定参数" class="headerlink" title="不定参数"></a>不定参数</h2><p>不定参数的用法已经知道了，函数可以定义如下：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sum</span> <span class="params">(nums ...<span class="keyword">int</span>)</span></span>&#123;</span><br><span class="line">	total := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> _, num := <span class="keyword">range</span> nums &#123;</span><br><span class="line">		total += num</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> total</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样可以计算任意个传入的int参数的和，但是有下面的用法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nums := []int&#123;1,2,3,4,5&#125;</span><br><span class="line">t := sum(nums...)</span><br></pre></td></tr></table></figure>
+<p><code>nums...</code> 这样的用法在之前没有遇到过，它可以用来表示， 将一个slice的元素作为函数的实参列表。</p>
+<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><p>对于使用过js的人，闭包是一个非常熟悉的概念了。js使用闭包实现内部变量的私有化，go中也有同样的目的？<br>与js不同的是在定义函数的地方要把返回值写明返回的函数的签名。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">intSeq</span><span class="params">()</span> <span class="title">func</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	i := <span class="number">0</span></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">		i += <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">return</span> i</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样定义的intSeq函数调用后的返回值就是一个函数。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">next := intSeq()</span><br><span class="line"><span class="comment">// next是一个命名函数了</span></span><br><span class="line">next()</span><br></pre></td></tr></table></figure>
+<p>相比js的闭包，功能不是那么丰富，不过本质差不多。</p>
+<h2 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h2><p>Go提供了指针支持，允许传递值的引用。函数的参数可以是某种类型的指针。比如：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">zeroptr</span><span class="params">(i *<span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	*i = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">i := <span class="number">1</span></span><br><span class="line">zeroptr(&amp;i)</span><br></pre></td></tr></table></figure>
+<p>对于指针要理解星号（*）符号和引用符号（&amp;）的作用。</p>
+<blockquote>
+<p>Assigning a value to a dereferenced pointer changes the value at the referenced address.</p>
+</blockquote>
+<p>语法 <code>&amp;i</code>得到的是<code>i</code>的内存地址，也就是i的指针。也可能存在指向指针的指针。在函数体内部，<code>*i</code>将指针/内存地址 <em>解引用(dereferendes)</em>为地址指向的值。所以赋值语句为<code>*i=0</code>这中形式。</p>
+<h2 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h2><p>go中使用关键字struct定义结构体，和C语言的结构体非常相似，不过相比C语言要简单很多了，没有C语言那些复杂的指针维护。<br>结构体可以使用字面量初始化：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义一个结构</span></span><br><span class="line"><span class="keyword">type</span> Person <span class="keyword">struct</span> &#123;</span><br><span class="line">	name <span class="keyword">string</span></span><br><span class="line">	age <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">me := Person&#123;<span class="string">"wuxu"</span>, <span class="number">22</span>&#125;</span><br><span class="line">anotherMe := Person&#123;name:<span class="string">"wuxu"</span>, age:<span class="number">22</span>&#125;</span><br><span class="line">mePtr := &amp;me</span><br></pre></td></tr></table></figure>
+<p>还是要注意指针的理解， me是一个对象， &amp;me返回的是对象的地址，复制给 mePtr， 如果要将mePtr的内存存放新的对象应该如下:</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">*mePtr = Person&#123;<span class="string">"new Name"</span>, <span class="number">33</span>&#125;</span><br><span class="line"><span class="comment">// 错误: mePtr =  Person&#123;"new name", 33&#125;</span></span><br></pre></td></tr></table></figure>
+<p>修改了mePtr的对象，me的对象也被修改了，因为他们是同一片内存区域。</p>
+<h2 id="方法（method）"><a href="#方法（method）" class="headerlink" title="方法（method）"></a>方法（method）</h2><p>我们知道在Go中可以给struct“绑定”方法，其实现方式如下:</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p Person)</span> <span class="title">say</span><span class="params">(words <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">	fmt.Println(p.name, <span class="string">"says: "</span>, words)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *Person)</span> <span class="title">run</span><span class="params">(d <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	fmt.Println(p.name, <span class="string">" runs away "</span>, d, <span class="string">" meters"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面给Person结构体绑定了两个方法，看以看到，方法绑定中，一个使用 <code>Person</code> ,一个是 <code>*Person</code>他们有什么区别呢？<br>在方法调用时，Go会自动处理变量和指针的转换，即下面的调用时正确的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">me := Person(&quot;wuxu&quot;, 22)</span><br><span class="line">me.say(&quot;wtf&quot;)</span><br><span class="line">me.run(100)</span><br></pre></td></tr></table></figure>
+<p>虽然run方法的参数类型是 <code>*Person</code>，使用me调用也能正确执行，那么在绑定参数时的<code>*</code>有什么作用？ 这里其实和值与引用相似。不带<code>*</code>的参数相当于值传递，带<code>*</code>的相当于引用传递，所以在say方法中对p的属性修改不会改变调用者的值，而在run方法中修改p的属性会表现在调用者上。</p>
+<blockquote>
+<p>Go automatically handles conversion between values and pointers for method calls. You may want to use a pointer receiver type to avoid copying on method calls or to allow the method to mutate the receiving struct.</p>
+</blockquote>
+<p>但是要注意，如果使用 <code>*</code>的话，方法便不再是绑定在Person结构体上了，而是在<code>*Person</code>上了。<br>虽然Person的对象也能调用，这在接口实现中会有表现： 如果一个接口定义了run方法，那么实现这个接口的struct绑定方法时，不能使用<code>*</code></p>
+<h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>Go的接口，只要定义的类型“绑定”了接口中定义的方法，就认为类型实现了接口。没有implements这类的显式声明实现接口。</p>
+<p>一个接口实现的示例：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> animal <span class="keyword">interface</span> &#123;</span><br><span class="line">  run(<span class="keyword">int</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Pig <span class="keyword">struct</span> &#123;</span><br><span class="line">  name <span class="keyword">string</span></span><br><span class="line">  age <span class="keyword">int</span>                                    </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p Pig)</span> <span class="title">run</span><span class="params">(d <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">  fmt.Println(<span class="string">"Pig runs away "</span>, d)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">runAway</span><span class="params">(an animal)</span></span> &#123;</span><br><span class="line">  an.run(<span class="number">100</span>);</span><br><span class="line">&#125;                                  </span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">inters</span><span class="params">()</span></span> &#123;</span><br><span class="line">  runAway(Person&#123;<span class="string">"TM"</span>, <span class="number">22</span>, <span class="literal">false</span>&#125;)</span><br><span class="line">  runAway(Pig&#123;<span class="string">"wangcai"</span>, <span class="number">1</span>&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关于接口的更多内容可以查看 <a href="http://jordanorelli.com/post/32665860244/how-to-use-interfaces-in-go" title="http://jordanorelli.com/post/32665860244/how-to-use-interfaces-in-go" target="_blank" rel="noopener">这篇博客</a></p>
+<h2 id="错误"><a href="#错误" class="headerlink" title="错误"></a>错误</h2><p>我们知道Go没有异常系统，而是通过一个显式声明的独立返回值（利用多返回值特性）来声明错误。一般在最后一个返回值声明错误。<br>error是系统提供的返回错误接口，可以自己定制类型实现该接口作为定制的错误类型返回。如果错误位返回nil表示没有错误。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e myErr)</span> <span class="title">Error</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> fmt.Sprintf(<span class="string">"%d - %s"</span>, e.arg, e.prob)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p Person)</span><span class="title">buy</span><span class="params">(item <span class="keyword">string</span>)</span> <span class="params">(<span class="keyword">bool</span>, error)</span></span> &#123;</span><br><span class="line">  <span class="keyword">if</span> p.age &lt; <span class="number">18</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>, &amp;myErr&#123;<span class="number">0</span>, <span class="string">"too yong"</span>&#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>常见的自定义错误如上，注意几点，在返回处， 需要使用 <code>&amp;myErr</code>，否则会报类型错误。如果没有自定义错误，可以直接使用内置的错误类型</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">return false, errors.New(&quot;too yong&quot;)</span><br></pre></td></tr></table></figure>
+<p>注意，需要导入errors包。<br>使用自定义错误的好处是可以在调用出对错误做类型判断，已进行相应的处理。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">_, e := me.buy(&quot;shirt&quot;)</span><br><span class="line">if me, ok := e.(*myErr); ok &#123;</span><br><span class="line">	// with myErr return, me ref to return error</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2><p>见第二部分</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/use-yadr-enhancing-your-vim/" itemprop="url">
                   yadr中提供的vim快捷操作
                 </a>
@@ -370,6 +507,125 @@
 <li><code>gcp</code> comment a paragraph</li>
 </ul>
 <h2 id="vim相关"><a href="#vim相关" class="headerlink" title="vim相关"></a>vim相关</h2><p><code>,vr</code> 重新加载vim， vim reload</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/golang-errors/" itemprop="url">
+                  Golang中的错误处理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-24T12:34:50+08:00" content="2015-07-24">
+              2015-07-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>Go语言提供了一套“新颖的”错误系统，与Java中的异常系统不一样，Go中没有抛出异常的概念</p>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>如果有一定面向对象语言编程经验的话，肯定会对异常/错误系统有一定的了解。如果使用Java比较多的话，一定会认为抛异常是编程语言天生的一部分，因为在Java中抛异常真的是太家常便饭，无处不在了；但是在Go语言中，根本没有异常这个东西！</p>
+<p>看一段官方的QA是怎么解释这个问题的：</p>
+<blockquote>
+<p>We believe that coupling exceptions to a control structure, as in the try-catch-finally idiom,<strong> results in convoluted code</strong>. It also tends to encourage programmers to label too many ordinary errors, such as failing to open a file, as exceptional.</p>
+<p>Go takes a different approach. For plain error handling, Go’s multi-value returns make it easy to report an error without overloading the return value. A canonical error type, coupled with Go’s other features, makes error handling pleasant but quite different from that in other languages.</p>
+<p>Go also has a couple of built-in functions to signal and recover from truly exceptional conditions. The recovery mechanism is executed only as part of a function’s state being torn down after an error, which is sufficient to handle catastrophe but requires no extra control structures and, when used well, can result in clean error-handling code.</p>
+</blockquote>
+<p>多值返回为Go提供了一个新的错误处理机制，如果对为什么Go不提供异常体系感兴趣可以在 <a href="https://golang.org/doc/articles/defer_panic_recover.html" target="_blank" rel="noopener">这里</a> 找到更多的细节。</p>
+<p>在之前文章中，已经使用过Go语言的多值返回来返回详细的错误描述。按照规定，<strong>错误的类型通常为error，这是一个内建的简单接口</strong>。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> error <span class="keyword">interface</span> &#123;</span><br><span class="line">	Error() <span class="keyword">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以通过实现这个接口定制错误，例如打开文件时的错误:</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> PathError <span class="keyword">struct</span> &#123;</span><br><span class="line">	Op <span class="keyword">string</span></span><br><span class="line">	Path <span class="keyword">string</span></span><br><span class="line">	Err error	<span class="comment">// 由系统调用返回</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fanc (pe *PathError) Error() <span class="keyword">string</span> &#123;</span><br><span class="line">	<span class="comment">// 返回定制的错误信息</span></span><br><span class="line">	<span class="keyword">return</span> pe.Op + <span class="string">" "</span> + pe.Path + <span class="string">": "</span> + pe.Err.Error()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>effective go中有一个示例非常有利于我们理解错误的使用,这段代码的作用是创建一个文件，如果创建失败，检查是不是磁盘空间不足，如果是则删除掉一些临时文件，再尝试创建一次：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for try:=0; try&lt;2; try++ &#123;</span><br><span class="line">	file, err := os.Create(filename)</span><br><span class="line">	if err == nill &#123;</span><br><span class="line">		return  //没有错误</span><br><span class="line">	&#125;</span><br><span class="line">	// 检查是不是空间不足</span><br><span class="line">	if e,ok := err.(*os.PathError); ok &amp;&amp; e.Err == syscall.ENOSPC &#123;</span><br><span class="line">		deleteTempFiles()  	// 删除一些临时文件</span><br><span class="line">		continue 			// 再创建一次</span><br><span class="line">	&#125;</span><br><span class="line">	return</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以查看源码中PathError的实现 <a href="https://golang.org/src/os/error.go" title="https://golang.org/src/os/error.go" target="_blank" rel="noopener">https://golang.org/src/os/error.go</a></p>
+<h2 id="Panic函数"><a href="#Panic函数" class="headerlink" title="Panic函数"></a>Panic函数</h2><p>函数可以通过将error作为额外的返回值来向调用者报告错误，对于一些“致命”的错误，他们导致程序不能继续运行了，Go内建了一个Panic函数，它会产生一个运行时错误并重孩子程序。该函数接受一个任意类型的实参在程序终止时打印。</p>
+<p>只需要在需要它的地方调用一下<code>panix()</code>就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func init() &#123;</span><br><span class="line">	if user == &quot;&quot; &#123;</span><br><span class="line">		panic(&quot;user变量必须有值&quot;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一个示例，但是如果是设计库函数则应该避免使用panic，一个常见的使用panic的场景是初始化，如上面的示例。</p>
+<h2 id="恢复"><a href="#恢复" class="headerlink" title="恢复"></a>恢复</h2><p>panic函数被调用后，程序将终止当前函数的执行。并开始追溯Go程的栈，运行任何被推迟的函数。我如果回溯到栈顶，程序会终止。<br>我们可以通过使用内建的recover函数来重新取回Go程的控制权。<br>调用recover将停止回溯，并返回传入panic的是西安。因为回溯只有被推迟执行的函数中的代码在执行，所以recover也只能在被推迟的函数中才有效。</p>
+<p>一个应用：在服务器中终止失败的Go程而无需杀死其他正在执行的Go程：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">server</span><span class="params">(workChan &lt;-<span class="keyword">chan</span> *Work)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> work := <span class="keyword">range</span> workChan &#123;</span><br><span class="line">		<span class="keyword">go</span> safelyDo(work)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">safelyDo</span><span class="params">(work *Work)</span></span> &#123;</span><br><span class="line">	<span class="comment">// defer 函数是被推迟执行的</span></span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">if</span> err := <span class="built_in">recover</span>(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">			log.Println(<span class="string">"work failed:"</span>, err)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	do(work)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果do函数中调用panic函数，回溯会执行defer的函数，这时recover会起作用，打印错误信息后退出Go程。<br>可以使用上面的思路简化错误处理。</p>
 
             
           </span>
@@ -645,8 +901,8 @@
             
               
                 
-                <a class="post-title-link" href="/compile-and-install-php7-beta1/" itemprop="url">
-                  编译安装PHP7 beta1
+                <a class="post-title-link" href="/go-efficient-string-concat/" itemprop="url">
+                  Go 快速拼接字符串
                 </a>
               
             
@@ -656,8 +912,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-07-19T12:34:50+08:00" content="2015-07-19">
-              2015-07-19
+            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
+              2015-07-20
             </time>
           </span>
 
@@ -666,8 +922,8 @@
               &nbsp; | &nbsp; 分类于
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
                   </a>
                 </span>
 
@@ -696,16 +952,357 @@
 
       
         
-          <p>前段时间去php.net上闲逛发现PHP7的beta1版本出来了，就尝试着编译安装了一下</p>
-<p>之前在鸟哥的博客里看到了他们做的PHP的性能测试，相对于PHP5.6都是有很大的提升的，并且PHP的主版本号已经是2004年发布PHP5后，11年来首次更新，肯定PHP７是有很大的改变的，下面那就来试试PHP7的beta版吧，正式版大概在今年年底会发布。</p>
-<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>测试版本的PHP下载页面： <a href="https://downloads.php.net/~ab/" title="https://downloads.php.net/~ab/" target="_blank" rel="noopener">https://downloads.php.net/~ab/</a></p>
-<p>php7 beta1: <a href="https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz" title="https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz" target="_blank" rel="noopener">https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</a></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</span><br><span class="line">或者</span><br><span class="line">curl -O https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</span><br></pre></td></tr></table></figure>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/compile-and-install-php7-beta1/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
+          <span itemprop="articleBody">
+            
+              <p>对于频繁的字符串操作，可以使用bytes.Buffer接口提供的方法快速拼接 </p>
+<p>和一般语言类似，Go也为string重载了”+”操作符，可以使用它进行字符串拼接，但是在C#和Java中对于大量的字符串拼接操作推荐使用StringBuilder这样的类，同样对于Go中的大量字符串拼接也不推荐直接使用”+”操作。</p>
+<p>可以使用bytes.Buffer提供的方法进行快速拼接：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"bytes"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">concat</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> buffer bytes.Buffer</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>; i&lt;<span class="number">1000</span>; i++ &#123;</span><br><span class="line">		buffer.WriteString(<span class="string">"abcd"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	str := buffer.String()</span><br><span class="line">	<span class="comment">// do something to str</span></span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">return</span> str</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样可以获得O(n)的时间复杂度。</p>
+<p>参考： <a href="http://stackoverflow.com/questions/1760757/" title="http://stackoverflow.com/questions/1760757/" target="_blank" rel="noopener">stackoverflow.com/</a></p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/effective-go-note-4-concurrency/" itemprop="url">
+                  Effective Go笔记：并发
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
+              2015-07-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>effective go 中的部分笔记，这是第四部分 </p>
+<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
+<h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><h3 id="通过通信共享内存"><a href="#通过通信共享内存" class="headerlink" title="通过通信共享内存"></a>通过通信共享内存</h3><p>并发编程中很麻烦的一点是对共享变量访问的控制，在一般环境中，使用同步互斥锁机制等实现互斥的访问，使得代码繁琐而且难以理解。Go语言提出了一个独特的机制:信道。<br>Go将共享的值通过信道传递。在给定的时间点，只有一个Go程能访问信道中的值，在设计上杜绝了数据在同一时间点被放线程访问。</p>
+<blockquote>
+<p>不要通过共享内存来通信，而应通过通信来共享内存。</p>
+</blockquote>
+<p>为了方便理解，可以把Go的并发处理方式看做类型安全的Unix管道的实现。</p>
+<h3 id="Go程-Goroutines"><a href="#Go程-Goroutines" class="headerlink" title="Go程/Goroutines"></a>Go程/Goroutines</h3><p>Go程是Golang提出的术语，Go程有简单的模型，它是与其他Go程并发运行在同一地址空间的<strong>函数</strong>。Go程可以看作是轻量级的线程，它的开销几乎只有栈空间的分配，它的使用很廉价。<br>Go程在多线程操作系统上可以实现多路复用，后面会详细讲到。多路复用在多线程编程中非常重要。</p>
+<p>那如何运行一个Go程呢？很简单，只需要在要调用的函数前添加”go”关键字就能在Go程中运行这个函数，函数调用结束时，Go程也就自动退出。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">go</span> list.Sort()</span><br><span class="line"><span class="comment">// 使用函数字面量运行</span></span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// do something here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="信道-Channels"><a href="#信道-Channels" class="headerlink" title="信道/Channels"></a>信道/Channels</h3><p>前面已经提到了信道的概念，在多线程中，具体怎么使用呢，下面就详细介绍<strong>信道（channel）</strong>。</p>
+<p>之前讲过，在Go中切片，映射和信道都使用make来分配内存，make返回的值充当对底层数据结构的引用。信道的声明和初始化示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 前两个是无缓冲的正数类型信道</span><br><span class="line">c1 := make(chan int)</span><br><span class="line">c2 := make(chan int, 0)</span><br><span class="line">// 指向文件指针的带缓冲区的信道</span><br><span class="line">c3 := make(chan *os.File, 100)</span><br></pre></td></tr></table></figure>
+<p>若不指定第二个参数，信道就是无缓冲的同步信道。使用一个同步信道，一个示例如下：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">c1 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>) <span class="comment">// 一个不带缓冲的，同步信道</span></span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">  time.Sleep(<span class="number">500</span> * time.Millisecond)</span><br><span class="line">  <span class="comment">// send one value to channl</span></span><br><span class="line">  c1 &lt;- <span class="number">1</span></span><br><span class="line">&#125;()</span><br><span class="line"><span class="comment">// do something here</span></span><br><span class="line">fmt.Println(<span class="string">"wait for goroutine to quir"</span>)</span><br><span class="line">&lt;-c1 <span class="comment">// 主线程在此等待Go程结束,丢弃信道中的值，因为该值只是用作同步的标识</span></span><br><span class="line">fmt.Println(<span class="string">"go routine done"</span>)</span><br></pre></td></tr></table></figure>
+<p>看完无缓冲的信道，下面看一下有缓冲的信道。有缓冲的信道可以看作是信号量，操作系统里面学过信号量的东西。信号量可以看作是资源不足时用来限制线程执行，使其等待的机制。常用来限制吞吐量，限制调用的process的数量等。<br>比如要对Web请求使用Go程处理：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">func Serve(queue chan *Request) &#123;</span><br><span class="line">	for req := range queue &#123;</span><br><span class="line">		sem &lt;- 1</span><br><span class="line">		// 考虑到闭包的性质，这里传入值 *Request，</span><br><span class="line">		// 如果不使用 *Request则所有Go程处理的是同一个变量req</span><br><span class="line">		go func(req *Request) &#123;</span><br><span class="line">			process(req)</span><br><span class="line">			&lt;-sem</span><br><span class="line">		&#125;(req)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 另一种方式是，重新声明一个变量</span><br><span class="line">	for req := range queue &#123;</span><br><span class="line">		// 参考js中for循环中使用timeInterval函数时要重新声明变量</span><br><span class="line">		req := req // 为该Go程创建 req 的新实例。</span><br><span class="line">		sem &lt;- 1</span><br><span class="line">		go func() &#123;</span><br><span class="line">			process(req)</span><br><span class="line">			&lt;-sem</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="信道中的信道-channels-of-channels"><a href="#信道中的信道-channels-of-channels" class="headerlink" title="信道中的信道/channels of channels"></a>信道中的信道/channels of channels</h3><p><em>这部分比较麻烦，待续</em></p>
+<h3 id="并行化-Parallelization"><a href="#并行化-Parallelization" class="headerlink" title="并行化/Parallelization"></a>并行化/Parallelization</h3><p>在多CPU核心上实现并行计算。</p>
+<blockquote>
+<p>并发是用可独立执行的组件构造程序的方法， 而并行则是为了效率在多CPU上平行地进行计算。Go仍然是种并发而非并行的语言，且Go的模型并不适合所有的并行问题</p>
+</blockquote>
+<p>目前Go运行时的实现默认并不会并行执行代码，它只为用户层代码提供单一的处理核心。 任意数量的Go程都可能在系统调用中被阻塞，而在任意时刻默认只有一个会执行用户层代码。 它应当变得更智能，而且它将来肯定会变得更智能。但现在，若你希望CPU并行执行， 就必须告诉运行时你希望同时有多少Go程能执行代码。有两种途径可以使用：</p>
+<ol>
+<li>在运行你的工作时将 GOMAXPROCS 环境变量设为你要使用的核心数</li>
+<li>导入 runtime 包并调用 runtime.GOMAXPROCS(NCPU)。 runtime.NumCPU() 的值可能很有用，它会返回当前机器的逻辑CPU核心数。 </li>
+</ol>
+<p>当然，随着调度算法和运行时的改进，将来会不再需要这种方法。</p>
+<h3 id="一个缓冲区泄漏示例-A-leak-buffer"><a href="#一个缓冲区泄漏示例-A-leak-buffer" class="headerlink" title="一个缓冲区泄漏示例/A leak buffer"></a>一个缓冲区泄漏示例/A leak buffer</h3><p>客户端Go程从某些来源，可能是网络中循环接收数据。为避免分配和释放缓冲区， 它保存了一个空闲链表，使用一个带缓冲信道表示。若信道为空，就会分配新的缓冲区。 一旦消息缓冲区就绪，它将通过 serverChan 被发送到服务器。 serverChan.</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> freeList = <span class="built_in">make</span>(<span class="keyword">chan</span> *Buffer, <span class="number">100</span>)</span><br><span class="line"><span class="keyword">var</span> serverChan = <span class="built_in">make</span>(<span class="keyword">chan</span> *Buffer)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">client</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">var</span> b *Buffer</span><br><span class="line">		<span class="comment">// 若缓冲区可用就用它，不可用就分配个新的。</span></span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> b = &lt;-freeList:</span><br><span class="line">			<span class="comment">// 获取一个，不做别的。</span></span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="comment">// 非空闲，因此分配一个新的。</span></span><br><span class="line">			b = <span class="built_in">new</span>(Buffer)</span><br><span class="line">		&#125;</span><br><span class="line">		load(b)              <span class="comment">// 从网络中读取下一条消息。</span></span><br><span class="line">		serverChan &lt;- b   <span class="comment">// 发送至服务器。</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>服务器从客户端循环接收每个消息，处理它们，并将缓冲区返回给空闲列表。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">server</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		b := &lt;-serverChan    <span class="comment">// 等待工作。</span></span><br><span class="line">		process(b)</span><br><span class="line">		<span class="comment">// 若缓冲区有空间就重用它。</span></span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> freeList &lt;- b:</span><br><span class="line">			<span class="comment">// 将缓冲区放大空闲列表中，不做别的。</span></span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="comment">// 空闲列表已满，保持就好。</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户端试图从 freeList 中获取缓冲区；若没有缓冲区可用， 它就将分配一个新的。服务器将 b 放回空闲列表 freeList 中直到列表已满，此时缓冲区将被丢弃，并被垃圾回收器回收。（select 语句中的 default 子句在没有条件符合时执行，这也就意味着 selects 永远不会被阻塞。）依靠带缓冲的信道和垃圾回收器的记录， 我们仅用短短几行代码就构建了一个可能导致缓冲区槽位泄露的空闲列表。(没懂TT)</p>
+<p>上一段的英文如下，总觉得中文的翻译不太对</p>
+<p>The client attempts to retrieve a buffer from freeList; if none is available, it allocates a fresh one. The server’s send to freeList puts b back on the free list unless the list is full, in which case the buffer is dropped on the floor to be reclaimed by the garbage collector. (The default clauses in the select statements execute when no other case is ready, meaning that the selects never block.) This implementation builds a leaky bucket free list in just a few lines, relying on the buffered channel and the garbage collector for bookkeeping.</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/encasulating-a-memcache-client-for-php/" itemprop="url">
+                  为PHP封装一个Memcache类
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
+              2015-07-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>在php中经常会使用memcache或者memcached来做缓存系统，为了方便操作经常会对PHP提供的接口进行一层封装 </p>
+<p>todo</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/effective-go-note-3/" itemprop="url">
+                  Effective Go笔记：空白标识符，接口检查与内嵌
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
+              2015-07-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>effective go 中的部分笔记，这是第三部分 </p>
+<p>部分笔记摘要,参考： <a href="https://go-zh.org/doc/effective_go.html" title="https://go-zh.org/doc/effective_go.html" target="_blank" rel="noopener">https://go-zh.org/doc/effective_go.html</a></p>
+<h2 id="空白标识符"><a href="#空白标识符" class="headerlink" title="空白标识符"></a>空白标识符</h2><p>空白标识符是指”_”，是一个特殊的变量标识，在之前的for…range 循环中已经使用过。</p>
+<h3 id="为未使用的变量或者包使用"><a href="#为未使用的变量或者包使用" class="headerlink" title="为未使用的变量或者包使用"></a>为未使用的变量或者包使用</h3><p>在Go中如果定义了一个变量没有使用，或者导入一个没有使用的包会在编译时报错，未使用的包会让程序体积变大并拖慢编译速度，初始化了而不是用的变量会留下某种隐患。<br>但是某些时候我们确实需要丢弃一些没有的变量，比如在for range循环中，可能需要丢弃键或者值，或者程序写到中途某些变量已经定义只是还没有使用等等，这时就需要空白标识符了。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 检查某个路径是否存在</span></span><br><span class="line"><span class="keyword">if</span> _, err := os.Stat(paht); os.IsNotExist(err) &#123;</span><br><span class="line">	fmt.Println(<span class="string">"path not exist"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于未使用的变量和未使用的导入包，可以把它们先赋值给空白标识符”_”关闭编译器的错误，在使用了这些变量后再删掉这些代码：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line">fd = <span class="number">32</span></span><br><span class="line">....</span><br><span class="line">_ = fd</span><br><span class="line"><span class="keyword">var</span> _ = fmt.Printf  <span class="comment">// 用于调试使用，结束时删除</span></span><br></pre></td></tr></table></figure>
+<h2 id="接口检查"><a href="#接口检查" class="headerlink" title="接口检查"></a>接口检查</h2><p>如果只需要判断某个类型是否实现了某个接口而不需要实际使用接口本身，可以使用空白标识符：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if _, ok := val.(Milk); ok &#123;</span><br><span class="line">	fmt.Printf(&quot;value %v has implement interface milk&quot;, val)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 接口检查示例</span><br><span class="line">type iMilk interface &#123; </span><br><span class="line">  getName() string</span><br><span class="line">&#125;</span><br><span class="line">type Milk struct &#123; </span><br><span class="line">  name string</span><br><span class="line">&#125;</span><br><span class="line">func (m Milk) getName() string &#123;</span><br><span class="line">  return m.name</span><br><span class="line">&#125;</span><br><span class="line">func main() &#123;</span><br><span class="line">  var m interface &#123;&#125;</span><br><span class="line">  m = Milk&#123;&quot;yili&quot;&#125;</span><br><span class="line">  if _,ok := m.(iMilk); ok &#123;</span><br><span class="line">    fmt.Printf(&quot;value %v has implement iMilk\n &quot;, m)</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    fmt.Println(&quot;has not implememt&quot;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="内嵌-Embedding"><a href="#内嵌-Embedding" class="headerlink" title="内嵌/Embedding"></a>内嵌/Embedding</h2><p>Go语言并不提供典型的类与继承系统，所以也没有子类化的概念。继承是一个重要的概念，但是很多时候更推荐的做法是使用组合，Go提供的内嵌和组合概念差不多，可以将类型<strong>内嵌</strong>到结构体或者接口中，实现某种组合功能。</p>
+<p>一种典型的内嵌的ReadWriter接口的定义：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Reader <span class="keyword">interface</span> &#123;</span><br><span class="line">	Read(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> Writer <span class="keyword">interface</span> &#123;</span><br><span class="line">	Write(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 一个结合了Reader和Writer的接口</span></span><br><span class="line"><span class="keyword">type</span> ReadWriter <span class="keyword">interface</span> &#123;</span><br><span class="line">	Reader</span><br><span class="line">	Writer</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以内嵌到一个结构体中</span></span><br><span class="line"><span class="keyword">type</span> ReadWriter <span class="keyword">struct</span> &#123;</span><br><span class="line">	r *Reader</span><br><span class="line">	w *Writer</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>内嵌的接口一般需要实现被内嵌接口的方法，满足其需求，比如要提供Read方法：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(re *ReadWriter)</span> <span class="title">Read</span><span class="params">(p []<span class="keyword">byte</span>)</span> <span class="params">(n <span class="keyword">int</span>, err error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> rw.r.Read(p)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而通过直接内嵌结构体，我们就能避免如此繁琐。 <strong>内嵌类型的方法可以直接引用</strong>。<br>当内嵌一个类型时，该类型的方法会成为外部类型的方法， 但当它们被调用时，该方法的接收者是内部类型，而非外部的。在我们的例子中，当 bufio.ReadWriter 的 Read 方法被调用时， 它与之前写的转发方法具有同样的效果；接收者是 ReadWriter 的 reader 字段，而非 ReadWriter 本身：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Logger struct &#123;</span><br><span class="line">  content string</span><br><span class="line">&#125;</span><br><span class="line">func (l Logger) Log(s string) &#123;</span><br><span class="line">  l.content += s</span><br><span class="line">  fmt.Println(s)</span><br><span class="line">&#125;</span><br><span class="line">type infoLog struct &#123;</span><br><span class="line">  count int</span><br><span class="line">  *Logger</span><br><span class="line">&#125;</span><br><span class="line">func main() &#123;</span><br><span class="line">	var logger = infoLog&#123;0, &amp;Logger&#123;&quot;sss&quot;&#125; &#125;</span><br><span class="line">	// 可以直接调用内嵌类型的方法</span><br><span class="line">	logger.Log(&quot;embedding function invoke&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>内嵌类型可能会引起命名冲突的问题。更深层次的命名字段或方法会被覆盖。若相同的嵌套层级上出现同名冲突，通常会产生一个错误。但是如果冲突的名字不会被使用就没有问题……</p>
+<p><em>并发部分有点多，单独做一篇吧</em></p>
+
+            
+          </span>
         
       
     </div>
@@ -876,14 +1473,14 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">175</span>
+              <span class="site-state-item-count">176</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
@@ -974,7 +1571,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

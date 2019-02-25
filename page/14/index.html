@@ -235,6 +235,105 @@
             
               
                 
+                <a class="post-title-link" href="/array-and-slice-in-golang/" itemprop="url">
+                  Golang中array和slice的总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-13T12:34:50+08:00" content="2015-10-13">
+              2015-10-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>golang内置对切片(slice)的支持，但是golang的类型系统对数组(array)的使用并没有动态/脚本语言那么方便，在使用中经常需要使用切片和数组的一些操作。</p>
+<p>首先对于数组要注意数组的数据类型是存储的<strong>元素的类型</strong>加<strong>数组的长度</strong>；也就是说<code>[2]int</code>和<code>[3]int</code>是两种不同的类型。而切片的类型只和<strong>数据的类型</strong>有关。</p>
+<p>声明一个数组和一个切片是不同的。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr [<span class="number">5</span>]<span class="keyword">int</span></span><br><span class="line">arr := [<span class="number">5</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> sli []<span class="keyword">int</span></span><br><span class="line">sli := []<span class="keyword">int</span>&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;</span><br></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/array-and-slice-in-golang/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/build-ss-server-use-free-ec2-instance/" itemprop="url">
                   在免费的Amazon EC2实例上搭建shadowsocks服务器
                 </a>
@@ -295,6 +394,215 @@
               阅读全文 &raquo;
             </a>
           </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/simple-sort-algm-use-golang/" itemprop="url">
+                  使用golang实现简单排序算法及其性能比较
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-11T12:34:50+08:00" content="2015-10-11">
+              2015-10-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>这几天重新看了下三个简答的排序算法：选择排序，插入排序和希尔排序，并使用golang做了一个简单的实现与测试。本科学习算法的时候基础太差，又不认真，现在简单的算法理解起来都很吃力，希尔排序算法看了好久勉强看懂，竟也不是完全理解，用go语言实现以下其实都还是比较简单的,但是由于golang暂时还没有泛型支持，所以只能对int类型切片做一个简单实现了。</p>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><p>选择排序是最简单的排序方法了，实现很简单：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SelectSort</span><span class="params">(arr []<span class="keyword">int</span>)</span> []<span class="title">int</span></span> &#123;</span><br><span class="line">	length := <span class="built_in">len</span>(arr)</span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>; i&lt;length; i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> j := i+<span class="number">1</span>; j&lt;length; j++ &#123;</span><br><span class="line">			<span class="keyword">if</span> arr[j] &lt; arr[i] &#123;</span><br><span class="line">				arr[i], arr[j] = arr[j], arr[i]</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> arr</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>冒泡排序的特点是每次只在i之后的元素做比较和排序<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/simple-sort-algm-use-golang/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/golang-package-usage/" itemprop="url">
+                  Golang中包机制的理解
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-09T12:34:50+08:00" content="2015-10-09">
+              2015-10-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>我们都知道Golang中有package的概念。在go源码文件的第一行就是先声明包名：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br></pre></td></tr></table></figure>
+<p>这里的包名是一个标签，<strong>不是</strong>使用字符串。对于简答的项目可以直接使用main作为包名。</p>
+<p>在go的开发中，我们会把所有的项目放到<code>GOPATH/src</code>目录下；与其他语言的项目不同，go的约定是（当前用户）所有的所有项目都是放到这个目录；所以这里面会有很多的项目。一般约定使用域名作为一级的目录，比如<code>GOPATH/src/github.com</code>这个目录存放所有从github获取的项目。</p>
+<p>golang中的包全名是相对于<code>GOPATH/src/</code>的相对路径加源码文件中的package声明。源码的文件夹目录可以随意组织，可以有多层级目录，比如我打一个项目放在 <code>GOPATH/src/wuxu.bit/example/alg/sort</code>目录下。里面的一个源码文件<code>sort.go</code>如下：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> sort</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Sort</span><span class="params">(a []<span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="comment">// do some sort things</span></span><br><span class="line">	<span class="comment">// fmt.Println(...)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在另外一个项目要使用这个排序方法，假设那个项目目录是<code>GOPATH/src/wuxu/weather/</code>目录下的main.go文件。那么要在main.go中import排序文件的包，这里要用完整的包名</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	sort <span class="string">"wuxu.bit/example/alg/sort"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// can use sort.Sort here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面使用了import包名的别名。</p>
+<p>golang在引入包的时候还有一些tricks：</p>
+<ul>
+<li><code>import . &quot;fmt&quot;</code> 这样在调用fmt包的导出方法时可以省略fmt</li>
+<li><code>import _ &quot;fmt&quot;</code> 这样引入该包但是不引入该包的导出函数，而是为了使用该导入操作的副作用: 调用包里面的init函数</li>
+</ul>
+<p>golang的包机制现在还很简单，尤其还没有官方的包依赖解决方案，希望依赖解决能早日出来。</p>
+
+            
+          </span>
         
       
     </div>
@@ -936,125 +1244,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/update-gitlab-7-14-1/" itemprop="url">
-                  更新gitlab到7.14.1
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-09-04T12:34:50+08:00" content="2015-09-04">
-              2015-09-04
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>去年为实验室部署了gitlab用于项目代码和文档的管理，在hixicar项目中用的比较多，也起到不错的作用，可惜其他项目就没怎么用，基本是我自己在用了，不过也极大方便我自己的项目的管理。。<br>当时安装的最新版本是7.3,作为一个版本帝软件，gitlab的小版本号几乎一直在涨，最近已经涨到了7.14.1了。用的7.3虽然可用，但是有一些小小的问题，当一个项目的文件数特别多，hixi的文件大概到了1G多，后来把文档分离出来后还有500M左右，这样这个项目的Graph画不出来了。虽然没什么太大影响，但是总觉得不爽，一直也没有去解决，最近没什么事就想着升级一下。</p>
-<p>官方提供的升级非常方便，可以直接使用软件仓库安装gitlab-ce替换原来安装的gitlab，会保留原来的数据不丢失。简直碉！堡！了！哇！</p>
-<p>官方的升级文档： <a href="https://about.gitlab.com/upgrade-to-package-repository/" target="_blank" rel="noopener">https://about.gitlab.com/upgrade-to-package-repository/</a></p>
-<h2 id="安装repo"><a href="#安装repo" class="headerlink" title="安装repo"></a>安装repo</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash</span><br></pre></td></tr></table></figure>
-<p>但是我的curl要使用代理，之前使用代理是配置<code>-x</code>参数，但是从网上下载的这个 script.rpm.sh 脚本里面也要用curl去下载文件，这样就会导致运行这个脚本失败。可以设置curl的全局代理，这里有一个小小的trick：使用alias；</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">alias curl=&apos;curl -x proxy_host:port&apos;</span><br></pre></td></tr></table></figure>
-<p>这样使用curl就相当于使用curl的别名（alias）会带上代理设置了。另一个方法就是在$HOME/.curlrc 配置文件中添加代理：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vim ~/.curlrc</span><br><span class="line">// 添加</span><br><span class="line">proxy=proxy_host:port</span><br></pre></td></tr></table></figure>
-<p>这样就可以了。<br>其实使用命令安装repo挺麻烦的，尤其在网络不方便的情况下。可以直接使用下面的文本添加repo到/etc/yum.repo.d/</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[gitlab_gitlab-ce]</span><br><span class="line">name=gitlab_gitlab-ce</span><br><span class="line">baseurl=http://packages.gitlab.com/gitlab/gitlab-ce/el/6/$basearch</span><br><span class="line">repo_gpgcheck=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">enabled=1</span><br><span class="line">gpgkey=https://packages.gitlab.com/gpg.key</span><br><span class="line">sslverify=1</span><br><span class="line">sslcacert=/etc/pki/tls/certs/ca-bundle.crt</span><br><span class="line"></span><br><span class="line">[gitlab_gitlab-ce-source]</span><br><span class="line">name=gitlab_gitlab-ce-source</span><br><span class="line">baseurl=http://packages.gitlab.com/gitlab/gitlab-ce/el/6/SRPMS</span><br><span class="line">repo_gpgcheck=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">enabled=1</span><br><span class="line">gpgkey=https://packages.gitlab.com/gpg.key</span><br></pre></td></tr></table></figure>
-<p>上面是对应centos 6的，7的话自己相应修改就可以了。其中的http协议也可以改成https。</p>
-<h2 id="安装gitlab-ce"><a href="#安装gitlab-ce" class="headerlink" title="安装gitlab-ce"></a>安装gitlab-ce</h2><p>gitlab提供的开源免费版本命名是gitlab-ce了，包名也成了gitlab-ce，安装好repo后，网络比较好的话，可以直接运行安装:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo yum install gitlab-ce</span><br></pre></td></tr></table></figure>
-<p>仔细看输出会看到gitlan-ce会替换原来的gitlab。因为gitlab的安装路径固定在/opt/gitlab/, 所以替换安装也比较方便吧。反正觉得真的挺方便的，原来的repositories都还在。</p>
-<p>但是，gitlab-ce这个包有200多MB，使用yum安装下载数据要300多M。我试着下了好久都没有下载下来，只好在本地windows用浏览器下载了（本机翻墙速度比较好，500-1000Kb/s），再scp到服务器。</p>
-<p>rpm下载地址： <a href="https://packages.gitlab.com/gitlab/gitlab-ce?filter=rpms" target="_blank" rel="noopener">https://packages.gitlab.com/gitlab/gitlab-ce?filter=rpms</a></p>
-<p>scp到服务器,可以使用git客户端提供就有的scp工具，启动git bash，运行 <code>scp gitlab-ce-7.14.1-ce.0.el6.x86_64.rpm username@host:gitlab-ce-7.14.1-ce.0.el6.x86_64.rpm</code></p>
-<p>在服务器端使用rpm安装</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span></span><br><span class="line">sudo yum localinstall gitlab-ce-7.14.1-ce.0.el6.x86_64.rpm</span><br></pre></td></tr></table></figure>
-<p>使用rpm包本地安装也会替换安装原来的gitlab，简直不错。<br>要注意，虽然git仓库相关的数据不会被删除，但如果你修改多gitlab的rails项目，比如我修改过登陆页面的内容，这些修改会被覆盖掉。如果要保留这些数据要记得做备份。而gitlab的配置文件， /etc/gitlab/gitlab.rb 应该是不会被覆盖的。</p>
-<p>安装完后，gitlab会自动 reconfigure 并启动，如果有问题就需要自己看输出内容排查了。比如我们使用学校的smtp服务器发送邮件，修改了gitlab配置的smtp配置，而又在/etc/gitlab/gitlab.rb 中配置了邮件相关的项，导致新的系统 reconfigure 失败，把两处的配置修改到相同就可以正常启动了。<a href="http://stackoverflow.com/questions/26684035/gitlab-smtp-config-exception" target="_blank" rel="noopener">参考</a></p>
-<p>新的gitlab添加了很多新的特性，更多的配置项，甚至还有多套主题。。。还不错。</p>
-<p>加张图</p>
-<p><img src="http://wuxu92.github.io/images/blog-article-images/blog/gitlab7.14.png" alt=""></p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1101,14 +1290,14 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">175</span>
+              <span class="site-state-item-count">176</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
@@ -1199,7 +1388,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>
