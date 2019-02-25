@@ -118,7 +118,7 @@
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
-  <p class="site-subtitle">关注C、Go、C++、JavaScript和UX</p>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和Rust</p>
 </div>
 
 <div class="site-nav-toggle">
@@ -206,11 +206,6 @@
     
 
     
-    
-      
-      
-
-      
     
 
     
@@ -462,6 +457,108 @@
             
               
                 
+                <a class="post-title-link" href="/go-iota-spc/" itemprop="url">
+                  Golang 中iota的用法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
+              2015-07-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>Golang中可以使用iota方便的定义复杂的常量结构，下面是golang spec中的说明</p>
+<p>Within a constant declaration, the predeclared identifier iota represents successive untyped integer constants. It is reset to 0 whenever the reserved word const appears in the source and increments after each ConstSpec. It can be used to construct a set of related constants:</p>
+<h2 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (  // iota is reset to 0</span><br><span class="line">	c0 = iota  // c0 == 0</span><br><span class="line">	c1 = iota  // c1 == 1</span><br><span class="line">	c2 = iota  // c2 == 2</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	a = 1 &lt;&lt; iota  // a == 1 (iota has been reset)</span><br><span class="line">	b = 1 &lt;&lt; iota  // b == 2</span><br><span class="line">	c = 1 &lt;&lt; iota  // c == 4</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	u         = iota * 42  // u == 0     (untyped integer constant)</span><br><span class="line">	v float64 = iota * 42  // v == 42.0  (float64 constant)</span><br><span class="line">	w         = iota * 42  // w == 84    (untyped integer constant)</span><br><span class="line">)</span><br><span class="line">``</span><br><span class="line">const x = iota  // x == 0 (iota has been reset)</span><br><span class="line">const y = iota  // y == 0 (iota has been reset)</span><br></pre></td></tr></table></figure>
+<p>Within an ExpressionList, the value of each iota is the same because it is only incremented after each ConstSpec:</p>
+<h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (</span><br><span class="line">	bit0, mask0 = 1 &lt;&lt; iota, 1&lt;&lt;iota - 1  // bit0 == 1, mask0 == 0</span><br><span class="line">	bit1, mask1                           // bit1 == 2, mask1 == 1</span><br><span class="line">	_, _                                  // skips iota == 2</span><br><span class="line">	bit3, mask3                           // bit3 == 8, mask3 == 7</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>This last example exploits the implicit repetition of the last non-empty expression list.</p>
+<p>iota是一个比较有特色的东西，看完这两个例子基本就知道怎么用了，相当于它是一个从0开始自动增加的变量，可以重复使用，可以用来定义单位的大小，比如KB，MB，GB等</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/vim-commands/" itemprop="url">
                   vim 常用的命令模式
                 </a>
@@ -530,108 +627,6 @@
 <h2 id="打开及保存文件"><a href="#打开及保存文件" class="headerlink" title="打开及保存文件"></a>打开及保存文件</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:edit full/path/name</span><br><span class="line">:edit %:h&lt;tab&gt;filename 	使用缓冲区文件的完整路径打开文件, :h去掉当前文件名，tab键补全</span><br><span class="line">:edit path 打开文件管理窗口</span><br><span class="line">:find filename 在path下查找文件</span><br><span class="line">: set path+=/path/to/workspace  将工作区添加到vim的path中用于寻找</span><br><span class="line">:e 是 :edit的缩写</span><br><span class="line">:Explore :E 打开当前的目录管理器</span><br><span class="line">:Sexplore  explore的切分</span><br><span class="line">:Vexplore</span><br></pre></td></tr></table></figure>
 <p><strong>文件操作</strong></p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:!mkdir -p %:h    前缓冲区创建目录，然后在:w，解决某些不能保存的问题</span><br><span class="line">:w !sudo tee % &gt; /dev/null 由于保存用非sudo打开的无权限文件的保存</span><br></pre></td></tr></table></figure>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/go-iota-spc/" itemprop="url">
-                  Golang 中iota的用法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
-              2015-07-18
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>Golang中可以使用iota方便的定义复杂的常量结构，下面是golang spec中的说明</p>
-<p>Within a constant declaration, the predeclared identifier iota represents successive untyped integer constants. It is reset to 0 whenever the reserved word const appears in the source and increments after each ConstSpec. It can be used to construct a set of related constants:</p>
-<h2 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (  // iota is reset to 0</span><br><span class="line">	c0 = iota  // c0 == 0</span><br><span class="line">	c1 = iota  // c1 == 1</span><br><span class="line">	c2 = iota  // c2 == 2</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	a = 1 &lt;&lt; iota  // a == 1 (iota has been reset)</span><br><span class="line">	b = 1 &lt;&lt; iota  // b == 2</span><br><span class="line">	c = 1 &lt;&lt; iota  // c == 4</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	u         = iota * 42  // u == 0     (untyped integer constant)</span><br><span class="line">	v float64 = iota * 42  // v == 42.0  (float64 constant)</span><br><span class="line">	w         = iota * 42  // w == 84    (untyped integer constant)</span><br><span class="line">)</span><br><span class="line">``</span><br><span class="line">const x = iota  // x == 0 (iota has been reset)</span><br><span class="line">const y = iota  // y == 0 (iota has been reset)</span><br></pre></td></tr></table></figure>
-<p>Within an ExpressionList, the value of each iota is the same because it is only incremented after each ConstSpec:</p>
-<h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (</span><br><span class="line">	bit0, mask0 = 1 &lt;&lt; iota, 1&lt;&lt;iota - 1  // bit0 == 1, mask0 == 0</span><br><span class="line">	bit1, mask1                           // bit1 == 2, mask1 == 1</span><br><span class="line">	_, _                                  // skips iota == 2</span><br><span class="line">	bit3, mask3                           // bit3 == 8, mask3 == 7</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>This last example exploits the implicit repetition of the last non-empty expression list.</p>
-<p>iota是一个比较有特色的东西，看完这两个例子基本就知道怎么用了，相当于它是一个从0开始自动增加的变量，可以重复使用，可以用来定义单位的大小，比如KB，MB，GB等</p>
 
             
           </span>
