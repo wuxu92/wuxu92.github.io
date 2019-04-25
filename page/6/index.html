@@ -230,6 +230,106 @@
             
               
                 
+                <a class="post-title-link" href="/chrome-using-es6/" itemprop="url">
+                  chrome开启ECMAScript6 支持
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-02-15T13:22:39+08:00" content="2016-02-15">
+              2016-02-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/tools/" itemprop="url" rel="index">
+                    <span itemprop="name">tools</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>chrome已经支持了一些ES6的特性，但是默认没有打开，访问 <a href="chrome://flags/#enable-javascript-harmony" target="_blank" rel="noopener">chrome://flags/#enable-javascript-harmony</a>,选择 enable这个选项，重启Chrome就可以活的Chrome对ES6的支持，就可以直接在控制台编写并运行ES6特性的代码。<br>也可以安装 <a href="https://chrome.google.com/webstore/detail/scratch-js/alploljligeomonipppgaahpkenfnfkn" target="_blank" rel="noopener">ScratchJS</a> 这个插件</p>
+<p>参考: </p>
+<ul>
+<li><a href="http://stackoverflow.com/questions/24008366/using-ecmascript-6" target="_blank" rel="noopener">http://stackoverflow.com/questions/24008366/using-ecmascript-6</a></li>
+</ul>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/snp-mongo-design-faults/" itemprop="url">
                   snp中MongoDB设计失误
                 </a>
@@ -1183,123 +1283,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/apue-signals/" itemprop="url">
-                  APUE：信号
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-13T14:43:12+08:00" content="2016-01-13">
-              2016-01-13
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Programming</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Programming/c/" itemprop="url" rel="index">
-                    <span itemprop="name">c</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>信号是软件中断，是比较底层的机制，这样一章断断续续看完了，但是很多地方都没有理解好。</p>
-<p>信号提供了一种处理异步事件的方法，例如中断用户键入中断，会通过信号机制停止一个程序，或及早终止管道的下一个程序。信号机制在Unix的早起版本就提供了，不过早期的信号机制并不可靠，后来信号模型做了更改，增加了可靠信号机制（4.3 BSD、SVR3），POSIX.1对可靠信息号进行了标准化，现在的信号都基于这一标准。</p>
-<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>信号都有一个名字，信号的名字都是以 SIG 三个字符开头，信号在<code>&lt;signal.h&gt;</code>中定义为<strong>正整数</strong>常量（不同的系统可能定义在另外的头文件，不过那些头文件肯定会被 signal.h 包含），当然我们并不要去关心具体的定义是什么。</p>
-<p>有多种方法向进程发送信号：</p>
-<ol>
-<li>中断按键，常见 <code>Ctrl+C</code> 发送中断信号（SIGINT）</li>
-<li>硬件异常产生信号，这是硬件检测到发送给内核的，如除数为0，无效的内存引用等</li>
-<li>进程调用 <code>kill</code> 函数可以将<strong>任意信号</strong>发送给进程/进程组，前提是接收信号的进程和发送信号进程所有者相同。</li>
-<li>用户在终端调用 <code>kill</code> 命令将信号发送给指定进程，常用来结束一个失控的后台进程， <code>kill -9 pid</code></li>
-<li>当系统检测到某种<strong>软件条件</strong>已经发生，并应将其通知有关进程时也产生信号。
-          <div class="post-more-link text-center">
-            <a class="btn" href="/apue-signals/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1346,21 +1329,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-count">177</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">147</span>
+              <span class="site-state-item-count">148</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

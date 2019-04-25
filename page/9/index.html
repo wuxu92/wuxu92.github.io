@@ -230,6 +230,113 @@
             
               
                 
+                <a class="post-title-link" href="/git-bash-with-chinese-characters/" itemprop="url">
+                  Git Bash配置中文文件名、代理等
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-18T12:34:50+08:00" content="2015-12-18">
+              2015-12-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/tools/" itemprop="url" rel="index">
+                    <span itemprop="name">tools</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p><img src="/images/post/git.jpg" alt=""></p>
+<p>Git默认的配置会将中文文件名显示为一堆数字（quote值），之前用也觉得没什么，文件管理的比较粗糙，乱码对应哪个文件都能猜出来，今天偶然看到这个配置，就水一篇好了。</p>
+<p>其实只需要添加一个配置就可以了，</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git config --global core.quotepath false</span><br></pre></td></tr></table></figure>
+<p>core.quotepath设为false的话，就不会对0×80以上的字符进行quote。中文显示正常。</p>
+<p>水是水了点，确实还是有用的，尤其是对中文用户。</p>
+<p>另外加一个配置Git自动管理Linux 和 Windows 的换行差别：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git config --global core.autocrlf true</span><br></pre></td></tr></table></figure>
+<p>这个配置在安装git windows 时是可以配置的，如果忘了配置可以用这个命令配置。</p>
+<p>还可以配置下面的选项让git提交文件时不把换行符 warning 回显出来：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git config --global core.safecrlf false</span><br></pre></td></tr></table></figure>
+<p><strong>设置socks5代理</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git config --global http.proxy &apos;socks5://127.0.0.1:1080&apos;</span><br><span class="line">git config --global https.proxy &apos;socks5://127.0.0.1:1080&apos;</span><br></pre></td></tr></table></figure>
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/intro-of-cloudsim/" itemprop="url">
                   Cloudsim 云计算仿真系统介绍
                 </a>
@@ -653,114 +760,6 @@
             
               
                 
-                <a class="post-title-link" href="/linux-shortcuts-and-commands/" itemprop="url">
-                  Linux Shortcuts And Commands
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-12T12:34:50+08:00" content="2015-12-12">
-              2015-12-12
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p><img src="/images/linux-logo.png" alt=""></p>
-<p>来源： <a href="http://www.unixguide.net/linux/linuxshortcuts.shtml" target="_blank" rel="noopener">http://www.unixguide.net/Linux/linuxshortcuts.shtml</a> 个人觉得非常好的一个Linux入门资料。待我慢慢翻译整理出来。</p>
-<blockquote>
-<p>前面的部分很值得看看，后面的很多管理工具都已经过时了，看不看影响不大了。</p>
-</blockquote>
-<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>This is a practical selection of the commands we use most often. Press <tab> to see the listing of all available command (on your PATH). On my small home system, it says there are 2595 executables on my PATH.  Many of these “commands” can be accessed from your favourite GUI front-end (probably KDE or Gnome) by clicking on the right menu or button. They can all be run from the command line.  Programs that require GUI have to be run from a terminal opened under a GUI.</tab></p>
-<p>图例: </p>
-<ul>
-<li><code>&lt;&gt;</code> = 键盘上的单个特殊按键或者功能键. 比如用 <ctrl> 表示 “control” 键. </ctrl></li>
-<li><em>italic</em> = 斜体字用于文件名，或者需要你自己替换的变量. </li>
-<li>fixed width = 等宽字体表示Linux命令和文件.</li>
-</ul>
-<p>对Unix新手的提示:<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/linux-shortcuts-and-commands/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/c-bits/" itemprop="url">
                   位运算
                 </a>
@@ -851,6 +850,114 @@
 
             
           </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/linux-shortcuts-and-commands/" itemprop="url">
+                  Linux Shortcuts And Commands
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-12T12:34:50+08:00" content="2015-12-12">
+              2015-12-12
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><img src="/images/linux-logo.png" alt=""></p>
+<p>来源： <a href="http://www.unixguide.net/linux/linuxshortcuts.shtml" target="_blank" rel="noopener">http://www.unixguide.net/Linux/linuxshortcuts.shtml</a> 个人觉得非常好的一个Linux入门资料。待我慢慢翻译整理出来。</p>
+<blockquote>
+<p>前面的部分很值得看看，后面的很多管理工具都已经过时了，看不看影响不大了。</p>
+</blockquote>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>This is a practical selection of the commands we use most often. Press <tab> to see the listing of all available command (on your PATH). On my small home system, it says there are 2595 executables on my PATH.  Many of these “commands” can be accessed from your favourite GUI front-end (probably KDE or Gnome) by clicking on the right menu or button. They can all be run from the command line.  Programs that require GUI have to be run from a terminal opened under a GUI.</tab></p>
+<p>图例: </p>
+<ul>
+<li><code>&lt;&gt;</code> = 键盘上的单个特殊按键或者功能键. 比如用 <ctrl> 表示 “control” 键. </ctrl></li>
+<li><em>italic</em> = 斜体字用于文件名，或者需要你自己替换的变量. </li>
+<li>fixed width = 等宽字体表示Linux命令和文件.</li>
+</ul>
+<p>对Unix新手的提示:<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/linux-shortcuts-and-commands/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -1219,120 +1326,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/using-pointer-as-parameter/" itemprop="url">
-                  C中使用指针作为参数的一些问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-08T12:34:50+08:00" content="2015-12-08">
-              2015-12-08
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>这个问题其实比较常见了，但是经常会出错，就是C中函数的参数是值传递的，即使对于指针，也是值传递。很多高级语言在这一点是相通的。</p>
-<p>今天看到这个问题是在 c-fqa.com 上的一个问题，看下面的代码：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int *ip) &#123;</span><br><span class="line">	static int dummy = 5;	// static make dummy accessiable for whole file</span><br><span class="line">	ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int *ip;</span><br><span class="line">f(ip);</span><br></pre></td></tr></table></figure>
-<p>这时候ip指向哪里呢？实际上ip可能指向任何地址。因为ip没有初始化，传递给f函数调用的参数只是指针值的<strong>拷贝</strong>，对拷贝的修改并不会改变 ip 本身的内容。要达到本来的目的，需要传入 ip的地址，也就是指针的指针作为参数：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void f(int **ipp) &#123;</span><br><span class="line">	static int dummy = 5;	// if no static here, then ip can be anywhere, *ip can be any value</span><br><span class="line">	*ip = &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int  *ip;</span><br><span class="line">f(&amp;ip);</span><br></pre></td></tr></table></figure>
-<p>另一种方法是把结果的指针作为函数的返回值，这是更常用的方式：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int *f() &#123;</span><br><span class="line">	static int dummy = 5;</span><br><span class="line">	return &amp;dummy;</span><br><span class="line">&#125;</span><br><span class="line">int *ip = f();</span><br></pre></td></tr></table></figure>
-<p>另一个例子是，定制一个 malloc 的自己的版本：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void mymalloc(void *retp, size_t size) &#123;</span><br><span class="line">	retp = malloc(size);</span><br><span class="line">	if (retp == NULL) &#123;</span><br><span class="line">		fprintf(stderr, &quot;out of memory\n&quot;);</span><br><span class="line">		exit(EXIT_FAILURE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>看起来没有什么问题，但是在调用这个函数时并不能正常工作，因为被调用函数接受的指针是调用者传入的指针的拷贝。</p>
-<blockquote>
-<p>C always uses pass by value. You can simulate pass by reference yourself, by defining functions which accept pointers and then using the &amp; operator when calling, and the compiler will essentially simulate it for you when you pass an array to a function </p>
-</blockquote>
-<p>这些内容在Java和Go中也是通用的，指针作为参数实际上也是值传递的哦。</p>
-<p>参考：</p>
-<ul>
-<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passptrinit.html</a></li>
-<li><a href="http://c-faq.com/ptrs/passbyref.html" target="_blank" rel="noopener">http://c-faq.com/ptrs/passbyref.html</a></li>
-</ul>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1379,21 +1372,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-count">177</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">147</span>
+              <span class="site-state-item-count">148</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

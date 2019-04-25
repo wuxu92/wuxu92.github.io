@@ -230,6 +230,106 @@
             
               
                 
+                <a class="post-title-link" href="/things-about-framework-folder-organization/" itemprop="url">
+                  Web框架（PHP）文件组织的一些问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-04-27T21:30:20+08:00" content="2016-04-27">
+              2016-04-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>PHP有很多的web的框架，熟悉基本的PHP开发后再看一两个框架的核心，一般都能搞一个PHP框架出来。一些框架提供的源文件组织方式是一个很好的学习示例，但是很多小团队开发的框架却经常组织混乱，隐藏了很大的问题。</p>
+<p>最近Carry（音）又在做一个项目，让我过去帮帮忙，用的是他自己的“框架”，看起来他对于自己的作品还很有信心和自豪感，但是这两天接触了一下，发现问题很大，这里记录分析一下。</p>
+<p>这个框架使用了命名空间，这是很好的，在之前的文章中也推荐了这种做法，希望所有的PHP开发者都能使用命名空间，不管了PSR-0还是PSR-4的。而这个虽然使用了命名空间，命名空间的组织却混乱不堪，好像既不符合PSR-0又不符合PSR-4。。。。。这就尴尬了。</p>
+<p>当然，我对于这个框架并不是完全熟悉，可能一些有点还没有发现，但是对于文件夹的组织却问题极大，它的文件夹组成大概是这个样子的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">|-assets</span><br><span class="line">  |-js</span><br><span class="line">  |-css</span><br><span class="line">  |-img</span><br><span class="line">|-boots</span><br><span class="line">|-lib</span><br><span class="line">|-config</span><br><span class="line">|-entity</span><br><span class="line">|-ksc</span><br><span class="line">  |-module-1</span><br><span class="line">    |-part1.1</span><br><span class="line">      |-***.php</span><br><span class="line">  |-module-2</span><br><span class="line">    |-part2.1</span><br><span class="line">      |-***.php</span><br><span class="line">|-tmp</span><br><span class="line">  |-cache</span><br><span class="line">  |-...</span><br><span class="line">|-tpl</span><br><span class="line">  |-module-1</span><br><span class="line">    |-part1.1</span><br><span class="line">      |-***.tpl</span><br><span class="line">  |-module-2</span><br><span class="line">    |-part2.1</span><br><span class="line">      |-***.tpl</span><br><span class="line">|-module-1</span><br><span class="line">|-module-2</span><br></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/things-about-framework-folder-organization/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/spring-mvc-start/" itemprop="url">
                   Spring MVC 起步
                 </a>
@@ -1110,103 +1210,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/jp-lesson-2-1/" itemprop="url">
-                  大家的日语第二课
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-03-12T21:24:28+08:00" content="2016-03-12">
-              2016-03-12
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/日语学习/" itemprop="url" rel="index">
-                    <span itemprop="name">日语学习</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>第　２　課</p>
-<h2 id="単-語「たんご」"><a href="#単-語「たんご」" class="headerlink" title="単 語「たんご」"></a>単 語「たんご」</h2><p>これ： 这个，指离说话人近，听话人远<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/jp-lesson-2-1/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1253,21 +1256,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-count">177</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">147</span>
+              <span class="site-state-item-count">148</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

@@ -230,6 +230,105 @@
             
               
                 
+                <a class="post-title-link" href="/prometheus-alert-things/" itemprop="url">
+                  Prometheus 配置webhook告警
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2019-04-25T14:46:50+08:00" content="2019-04-25">
+              2019-04-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/monitor/" itemprop="url" rel="index">
+                    <span itemprop="name">monitor</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>最近有一个需求是用户需要对实例进行告警，之前使用grafana配置的邮件告警，问题是邮件系统对外部用户的送达不太可靠，经常收不到告警，于是考虑使用prometheus提供的alert manager功能，通过webhook来调用自己的邮件与短信接口实现告警。</p>
+<h2 id="安装与运行"><a href="#安装与运行" class="headerlink" title="安装与运行"></a>安装与运行</h2><p><a href="https://github.com/prometheus/alertmanager" target="_blank" rel="noopener">alertmanager</a> 是prometheus提供的二进制，直接<a href="https://prometheus.io/download/" target="_blank" rel="noopener">下载</a>， 解压运行就可以了。可以对其进行一些配置，主要配置一个webhook的地址。一个webhook 的配置如下：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line"><span class="attr">  resolve_timeout:</span> <span class="number">5</span><span class="string">m</span></span><br><span class="line"></span><br><span class="line"><span class="attr">route:</span></span><br><span class="line"><span class="attr">  group_by:</span> <span class="string">['alertname']</span></span><br><span class="line"><span class="attr">  group_wait:</span> <span class="number">10</span><span class="string">s</span></span><br><span class="line"><span class="attr">  group_interval:</span> <span class="number">10</span><span class="string">s</span></span><br><span class="line"><span class="attr">  repeat_interval:</span> <span class="number">10</span><span class="string">m</span></span><br><span class="line"><span class="attr">  receiver:</span> <span class="string">'webhook'</span></span><br><span class="line"><span class="attr">receivers:</span></span><br><span class="line"><span class="attr">- name:</span> <span class="string">'webhook'</span></span><br><span class="line"><span class="attr">  webhook_configs:</span></span><br><span class="line"><span class="attr">  - url:</span> <span class="string">'http://127.0.0.1:18080/api/webhooks/prometheus'</span></span><br><span class="line"><span class="attr">    send_resolved:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>直接指定配置文件启动 <code>/data/alertmanager/alertmanager --web.listen-address=&quot;:9093&quot; --cluster.listen-address=&quot;0.0.0.0:9094&quot;</code>。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/prometheus-alert-things/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2018/" itemprop="url">
                   生活，结婚和其他，2018
                 </a>
@@ -1196,107 +1295,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/convert-all-gbk-files-to-utf8-md/" itemprop="url">
-                  Conver all GBK files to UTF8
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2017-10-21T22:50:36+08:00" content="2017-10-21">
-              2017-10-21
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p><em>水一篇水一篇，要不要发霉了</em><br>平时的整轨音乐文件作者在发布的时候使用的播放列表文件（cue/m3u/m3u8）大部分都是 BGK编码的，在qmmp播放时不能正确识别GBK编码的文件，之前都是用vscode一个个复制转码保存，今天处理歌神的一个合集时发现文件实在太多了，就想着用bash处理以下，发现非常简单的一个命令就能搞定了：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">while read -r f; do echo &quot;Processing $f...&quot;; iconv -f GBK -t utf8 -o &quot;$&#123;f%%cue&#125;utf8.cue&quot;  $f; done &lt;&lt;&lt; $(find ./ -name &apos;*.cue&apos;);</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
-<p>就是用iconv命令进行转码，上面的命令可以将当前目录下的所有 .cue 文件从 BGK 转码为 UTF8 并保存为一个带 .utf8.cue 的同目录下的文件，这样使用起来就很方便了。</p>
-<p>虽然很简单也很水，但很好用啊。。。。</p>
-<p>再附一个处理所有的的详细版(要排除了一些之前手动处理过的文件)：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#! /bin/bash</span><br><span class="line"></span><br><span class="line"># mydir=$(readlink -e `dirname $0`)</span><br><span class="line">skip_count=0</span><br><span class="line">work_count=0</span><br><span class="line"></span><br><span class="line">while read -r f; do</span><br><span class="line">    if [[ -n `echo &quot;$f&quot; | grep utf8` || -f &quot;$&#123;f%%cue&#125;utf8.cue&quot; || -f &quot;$&#123;f%%.cue&#125; utf8.cue&quot; ]]; then</span><br><span class="line">        echo &quot;skiping $f&quot;</span><br><span class="line">        skip_count=$((skip_count+1))</span><br><span class="line">        continue</span><br><span class="line">    fi</span><br><span class="line"></span><br><span class="line">    echo &quot;Processing $f...&quot;</span><br><span class="line">    iconv -f GBK -t utf8 -o &quot;$&#123;f%%cue&#125;utf8.cue&quot; &quot;$f&quot;</span><br><span class="line">    work_count=$((work_count+1))</span><br><span class="line">done &lt; &lt;(find ./ -name &apos;*.cue&apos;)</span><br><span class="line"></span><br><span class="line">echo &quot;done: skipped: $skip_count, Processed: $work_count.&quot;</span><br></pre></td></tr></table></figure>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1343,21 +1341,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-count">177</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">147</span>
+              <span class="site-state-item-count">148</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

@@ -1,0 +1,729 @@
+<!doctype html>
+<html class="theme-next ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="h7BaHlqi6VjlciSt0RF-KHgIXZcGfx3L3gyQ9qfx_ek" />
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="monitor," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="最近有一个需求是用户需要对实例进行告警，之前使用grafana配置的邮件告警，问题是邮件系统对外部用户的送达不太可靠，经常收不到告警，于是考虑使用prometheus提供的alert manager功能，通过webhook来调用自己的邮件与短信接口实现告警。 安装与运行alertmanager 是prometheus提供的二进制，直接下载， 解压运行就可以了。可以对其进行一些配置，主要配置一个we">
+<meta name="keywords" content="monitor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Prometheus 配置webhook告警">
+<meta property="og:url" content="http://blog.wuxu92.com/prometheus-alert-things/index.html">
+<meta property="og:site_name" content="Wu Xu">
+<meta property="og:description" content="最近有一个需求是用户需要对实例进行告警，之前使用grafana配置的邮件告警，问题是邮件系统对外部用户的送达不太可靠，经常收不到告警，于是考虑使用prometheus提供的alert manager功能，通过webhook来调用自己的邮件与短信接口实现告警。 安装与运行alertmanager 是prometheus提供的二进制，直接下载， 解压运行就可以了。可以对其进行一些配置，主要配置一个we">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-04-25T07:37:34.597Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Prometheus 配置webhook告警">
+<meta name="twitter:description" content="最近有一个需求是用户需要对实例进行告警，之前使用grafana配置的邮件告警，问题是邮件系统对外部用户的送达不太可靠，经常收不到告警，于是考虑使用prometheus提供的alert manager功能，通过webhook来调用自己的邮件与短信接口实现告警。 安装与运行alertmanager 是prometheus提供的二进制，直接下载， 解压运行就可以了。可以对其进行一些配置，主要配置一个we">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'hide',
+    motion: false
+  };
+</script>
+
+  <title> Prometheus 配置webhook告警 | Wu Xu </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-72131273-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+    <div class="bottomband"></div> <!-- add by wuxu -->
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Wu Xu</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">关注C、Go、C++、JavaScript和Rust</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Prometheus 配置webhook告警
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2019-04-25T14:46:50+08:00" content="2019-04-25">
+              2019-04-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/monitor/" itemprop="url" rel="index">
+                    <span itemprop="name">monitor</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>最近有一个需求是用户需要对实例进行告警，之前使用grafana配置的邮件告警，问题是邮件系统对外部用户的送达不太可靠，经常收不到告警，于是考虑使用prometheus提供的alert manager功能，通过webhook来调用自己的邮件与短信接口实现告警。</p>
+<h2 id="安装与运行"><a href="#安装与运行" class="headerlink" title="安装与运行"></a>安装与运行</h2><p><a href="https://github.com/prometheus/alertmanager" target="_blank" rel="noopener">alertmanager</a> 是prometheus提供的二进制，直接<a href="https://prometheus.io/download/" target="_blank" rel="noopener">下载</a>， 解压运行就可以了。可以对其进行一些配置，主要配置一个webhook的地址。一个webhook 的配置如下：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line"><span class="attr">  resolve_timeout:</span> <span class="number">5</span><span class="string">m</span></span><br><span class="line"></span><br><span class="line"><span class="attr">route:</span></span><br><span class="line"><span class="attr">  group_by:</span> <span class="string">['alertname']</span></span><br><span class="line"><span class="attr">  group_wait:</span> <span class="number">10</span><span class="string">s</span></span><br><span class="line"><span class="attr">  group_interval:</span> <span class="number">10</span><span class="string">s</span></span><br><span class="line"><span class="attr">  repeat_interval:</span> <span class="number">10</span><span class="string">m</span></span><br><span class="line"><span class="attr">  receiver:</span> <span class="string">'webhook'</span></span><br><span class="line"><span class="attr">receivers:</span></span><br><span class="line"><span class="attr">- name:</span> <span class="string">'webhook'</span></span><br><span class="line"><span class="attr">  webhook_configs:</span></span><br><span class="line"><span class="attr">  - url:</span> <span class="string">'http://127.0.0.1:18080/api/webhooks/prometheus'</span></span><br><span class="line"><span class="attr">    send_resolved:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>直接指定配置文件启动 <code>/data/alertmanager/alertmanager --web.listen-address=&quot;:9093&quot; --cluster.listen-address=&quot;0.0.0.0:9094&quot;</code>。<br><a id="more"></a><br>这里的webhook url在后面会实现一个。</p>
+<p>也可以使用cluster 模式启动，在启动命令后面提供一个或者多个 <code>--cluster.peer=&#39;ip2:9094&#39;</code> 即可，以集群模式运行需要一个额外的监听端口。</p>
+<h2 id="配置prometheus的alert"><a href="#配置prometheus的alert" class="headerlink" title="配置prometheus的alert"></a>配置prometheus的alert</h2><p>在prometheus需要配置两个地方，一个是alerting：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">alerting:</span></span><br><span class="line"><span class="attr">  alertmanagers:</span></span><br><span class="line"><span class="attr">  - static_configs:</span></span><br><span class="line"><span class="attr">    - targets:</span></span><br><span class="line"><span class="attr">      - alertmanager:</span><span class="number">9093</span></span><br><span class="line"><span class="attr">rule_files:</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">"prometheus.rules.yml"</span></span><br></pre></td></tr></table></figure>
+<p>然后在 <code>prometheus.rules.yml</code> 里面编写告警规则，官网提供的模板比较简单，比如我们的一个告警规则如下：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="string">&#123;%</span> <span class="string">raw</span> <span class="string">%&#125;</span></span><br><span class="line"><span class="attr">groups:</span></span><br><span class="line"><span class="attr">    - name:</span> <span class="string">prometheus</span></span><br><span class="line"><span class="attr">      rules:</span></span><br><span class="line"><span class="attr">          - alert:</span> <span class="string">Server</span> <span class="string">Up</span></span><br><span class="line"><span class="attr">            expr:</span> <span class="string">mysql_up</span> <span class="string">*</span> <span class="string">on</span> <span class="string">(instance,</span> <span class="string">job)</span> <span class="string">group_left(db_id,</span> <span class="string">db_ip,</span> <span class="string">db_name)</span> <span class="string">db_info</span> <span class="string">==</span> <span class="number">0</span></span><br><span class="line"><span class="attr">            for:</span> <span class="number">1</span><span class="string">m</span></span><br><span class="line"><span class="attr">            labels:</span></span><br><span class="line"><span class="attr">                serverity:</span> <span class="string">critical</span></span><br><span class="line"><span class="attr">            annotations:</span></span><br><span class="line"><span class="attr">                summary:</span> <span class="string">"实例 &lt;b&gt;<span class="template-variable">&#123;&#123; $labels.db_name &#125;&#125;</span> - <span class="template-variable">&#123;&#123; $labels.db_ip &#125;&#125;</span> - <span class="template-variable">&#123;&#123; $labels.db_id &#125;&#125;</span> &lt;/b&gt; 未运行"</span></span><br><span class="line"><span class="attr">                description:</span> <span class="string">""</span></span><br><span class="line"><span class="string">&#123;%</span> <span class="string">endraw</span> <span class="string">%&#125;</span></span><br></pre></td></tr></table></figure>
+<p>我们的exporter改造过提供一个特殊的metric叫 <code>db_info</code> 提供这个DB的信息，想要在告警信息中提供实例的信息就需要从这个metric抽出label，一开时对prometheus的表达式不太熟悉，后来发现使用 group_left 的label会自动在alert的 labels中提供，这样可以在webhook中使用了。</p>
+
+还有一个比较复杂的方法是使用go template编写信息，上面的信息可以用一个类似于 `{{ with $info := printf "db_info{instance='%s', job='%s'}" .Labels.instance .Labels.job | query | first}}{{$info | label "db_id" }} - {{$info | label "db_ip" }}{{end}}` 的方式记录到summary中。
+
+<h2 id="编写一个-webhook"><a href="#编写一个-webhook" class="headerlink" title="编写一个 webhook"></a>编写一个 webhook</h2><p>通过上面的配置，prometheus在触发alert rule的时候会把一个告警推送到alertmanager，alertmanager则会将告警做一些处理后根据配置发送到receiver，我们这里的receiver就是一个webhook，下面用go编写一个web服务处理告警,可以参考[这里的实现】(<a href="https://github.com/bakins/alertmanager-webhook-example)，首先要定义alert的信息，这些可以使用" target="_blank" rel="noopener">https://github.com/bakins/alertmanager-webhook-example)，首先要定义alert的信息，这些可以使用</a> <a href="https://godoc.org/github.com/prometheus/alertmanager/template" target="_blank" rel="noopener">GoDoc</a> 提供的文档和包 ：</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> (</span><br><span class="line">    <span class="comment">// HookMessage is the message we receive from Alertmanager</span></span><br><span class="line">    HookMessage <span class="keyword">struct</span> &#123;</span><br><span class="line">        Version           <span class="keyword">string</span>            <span class="string">`json:"version"`</span></span><br><span class="line">        GroupKey          <span class="keyword">string</span>            <span class="string">`json:"groupKey"`</span></span><br><span class="line">        Status            <span class="keyword">string</span>            <span class="string">`json:"status"`</span></span><br><span class="line">        Receiver          <span class="keyword">string</span>            <span class="string">`json:"receiver"`</span></span><br><span class="line">        GroupLabels       <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span> <span class="string">`json:"groupLabels"`</span></span><br><span class="line">        CommonLabels      <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span> <span class="string">`json:"commonLabels"`</span></span><br><span class="line">        CommonAnnotations <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span> <span class="string">`json:"commonAnnotations"`</span></span><br><span class="line">        ExternalURL       <span class="keyword">string</span>            <span class="string">`json:"externalURL"`</span></span><br><span class="line">        Alerts            []Alert           <span class="string">`json:"alerts"`</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Alert is a single alert.</span></span><br><span class="line">    Alert <span class="keyword">struct</span> &#123;</span><br><span class="line">        Labels      <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span> <span class="string">`json:"labels"`</span></span><br><span class="line">        Annotations <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span> <span class="string">`json:"annotations"`</span></span><br><span class="line">        StartsAt    <span class="keyword">string</span>            <span class="string">`json:"startsAt,omitempty"`</span></span><br><span class="line">        EndsAt      <span class="keyword">string</span>            <span class="string">`json:"EndsAt,omitempty"`</span></span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>使用一个配置文件提供不同实例告警的对象（邮件和电话），简单起见没有使用数据库，格式如下：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">accounts:</span></span><br><span class="line"><span class="attr">    comp1:</span></span><br><span class="line"><span class="attr">        emails:</span></span><br><span class="line"><span class="bullet">            -</span> <span class="string">"xxx@xxx.com"</span></span><br><span class="line"><span class="attr">        tels:</span></span><br><span class="line"><span class="bullet">            -</span> <span class="string">"xxxxx"</span></span><br><span class="line"><span class="attr">    comp2:</span></span><br><span class="line"><span class="attr">        emails:</span></span><br><span class="line"><span class="bullet">            -</span> <span class="string">"test@xxxx.cn"</span></span><br><span class="line"><span class="attr">        tels:</span></span><br><span class="line"><span class="bullet">            -</span> <span class="string">"xxxx"</span></span><br></pre></td></tr></table></figure>
+<p>然后我们使用viper读取配置文件，并实时监控配置文件变更，这样增加或者删除告警对象就不用重启服务了：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"log"</span></span><br><span class="line">    <span class="string">"github.com/fsnotify/fsnotify"</span></span><br><span class="line">    <span class="string">"github.com/spf13/viper"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">viper.SetConfigName(<span class="string">"alert-hook"</span>)</span><br><span class="line">viper.AddConfigPath(<span class="string">"."</span>)</span><br><span class="line">viper.AddConfigPath(<span class="string">"/etc"</span>)</span><br><span class="line">viper.AddConfigPath(<span class="string">"/root"</span>)</span><br><span class="line">viper.SetConfigType(<span class="string">"yaml"</span>)</span><br><span class="line">err := viper.ReadInConfig()</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(<span class="string">"Failed to read config file. %v"</span>, err)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// wathc and reload config</span></span><br><span class="line">viper.WatchConfig()</span><br><span class="line">viper.OnConfigChange(<span class="function"><span class="keyword">func</span><span class="params">(e fsnotify.Event)</span></span> &#123;</span><br><span class="line">    log.Printf(<span class="string">"log file changed: %s."</span>, e.Name)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>主要的逻辑是起一个简单的web server：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">addr := flag.String(<span class="string">"addr"</span>, <span class="string">":18080"</span>, <span class="string">"address to listen for webhook"</span>)</span><br><span class="line">flag.Parse()</span><br><span class="line"></span><br><span class="line">http.HandleFunc(<span class="string">"/healthz"</span>, healthzHandler)</span><br><span class="line">http.HandleFunc(<span class="string">"/api/webhooks/prometheus"</span>, alertsHandler)</span><br><span class="line">log.Fatal(http.ListenAndServe(*addr, <span class="literal">nil</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">healthzHandler</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    io.WriteString(w,</span><br><span class="line">        <span class="string">`# HELP Information about the health.</span></span><br><span class="line"><span class="string"># TYPE go_info gauge</span></span><br><span class="line"><span class="string">healthz 1`</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">alertsHandler</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    log.Printf(<span class="string">"recv request."</span>)</span><br><span class="line">    <span class="keyword">switch</span> r.Method &#123;</span><br><span class="line">    <span class="keyword">case</span> http.MethodGet:</span><br><span class="line">        getHandler(w, r)</span><br><span class="line">    <span class="keyword">case</span> http.MethodPost:</span><br><span class="line">        postHandler(w, r)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        http.Error(w, <span class="string">"unsupported HTTP method"</span>, <span class="number">400</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 从配置文件中读取邮件列表</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getEmailList</span><span class="params">(companyID <span class="keyword">string</span>)</span> []<span class="title">string</span></span> &#123;</span><br><span class="line">    list := viper.GetStringSlice(<span class="string">"accounts."</span> + companyID + <span class="string">".emails"</span>)</span><br><span class="line">    <span class="keyword">return</span> list</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 从配置中读取短信通知列表</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getTelList</span><span class="params">(companyID <span class="keyword">string</span>)</span> []<span class="title">string</span></span> &#123;</span><br><span class="line">    list := viper.GetStringSlice(<span class="string">"accounts."</span> + companyID + <span class="string">".tels"</span>)</span><br><span class="line">    <span class="keyword">return</span> list</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getHandler</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    <span class="comment">// do something here</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">postHandler</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    dec := json.NewDecoder(r.Body)</span><br><span class="line">    <span class="keyword">defer</span> r.Body.Close()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> m HookMessage</span><br><span class="line">    <span class="keyword">if</span> err := dec.Decode(&amp;m); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Printf(<span class="string">"error decoding message: %v"</span>, err)</span><br><span class="line">        http.Error(w, <span class="string">"invalid request body"</span>, <span class="number">400</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// send message to ums</span></span><br><span class="line">    sendMSG(m)</span><br><span class="line">    io.WriteString(w, <span class="string">"OK\n"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 读取信息并发送</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sendMSG</span><span class="params">(msg HookMessage)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> msgStr <span class="keyword">string</span></span><br><span class="line">    companyID := msg.CommonLabels[<span class="string">"company"</span>]</span><br><span class="line">    log.Printf(<span class="string">"try send ums: %v"</span>, msg)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// summary 和 description 中已经有足够的信息</span></span><br><span class="line">    <span class="keyword">for</span> _, alert := <span class="keyword">range</span> msg.Alerts &#123;</span><br><span class="line">        msgStr += alert.Annotations[<span class="string">"summary"</span>] + <span class="string">"&lt;br/&gt;"</span> + alert.Annotations[<span class="string">"description"</span>] + <span class="string">"&lt;br/&gt;Time:"</span> + alert.StartsAt + <span class="string">"&lt;br/&gt;&lt;br/&gt;"</span></span><br><span class="line">    &#125;</span><br><span class="line">    emails := getEmailList(companyID)</span><br><span class="line">    tels := getTelList(companyID)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(emails) == <span class="number">0</span> &amp;&amp; <span class="built_in">len</span>(tels) == <span class="number">0</span> &#123;</span><br><span class="line">        log.Printf(<span class="string">"no receivers for %s."</span>, companyID)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    zoneID := viper.GetInt(<span class="string">"zone_id"</span>)</span><br><span class="line">    err := SendMSG( emails, tels, <span class="string">"DB 告警"</span>, msgStr)</span><br><span class="line">    log.Printf(<span class="string">"send ums result: %v"</span>, err)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就实现了一个简单的webhook server,只与发送邮件与短信使用共用的组件即可。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/monitor/" rel="tag">#monitor</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/" rel="next" title="生活，结婚和其他，2018">
+                <i class="fa fa-chevron-left"></i> 生活，结婚和其他，2018
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/avatar.jpg" alt="wuxu" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wuxu</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Wu Xu的个人博客</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">177</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/kiwidock" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-douban"></i> Douban
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wuxu92" target="_blank">
+                  
+                    <i class="fa fa-zhihu"></i> Zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装与运行"><span class="nav-number">1.</span> <span class="nav-text">安装与运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置prometheus的alert"><span class="nav-number">2.</span> <span class="nav-text">配置prometheus的alert</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写一个-webhook"><span class="nav-number">3.</span> <span class="nav-text">编写一个 webhook</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuxu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+</body>
+</html>

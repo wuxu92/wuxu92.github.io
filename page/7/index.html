@@ -230,6 +230,123 @@
             
               
                 
+                <a class="post-title-link" href="/apue-signals/" itemprop="url">
+                  APUE：信号
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-13T14:43:12+08:00" content="2016-01-13">
+              2016-01-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>信号是软件中断，是比较底层的机制，这样一章断断续续看完了，但是很多地方都没有理解好。</p>
+<p>信号提供了一种处理异步事件的方法，例如中断用户键入中断，会通过信号机制停止一个程序，或及早终止管道的下一个程序。信号机制在Unix的早起版本就提供了，不过早期的信号机制并不可靠，后来信号模型做了更改，增加了可靠信号机制（4.3 BSD、SVR3），POSIX.1对可靠信息号进行了标准化，现在的信号都基于这一标准。</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>信号都有一个名字，信号的名字都是以 SIG 三个字符开头，信号在<code>&lt;signal.h&gt;</code>中定义为<strong>正整数</strong>常量（不同的系统可能定义在另外的头文件，不过那些头文件肯定会被 signal.h 包含），当然我们并不要去关心具体的定义是什么。</p>
+<p>有多种方法向进程发送信号：</p>
+<ol>
+<li>中断按键，常见 <code>Ctrl+C</code> 发送中断信号（SIGINT）</li>
+<li>硬件异常产生信号，这是硬件检测到发送给内核的，如除数为0，无效的内存引用等</li>
+<li>进程调用 <code>kill</code> 函数可以将<strong>任意信号</strong>发送给进程/进程组，前提是接收信号的进程和发送信号进程所有者相同。</li>
+<li>用户在终端调用 <code>kill</code> 命令将信号发送给指定进程，常用来结束一个失控的后台进程， <code>kill -9 pid</code></li>
+<li>当系统检测到某种<strong>软件条件</strong>已经发生，并应将其通知有关进程时也产生信号。
+          <div class="post-more-link text-center">
+            <a class="btn" href="/apue-signals/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/common-bash-commands/" itemprop="url">
                   有用的Bash命令记录
                 </a>
@@ -941,120 +1058,6 @@
             
               
                 
-                <a class="post-title-link" href="/books-on-reading-list/" itemprop="url">
-                  当前在读书目
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-01T00:00:00+08:00" content="2016-01-01">
-              2016-01-01
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/life/" itemprop="url" rel="index">
-                    <span itemprop="name">life</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>最近没有项目，没有实习，也没有实习的计划，准备这学期认认真真看些书，提升一下自己。把自己正在看的书和准备看的书做个清单。</p>
-<h2 id="在读"><a href="#在读" class="headerlink" title="在读"></a>在读</h2><ol>
-<li>《算法 第四版》。 看了一部分了，最近又没看了</li>
-<li>《重构：改善既有代码的设计》。 偶尔看看，记记笔记</li>
-<li>《Go语言网络编程》。看了一半了</li>
-<li>《中国哲学史（上）》。这几天看得多些，虽然看得有点难，但是很有收获</li>
-<li>《蒋勋说红楼梦》 看到了第四本，很好的书</li>
-<li>《觉醒的力量》。睡前看看，一大堆给别人做的序，烂书</li>
-<li>《通往奴役之路》。看了两个月了，翻译实在太难看了，看得很慢，翻译太烂了，奇烂无比</li>
-<li>《CSAPP，深入理解计算机系统》，过了一遍</li>
-<li>《APUE，Unix环境高级编程》，进行中</li>
-<li>《C Primer Plus》，过了一遍</li>
-</ol>
-<h2 id="准备看"><a href="#准备看" class="headerlink" title="准备看"></a>准备看</h2><ol>
-<li>《仪式过程》</li>
-<li>《霍乱时期的爱情》</li>
-<li>《日格瓦医生》 这本买了还没动，有时间看看</li>
-<li>《追忆似水年华》 先排上来，估计一时半会没看</li>
-</ol>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/techs-to-learn-late-2015/" itemprop="url">
                   近期技术方向选择
                 </a>
@@ -1185,8 +1188,8 @@
             
               
                 
-                <a class="post-title-link" href="/hello-world/" itemprop="url">
-                  Hello World
+                <a class="post-title-link" href="/books-on-reading-list/" itemprop="url">
+                  当前在读书目
                 </a>
               
             
@@ -1196,11 +1199,26 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-12-31T00:00:00+08:00" content="2015-12-31">
-              2015-12-31
+            <time itemprop="dateCreated" datetime="2016-01-01T00:00:00+08:00" content="2016-01-01">
+              2016-01-01
             </time>
           </span>
 
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/life/" itemprop="url" rel="index">
+                    <span itemprop="name">life</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
           
 
           
@@ -1221,12 +1239,30 @@
 
       
         
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/hello-world/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
+          <span itemprop="articleBody">
+            
+              <p>最近没有项目，没有实习，也没有实习的计划，准备这学期认认真真看些书，提升一下自己。把自己正在看的书和准备看的书做个清单。</p>
+<h2 id="在读"><a href="#在读" class="headerlink" title="在读"></a>在读</h2><ol>
+<li>《算法 第四版》。 看了一部分了，最近又没看了</li>
+<li>《重构：改善既有代码的设计》。 偶尔看看，记记笔记</li>
+<li>《Go语言网络编程》。看了一半了</li>
+<li>《中国哲学史（上）》。这几天看得多些，虽然看得有点难，但是很有收获</li>
+<li>《蒋勋说红楼梦》 看到了第四本，很好的书</li>
+<li>《觉醒的力量》。睡前看看，一大堆给别人做的序，烂书</li>
+<li>《通往奴役之路》。看了两个月了，翻译实在太难看了，看得很慢，翻译太烂了，奇烂无比</li>
+<li>《CSAPP，深入理解计算机系统》，过了一遍</li>
+<li>《APUE，Unix环境高级编程》，进行中</li>
+<li>《C Primer Plus》，过了一遍</li>
+</ol>
+<h2 id="准备看"><a href="#准备看" class="headerlink" title="准备看"></a>准备看</h2><ol>
+<li>《仪式过程》</li>
+<li>《霍乱时期的爱情》</li>
+<li>《日格瓦医生》 这本买了还没动，有时间看看</li>
+<li>《追忆似水年华》 先排上来，估计一时半会没看</li>
+</ol>
+
+            
+          </span>
         
       
     </div>
@@ -1291,21 +1327,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-count">177</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">147</span>
+              <span class="site-state-item-count">148</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

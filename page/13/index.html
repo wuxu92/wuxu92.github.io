@@ -230,6 +230,126 @@
             
               
                 
+                <a class="post-title-link" href="/postgresql-views-fk-and-trans/" itemprop="url">
+                  PostgreSQL 视图，外键与事物
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-27T12:34:50+08:00" content="2015-10-27">
+              2015-10-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/db/" itemprop="url" rel="index">
+                    <span itemprop="name">db</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p><img src="/images/logo/postgresql.png" alt=""></p>
+<h2 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h2><p>视图提供了在真是数据表上建立抽象数据表的功能，可以封装数据表结构的细节，是一种很好的sql设计。实际中也会经常使用视图，使用基于视图的查询会方便很多。<br>创建视图的语法和mysql很像，我们知道mysql实现视图有两种算法，临时表方法和~~忘了另一种是什么了，它们的实现区别导致它们的性能有差异。在pg中创建视图似乎不需要考虑这么多，直接创建就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">create view view_name as select subcluase</span><br></pre></td></tr></table></figure>
+<p>select 子句中还可以基于其它视图查询，基于视图创建视图也是很常见的。不过可能太多层的视图创建会对查询性能有影响。要设计好的表结构，尽量避免多层的视图依赖。</p>
+<h2 id="外键"><a href="#外键" class="headerlink" title="外键"></a>外键</h2><p>MySQL 的MyISAM引擎是不支持外键的，只有Innodb引擎可以支持外键。pg由于并没有多引擎的设计，所以在建表时不需要考虑这些，因为它就是支持外键的。</p>
+<p>实际中，很多人并不太喜欢使用外键，比如我自己在设计数据库的时候也不喜欢用外键。一个是外键理解起来有点麻烦；二是外键的级联删除总觉得不太放心，不是自己操作的嘛。。。在使用外键的地方使用一张关联表也是很方便的。在插入删除的时候也就是多一句操作。</p>
+<p>这里给一个官方的使用外键的例子，理解起来还是很方便的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE TABLE cities (</span><br><span class="line">        city     varchar(80) primary key,</span><br><span class="line">        location point</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">CREATE TABLE weather (</span><br><span class="line">        city      varchar(80) references cities(city),</span><br><span class="line">        temp_lo   int,</span><br><span class="line">        temp_hi   int,</span><br><span class="line">        prcp      real,</span><br><span class="line">        date      date</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>也许使用外键是一个不错的习惯，以后的数据表应该学习使用外键。</p>
+<h2 id="事物"><a href="#事物" class="headerlink" title="事物"></a>事物</h2><p>事物使得一系列数据库操作打包成一个动作，保证中间不被打断以保证数据完整性。当其中一个操作出错时，系统会自动回滚到最初的状态，即这是一个 all-ot-nothing 的操作。<br>一个常见的食物操作的场景是转账或者付款交易。要保证A账号转出的数额与B账号受到的数额相等，不能A转出了B没有收到，也不能A还没转B就收到了。转账操作在数据库中至少需要两条语句，要保证这两天语句要么都成功，要么就都失败。<br>另外还要保证事物处理过程中，对外界是不可见的。</p>
+<blockquote>
+<p>The updates made so far by an open transaction are invisible to other transactions until the transaction completes, whereupon all the updates become visible simultaneously</p>
+</blockquote>
+<p>pg中的事物非常的简单，只要是在 <code>BEGIN;</code> 和 <code>COMMIT;</code> 之间的操作就被看错一个事物。当然放到现实业务系统中，不同的驱动有不同的实现。<br>实际上可以把所有的语句都理解为事物，这是一个有意思的理解</p>
+<blockquote>
+<p>PostgreSQL actually treats every SQL statement as being executed within a transaction. If you do not issue a BEGIN command, then each individual statement has an implicit BEGIN and (if successful) COMMIT wrapped around it. A group of statements surrounded by BEGIN and COMMIT is sometimes called a transaction block</p>
+</blockquote>
+<p>这里还有一个叫做 <code>savepoint</code> 的概念，在mysql中没有这个东西，pg的事务处理中，可以设置savepoint，以允许设置rollback的位置。使用 roolback to savepoint 可以保留savepoint之前的修改。一个示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">BEGIN;</span><br><span class="line">UPDATE accounts SET balance = balance - 100.00</span><br><span class="line">    WHERE name = &apos;Alice&apos;;</span><br><span class="line">SAVEPOINT my_savepoint;</span><br><span class="line">UPDATE accounts SET balance = balance + 100.00</span><br><span class="line">    WHERE name = &apos;Bob&apos;;</span><br><span class="line">-- oops ... forget that and use Wally&apos;s account</span><br><span class="line">ROLLBACK TO my_savepoint;</span><br><span class="line">UPDATE accounts SET balance = balance + 100.00</span><br><span class="line">    WHERE name = &apos;Wally&apos;;</span><br><span class="line">COMMIT;</span><br></pre></td></tr></table></figure>
+<h2 id="窗口函数"><a href="#窗口函数" class="headerlink" title="窗口函数"></a>窗口函数</h2><ul>
+<li>avg</li>
+<li>rank</li>
+<li>sum</li>
+</ul>
+<p>这部分和MySQL中很不一样，提供了更丰富的特性。吃饭去了，下次再写吧。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/postgresql-introduction/" itemprop="url">
                   PostgreSQL 入门
                 </a>
@@ -403,106 +523,6 @@
             
               
                 
-                <a class="post-title-link" href="/golang-the-laws-of-reflection/" itemprop="url">
-                  Go 反射
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-26T12:34:50+08:00" content="2015-10-26">
-              2015-10-26
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>反射是提供一种程序在运行时检查变量结构，状态的能力，它是元编程的一种形式(metaprogramming)。反射功能强大，但是很多时候反射使得代码难以理解，并且性能并不很好。</p>
-<h2 id="类型和接口"><a href="#类型和接口" class="headerlink" title="类型和接口"></a>类型和接口</h2><p>反射功能是基于类型系统(type system)，所以要先对Go 的类型有足够的认识。我们都知道Go是静态类型的，即使是像<code>type MyInt Int</code> 这样定义的类型，虽然MyInt和Int有相同的基础类型(underlying type),但是MyInt和Int还是不一样的,不能互相赋值。</p>
-<p>接口是一类重要的特殊类型，它代表的是一系列方法，一个接口声明的变量可以用于存储任何实现了该接口方法的变量。常见的接口如io.Reader和 io.Writer 。</p>
-<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> r io.Reader</span><br><span class="line">r = os.Stdin</span><br><span class="line">r = bufio.NewReader(r)</span><br><span class="line">r = <span class="built_in">new</span>(bytes.Buffer)</span><br></pre></td></tr></table></figure>
-<p>在使用中，经常需要明确知道r中到底存储的是什么类型的变量(concrete value)。由于Go是静态类型的，r的类型永远是 <code>io.Reader</code>。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/golang-the-laws-of-reflection/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/golang-db-access/" itemprop="url">
                   Go mysql数据库操作
                 </a>
@@ -586,6 +606,106 @@
 
             
           </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/golang-the-laws-of-reflection/" itemprop="url">
+                  Go 反射
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-26T12:34:50+08:00" content="2015-10-26">
+              2015-10-26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>反射是提供一种程序在运行时检查变量结构，状态的能力，它是元编程的一种形式(metaprogramming)。反射功能强大，但是很多时候反射使得代码难以理解，并且性能并不很好。</p>
+<h2 id="类型和接口"><a href="#类型和接口" class="headerlink" title="类型和接口"></a>类型和接口</h2><p>反射功能是基于类型系统(type system)，所以要先对Go 的类型有足够的认识。我们都知道Go是静态类型的，即使是像<code>type MyInt Int</code> 这样定义的类型，虽然MyInt和Int有相同的基础类型(underlying type),但是MyInt和Int还是不一样的,不能互相赋值。</p>
+<p>接口是一类重要的特殊类型，它代表的是一系列方法，一个接口声明的变量可以用于存储任何实现了该接口方法的变量。常见的接口如io.Reader和 io.Writer 。</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> r io.Reader</span><br><span class="line">r = os.Stdin</span><br><span class="line">r = bufio.NewReader(r)</span><br><span class="line">r = <span class="built_in">new</span>(bytes.Buffer)</span><br></pre></td></tr></table></figure>
+<p>在使用中，经常需要明确知道r中到底存储的是什么类型的变量(concrete value)。由于Go是静态类型的，r的类型永远是 <code>io.Reader</code>。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/golang-the-laws-of-reflection/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -1240,120 +1360,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/z-i-can-explain/" itemprop="url">
-                  绩点只有3？我可以解释一下
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-15T12:34:50+08:00" content="2015-10-15">
-              2015-10-15
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/life/" itemprop="url" rel="index">
-                    <span itemprop="name">life</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>放张图文无关压压惊<br><img src="/images/post/title-pic-1.jpg" alt=""></p>
-<p>最近开始申请学业奖学金了，大家开始计算自己的绩点，我也算了一下自己的成绩，结果是比3多一点点（如果没有算错的话）。我觉得这是一个比较合适的数字，没有比3小已经很满足了，毕竟学的并不好，太高了也不太符合我的水平。可是！到现在我还没有找到比我绩点低的人！</p>
-<p>我觉得我可以解释一下来安慰自己。</p>
-<p>我觉得算下来绩点为3应该是比较正常的水平吧，但是看看我们宿舍其他几个人的成绩： 毛哥以3.9遥遥领先，念神3.7不落下风，凡哥3.5也不错，吓得我直接不敢说话。然后实验室的也是3.4，连我在教着写代码的同学也比我高。我的内心是有一点点崩溃的。</p>
-<p>绩点低的主要原因是我的模式识别只有61分，嗯，比我本科的最低分线性代数还是什么鬼的63分还要低2分。这个分数其实已经远超我在模式识别领域的姿势水平了，所以也没什么话说。其他分数7788的也算可以吧，毕竟真的没学好。</p>
-<p>那我干什么去了呢？大概本科开始成绩就不太好了。高考的时候成绩还是不错的，本科以来的考试就越来越水了，后来考研突击了一下，也还勉勉强强，总体来说考试成绩是线性下降的。</p>
-<p>大概从初中的时候就发现问题，因为我发现除了成绩之外，其他的能力真的很差，当时我和一个好友两个人成绩差不多，一般我还要略高一点点，但是当时就想了一个严重的问题，除去考试的几门科目，如果再多加一门其他的测试，我肯定会搞砸，根本保持不了“名列前茅”。</p>
-<p>这个问题一直在考虑，直到大学。我觉得考试与成绩一直压迫了我的小学初中高中，大学的应该走一条不同的路，当然也许当时并没有这么明确的“方针路线”，总体来说是这样子的。</p>
-<p>当初选软件工程是我自己的决定，但是其实在这之前对计算机没有什么了解，没怎么用过电脑，很少去网吧，甚至没有使用过QQ；选这个专业可能是因为填志愿之前看了哥带回来的《大学计算机基础》和一堆的《微型计算机》杂志。。。。(题外话，其实我当时很喜欢的是化学与生物）</p>
-<p>过完大一大二，其实已经很反感学校的教育了。开始喜欢自己学，自己动手的东西。这样导致很多基础课学的很糟糕，尤其是操作系统，组成原理等等。但是有得必有失，其中确实是需要自己去权衡的。本科的后两年基本就是水课，自己学些东西，成绩保持在能拿个三等奖学金的样子。</p>
-<p><img src="/images/post/bab8ab1fgw1eib2.gif" alt=""></p>
-<p>现在的状态就是，好像<a href="http://wuxu92.github.io/about.html" title="http://wuxu92.github.io/about.html" target="_blank" rel="noopener">懂很多的东西</a>，但是其实心里很没底，但是大部分时候又确实是能用的起来这些东西的。也许相对于成绩与绩点，这些列出来的名词更能给我带来成就感吧。</p>
-<p>研一这一年干了什么事呢，因为总体来说过的比较懒散，没什么具体的事情，买了一堆书，看了几本；没学什么新的东西；给一个项目扫了个尾，重构了科委的二版，帮人做项目，教人写代码；看了十来篇论文，没什么用；去掌游实习了三个月，学了不少东西，开始更新这个博客；现在在学golang。</p>
-<p>对我来说，绩点低的唯一的坏处就是没有奖学金吧，又要过穷日子了；早知道应该多实习一个月的。</p>
-<p>套用无心法师里老岳的一句话</p>
-<blockquote>
-<p>这几年没有好好学，很糟糕</p>
-</blockquote>
-<p><del>我觉得根本没法安慰自己，必须要承认智商不够的事实了</del></p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1400,21 +1406,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-count">177</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">147</span>
+              <span class="site-state-item-count">148</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
