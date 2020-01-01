@@ -230,6 +230,109 @@
             
               
                 
+                <a class="post-title-link" href="/go-get-use-sock5-proxy/" itemprop="url">
+                  让go get命令使用socks5代理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-01-13T20:33:54+08:00" content="2016-01-13">
+              2016-01-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index">
+                    <span itemprop="name">go</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>不知道是因为什么鬼打墙的原因，GFW把go的官网给禁了，也许因为Go出身Google吧，真是*了狗了。不仅是 <a href="http://golang.org" target="_blank" rel="noopener">golang.org</a> 被墙了，现在Go的包管理站 <a href="http://gopkg.in" target="_blank" rel="noopener">http://gopkg.in</a> 也被墙了。直接用 <code>go get gopkg.in/package</code> 半天都没反应，只好用代理了。</p>
+<p>如果是用http代理能访问的话，可以设置系统变量 <code>http_proxy</code> 就可以让 <code>go get</code> 走代理了，如果你有可以翻墙的http代理，可以用下面的方法：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">http_proxy=http://ip:port go get gopkg.ig/package.v1</span><br></pre></td></tr></table></figure>
+<p>本地使用 shadowsocks做代理，因为ss是socks5代理，所以不能用上面的方法，go get又没有直接设置代理的地方，所以只好祭出代理利器：<a href="https://www.proxifier.com/" target="_blank" rel="noopener">Proxifier</a> ，这个工具有30天试用期，在国内也很容易找到破解版本。</p>
+<p>打开Proxifier后添加 proxification rule，将 Applications设置为 <code>C:\Go\bin\go.exe</code>，这样重新打开终端（我的git bash），直接</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">go get gopkg.in/package.v1</span><br></pre></td></tr></table></figure>
+<p>就可以把包down下来了，虽然速度可能有点慢。</p>
+<p>go相关的很多资源都被墙了，FK</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/apue-signals/" itemprop="url">
                   APUE：信号
                 </a>
@@ -1058,136 +1161,6 @@
             
               
                 
-                <a class="post-title-link" href="/techs-to-learn-late-2015/" itemprop="url">
-                  近期技术方向选择
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-01T00:00:00+08:00" content="2016-01-01">
-              2016-01-01
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/self/" itemprop="url" rel="index">
-                    <span itemprop="name">self</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <h2 id="转C保平安"><a href="#转C保平安" class="headerlink" title="转C保平安"></a>转C保平安</h2><ol>
-<li>C primer Plus</li>
-<li>Computer System, A Programmer’s Perspective</li>
-<li>Advanced Programming in the Unix Environment</li>
-</ol>
-<h2 id="PHP"><a href="#PHP" class="headerlink" title="PHP"></a>PHP</h2><ol>
-<li><a href="http://laravel.com/" title="http://laravel.com/" target="_blank" rel="noopener">Laravel 5</a></li>
-<li><a href="http://www.yiiframework.com/doc-2.0/" title="http://www.yiiframework.com/doc-2.0/" target="_blank" rel="noopener">Yii 2</a></li>
-<li>ZP</li>
-<li>PHP 7</li>
-</ol>
-<h2 id="JS-CSS"><a href="#JS-CSS" class="headerlink" title="JS/CSS"></a>JS/CSS</h2><ol>
-<li><a href="http://vuejs.org/" title="http://vuejs.org/" target="_blank" rel="noopener">Vue.js</a></li>
-<li>ES 6</li>
-<li>Bootstrap 4</li>
-</ol>
-<h2 id="Golang"><a href="#Golang" class="headerlink" title="Golang"></a>Golang</h2><ol>
-<li><a href="http://golang.org/" title="http://golang.org/" target="_blank" rel="noopener">Go</a></li>
-<li><a href="http://beego.me/" title="http://beego.me/" target="_blank" rel="noopener">Beego</a></li>
-<li>nsq</li>
-<li>docker</li>
-</ol>
-<h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><ol>
-<li>Netty</li>
-<li>Effective Java</li>
-</ol>
-<h2 id="DB"><a href="#DB" class="headerlink" title="DB"></a>DB</h2><ol>
-<li><a href="http://redis.io/" title="http://redis.io/" target="_blank" rel="noopener">Redis</a></li>
-<li>High Performance MySQL</li>
-<li>PostgreSQL</li>
-</ol>
-<h2 id="Paper"><a href="#Paper" class="headerlink" title="Paper"></a>Paper</h2><ol>
-<li>小论文 0.5/1</li>
-<li>大论文 0.0/1</li>
-</ol>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/books-on-reading-list/" itemprop="url">
                   当前在读书目
                 </a>
@@ -1327,7 +1300,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">177</span>
+              <span class="site-state-item-count">178</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1425,7 +1398,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

@@ -230,6 +230,231 @@
             
               
                 
+                <a class="post-title-link" href="/z-compile-vim-with-lua-support-in-centos-7/" itemprop="url">
+                  CentOS 编译安装vim 7.4添加Lua支持
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-20T12:34:50+08:00" content="2015-07-20">
+              2015-07-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>一些vim插件需要提供Lua支持，特别是常见的补全插件，前段时间安装的[yadr](https</p>
+<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>首先，编译安装嘛，先下载源码， 可是呢这两sourceforge挂掉了，vim是托管在sf上的，导致下载页面也不能访问了，甚至vim的官网 <a href="http://www.vim.org" target="_blank" rel="noopener">www.vim.org</a> 也不能访问了，幸好vim在github上有一个备份  <a href="https://github.com/vim/vim" title="https://github.com/vim/vim" target="_blank" rel="noopener">https://github.com/vim/vim</a> 或者直接访问vim.org的ftp站： <a href="ftp://ftp.vim.org/pub/vim/unix/" title="ftp://ftp.vim.org/pub/vim/unix/" target="_blank" rel="noopener">ftp://ftp.vim.org/pub/vim/Unix/</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用下面之一的方法下载源码</span><br><span class="line">// git下载的话体积会大一些，好处是以后可以方便地更新</span><br><span class="line">git clone git@github.com:vim/vim.git</span><br><span class="line">wget -O ftp://ftp.vim.org/pub/vim/Unix/vim-7.4.tar.bz2</span><br><span class="line">wget ftp://ftp.vim.org/pub/vim/Unix/vim-7.4.tar.bz2</span><br><span class="line"></span><br><span class="line">tar xjvf vim-7.4.tar.bz2</span><br><span class="line">cd vim74</span><br></pre></td></tr></table></figure>
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>vim的编译其实很简单，就configure-&gt;make-&gt;make install 这样的流程。但是要添加 Lua支持，就有一些麻烦了。</p>
+<p>configure的配置大概是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configure --prefix=/data/vim74 --with-features=huge --with-luajit --enable-luainterp=yes</span><br></pre></td></tr></table></figure>
+<p>首先如果不在 configure配置那手动打开 <code>--enable-fail-if-missing</code> 这个选项，你会发现，configure没有问题，make没有问题，make install也OK，但是运行生成的vim： <code>vim --version</code>会发现Lua前面还是一个”-“（表示没有Lua支持）<br>因为其实configure那根本就没有找到lua的支持，只是默认跳过了 <code>--enable-luainterp=yes</code> 选项。。。<br>所以应该这样运行configure：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configure --prefix=/data/vim74 --with-features=huge --with-luajit --enable-luainterp=yes --enable-fail-if-missing</span><br></pre></td></tr></table></figure>
+<p>如果你的机器没有安装lua 和luajit的话会在检查lua支持那里中断了。</p>
+<h3 id="安装Lua和LuaJit"><a href="#安装Lua和LuaJit" class="headerlink" title="安装Lua和LuaJit"></a>安装Lua和LuaJit</h3><p>Lua的安装倒是比较方便，官方repo里面就有，当然要想安装新版的也可以自己编译安装。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo yum install lua lua-devel -y</span><br></pre></td></tr></table></figure>
+<p>luajit不在centos的官方repo里面，我们需要编译安装;</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget http://luajit.org/download/LuaJIT-2.0.4.tar.gz</span><br><span class="line">tar -xzvf LuaJIT-2.0.4.tar.gz</span><br><span class="line">cd LuaJIT-2.0.4</span><br><span class="line">// 使用默认安装路径</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h2 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h2><p>安装好lua支持后，再运行configure就不会报错了</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configure --prefix=/data/vim74 --with-features=huge --with-luajit --enable-luainterp=yes --enable-fail-if-missing</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>运行编译的vim：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/data/vim74/bin/vim</span><br></pre></td></tr></table></figure>
+<p>可能你会发现这样的错误:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/data/vim74/bin/vim: error while loading shared libraries: libluajit-5.1.so.2: cannot open shared object file: No such file or directory</span><br></pre></td></tr></table></figure>
+<p>显然是安装的luajit有问题。我们找一下luajit这个.so文件在哪里</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo find / -name libluajit-5.1.so.2</span><br></pre></td></tr></table></figure>
+<p>发现下面有这个文件：</p>
+<ol>
+<li>/home/wuxu/tars/ngx_openresty-1.7.10.2/build/luajit-root/data/openresty/luajit/lib/libluajit-5.1.so.2</li>
+<li>/usr/local/lib/libluajit-5.1.so.2</li>
+<li>/data/openresty/luajit/lib/libluajit-5.1.so.2</li>
+</ol>
+<p>显然1，3是openresty编译的，第二个才是我们安装luajit支持，我们需要给这个.so生成一个软链接，让vim能找到它：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo ln -s /usr/local/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2</span><br></pre></td></tr></table></figure>
+<p>这样再运行vim就不会有问题了～也有Lua支持了，不过Vim的自动补全还没用过呢，学会了再做记录吧。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/compile-and-install-php7-beta1/" itemprop="url">
+                  编译安装PHP7 beta1
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-19T12:34:50+08:00" content="2015-07-19">
+              2015-07-19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>前段时间去php.net上闲逛发现PHP7的beta1版本出来了，就尝试着编译安装了一下</p>
+<p>之前在鸟哥的博客里看到了他们做的PHP的性能测试，相对于PHP5.6都是有很大的提升的，并且PHP的主版本号已经是2004年发布PHP5后，11年来首次更新，肯定PHP７是有很大的改变的，下面那就来试试PHP7的beta版吧，正式版大概在今年年底会发布。</p>
+<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>测试版本的PHP下载页面： <a href="https://downloads.php.net/~ab/" title="https://downloads.php.net/~ab/" target="_blank" rel="noopener">https://downloads.php.net/~ab/</a></p>
+<p>php7 beta1: <a href="https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz" title="https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz" target="_blank" rel="noopener">https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</span><br><span class="line">或者</span><br><span class="line">curl -O https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</span><br></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/compile-and-install-php7-beta1/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/vim-shortcuts/" itemprop="url">
                   vim 常用的快捷键
                 </a>
@@ -421,208 +646,6 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import &quot;net/http&quot;</span><br><span class="line"></span><br><span class="line">type milkServer struct &#123;</span><br><span class="line">	n int</span><br><span class="line">&#125;</span><br><span class="line">// 注意参数中的http不能少，参考Go的包机制</span><br><span class="line">func (m *MilkServer) ServeHTTP(w http.ResponseWriter, req *http.Request) &#123;</span><br><span class="line">	m.n++</span><br><span class="line">	// do some thing</span><br><span class="line">	fmt.Fprintf(w, &quot;request count at %d\n&quot;, m.n)</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 添加绑定</span><br><span class="line">m := new(Milk)</span><br><span class="line">http.Handle(&quot;/count&quot;, m)</span><br><span class="line">// 也可以直接绑定一个与ServeHTTP签名相同的函数</span><br><span class="line">func ArgsFunc(w http.ResponseWriter, req *http.Request) &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line">http.HandleFunc(&quot;args&quot;, ArgsFunc)</span><br></pre></td></tr></table></figure>
 <p>当然也可以绑定到一个信道上面，然后使用信道新更新一些内部状态：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Chan chan *http.Request</span><br><span class="line">func (c Chan) ServeHTTP(w http.ResponseWriter, req *http.Request) &#123;</span><br><span class="line">	c &lt;- req</span><br><span class="line">	fmt.Fprint(w, &quot;request received&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/compile-and-install-php7-beta1/" itemprop="url">
-                  编译安装PHP7 beta1
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-19T12:34:50+08:00" content="2015-07-19">
-              2015-07-19
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>前段时间去php.net上闲逛发现PHP7的beta1版本出来了，就尝试着编译安装了一下</p>
-<p>之前在鸟哥的博客里看到了他们做的PHP的性能测试，相对于PHP5.6都是有很大的提升的，并且PHP的主版本号已经是2004年发布PHP5后，11年来首次更新，肯定PHP７是有很大的改变的，下面那就来试试PHP7的beta版吧，正式版大概在今年年底会发布。</p>
-<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>测试版本的PHP下载页面： <a href="https://downloads.php.net/~ab/" title="https://downloads.php.net/~ab/" target="_blank" rel="noopener">https://downloads.php.net/~ab/</a></p>
-<p>php7 beta1: <a href="https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz" title="https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz" target="_blank" rel="noopener">https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</a></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</span><br><span class="line">或者</span><br><span class="line">curl -O https://downloads.php.net/~ab/php-7.0.0beta1.tar.gz</span><br></pre></td></tr></table></figure>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/compile-and-install-php7-beta1/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/go-iota-spc/" itemprop="url">
-                  Golang 中iota的用法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
-              2015-07-18
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>Golang中可以使用iota方便的定义复杂的常量结构，下面是golang spec中的说明</p>
-<p>Within a constant declaration, the predeclared identifier iota represents successive untyped integer constants. It is reset to 0 whenever the reserved word const appears in the source and increments after each ConstSpec. It can be used to construct a set of related constants:</p>
-<h2 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (  // iota is reset to 0</span><br><span class="line">	c0 = iota  // c0 == 0</span><br><span class="line">	c1 = iota  // c1 == 1</span><br><span class="line">	c2 = iota  // c2 == 2</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	a = 1 &lt;&lt; iota  // a == 1 (iota has been reset)</span><br><span class="line">	b = 1 &lt;&lt; iota  // b == 2</span><br><span class="line">	c = 1 &lt;&lt; iota  // c == 4</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	u         = iota * 42  // u == 0     (untyped integer constant)</span><br><span class="line">	v float64 = iota * 42  // v == 42.0  (float64 constant)</span><br><span class="line">	w         = iota * 42  // w == 84    (untyped integer constant)</span><br><span class="line">)</span><br><span class="line">``</span><br><span class="line">const x = iota  // x == 0 (iota has been reset)</span><br><span class="line">const y = iota  // y == 0 (iota has been reset)</span><br></pre></td></tr></table></figure>
-<p>Within an ExpressionList, the value of each iota is the same because it is only incremented after each ConstSpec:</p>
-<h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (</span><br><span class="line">	bit0, mask0 = 1 &lt;&lt; iota, 1&lt;&lt;iota - 1  // bit0 == 1, mask0 == 0</span><br><span class="line">	bit1, mask1                           // bit1 == 2, mask1 == 1</span><br><span class="line">	_, _                                  // skips iota == 2</span><br><span class="line">	bit3, mask3                           // bit3 == 8, mask3 == 7</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>This last example exploits the implicit repetition of the last non-empty expression list.</p>
-<p>iota是一个比较有特色的东西，看完这两个例子基本就知道怎么用了，相当于它是一个从0开始自动增加的变量，可以重复使用，可以用来定义单位的大小，比如KB，MB，GB等</p>
 
             
           </span>
@@ -884,6 +907,108 @@
             
               
                 
+                <a class="post-title-link" href="/go-iota-spc/" itemprop="url">
+                  Golang 中iota的用法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-07-18T12:34:50+08:00" content="2015-07-18">
+              2015-07-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>Golang中可以使用iota方便的定义复杂的常量结构，下面是golang spec中的说明</p>
+<p>Within a constant declaration, the predeclared identifier iota represents successive untyped integer constants. It is reset to 0 whenever the reserved word const appears in the source and increments after each ConstSpec. It can be used to construct a set of related constants:</p>
+<h2 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (  // iota is reset to 0</span><br><span class="line">	c0 = iota  // c0 == 0</span><br><span class="line">	c1 = iota  // c1 == 1</span><br><span class="line">	c2 = iota  // c2 == 2</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	a = 1 &lt;&lt; iota  // a == 1 (iota has been reset)</span><br><span class="line">	b = 1 &lt;&lt; iota  // b == 2</span><br><span class="line">	c = 1 &lt;&lt; iota  // c == 4</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	u         = iota * 42  // u == 0     (untyped integer constant)</span><br><span class="line">	v float64 = iota * 42  // v == 42.0  (float64 constant)</span><br><span class="line">	w         = iota * 42  // w == 84    (untyped integer constant)</span><br><span class="line">)</span><br><span class="line">``</span><br><span class="line">const x = iota  // x == 0 (iota has been reset)</span><br><span class="line">const y = iota  // y == 0 (iota has been reset)</span><br></pre></td></tr></table></figure>
+<p>Within an ExpressionList, the value of each iota is the same because it is only incremented after each ConstSpec:</p>
+<h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const (</span><br><span class="line">	bit0, mask0 = 1 &lt;&lt; iota, 1&lt;&lt;iota - 1  // bit0 == 1, mask0 == 0</span><br><span class="line">	bit1, mask1                           // bit1 == 2, mask1 == 1</span><br><span class="line">	_, _                                  // skips iota == 2</span><br><span class="line">	bit3, mask3                           // bit3 == 8, mask3 == 7</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>This last example exploits the implicit repetition of the last non-empty expression list.</p>
+<p>iota是一个比较有特色的东西，看完这两个例子基本就知道怎么用了，相当于它是一个从0开始自动增加的变量，可以重复使用，可以用来定义单位的大小，比如KB，MB，GB等</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/using-ambari-to-setup-a-hadoop-cluster/" itemprop="url">
                   使用ambari搭建并管理一个hadoop集群
                 </a>
@@ -1015,7 +1140,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">177</span>
+              <span class="site-state-item-count">178</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1113,7 +1238,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

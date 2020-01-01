@@ -230,6 +230,123 @@
             
               
                 
+                <a class="post-title-link" href="/network-programming-with-go/" itemprop="url">
+                  Go 网络编程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-29T12:34:50+08:00" content="2015-10-29">
+              2015-10-29
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p><img src="/images/golang/gopher-banner-small.jpg" alt=""></p>
+<p>对于任何一门语言，网络编程都是重要的一部分。对于Go来说其天生的高并发网络编程更是充满魅力。所以今天开学学习Go网络编程部分，教材是 Jan Newmarch 的 Network programming with Go 的pdf文档。 这份文档在 <a href="https://jan.newmarch.name/go/" target="_blank" rel="noopener">这里</a> 可以找到，由 Astaxie 翻译的中文版也在<a href="https://jan.newmarch.name/go/zh/index.html" target="_blank" rel="noopener">这个网站的这个目录</a>， 当然也可以在<a href="https://github.com/astaxie/NPWG_zh" target="_blank" rel="noopener">astaxie的github上</a>找到。</p>
+<p>我使用英文的pdf，因为没有找到中午的pdf，而使用pdf比网页要方便些，方便做笔记和添加备注，并且这类文档的英文应该也不会太难。</p>
+<p>根据pdf的结构，一节一节往后走。各章节组成如下：</p>
+<ol>
+<li>架构</li>
+<li>Go语言概括</li>
+<li>Socket编程</li>
+<li>数据序列化</li>
+<li>应用层协议</li>
+<li>管理字符集与编码</li>
+<li>安全</li>
+<li>HTTP</li>
+<li>模板</li>
+<li>一个完整的Web服务</li>
+<li>HTML</li>
+<li>XML</li>
+<li>远程过程调用RPC</li>
+<li>网络 Channels</li>
+<li>Web Sockets</li>
+</ol>
+<p>其中前两张只简单的过一下，重要的是这几节： Socket, 序列化，应用层协议，安全，HTTP。 RPC与Web Sockets。其他章节看起来简单过一下就可以了。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/network-programming-with-go/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/postgresql-views-fk-and-trans/" itemprop="url">
                   PostgreSQL 视图，外键与事物
                 </a>
@@ -523,128 +640,6 @@
             
               
                 
-                <a class="post-title-link" href="/golang-db-access/" itemprop="url">
-                  Go mysql数据库操作
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-26T12:34:50+08:00" content="2015-10-26">
-              2015-10-26
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/db/" itemprop="url" rel="index">
-                    <span itemprop="name">db</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>Go官方并不提供数据库驱动，而只是为开发数据库驱动定义了一些标准接口。我们要使用mysql数据库得使用第三方维护的mysql驱动。Go中支持MySQL的驱动目前比较多，有如下几种，有些是支持database/sql标准，而有些是采用了自己的实现接口,常用的有如下几种:</p>
-<p><a href="https://github.com/go-sql-driver/mysql" target="_blank" rel="noopener">https://github.com/go-sql-driver/MySQL</a> 支持database/sql，全部采用go写。<br><a href="https://github.com/ziutek/mymysql" target="_blank" rel="noopener">https://github.com/ziutek/mymysql</a> 支持database/sql，也支持自定义的接口，全部采用go写。<br><a href="https://github.com/Philio/GoMySQL" target="_blank" rel="noopener">https://github.com/Philio/GoMySQL</a> 不支持database/sql，自定义接口，全部采用go写。<br>也推荐使用第一个，主要理由：</p>
-<ul>
-<li>维护的比较好</li>
-<li>完全支持database/sql接口</li>
-<li>支持keepalive，保持长连接</li>
-</ul>
-<p>有了驱动，其实golang使用mysql和其他语言没有太大的区别，虽然具体的方法调用与类组织不太一样。</p>
-<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>使用10.4.16.95上的mariadb数据库，新建一个golang的数据库，添加两张测试用的表。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> golang;</span><br><span class="line"><span class="keyword">use</span> golang;</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`userinfo`</span> (</span><br><span class="line">  <span class="string">`uid`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`username`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`uid`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`userdetail`</span> (</span><br><span class="line">  <span class="string">`uid`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span>,</span><br><span class="line">  <span class="string">`intro`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`profile`</span> <span class="built_in">text</span></span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1;</span><br></pre></td></tr></table></figure>
-<p>先ssh登录服务器(因为安全考虑，不开放mysql的root用户的远程登录权限)，用root用户本地登录mysql新建一个用于测试的可远程登录的用户：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssh wuxu@10.4.16.95</span><br><span class="line">MySQL -uroot -p</span><br><span class="line">// enter root password</span><br><span class="line">create user golang@&apos;%&apos; identified by &apos;golangMysql&apos;;</span><br><span class="line">grant privileges on *.golang to golang@&apos;%&apos;;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
-<p>这样就可以用golang登录新建的数据库了</p>
-<h2 id="Golang操作mysql"><a href="#Golang操作mysql" class="headerlink" title="Golang操作mysql"></a>Golang操作mysql</h2><p>先get数据库驱动,在命令行运行<code>go get github.com/go-sql-driver/MySQL</code>,会自动使用git从github下载mysql驱动工程到<code>$GOPATH/src/</code>。</p>
-<p>基本的插入，更新，删除，查找方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import (</span><br><span class="line">	_ &quot;github.com/go-sql-driver/MySQL&quot;</span><br><span class="line">	&quot;database/sql&quot;</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	// mysql是一个注册过的数据库驱动了,在驱动的init函数中注册</span><br><span class="line">	db, err := sql.Open(&quot;MySQL&quot;, &quot;golang:golangMysql@tcp(10.4.16.95:3306)/golang?charset=utf8&quot;)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	fmt.Println(&quot;connected&quot;)</span><br><span class="line">	</span><br><span class="line">	stmt, err := db.Prepare(&quot;insert userinfo set username=?&quot;)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	// fmt.Println(stmt)</span><br><span class="line">	res, err := stmt.Exec(&quot;wuxu&quot;)  // 使用占位符&apos;?&apos;防止sql注入，这是一个不定参数函数，传入的参数与prepare阶段设置的占位符相等</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	id, err := res.LastInsertId()</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	fmt.Println(id)</span><br><span class="line">	</span><br><span class="line">	stmt, _ = db.Prepare(&quot;update userinfo set username=? where username=?&quot;)</span><br><span class="line">	</span><br><span class="line">	res, err =  stmt.Exec(&quot;wuxu01&quot;, &quot;wuxu&quot;)</span><br><span class="line">	aff, err := res.RowsAffected()</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	fmt.Println(aff)</span><br><span class="line">	</span><br><span class="line">	rows, err := db.Query(&quot;select * from userinfo&quot;)</span><br><span class="line">	</span><br><span class="line">	for rows.Next() &#123;</span><br><span class="line">		var id int</span><br><span class="line">		var usename string</span><br><span class="line">		err = rows.Scan(&amp;id, &amp;usename)</span><br><span class="line">		CheckErr(err)</span><br><span class="line">		</span><br><span class="line">		fmt.Println(id, usename)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	stmt, _ = db.Prepare(&quot;delete from userinfo where uid&gt;?&quot;)</span><br><span class="line">	res, _ = stmt.Exec(4)</span><br><span class="line">	aff, _ = res.RowsAffected()</span><br><span class="line">	fmt.Println(&quot;affected&quot;, aff)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func CheckErr(e error) &#123;</span><br><span class="line">	if e != nil &#123;</span><br><span class="line">		panic(e)</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>与以往的mysql操作相似，也是一个连接对象，对于插入，删除等要先prepare，然后执行Exec，在exec阶段绑定占位符变量。<br>比较独特的是Exec返回的Result指针，它包含LastInsertId和 RowsAffedted 两个方法。</p>
-<p>注意数据连接的dsn(data source name)和php或者其他语言的比较不一样。我们使用的是 <code>user:password@protocol(host:port)/dbname?charset=utf8</code> 的形式。驱动本身支持更多形式的dsn：</p>
-<ul>
-<li>user@Unix(/path/to/socket)/dbname?charset=utf8</li>
-<li>user:password@tcp(localhost:5555)/dbname?charset=utf8</li>
-<li>user:password@/dbname</li>
-<li>user:password@tcp([::]:80)/dbname   // ipv6</li>
-</ul>
-<p>整个数据库操作的流程大概如下：</p>
-<p>sql.Open()函数用来打开一个注册过的数据库驱动<br>db.Prepare()函数用来返回准备要执行的sql操作， 然后返回准备完毕的执行状态。<br>db.Query()函数用来直接执行Sql返回Rows结果。<br>stmt.Exec()函数用来执行stmt准备好的SQL语句。</p>
-<p>数据库驱动的注册在数据库驱动包导入时执行，注册的逻辑写在包的init函数中。导入驱动包只需要 <code>import _ &quot;driver/package&quot;</code>，因为只需要执行其<code>init()</code>，而不需要调用包中导出的方法，调用的是go语言规定的sql接口。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/golang-the-laws-of-reflection/" itemprop="url">
                   Go 反射
                 </a>
@@ -799,6 +794,128 @@
           <span itemprop="articleBody">
             
               
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/golang-db-access/" itemprop="url">
+                  Go mysql数据库操作
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-26T12:34:50+08:00" content="2015-10-26">
+              2015-10-26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/db/" itemprop="url" rel="index">
+                    <span itemprop="name">db</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>Go官方并不提供数据库驱动，而只是为开发数据库驱动定义了一些标准接口。我们要使用mysql数据库得使用第三方维护的mysql驱动。Go中支持MySQL的驱动目前比较多，有如下几种，有些是支持database/sql标准，而有些是采用了自己的实现接口,常用的有如下几种:</p>
+<p><a href="https://github.com/go-sql-driver/mysql" target="_blank" rel="noopener">https://github.com/go-sql-driver/MySQL</a> 支持database/sql，全部采用go写。<br><a href="https://github.com/ziutek/mymysql" target="_blank" rel="noopener">https://github.com/ziutek/mymysql</a> 支持database/sql，也支持自定义的接口，全部采用go写。<br><a href="https://github.com/Philio/GoMySQL" target="_blank" rel="noopener">https://github.com/Philio/GoMySQL</a> 不支持database/sql，自定义接口，全部采用go写。<br>也推荐使用第一个，主要理由：</p>
+<ul>
+<li>维护的比较好</li>
+<li>完全支持database/sql接口</li>
+<li>支持keepalive，保持长连接</li>
+</ul>
+<p>有了驱动，其实golang使用mysql和其他语言没有太大的区别，虽然具体的方法调用与类组织不太一样。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>使用10.4.16.95上的mariadb数据库，新建一个golang的数据库，添加两张测试用的表。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> golang;</span><br><span class="line"><span class="keyword">use</span> golang;</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`userinfo`</span> (</span><br><span class="line">  <span class="string">`uid`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`username`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`uid`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`userdetail`</span> (</span><br><span class="line">  <span class="string">`uid`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span>,</span><br><span class="line">  <span class="string">`intro`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`profile`</span> <span class="built_in">text</span></span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1;</span><br></pre></td></tr></table></figure>
+<p>先ssh登录服务器(因为安全考虑，不开放mysql的root用户的远程登录权限)，用root用户本地登录mysql新建一个用于测试的可远程登录的用户：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssh wuxu@10.4.16.95</span><br><span class="line">MySQL -uroot -p</span><br><span class="line">// enter root password</span><br><span class="line">create user golang@&apos;%&apos; identified by &apos;golangMysql&apos;;</span><br><span class="line">grant privileges on *.golang to golang@&apos;%&apos;;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+<p>这样就可以用golang登录新建的数据库了</p>
+<h2 id="Golang操作mysql"><a href="#Golang操作mysql" class="headerlink" title="Golang操作mysql"></a>Golang操作mysql</h2><p>先get数据库驱动,在命令行运行<code>go get github.com/go-sql-driver/MySQL</code>,会自动使用git从github下载mysql驱动工程到<code>$GOPATH/src/</code>。</p>
+<p>基本的插入，更新，删除，查找方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import (</span><br><span class="line">	_ &quot;github.com/go-sql-driver/MySQL&quot;</span><br><span class="line">	&quot;database/sql&quot;</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	// mysql是一个注册过的数据库驱动了,在驱动的init函数中注册</span><br><span class="line">	db, err := sql.Open(&quot;MySQL&quot;, &quot;golang:golangMysql@tcp(10.4.16.95:3306)/golang?charset=utf8&quot;)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	fmt.Println(&quot;connected&quot;)</span><br><span class="line">	</span><br><span class="line">	stmt, err := db.Prepare(&quot;insert userinfo set username=?&quot;)</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	// fmt.Println(stmt)</span><br><span class="line">	res, err := stmt.Exec(&quot;wuxu&quot;)  // 使用占位符&apos;?&apos;防止sql注入，这是一个不定参数函数，传入的参数与prepare阶段设置的占位符相等</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	id, err := res.LastInsertId()</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	fmt.Println(id)</span><br><span class="line">	</span><br><span class="line">	stmt, _ = db.Prepare(&quot;update userinfo set username=? where username=?&quot;)</span><br><span class="line">	</span><br><span class="line">	res, err =  stmt.Exec(&quot;wuxu01&quot;, &quot;wuxu&quot;)</span><br><span class="line">	aff, err := res.RowsAffected()</span><br><span class="line">	CheckErr(err)</span><br><span class="line">	</span><br><span class="line">	fmt.Println(aff)</span><br><span class="line">	</span><br><span class="line">	rows, err := db.Query(&quot;select * from userinfo&quot;)</span><br><span class="line">	</span><br><span class="line">	for rows.Next() &#123;</span><br><span class="line">		var id int</span><br><span class="line">		var usename string</span><br><span class="line">		err = rows.Scan(&amp;id, &amp;usename)</span><br><span class="line">		CheckErr(err)</span><br><span class="line">		</span><br><span class="line">		fmt.Println(id, usename)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	stmt, _ = db.Prepare(&quot;delete from userinfo where uid&gt;?&quot;)</span><br><span class="line">	res, _ = stmt.Exec(4)</span><br><span class="line">	aff, _ = res.RowsAffected()</span><br><span class="line">	fmt.Println(&quot;affected&quot;, aff)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func CheckErr(e error) &#123;</span><br><span class="line">	if e != nil &#123;</span><br><span class="line">		panic(e)</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>与以往的mysql操作相似，也是一个连接对象，对于插入，删除等要先prepare，然后执行Exec，在exec阶段绑定占位符变量。<br>比较独特的是Exec返回的Result指针，它包含LastInsertId和 RowsAffedted 两个方法。</p>
+<p>注意数据连接的dsn(data source name)和php或者其他语言的比较不一样。我们使用的是 <code>user:password@protocol(host:port)/dbname?charset=utf8</code> 的形式。驱动本身支持更多形式的dsn：</p>
+<ul>
+<li>user@Unix(/path/to/socket)/dbname?charset=utf8</li>
+<li>user:password@tcp(localhost:5555)/dbname?charset=utf8</li>
+<li>user:password@/dbname</li>
+<li>user:password@tcp([::]:80)/dbname   // ipv6</li>
+</ul>
+<p>整个数据库操作的流程大概如下：</p>
+<p>sql.Open()函数用来打开一个注册过的数据库驱动<br>db.Prepare()函数用来返回准备要执行的sql操作， 然后返回准备完毕的执行状态。<br>db.Query()函数用来直接执行Sql返回Rows结果。<br>stmt.Exec()函数用来执行stmt准备好的SQL语句。</p>
+<p>数据库驱动的注册在数据库驱动包导入时执行，注册的逻辑写在包的init函数中。导入驱动包只需要 <code>import _ &quot;driver/package&quot;</code>，因为只需要执行其<code>init()</code>，而不需要调用包中导出的方法，调用的是go语言规定的sql接口。</p>
+
             
           </span>
         
@@ -1236,130 +1353,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/weaknesses-of-golang/" itemprop="url">
-                  Golang语言特性中的一些不足
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-15T12:34:50+08:00" content="2015-10-15">
-              2015-10-15
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>相比于C语言，Golang提供了很多很方便的语言特性，比如切片的支持，比如GC，比如原生的map支持。使用Go会比直接使用C语言方便非常多。但是在使用中也会遇到很多不方便的地方，希望新版本的Go能提供更多的特性</p>
-<blockquote>
-<p>这是一个持续更新的列表</p>
-</blockquote>
-<p><strong>没有泛型支持</strong></p>
-<p>作为一门09年诞生的语言，没有支持泛型其实是很不应该的。我们不知道为什么在设计go的时候没有把泛型加上，按照官方的说法，是还没有找到一种不是的设计变得非常复杂的实现泛型的方法，并且泛型对于他们来说并不是那么紧急，所以在go中，泛型一直是一个open issue,没有定论。</p>
-<p>我们知道Java在1.5添加了泛型支持，但是java的泛型实现机制也是被很多人诟病的点。因为Java使用了运行时类型擦除的方式实现泛型，这种实现方式导致在运行时泛型是没有类型信息的，被退化成为了Object对象，可能导致运行时异常而不是编译期异常。相比而言C#提供的更原生的泛型支持。<br>虽然Java的泛型不被人喜爱，但是其实并不会太影响使用，而现在Go语言根本没有提供对泛型的支持，也导致很多基础方法不能被复用，比如排序算法需要对所有的类型提供不同的实现，这是很繁琐的工作。</p>
-<p>其实，官方的说法也很有道理：泛型并不是那么的紧急，没有泛型是有些麻烦，但并不会导致不能工作。</p>
-<p>好消息是Go的开发组已经在考虑添加泛型支持了，或许下个版本就能用上generic了。</p>
-<p><strong>没有三元运算符</strong></p>
-<p>这是这几天才发现的问题，对开发者而言，三元运算符(ternary operator ?:)是很基础的运算符。在学C语言时就用上了，以致我理所当然地认为左右的语言都会提供三元运算符了。</p>
-<p>实际上现在的语言不仅仅提供三元运算符，还会提供改进的三元运算符。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">c = a?0:a;</span><br><span class="line">c = a?:0;  // 一种更方便的三元运算</span><br></pre></td></tr></table></figure>
-<p>如上，在开发中进场碰到的一种场景是要判断取到的某个元素是否是null，然后再进行操作。为了简化操作，可以用第二行的方式，省略一个部分。这看起来简单，在实际使用时却是很方便的特性。</p>
-<p>但是，golang现在连三元运算符都没有，只能使用if判断实现相同的效果。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if expr &#123;</span><br><span class="line">	n = trueVal</span><br><span class="line">&#125; else &#123;</span><br><span class="line">	n = falseVal</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样子确实有过于麻烦了，希望有一天golang能提供对 ternary testing operation的支持。</p>
-<p><strong>if语言必须要有大括号</strong></p>
-<p>这其实算不上缺点，go强制所有的if后必须要用大括号，即</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if expr &#123;</span><br><span class="line">	// operation here</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这其实是几乎所有语言规范推荐的写法，但是很多时候我们喜欢这样写：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if (expr == true) break;</span><br></pre></td></tr></table></figure>
-<p>这样其实足够简洁明了，但是go中不允许这么写，必须要有大括号包围</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if (expr == true) &#123;</span><br><span class="line">	break</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当判断较多的时候其实代码就很不好看了。</p>
-<p>参考</p>
-<ul>
-<li><a href="https://golang.org/doc/faq" title="https://golang.org/doc/faq" target="_blank" rel="noopener">https://golang.org/doc/faq</a></li>
-</ul>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1406,7 +1399,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">177</span>
+              <span class="site-state-item-count">178</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1504,7 +1497,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

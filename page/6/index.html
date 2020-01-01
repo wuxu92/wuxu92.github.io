@@ -230,6 +230,103 @@
             
               
                 
+                <a class="post-title-link" href="/js-inheritance-and-prototype-chian/" itemprop="url">
+                  【翻译】JavaScript的继承与原型链
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-02-15T16:58:11+08:00" content="2016-02-15">
+              2016-02-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>这是 MDN上的<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain" target="_blank" rel="noopener">一篇文章</a>，介绍JavaScript的继承和原型链的基础知识，在此简单翻译一下，加深理解。当然MDN上已经有了<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Inheritance_and_the_prototype_chain" target="_blank" rel="noopener">中文的版本</a>。</p>
+<p>对于有基于类语言（class-based language, 如Java和C++）经验的开发者来说，初接触JavaScript可能有一些疑惑，因为它是动态类型的，并且本身不提供类型实现（class implementation），虽然ES6中引入了<code>class</code>关键字，但是也只是一个语法糖，JavaScript仍然是原型继承的（prototype-based）。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/js-inheritance-and-prototype-chian/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/chrome-using-es6/" itemprop="url">
                   chrome开启ECMAScript6 支持
                 </a>
@@ -1180,109 +1277,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/go-get-use-sock5-proxy/" itemprop="url">
-                  让go get命令使用socks5代理
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-13T20:33:54+08:00" content="2016-01-13">
-              2016-01-13
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/go/" itemprop="url" rel="index">
-                    <span itemprop="name">go</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>不知道是因为什么鬼打墙的原因，GFW把go的官网给禁了，也许因为Go出身Google吧，真是*了狗了。不仅是 <a href="http://golang.org" target="_blank" rel="noopener">golang.org</a> 被墙了，现在Go的包管理站 <a href="http://gopkg.in" target="_blank" rel="noopener">http://gopkg.in</a> 也被墙了。直接用 <code>go get gopkg.in/package</code> 半天都没反应，只好用代理了。</p>
-<p>如果是用http代理能访问的话，可以设置系统变量 <code>http_proxy</code> 就可以让 <code>go get</code> 走代理了，如果你有可以翻墙的http代理，可以用下面的方法：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">http_proxy=http://ip:port go get gopkg.ig/package.v1</span><br></pre></td></tr></table></figure>
-<p>本地使用 shadowsocks做代理，因为ss是socks5代理，所以不能用上面的方法，go get又没有直接设置代理的地方，所以只好祭出代理利器：<a href="https://www.proxifier.com/" target="_blank" rel="noopener">Proxifier</a> ，这个工具有30天试用期，在国内也很容易找到破解版本。</p>
-<p>打开Proxifier后添加 proxification rule，将 Applications设置为 <code>C:\Go\bin\go.exe</code>，这样重新打开终端（我的git bash），直接</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">go get gopkg.in/package.v1</span><br></pre></td></tr></table></figure>
-<p>就可以把包down下来了，虽然速度可能有点慢。</p>
-<p>go相关的很多资源都被墙了，FK</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1329,7 +1323,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">177</span>
+              <span class="site-state-item-count">178</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1427,7 +1421,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

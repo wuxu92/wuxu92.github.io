@@ -230,6 +230,130 @@
             
               
                 
+                <a class="post-title-link" href="/weaknesses-of-golang/" itemprop="url">
+                  Golang语言特性中的一些不足
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-15T12:34:50+08:00" content="2015-10-15">
+              2015-10-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>相比于C语言，Golang提供了很多很方便的语言特性，比如切片的支持，比如GC，比如原生的map支持。使用Go会比直接使用C语言方便非常多。但是在使用中也会遇到很多不方便的地方，希望新版本的Go能提供更多的特性</p>
+<blockquote>
+<p>这是一个持续更新的列表</p>
+</blockquote>
+<p><strong>没有泛型支持</strong></p>
+<p>作为一门09年诞生的语言，没有支持泛型其实是很不应该的。我们不知道为什么在设计go的时候没有把泛型加上，按照官方的说法，是还没有找到一种不是的设计变得非常复杂的实现泛型的方法，并且泛型对于他们来说并不是那么紧急，所以在go中，泛型一直是一个open issue,没有定论。</p>
+<p>我们知道Java在1.5添加了泛型支持，但是java的泛型实现机制也是被很多人诟病的点。因为Java使用了运行时类型擦除的方式实现泛型，这种实现方式导致在运行时泛型是没有类型信息的，被退化成为了Object对象，可能导致运行时异常而不是编译期异常。相比而言C#提供的更原生的泛型支持。<br>虽然Java的泛型不被人喜爱，但是其实并不会太影响使用，而现在Go语言根本没有提供对泛型的支持，也导致很多基础方法不能被复用，比如排序算法需要对所有的类型提供不同的实现，这是很繁琐的工作。</p>
+<p>其实，官方的说法也很有道理：泛型并不是那么的紧急，没有泛型是有些麻烦，但并不会导致不能工作。</p>
+<p>好消息是Go的开发组已经在考虑添加泛型支持了，或许下个版本就能用上generic了。</p>
+<p><strong>没有三元运算符</strong></p>
+<p>这是这几天才发现的问题，对开发者而言，三元运算符(ternary operator ?:)是很基础的运算符。在学C语言时就用上了，以致我理所当然地认为左右的语言都会提供三元运算符了。</p>
+<p>实际上现在的语言不仅仅提供三元运算符，还会提供改进的三元运算符。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">c = a?0:a;</span><br><span class="line">c = a?:0;  // 一种更方便的三元运算</span><br></pre></td></tr></table></figure>
+<p>如上，在开发中进场碰到的一种场景是要判断取到的某个元素是否是null，然后再进行操作。为了简化操作，可以用第二行的方式，省略一个部分。这看起来简单，在实际使用时却是很方便的特性。</p>
+<p>但是，golang现在连三元运算符都没有，只能使用if判断实现相同的效果。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if expr &#123;</span><br><span class="line">	n = trueVal</span><br><span class="line">&#125; else &#123;</span><br><span class="line">	n = falseVal</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样子确实有过于麻烦了，希望有一天golang能提供对 ternary testing operation的支持。</p>
+<p><strong>if语言必须要有大括号</strong></p>
+<p>这其实算不上缺点，go强制所有的if后必须要用大括号，即</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if expr &#123;</span><br><span class="line">	// operation here</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这其实是几乎所有语言规范推荐的写法，但是很多时候我们喜欢这样写：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if (expr == true) break;</span><br></pre></td></tr></table></figure>
+<p>这样其实足够简洁明了，但是go中不允许这么写，必须要有大括号包围</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if (expr == true) &#123;</span><br><span class="line">	break</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当判断较多的时候其实代码就很不好看了。</p>
+<p>参考</p>
+<ul>
+<li><a href="https://golang.org/doc/faq" title="https://golang.org/doc/faq" target="_blank" rel="noopener">https://golang.org/doc/faq</a></li>
+</ul>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/z-i-can-explain/" itemprop="url">
                   绩点只有3？我可以解释一下
                 </a>
@@ -1140,116 +1264,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/php-fpm-504-error/" itemprop="url">
-                  PHP-FPM出现504错误
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-09-18T12:34:50+08:00" content="2015-09-18">
-              2015-09-18
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>504是一种常见的服务器错误，今天公司的开发机的服务器就出现了504错误，今天就要离职了，一天都没做什么事，正好这件事博哥找我看一下，查一下nginx的日志，发现是upstream timeout，我们知道nginx+php的模式下，nginx作为server把php的请求发到php-fpm进行处理，再把php-fpm处理的结果返回。<br>这里可以把php-fpm看作nginx日志里说的那个upstream。那么可以推出是php-fpm服务出了问题。</p>
-<p>查看php-fpm服务的状态:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo service php-fpm status  # centos 6</span><br><span class="line">sudo systemctl status php-fpm # centos 7</span><br></pre></td></tr></table></figure>
-<p>发现php-fpm的状态是running，没有问题～那是怎回事呢，不管三七二十一先 <code>sudo service php-fpm restart</code> （centos 7使用systemctl）试一下，发现竟然好了。</p>
-<p>看起来问题是解决了，页面响应速度恢复了，但是一登录玉米平台，点开两三个页面有开始504了。。。<br>看来应该是服务器资源的问题，但是开发机配置很好，top一下可以看到资源是够用的，那就是php-fpm配置的问题了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo vim /path/to/php-fpm.conf</span><br></pre></td></tr></table></figure>
-<p>找到 <code>pm.max_children</code> 的部分。可以看一下注释部分：</p>
-<blockquote>
-<p>; The number of child processes to be created when pm is set to ‘static’ and the<br>; maximum number of child processes when pm is set to ‘dynamic’ or ‘ondemand’.<br>; This value sets the limit on the number of simultaneous requests that will be<br>; served. Equivalent to the ApacheMaxClients directive with mpm_prefork.<br>; Equivalent to the PHP_FCGI_CHILDREN environment variable in the original PHP<br>; CGI. The below defaults are based on a server without much resources. Don’t<br>; forget to tweak pm.* to fit your needs.<br>; Note: Used when pm is set to ‘static’, ‘dynamic’ or ‘ondemand’<br>; Note: This value is mandatory.<br>pm.max_children = 5</p>
-</blockquote>
-<p>默认的配置值是5，公司开发机配置了一大堆的虚拟机，估计得20来个了，可以预测是child processes不够导致的504，可以根据服务器配置适当地调大这个参数，我把它设置为32了，应该可以适应当前的需求了。</p>
-<p>关于504 bad gateway可以理解一下，php-fpm的全称是php fastcgi proceesses manager, cgi则是common gateway interface即通用网关接口，gateway timeout就可以理解为这个cgi超时没有及时返回给web server数据。</p>
-<hr>
-<p>刚刚发现这样改了还是会有504 timeout……囧了个囧，勇哥和我机智地分析了一下应该是代码中的问题，他们使用了curl请求另外的资源，我们猜测是curl长时间没有返回而导致php-fpm超时，修改代码设置curl请求的超时时间，再重启php-fpm请求，问题解决了。</p>
-<p>一个问题出现可能有很多原因，要一点一点去分析，慢慢才能解决问题～～</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1296,7 +1310,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">177</span>
+              <span class="site-state-item-count">178</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1394,7 +1408,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>

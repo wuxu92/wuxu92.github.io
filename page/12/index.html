@@ -230,6 +230,115 @@
             
               
                 
+                <a class="post-title-link" href="/vim-open-binary-as-hex/" itemprop="url">
+                  vim打开二进制文件
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-14T12:34:50+08:00" content="2015-11-14">
+              2015-11-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>使用Vim编辑文本文件非常方便，但是打开一个二进制文件的时候会显示乱码，而不能像UltraEdit那样显示十六进制的数据，我们可以用一个小trick实现。<br>一般情况下，打开一个二进制文件如下图所示，我们打开一个 .o 文件</p>
+<p><img src="/images/linux/vim-binary.png" alt=""></p>
+<p>要让其显示为十六进制的，可以在命令模式键入下面的命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:%!xxd</span><br></pre></td></tr></table></figure>
+<p>这里是运行一个外部命令xxd</p>
+<blockquote>
+<p> xxd - make a hexdump or do the reverse.</p>
+</blockquote>
+<p>运行这个命令之后，vim显示如下：</p>
+<p><img src="/images/linux/vim-hex.png" alt=""></p>
+<p>如果要返回之前的现实，运行下面的命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:%!xxd -r</span><br></pre></td></tr></table></figure>
+<p>这个trick的原理就是使用外部命令xxd生成一个hexdump。</p>
+<p>完</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/delete-mongodb-journal-files/" itemprop="url">
                   MongoDB 删除journal文件
                 </a>
@@ -296,6 +405,102 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo rm /var/lib/mongo/journal/*</span><br><span class="line">sudo service mongod start</span><br></pre></td></tr></table></figure>
 <p>这样就空闲了3G的空间了，自己练练手玩还是够的。</p>
 <p>完</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/refactoring-method-call/" itemprop="url">
+                  重构：简化函数调用
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-09T12:34:50+08:00" content="2015-11-09">
+              2015-11-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/软件工程/" itemprop="url" rel="index">
+                    <span itemprop="name">软件工程</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>有时间再补</p>
 
             
           </span>
@@ -429,102 +634,6 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">str := &quot;百度一下，你就知道&quot;</span><br><span class="line">fmt.Println(&quot;string len:&quot;, len([]rune(str)))    // 9</span><br><span class="line">fmt.Println(&quot;Byte len&quot;, len(str))				// 27</span><br></pre></td></tr></table></figure>
 <p>Go默认就是utf-8编码，所以如果你的项目要使用UTF-8的话，不需要做额外的字符集处理就可以了。</p>
 <h3 id="UTF-16"><a href="#UTF-16" class="headerlink" title="UTF-16"></a>UTF-16</h3><h3 id="ISO-8859-1"><a href="#ISO-8859-1" class="headerlink" title="ISO 8859"></a>ISO 8859</h3>
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/refactoring-method-call/" itemprop="url">
-                  重构：简化函数调用
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-11-09T12:34:50+08:00" content="2015-11-09">
-              2015-11-09
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/软件工程/" itemprop="url" rel="index">
-                    <span itemprop="name">软件工程</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>有时间再补</p>
-
             
           </span>
         
@@ -1206,123 +1315,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/network-programming-with-go/" itemprop="url">
-                  Go 网络编程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-10-29T12:34:50+08:00" content="2015-10-29">
-              2015-10-29
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Programming</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p><img src="/images/golang/gopher-banner-small.jpg" alt=""></p>
-<p>对于任何一门语言，网络编程都是重要的一部分。对于Go来说其天生的高并发网络编程更是充满魅力。所以今天开学学习Go网络编程部分，教材是 Jan Newmarch 的 Network programming with Go 的pdf文档。 这份文档在 <a href="https://jan.newmarch.name/go/" target="_blank" rel="noopener">这里</a> 可以找到，由 Astaxie 翻译的中文版也在<a href="https://jan.newmarch.name/go/zh/index.html" target="_blank" rel="noopener">这个网站的这个目录</a>， 当然也可以在<a href="https://github.com/astaxie/NPWG_zh" target="_blank" rel="noopener">astaxie的github上</a>找到。</p>
-<p>我使用英文的pdf，因为没有找到中午的pdf，而使用pdf比网页要方便些，方便做笔记和添加备注，并且这类文档的英文应该也不会太难。</p>
-<p>根据pdf的结构，一节一节往后走。各章节组成如下：</p>
-<ol>
-<li>架构</li>
-<li>Go语言概括</li>
-<li>Socket编程</li>
-<li>数据序列化</li>
-<li>应用层协议</li>
-<li>管理字符集与编码</li>
-<li>安全</li>
-<li>HTTP</li>
-<li>模板</li>
-<li>一个完整的Web服务</li>
-<li>HTML</li>
-<li>XML</li>
-<li>远程过程调用RPC</li>
-<li>网络 Channels</li>
-<li>Web Sockets</li>
-</ol>
-<p>其中前两张只简单的过一下，重要的是这几节： Socket, 序列化，应用层协议，安全，HTTP。 RPC与Web Sockets。其他章节看起来简单过一下就可以了。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/network-programming-with-go/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1369,7 +1361,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">177</span>
+              <span class="site-state-item-count">178</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1467,7 +1459,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>
